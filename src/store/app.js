@@ -8,11 +8,10 @@ export const useAppStore = defineStore('app', {
     validConnection: (state) => state.connection.valid,
     instances: (state) => state.instancesList,
     getInstance: (state) => (instanceName) => state.instancesList.find(
-      (instance) => instance.instance.instanceName === instanceName
+      (instance) => instance.name === instanceName
     ),
     getInstanceApiKey: (state) => (instance) => {
-      return state.getInstance(instance).instance.apiKey ||
-        state.instancesKeys[instance]
+      return state.getInstance(instance)?.token || state.instancesKeys[instance]
     },
     version: (state) => state.connection.version,
     versionSatisfies: (state) => (version) => {
@@ -22,7 +21,6 @@ export const useAppStore = defineStore('app', {
   state: () => ({
     connecting: false,
     connection: {
-
       valid: false,
       host: null,
       globalApiKey: null,
@@ -92,7 +90,6 @@ export const useAppStore = defineStore('app', {
       this.instancesKeys = {}
       this.connectionsList = []
       this.saveLocalStorage()
-
     },
 
     async reconnect() {
@@ -127,7 +124,6 @@ export const useAppStore = defineStore('app', {
         })
 
         this.saveConnection({ host, globalApiKey, version })
-
         this.instancesList = response.data
       } catch (e) {
         this.connection.valid = false
@@ -137,18 +133,22 @@ export const useAppStore = defineStore('app', {
       }
     },
 
-    setInstanceStatus(instance, status) {
+    setInstanceStatus(instanceName, status) {
       const index = this.instancesList.findIndex(
-        (instance) => instance.instance.instanceName === instance
+        (instance) => instance.name === instanceName
       )
-      this.instancesList[index].instance.status = status
+      if (index !== -1) {
+        this.instancesList[index].connectionStatus = status
+      }
     },
 
     setPhoto(instanceName, photo) {
       const index = this.instancesList.findIndex(
-        (instance) => instance.instance.instanceName === instanceName
+        (instance) => instance.name === instanceName
       )
-      if (index !== -1) this.instancesList[index].instance.profilePictureUrl = photo
+      if (index !== -1) {
+        this.instancesList[index].profilePicUrl = photo
+      }
     },
 
     addInstanceKey({ instance, key }) {
@@ -165,6 +165,7 @@ export const useAppStore = defineStore('app', {
 
       this.saveLocalStorage()
     },
+
     saveConnection({ host, globalApiKey, version }) {
       this.connection = {
         valid: true,
@@ -191,6 +192,7 @@ export const useAppStore = defineStore('app', {
         window.localStorage.setItem('connectionsList', JSON.stringify(this.connectionsList))
       }
     },
+
     async loadConnection() {
       if (typeof window !== 'undefined') {
         const connectionsList = window.localStorage.getItem('connectionsList')

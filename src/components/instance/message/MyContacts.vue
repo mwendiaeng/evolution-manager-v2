@@ -141,7 +141,7 @@ export default {
         this.loading = true;
         this.error = false;
         const contacts = await instanceController.chat.getContacts(
-          this.instance.instance.instanceName
+          this.instance.instance.name
         );
 
         this.contacts = contacts.filter((c) => !c.id.includes("@g.us"));

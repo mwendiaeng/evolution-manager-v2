@@ -1,14 +1,11 @@
 <template>
-  <v-dialog
-    v-model="dialog"
-    max-width="500px"
-  >
+  <v-dialog v-model="dialog" max-width="500px">
     <v-card>
       <v-card-text class="d-flex flex-column gap-4">
         <v-form v-model="valid">
-          <h3 class="mb-4">Criar instancia</h3>
+          <h3 class="mb-4">Criar instância</h3>
           <v-text-field
-            v-model="instance.instanceName"
+            v-model="instance.name"
             label="Nome"
             required
             outlined
@@ -27,7 +24,6 @@
             @click:prepend-inner="generateApiKey"
             prepend-inner-icon="mdi-lock-reset"
             :rules="[
-              // Verify is not have any caracter except letters, numbers, _ and -
               (v) =>
                 new RegExp('^[a-zA-Z0-9_-]*$', 'i').test(v) ||
                 'Nome inválido (apenas letras, números, _ e -)',
@@ -40,18 +36,14 @@
           configurados após a criação da instância.
         </v-alert>
 
-        <v-alert type="error" v-if="error" >
+        <v-alert type="error" v-if="error">
           {{ Array.isArray(error) ? error.join(", ") : error }}
         </v-alert>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn
-          text
-          @click="dialog = false"
-          :disabled="loading"
-        >
-          Cancel
+        <v-btn text @click="dialog = false" :disabled="loading">
+          Cancelar
         </v-btn>
         <v-btn
           color="success"
@@ -77,7 +69,7 @@ export default {
     dialog: false,
     valid: false,
     instance: {
-      instanceName: "",
+      name: "",
       token: "",
     },
     loading: false,
@@ -100,7 +92,7 @@ export default {
 
         this.$router.push({
           name: "instance",
-          params: { id: instance.instance.instanceName },
+          params: { id: instance.name },
         });
       } catch (e) {
         this.error = e.message?.message || e.message || e;
@@ -111,7 +103,7 @@ export default {
     open() {
       this.dialog = true;
       this.error = false;
-      this.instance.instanceName = "";
+      this.instance.name = "";
       this.generateApiKey();
     },
   },

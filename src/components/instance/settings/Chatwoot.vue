@@ -210,10 +210,10 @@ import { useAppStore } from "@/store/app";
 const defaultObj = () => ({
   enabled: false,
   url: "",
-  account_id: "",
+  accountId: "",
   token: "",
-  sign_msg: true,
-  sign_delimiter: "\n",
+  signMsg: true,
+  signDelimiter: "\n",
   reopen_conversation: true,
   conversation_pending: false,
   auto_create: undefined,
@@ -267,7 +267,7 @@ export default {
         this.loading = true;
         this.error = false;
         await instanceController.chatwoot.set(
-          this.instance.instance.instanceName,
+          this.instance.name,
           {
             ...this.chatwootData,
             url: this.chatwootData.url.trim().replace(/\/$/, ""),
@@ -285,7 +285,7 @@ export default {
         this.loading = true;
         this.error = false;
         const chatwootData = await instanceController.chatwoot.get(
-          this.instance.instance.instanceName
+          this.instance.name
         );
 
         const validData = chatwootData._doc || chatwootData;

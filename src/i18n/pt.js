@@ -71,6 +71,7 @@ export default {
     alwaysOnline: "Sempre online",
     readMessages: "Marcar mensagens como lidas",
     readStatus: "Marcar status como visto",
+    syncFullHistory: "Sinconizar histórico completo",
   },
   webhook: {
     byEvents: "Webhook por eventos",

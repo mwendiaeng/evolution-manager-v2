@@ -129,7 +129,7 @@ export default {
         this.loading = true;
         this.error = false;
         await instanceController.rabbitmq.set(
-          this.instance.instance.instanceName,
+          this.instance.name,
           this.rabbitmqData
         );
         this.defaultRabbitmqData = Object.assign({}, this.rabbitmqData);
@@ -145,7 +145,7 @@ export default {
         this.loading = true;
         this.error = false;
         const rabbitmqData = await instanceController.rabbitmq.get(
-          this.instance.instance.instanceName
+          this.instance.name
         );
 
         this.rabbitmqData = Object.assign({}, rabbitmqData);

@@ -29,13 +29,13 @@
       <div class="d-flex flex-wrap justify-center gap-x-4">
         <v-avatar size="150">
           <v-img
-            v-if="instance.instance.profilePictureUrl"
-            :src="instance.instance.profilePictureUrl"
-            :alt="instance.instance.profileName"
+            v-if="instance.profilePictureUrl"
+            :src="instance.profilePictureUrl"
+            :alt="instance.profileName"
           />
           <div v-else class="d-flex flex-column align-center">
             <v-icon size="70"> mdi-account-question </v-icon>
-            {{ $t("profilePicture.noPhoto")  }}
+            {{ $t("profilePicture.noPhoto") }}
           </div>
         </v-avatar>
 
@@ -47,14 +47,14 @@
         >
           <v-progress-circular
             indeterminate
-            v-if="loading == 'uploading'"
+            v-if="loading === 'uploading'"
             size="50"
           />
           <v-icon size="50" v-else>mdi-upload</v-icon>
           {{ $t("profilePicture.upload") }}
         </v-card>
         <v-card
-          v-if="instance.instance.profilePictureUrl"
+          v-if="instance.profilePictureUrl"
           variant="outlined"
           class="h-full d-flex flex-column justify-center align-center rounded-pill"
           width="150"
@@ -63,7 +63,7 @@
         >
           <v-progress-circular
             indeterminate
-            v-if="loading == 'removing'"
+            v-if="loading === 'removing'"
             size="50"
           />
           <v-icon size="50" v-else>mdi-delete</v-icon>
@@ -84,6 +84,7 @@
 <script>
 import instanceController from "@/services/instanceController";
 import { useAppStore } from "@/store/app";
+
 export default {
   name: "ProfilePhoto",
   props: {
@@ -94,19 +95,10 @@ export default {
   },
   data: () => ({
     AppStore: useAppStore(),
-
     expanded: false,
     loading: false,
     error: false,
     valid: false,
-    data: {
-      name: "",
-      status: "",
-    },
-    defaultData: {
-      name: "",
-      status: "",
-    },
   }),
 
   methods: {
@@ -121,11 +113,8 @@ export default {
 
         if (!this.isOpen) return;
 
-        await instanceController.profile.removePicture(
-          this.instance.instance.instanceName
-        );
-
-        this.AppStore.setPhoto(this.instance.instance.instanceName, null);
+        await instanceController.profile.removePicture(this.instance.name);
+        this.AppStore.setPhoto(this.instance.name, null);
       } catch (e) {
         this.error = e.message?.message || e.message || e;
       } finally {
@@ -139,14 +128,10 @@ export default {
         if (!this.isOpen) return;
 
         const file = event.target.files[0];
-
         const base64 = await this.fileToBase64(file);
 
-        await instanceController.profile.updatePicture(
-          this.instance.instance.instanceName,
-          base64.split(",")[1]
-        );
-        this.AppStore.setPhoto(this.instance.instance.instanceName, base64);
+        await instanceController.profile.updatePicture(this.instance.name, base64.split(",")[1]);
+        this.AppStore.setPhoto(this.instance.name, base64);
       } catch (e) {
         this.error = e.message?.message || e.message || e;
       } finally {
@@ -170,7 +155,7 @@ export default {
 
   computed: {
     isOpen() {
-      return this.instance.instance.status === "open";
+      return this.instance.connectionStatus === "open";
     },
   },
 };

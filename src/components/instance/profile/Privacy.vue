@@ -120,13 +120,13 @@ import instanceController from "@/services/instanceController";
 import { useAppStore } from "@/store/app";
 
 const defaultObj = () => ({
-  enabled: false,
-  url: "",
-  account_id: "",
-  token: "",
-  sign_msg: true,
-  reopen_conversation: true,
-  conversation_pending: false,
+  readreceipts: "all",
+  profile: "all",
+  status: "all",
+  online: "all",
+  last: "all",
+  groupadd: "all",
+  calladd: "all",
 });
 
 export default {
@@ -165,24 +165,8 @@ export default {
         { value: "none", title: this.$t("privacy.options.none") },
       ],
 
-      privacyData: {
-        readreceipts: "all",
-        profile: "all",
-        status: "all",
-        online: "all",
-        last: "all",
-        groupadd: "all",
-        calladd: "all",
-      },
-      defaultChatwootData: {
-        readreceipts: "all",
-        profile: "all",
-        status: "all",
-        online: "all",
-        last: "all",
-        groupadd: "all",
-        calladd: "all",
-      },
+      privacyData: defaultObj(),
+      defaultPrivacyData: defaultObj(),
     };
   },
   methods: {
@@ -198,7 +182,7 @@ export default {
         this.loading = true;
         this.error = false;
         await instanceController.profile.updatePrivacy(
-          this.instance.instance.instanceName,
+          this.instance.name,
           this.privacyData
         );
         this.defaultPrivacyData = Object.assign({}, this.privacyData);
@@ -214,7 +198,7 @@ export default {
         this.loading = true;
         this.error = false;
         const privacyData = await instanceController.profile.getPrivacy(
-          this.instance.instance.instanceName
+          this.instance.name
         );
         this.privacyData = Object.assign(defaultObj(), privacyData || {});
         this.defaultPrivacyData = Object.assign(
@@ -230,7 +214,7 @@ export default {
   },
   computed: {
     isOpen() {
-      return this.instance.instance.status === "open";
+      return this.instance.connectionStatus === "open";
     },
   },
   watch: {

@@ -139,7 +139,7 @@ export default {
         this.loading = true;
         this.error = false;
         const groups = await instanceController.group.getAll(
-          this.instance.instance.instanceName
+          this.instance.name
         );
 
         this.groups = groups;

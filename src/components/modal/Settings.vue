@@ -8,6 +8,7 @@
       <v-card-text>
         <v-form v-model="valid">
           <h3 class="mb-4">{{ $t("connection.title") }}</h3>
+          <!-- Campo para a URL -->
           <v-text-field
             v-model="connection.host"
             label="URL"
@@ -15,6 +16,7 @@
             outlined
             :rules="hostRules"
           />
+          <!-- Campo para a chave global da API -->
           <v-text-field
             v-model="connection.globalApiKey"
             label="Global API Key"
@@ -26,16 +28,20 @@
           />
         </v-form>
 
+        <!-- Mensagem de erro, se houver -->
         <v-alert type="error" v-if="error">
           {{ Array.isArray(error) ? error.join(", ") : error }}
         </v-alert>
       </v-card-text>
       <v-card-actions>
+        <!-- Botões -->
         <div class="d-flex flex-wrap justify-space-between w-100 align-center">
+          <!-- Botão para mostrar informações sobre o aplicativo -->
           <v-btn size="small" text @click="showAbout">
             {{ $t("about.title") }}
           </v-btn>
           <div class="d-flex justify-end flex-grow-1 gap-1">
+            <!-- Botão para fazer logout -->
             <v-btn
               v-if="!!AppStore.connection.host"
               icon
@@ -46,15 +52,7 @@
             >
               <v-icon>mdi-logout</v-icon>
             </v-btn>
-            <!-- <v-btn
-              v-if="AppStore.validConnection"
-              class="ml-0"
-              text
-              @click="dialog = false"
-              :disabled="loading"
-            >
-              Cancel
-            </v-btn> -->
+            <!-- Botão para compartilhar a conexão -->
             <v-btn
               v-if="AppStore.validConnection"
               class="ml-0"
@@ -66,6 +64,7 @@
             >
               <v-icon>mdi-share-variant</v-icon>
             </v-btn>
+            <!-- Botão para salvar a configuração -->
             <v-btn
               color="success"
               class="ml-0"
@@ -81,6 +80,7 @@
       </v-card-actions>
     </v-card>
 
+    <!-- Lista de conexões salvas -->
     <v-card class="mt-2" v-if="connectionsList && connectionsList.length > 1">
       <v-card-text>
         <h3 class="mb-4">
@@ -88,30 +88,27 @@
         </h3>
         <v-list>
           <v-list-item
-            v-for="conect in connectionsList"
-            :key="conect.host"
+            v-for="connect in connectionsList"
+            :key="connect.host"
             :disabled="
               loading ||
-              (conect.host === AppStore.connection.host &&
+              (connect.host === AppStore.connection.host &&
                 AppStore.validConnection)
             "
-            @click="save(conect)"
+            @click="save(connect)"
           >
             <v-list-item-content>
               <v-list-item-title>
-                {{ conect.host.replace(/https?:\/\//, "") }}
+                {{ connect.host.replace(/https?:\/\//, "") }}
               </v-list-item-title>
-
-              <!-- <v-list-item-subtitle>
-                {{ connection.globalApiKey.slice(0, 10) }}...
-              </v-list-item-subtitle> -->
             </v-list-item-content>
             <template v-slot:append>
+              <!-- Botão para remover conexão -->
               <v-btn
-                @click.stop="removeConnection(conect)"
+                @click.stop="removeConnection(connect)"
                 icon
                 v-if="
-                  conect.host !== AppStore.connection.host ||
+                  connect.host !== AppStore.connection.host ||
                   !AppStore.validConnection
                 "
                 size="x-small"
@@ -121,6 +118,7 @@
               >
                 <v-icon>mdi-delete</v-icon>
               </v-btn>
+              <!-- Ícone de confirmação para conexão atual -->
               <v-btn
                 icon
                 v-else
@@ -137,7 +135,11 @@
       </v-card-text>
     </v-card>
   </v-dialog>
+  
+  <!-- Componente do modal "About" -->
   <about-modal ref="about" />
+  
+  <!-- Componente para compartilhar conexão -->
   <share-connection ref="share" />
 </template>
 
@@ -164,10 +166,12 @@ export default {
     isHttps: window.location.protocol === "https:",
   }),
   methods: {
+    // Função para abrir o modal de compartilhamento de conexão
     share() {
       const connection = Object.assign({}, this.AppStore.connection);
       this.$refs.share.open(connection);
     },
+    // Função para fazer logout
     logout() {
       this.AppStore.logout();
       this.connection = {
@@ -175,12 +179,15 @@ export default {
         globalApiKey: "",
       };
     },
+    // Função para mostrar informações "About"
     showAbout() {
       this.$refs.about.open();
     },
+    // Função para remover uma conexão salva
     removeConnection(connection) {
       this.AppStore.removeConnection(connection);
     },
+    // Função para salvar a configuração de conexão
     async save(connection) {
       try {
         this.loading = true;
@@ -194,6 +201,7 @@ export default {
         this.loading = false;
       }
     },
+    // Função para abrir o modal de configurações
     open() {
       this.dialog = true;
       this.connection = Object.assign({}, this.AppStore.connection);
@@ -201,16 +209,21 @@ export default {
         this.connection.host = window.location.origin;
     },
   },
+  // Observadores
   watch: {
+    // Observa mudanças na validade da conexão
     "AppStore.validConnection"(val, oldVal) {
       if (val === oldVal) return;
       if (!val) this.dialog = true;
     },
   },
+  // Propriedades computadas
   computed: {
+    // Retorna a lista de conexões salvas
     connectionsList() {
       return this.AppStore.connectionsList;
     },
+    // Regras de validação para o campo de URL
     hostRules() {
       return [
         (v) =>
@@ -221,6 +234,6 @@ export default {
     },
   },
 
-  emits: ["close"],
+  emits: ["close"], // Emite evento de fechamento
 };
 </script>

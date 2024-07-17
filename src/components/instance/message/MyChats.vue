@@ -125,7 +125,7 @@ export default {
         this.loading = true;
         this.error = false;
         const chats = await instanceController.chat.getAll(
-          this.instance.instance.instanceName
+          this.instance.name
         );
 
         this.chats = chats;

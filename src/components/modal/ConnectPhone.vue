@@ -1,6 +1,6 @@
 <template>
   <v-card
-    v-if="instance.instance?.status != 'open'"
+    v-if="instance?.connectionStatus != 'open'"
     @click="startConnect"
     elevation="0"
   >
@@ -71,7 +71,7 @@ export default {
   data: () => ({
     dialog: false,
     error: false,
-
+ 
     loading: false,
     qrCode: null,
     success: false,
@@ -89,7 +89,7 @@ export default {
         clearTimeout(this.timeout);
 
         const response = await instanceController.connect(
-          this.instance.instance.instanceName
+          this.instance.name
         );
 
         if (response.base64) this.qrCode = response.base64;

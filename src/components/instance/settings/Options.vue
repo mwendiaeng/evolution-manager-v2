@@ -30,7 +30,7 @@
         <div class="d-flex align-center gap-4 flex-wrap">
           <v-checkbox
             class="flex-grow-0 flex-shrink-0"
-            v-model="optionsData.reject_call"
+            v-model="optionsData.rejectCall"
             :disabled="loading"
             :label="$t('options.rejectCall')"
             hide-details
@@ -38,8 +38,8 @@
           ></v-checkbox>
           <v-text-field
             class="flex-grow-1 flex-shrink-0"
-            v-model="optionsData.msg_call"
-            :disabled="loading || !optionsData.reject_call"
+            v-model="optionsData.msgCall"
+            :disabled="loading || !optionsData.rejectCall"
             :label="$t('options.msgCall')"
             hide-details
             style="min-width: 200px"
@@ -48,7 +48,7 @@
         <div class="d-flex gap-x-4 flex-wrap">
           <v-checkbox
             class="flex-grow-0"
-            v-model="optionsData.groups_ignore"
+            v-model="optionsData.groupsIgnore"
             :disabled="loading"
             :label="$t('options.groupsIgnore')"
             hide-details
@@ -57,7 +57,7 @@
 
           <v-checkbox
             class="flex-grow-0"
-            v-model="optionsData.always_online"
+            v-model="optionsData.alwaysOnline"
             :disabled="loading"
             :label="$t('options.alwaysOnline')"
             hide-details
@@ -66,7 +66,7 @@
 
           <v-checkbox
             class="flex-grow-0"
-            v-model="optionsData.read_messages"
+            v-model="optionsData.readMessages"
             :disabled="loading"
             :label="$t('options.readMessages')"
             hide-details
@@ -75,9 +75,17 @@
 
           <v-checkbox
             class="flex-grow-0"
-            v-model="optionsData.read_status"
+            v-model="optionsData.readStatus"
             :disabled="loading"
             :label="$t('options.readStatus')"
+            hide-details
+            density="compact"
+          ></v-checkbox>
+          <v-checkbox
+            class="flex-grow-0"
+            v-model="optionsData.syncFullHistory"
+            :disabled="loading"
+            :label="$t('options.syncFullHistory')"
             hide-details
             density="compact"
           ></v-checkbox>
@@ -106,12 +114,13 @@
 import instanceController from "@/services/instanceController";
 
 const defaultOptions = () => ({
-  reject_call: false,
-  msg_call: "",
-  groups_ignore: false,
-  always_online: false,
-  read_messages: false,
-  read_status: false,
+  rejectCall: false,
+  msgCall: "",
+  groupsIgnore: true,
+  alwaysOnline: false,
+  readMessages: false,
+  readStatu: false,
+  syncFullHistory: false
 });
 
 export default {
@@ -128,20 +137,22 @@ export default {
     error: false,
     valid: false,
     optionsData: {
-      reject_call: false,
-      msg_call: "",
-      groups_ignore: false,
-      always_online: false,
-      read_messages: false,
-      read_status: false,
+      rejectCall: false,
+      msgCall: "",
+      groupsIgnore: false,
+      alwaysOnline: false,
+      readMessages: false,
+      readStatu: false,
+      syncFullHistory: false
     },
     defaultOptionsData: {
-      reject_call: false,
-      msg_call: "",
-      groups_ignore: false,
-      always_online: false,
-      read_messages: false,
-      read_status: false,
+      rejectCall: false,
+      msgCall: "",
+      groupsIgnore: false,
+      alwaysOnline: false,
+      readMessages: false,
+      readStatu: false,
+      syncFullHistory: false
     },
   }),
 
@@ -155,7 +166,7 @@ export default {
         this.loading = true;
         this.error = false;
         await instanceController.options.set(
-          this.instance.instance.instanceName,
+          this.instance.name,
           this.optionsData
         );
         this.defaultOptionsData = Object.assign(
@@ -174,7 +185,7 @@ export default {
         this.loading = true;
         this.error = false;
         const optionsData = await instanceController.options.get(
-          this.instance.instance.instanceName
+          this.instance.name
         );
 
         this.optionsData = Object.assign(defaultOptions(), optionsData);

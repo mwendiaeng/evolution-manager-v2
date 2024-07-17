@@ -12,24 +12,18 @@
 
         <div v-if="group.participants">
           <v-card class="my-2" variant="outlined">
-            <div
-              class="pa-3 gap-x-4 gap-y-1 d-flex flex-wrap align-center justify-center justify-space-around"
-            >
+            <div class="pa-3 gap-x-4 gap-y-1 d-flex flex-wrap align-center justify-center justify-space-around">
               <span>
                 <v-icon start size="x-small">mdi-calendar</v-icon>
-                <b>Criado em:</b>
-                {{ formatTimestamp(group.creation * 1000) }}
+                <b>Criado em:</b> {{ formatTimestamp(group.creation * 1000) }}
               </span>
               <span>
                 <v-icon start size="x-small">mdi-crown</v-icon>
-                <b>Dono:</b>
-                {{ (group.owner || "Desconhecido").split("@")[0] }}
+                <b>Dono:</b> {{ (group.owner || "Desconhecido").split("@")[0] }}
               </span>
               <span>
                 <v-icon start size="x-small">mdi-account</v-icon>
-                <b>
-                  {{ isAdmin ? "É Admin" : "Não é Admin" }}
-                </b>
+                <b>{{ isAdmin ? "É Admin" : "Não é Admin" }}</b>
               </span>
             </div>
           </v-card>
@@ -37,15 +31,10 @@
           <div class="d-flex flex-wrap justify-space-between mt-4">
             <h4>
               Participantes
-              <v-chip color="info" size="small">
-                {{ group.participants.length }}
-              </v-chip>
+              <v-chip color="info" size="small">{{ group.participants.length }}</v-chip>
             </h4>
 
-            <div
-              v-if="isAdmin"
-              class="flex-grow-1 d-flex justify-end align-center gap-x-1"
-            >
+            <div v-if="isAdmin" class="flex-grow-1 d-flex justify-end align-center gap-x-1">
               <v-tooltip text="Remover participantes" location="top">
                 <template v-slot:activator="{ props }">
                   <v-btn
@@ -57,7 +46,7 @@
                     text
                     size="small"
                   >
-                    <v-icon size="large"> mdi-account-multiple-remove </v-icon>
+                    <v-icon size="large">mdi-account-multiple-remove</v-icon>
                   </v-btn>
                 </template>
               </v-tooltip>
@@ -71,7 +60,7 @@
                     text
                     size="small"
                   >
-                    <v-icon size="large"> mdi-account-multiple-plus </v-icon>
+                    <v-icon size="large">mdi-account-multiple-plus</v-icon>
                   </v-btn>
                 </template>
               </v-tooltip>
@@ -103,12 +92,7 @@
             <!-- eslint-disable-next-line vue/valid-v-slot -->
             <template v-slot:item.id="{ item }">
               {{ item.id.split("@")[0] }}
-              <v-chip
-                v-if="item.id === instance.instance.owner"
-                color="primary"
-                size="x-small"
-                label
-              >
+              <v-chip v-if="item.id === instance.instance.owner" color="primary" size="x-small" label>
                 Instância
               </v-chip>
             </template>
@@ -120,7 +104,6 @@
             </template>
           </v-data-table>
         </div>
-        <!-- <p class="mt-10">{{ instance }}</p> -->
 
         <v-alert type="error" v-if="error">
           {{ Array.isArray(error) ? error.join(", ") : error }}
@@ -128,7 +111,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer />
-        <v-btn text @click="dialog = false" :disabled="loading"> Fechar </v-btn>
+        <v-btn text @click="dialog = false" :disabled="loading">Fechar</v-btn>
         <v-spacer />
       </v-card-actions>
     </v-card>
@@ -144,6 +127,7 @@
 <script>
 import instanceController from "@/services/instanceController";
 import GroupAddParticipantModal from "./GroupAddParticipantModal.vue";
+
 export default {
   components: {
     GroupAddParticipantModal,
@@ -182,7 +166,7 @@ export default {
         }
 
         await instanceController.group.updateParticipant(
-          this.instance.instance.instanceName,
+          this.instance.instanceName,
           this.group.id,
           "remove",
           this.selected
@@ -203,7 +187,7 @@ export default {
         this.loading = true;
         this.error = false;
         const data = await instanceController.group.getById(
-          this.instance.instance.instanceName,
+          this.instance.instanceName,
           groupId
         );
         console.log(data);

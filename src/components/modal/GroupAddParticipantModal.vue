@@ -2,8 +2,7 @@
   <v-dialog v-model="dialog" max-width="600px" :persistent="loading">
     <v-card :loading="loading">
       <v-card-title class="justify-space-between d-flex align-center">
-        Adicionar Participantes •
-        {{ group?.subject }}
+        Adicionar Participantes • {{ group?.subject }}
       </v-card-title>
       <v-card-text>
         <h5 class="mb-2">Adicione participantes ao grupo</h5>
@@ -63,8 +62,9 @@
 
 <script>
 import instanceController from "@/services/instanceController";
+
 export default {
-  name: "SettingsModal",
+  name: "AddParticipantsModal",
   data: () => ({
     dialog: false,
     loading: false,
@@ -85,7 +85,7 @@ export default {
         });
 
         await instanceController.group.updateParticipant(
-          this.instance.instance.instanceName,
+          this.instance.instanceName,
           this.group.id,
           "add",
           participants
@@ -136,6 +136,6 @@ export default {
       required: true,
     },
   },
-  emits: ["close"],
+  emits: ["close", "success"],
 };
 </script>

@@ -30,7 +30,7 @@
         <v-text-field
           class="flex-grow-1 flex-shrink-0"
           v-model="data.name"
-          :disabled=" loading"
+          :disabled="loading"
           :label="$t('profile.name')"
           counter
           maxlength="25"
@@ -86,7 +86,6 @@ export default {
   },
   data: () => ({
     AppStore: useAppStore(),
-
     expanded: false,
     loading: false,
     error: false,
@@ -115,13 +114,13 @@ export default {
 
         if (this.data.name !== this.defaultData.name)
           await instanceController.profile.updateName(
-            this.instance.instance.instanceName,
+            this.instance.name,
             this.data.name
           );
 
         if (this.data.status !== this.defaultData.status)
           await instanceController.profile.updateStatus(
-            this.instance.instance.instanceName,
+            this.instance.name,
             this.data.status
           );
 
@@ -138,11 +137,11 @@ export default {
       try {
         this.loading = true;
         this.error = false;
-        const instance = this.instance.instance;
+        const instance = this.instance;
         const { isOpen } = this;
-        var data = {
-          name: isOpen ? instance.profileName.replace("not loaded", "") || "" : "",
-          status: isOpen ? instance.profileStatus || "" : "",
+        const data = {
+          name: isOpen ? instance.name : "",
+          status: isOpen ? instance.Setting.profileStatus || "" : "",
         };
 
         this.data = Object.assign({}, data);
@@ -157,7 +156,7 @@ export default {
 
   computed: {
     isOpen() {
-      return this.instance.instance.status === "open";
+      return this.instance.connectionStatus === "open";
     },
   },
   watch: {

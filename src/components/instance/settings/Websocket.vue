@@ -124,7 +124,7 @@ export default {
         this.loading = true;
         this.error = false;
         await instanceController.websocket.set(
-          this.instance.instance.instanceName,
+          this.instance.name,
           this.websocketData
         );
         this.defaultWebsocketData = Object.assign({}, this.websocketData);
@@ -140,7 +140,7 @@ export default {
         this.loading = true;
         this.error = false;
         const websocketData = await instanceController.websocket.get(
-          this.instance.instance.instanceName
+          this.instance.name
         );
 
         this.websocketData = Object.assign({}, websocketData);

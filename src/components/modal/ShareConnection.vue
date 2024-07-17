@@ -8,7 +8,7 @@
             Ao compartilhar sua conexão, você estará compartilhando todos os
             dados da conexão, incluindo a URL e a chave de API global.
           </v-alert>
-          <!-- host and global key -->
+          <!-- Detalhes da conexão -->
           <v-card class="w-100 ma-2 pa-4" variant="outlined">
             <div class="w-100">
               <p class="text-truncate">
@@ -17,6 +17,7 @@
               <p class="text-truncate">
                 <v-icon start>mdi-key</v-icon> {{ connection.globalApiKey }}
               </p>
+              <!-- Botão para copiar o link -->
               <v-btn
                 class="mt-4"
                 color="primary"
@@ -36,6 +37,7 @@
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
+        <!-- Botão para fechar o diálogo -->
         <v-btn text @click="dialog = false" :disabled="loading"> Fechar </v-btn>
         <v-spacer></v-spacer>
       </v-card-actions>
@@ -45,14 +47,16 @@
 
 <script>
 import copyToClipboard from "@/helpers/copyToClipboard";
+
 export default {
-  name: "SettingsModal",
+  name: "ShareConnection",
   data: () => ({
     dialog: false,
     copied: false,
     connection: null,
   }),
   methods: {
+    // Função para copiar os detalhes da conexão para a área de transferência
     copy() {
       if (this.copied) return;
       const url = new URL(window.location.href);
@@ -60,13 +64,16 @@ export default {
       const base64 = btoa(connection);
       url.searchParams.set("connection", base64);
 
+      // Utiliza a função auxiliar para copiar para a área de transferência
       copyToClipboard(url.href);
 
+      // Define o estado de cópia como true e reverte após um período
       this.copied = true;
       setTimeout(() => {
         this.copied = false;
-      }, 2000);
+      }, 2000); // 2 segundos
     },
+    // Função para abrir o diálogo e receber os detalhes da conexão
     open({ host, globalApiKey }) {
       this.dialog = true;
       this.connection = { host, globalApiKey };

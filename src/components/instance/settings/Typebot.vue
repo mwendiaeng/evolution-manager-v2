@@ -281,7 +281,7 @@ export default {
         this.loading = true;
         this.error = false;
         await instanceController.typebot.set(
-          this.instance.instance.instanceName,
+          this.instance.name,
           {
             ...this.typebotData,
             url: this.typebotData.url.trim().replace(/\/$/, ""),
@@ -302,7 +302,7 @@ export default {
         this.loading = true;
         this.error = false;
         const typebotData = await instanceController.typebot.get(
-          this.instance.instance.instanceName
+          this.instance.name
         );
         this.typebotData = Object.assign(defaultObj(), typebotData);
         this.defaultTypebotData = Object.assign(defaultObj(), typebotData);

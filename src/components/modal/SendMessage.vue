@@ -4,6 +4,7 @@
       <v-card-title>{{ $t("sendMessage.title") }}</v-card-title>
       <v-card-text>
         <v-form v-model="valid">
+          <!-- Autocomplete para selecionar os números -->
           <v-autocomplete
             v-model="numbers"
             multiple
@@ -25,6 +26,7 @@
               ></v-list-item>
             </template>
             <template v-slot:chip="{ item }">
+              <!-- Chip para cada item selecionado -->
               <v-chip class="d-flex gap-1 align-center">
                 <v-avatar size="20">
                   <v-img
@@ -37,13 +39,13 @@
                     mdi-{{ item?.raw?.isGroup ? "account-group" : "account" }}
                   </v-icon>
                 </v-avatar>
-
                 <span class="ml-2">
                   {{ item.raw.title }}
                 </span>
               </v-chip>
             </template>
             <template v-slot:item="{ props, item }">
+              <!-- Item na lista de autocomplete -->
               <v-list-item v-bind="props" :title="null">
                 <div class="d-flex align-center gap-1">
                   <v-avatar size="36">
@@ -66,6 +68,7 @@
             </template>
           </v-autocomplete>
 
+          <!-- Textarea para digitar a mensagem -->
           <v-textarea
             v-model="message.textMessage.text"
             :label="$t('sendMessage.message')"
@@ -83,6 +86,7 @@
             class="mb-3"
           ></v-textarea>
 
+          <!-- Select para escolher o status de presença -->
           <div class="d-flex gap-2">
             <v-select
               v-model="message.options.presence"
@@ -102,13 +106,14 @@
               :disabled="loading"
               class="mb-3"
             ></v-select>
+            
+            <!-- TextField para definir o delay da mensagem -->
             <v-text-field
               v-model="message.options.delay"
               type="number"
               :label="$t('sendMessage.delay')"
               density="compact"
-              :hint="`${$t('sendMessage.delayHint')}
-            (${(message.options.delay / 1000).toFixed(1)} segundos)`"
+              :hint="`${$t('sendMessage.delayHint')} (${(message.options.delay / 1000).toFixed(1)} segundos)`"
               :rules="[
                 (v) =>
                   !!v || $t('required', { field: $t('sendMessage.delay') }),
@@ -119,18 +124,21 @@
           </div>
         </v-form>
 
+        <!-- Mensagem de sucesso após enviar -->
         <v-alert type="success" v-if="success">
           <p>{{ success.message }}</p>
           <b>{{ success.messageId }}</b>
         </v-alert>
+        
+        <!-- Mensagem de erro caso ocorra algum problema -->
         <v-alert type="error" v-if="error">
           {{ Array.isArray(error) ? error.join(", ") : error }}
         </v-alert>
       </v-card-text>
+      
+      <!-- Botões para fechar e enviar a mensagem -->
       <v-card-actions>
-        <v-btn text @click="dialog = false" :disabled="loading">{{
-          $t("close")
-        }}</v-btn>
+        <v-btn text @click="dialog = false" :disabled="loading">{{ $t("close") }}</v-btn>
         <v-spacer></v-spacer>
         <v-btn
           color="success"
@@ -151,6 +159,7 @@ import instanceController from "@/services/instanceController";
 import { useAppStore } from "@/store/app";
 import { mergeDeep } from "@/helpers/deepMerge";
 
+// Função utilitária para criar uma mensagem padrão
 const defaultMessage = (obj = {}) =>
   mergeDeep(
     {
@@ -179,9 +188,10 @@ export default {
     search: "",
     success: false,
     AppStore: useAppStore(),
-    message: defaultMessage(),
+    message: defaultMessage(), // Mensagem inicialmente vazia
   }),
   methods: {
+    // Função para enviar a mensagem
     async send() {
       try {
         this.loading = true;
@@ -193,6 +203,7 @@ export default {
 
         messageConfig.options.delay = parseInt(messageConfig.options.delay);
 
+        // Itera sobre os números selecionados para enviar a mensagem para cada um
         for (const number of this.numbers) {
           const r = await instanceController.chat.sendMessage(
             this.instance.instance.instanceName,
@@ -205,28 +216,39 @@ export default {
           if (r.key?.id) messagesId.push(r.key?.id);
         }
 
+        // Define a mensagem de sucesso e limpa o formulário
         this.success = {
           messageId: messagesId.join(", "),
           message: this.$t("sendMessage.success", this.numbers.length),
         };
         this.message = defaultMessage();
         this.numbers = [];
+        
+        // Fecha a mensagem de sucesso após 10 segundos
         setTimeout(() => {
           this.success = false;
         }, 10000);
       } catch (e) {
+        // Em caso de erro, exibe a mensagem de erro
         this.error = e.message?.message || e.message || e;
       } finally {
+        // Finaliza o estado de carregamento
         this.loading = false;
       }
     },
+    
+    // Função para abrir o diálogo com uma mensagem pré-preenchida
     open(obj) {
       this.message = defaultMessage(obj);
       this.dialog = true;
+      
+      // Carrega os contatos se ainda não estiverem carregados
       if (!this.contacts.length) {
         this.loadContacts();
       }
     },
+    
+    // Adiciona e seleciona um novo contato na lista
     addAndSelect() {
       this.contacts.push({
         title: this.search,
@@ -238,10 +260,14 @@ export default {
         this.message.number = this.search;
       });
     },
+    
+    // Carrega os contatos disponíveis para enviar mensagem
     async loadContacts() {
       try {
         this.loadingContacts = true;
         this.error = false;
+        
+        // Obtém os contatos e grupos disponíveis para enviar mensagem
         const contacts = await instanceController.chat.getContacts(
           this.instance.instance.instanceName
         );
@@ -251,6 +277,7 @@ export default {
 
         const groupsPhotos = {};
 
+        // Concatena contatos e grupos, mapeando-os para o formato necessário
         this.contacts = [
           ...contacts
             .filter((c) => {
@@ -272,13 +299,16 @@ export default {
           })),
         ];
       } catch (e) {
+        // Em caso de erro, exibe a mensagem de erro
         this.error = e.message?.message || e.message || e;
       } finally {
+        // Finaliza o estado de carregamento
         this.loadingContacts = false;
       }
     },
   },
   mounted() {
+    // Escuta o evento "send-message" para abrir o diálogo com uma mensagem pré-preenchida
     window.addEventListener("send-message", (e) => {
       this.open(e.detail);
     });
@@ -289,7 +319,6 @@ export default {
       required: true,
     },
   },
-
   emits: ["close"],
 };
 </script>

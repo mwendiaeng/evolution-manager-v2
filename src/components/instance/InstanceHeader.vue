@@ -7,37 +7,37 @@
     <v-avatar size="100" rounded="xl">
       <v-icon
         v-if="
-          (instance.instance.status != 'open' ||
-            instance.instance.profilePictureUrl == null) &&
-          statusMapper[instance.instance.status].icon
+          (instance.connectionStatus != 'open' ||
+            instance.profilePicUrl == null) &&
+          statusMapper[instance.connectionStatus].icon
         "
         size="70"
       >
-        {{ statusMapper[instance.instance.status].icon }}
+        {{ statusMapper[instance.connectionStatus].icon }}
       </v-icon>
-      <v-img v-else :src="instance.instance.profilePictureUrl" />
+      <v-img v-else :src="instance.profilePicUrl" />
     </v-avatar>
     <div class="d-flex flex-column">
       <span class="text-overline" style="line-height: 1em">
         {{ owner }}
       </span>
       <h2 class="mb-0">
-        {{ instance.instance.instanceName }}
+        {{ instance.name }}
         <v-chip
-          v-if="instance?.instance?.apikey"
+          v-if="instance?.token"
           color="info"
           class="ml-2"
           size="x-small"
           @click="copyApikey"
         >
           <v-icon start size="small">mdi-key</v-icon>
-          {{ (instance.instance?.apikey || "").slice(0, 10) }}...
+          {{ (instance.token || "").slice(0, 10) }}...
           <v-icon end size="small">
             {{ copied ? "mdi-check" : "mdi-content-copy" }}
           </v-icon>
         </v-chip>
       </h2>
-      <small>{{ instance.instance.profileStatus }}</small>
+      <small>{{ instance.profileStatus }}</small>
     </div>
     <v-spacer></v-spacer>
     <div class="d-flex gap-2 flex-wrap justify-end">
@@ -68,7 +68,7 @@
       <v-btn
         @click="disconnectInstance"
         :disabled="
-          instance.instance.status === 'close' || restart.loading || reload
+          instance.connectionStatus === 'close' || restart.loading || reload
         "
         :loading="disconnect.loading"
         variant="tonal"
@@ -102,7 +102,7 @@ export default {
     copyApikey() {
       if (this.copied) return;
 
-      copyToClipboard(this.instance.instance.apikey);
+      copyToClipboard(this.instance.token);
 
       this.copied = true;
       setTimeout(() => {
@@ -123,7 +123,7 @@ export default {
     async restartInstance() {
       this.restart.loading = true;
       try {
-        await instanceController.restart(this.instance.instance.instanceName);
+        await instanceController.restart(this.instance.name);
         this.restart.success = true;
 
         setTimeout(() => {
@@ -144,7 +144,7 @@ export default {
       this.disconnect.loading = true;
       try {
         this.disconnect.confirm = false;
-        await instanceController.logout(this.instance.instance.instanceName);
+        await instanceController.logout(this.instance.name);
         await this.AppStore.reconnect();
       } catch (e) {
         console.log(e);
@@ -156,10 +156,10 @@ export default {
   },
   computed: {
     owner() {
-      if (!this.instance?.instance?.owner)
-        return this.$t(`status.${this.instance.instance.status}`) || this.$t("unknown");
+      if (!this.instance?.ownerJid)
+        return this.$t(`status.${this.instance.connectionStatus}`) || this.$t("unknown");
 
-      return (this.instance?.instance?.owner || "").split("@")[0];
+      return (this.instance?.ownerJid || "").split("@")[0];
     },
   },
   props: {
@@ -171,4 +171,6 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+/* Add your styles here if needed */
+</style>

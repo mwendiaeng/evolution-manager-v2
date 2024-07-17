@@ -109,7 +109,7 @@ export default {
   },
   computed: {
     instanceName() {
-      return this.instance.instance.instanceName;
+      return this.instance.name;
     },
     webhook() {
       const url = new URL(this.AppStore.connection.host);

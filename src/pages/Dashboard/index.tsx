@@ -2,6 +2,7 @@ import "./style.css";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { fetchInstances } from "@/services/instances.service";
+import { Instance } from "@/types/evolution.types";
 import {
   Check,
   ChevronsUpDown,
@@ -117,7 +118,7 @@ function Dashboard() {
         </div>
       </div>
       <main className="instance-cards">
-        {instances.map((instance: any) => (
+        {instances.map((instance: Instance) => (
           <Card className="instance-card" key={instance.id}>
             <div className="card-header">
               <div className="card-id">

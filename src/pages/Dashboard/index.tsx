@@ -16,7 +16,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-const fetchData = async (callback: (data: []) => void) => {
+const fetchData = async (callback: (data: Instance[]) => void) => {
   try {
     const data = await fetchInstances();
 
@@ -28,7 +28,7 @@ const fetchData = async (callback: (data: []) => void) => {
 
 function Dashboard() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [instances, setInstances] = useState([]);
+  const [instances, setInstances] = useState<Instance[]>([]);
 
   const navigate = useNavigate();
 
@@ -36,9 +36,11 @@ function Dashboard() {
     setDropdownOpen(!dropdownOpen);
   };
 
-  const handleInstance = () => {
-    navigate("/instance/ya2o5deerwayme8sq20b2/dashboard");
-  };
+  const handleInstance =
+    (instanceId: string): (() => void) =>
+    () => {
+      navigate(`/instance/${instanceId}/dashboard`);
+    };
 
   useEffect(() => {
     const getData = async () => {
@@ -125,7 +127,7 @@ function Dashboard() {
                 <span>{instance.token}</span>
                 <Copy className="card-icon" size="15" />
               </div>
-              <div className="card-menu" onClick={handleInstance}>
+              <div className="card-menu" onClick={handleInstance(instance.id)}>
                 <Cog className="card-icon" size="20" />
               </div>
             </div>

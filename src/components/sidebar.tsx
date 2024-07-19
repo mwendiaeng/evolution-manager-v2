@@ -1,17 +1,16 @@
 import { useNavigate } from "react-router-dom";
 import Menus from "./constants/menus";
+import { useInstance } from "@/contexts/InstanceContext";
 
-type SidebarProps = {
-  instanceId: string;
-};
-
-function Sidebar({ instanceId }: SidebarProps) {
+function Sidebar() {
   const navigate = useNavigate();
 
-  const handleNavigate = (path?: string) => {
-    if (!path) return;
+  const { instance } = useInstance();
 
-    navigate(`/instance/${instanceId}/${path}`);
+  const handleNavigate = (path?: string) => {
+    if (!path || !instance) return;
+
+    navigate(`/instance/${instance.id}/${path}`);
   };
 
   return (

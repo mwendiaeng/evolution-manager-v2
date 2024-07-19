@@ -27,9 +27,20 @@
 .status-icon {
     width: 10px;
     height: 10px;
-    background-color: #ff0000;
     border-radius: 50%;
     margin-right: 10px;
+}
+
+.status-icon.disconnected {
+    background-color: red;
+}
+
+.status-icon.connected {
+    background-color: green;
+}
+
+.status-icon.connecting {
+    background-color: orange;
 }
 
 .status-text {

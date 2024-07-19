@@ -21,7 +21,8 @@ body {
 }
 
 .sidebar {
-    width: 200px;
+    /* width: 200px; */
+    height: 100%;
     background-color: #1A1A1C;
     color: #cecece;
     padding: 1rem 0.2rem;
@@ -80,5 +81,11 @@ body {
     padding: 2rem;
     overflow-y: auto;
     max-width: 900px;
+    margin: 0 auto;
+}
+
+.main-table {
+    flex: 1;
+    overflow-y: auto;
     margin: 0 auto;
 }

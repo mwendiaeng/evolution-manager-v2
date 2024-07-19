@@ -1,6 +1,7 @@
 import "./style.css";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { ScrollArea } from "@radix-ui/react-scroll-area";
 import {
   Check,
   ChevronsUpDown,
@@ -65,238 +66,240 @@ function Dashboard() {
           )}
         </div>
       </div>
-      <main className="instance-cards">
-        <Card className="instance-card">
-          <div className="card-header">
-            <div className="card-id">
-              <span>ya2o5deerwayme8sq20b2</span>
-              <Copy className="card-icon" size="15" />
-            </div>
-            <div className="card-menu" onClick={handleInstance}>
-              <Cog className="card-icon" size="20" />
-            </div>
-          </div>
-          <div className="card-body">
-            <div className="card-details">
-              <p className="instance-name">Instance Name</p>
-              <p className="instance-description">Contact Name</p>
-            </div>
-            <div className="card-contact">
-              <p>+55 11 123456789</p>
-            </div>
-          </div>
-          <div className="card-footer">
-            <div className="card-stats">
-              <div className="stat">
-                <CircleUser className="stat-icon" size="20" />
-                <span>0</span>
+      <ScrollArea className="rounded-md border">
+        <main className="instance-cards">
+          <Card className="instance-card">
+            <div className="card-header">
+              <div className="card-id">
+                <span>ya2o5deerwayme8sq20b2</span>
+                <Copy className="card-icon" size="15" />
               </div>
-              <div className="stat">
-                <MessageCircle className="stat-icon" size="20" />
-                <span>0</span>
+              <div className="card-menu" onClick={handleInstance}>
+                <Cog className="card-icon" size="20" />
               </div>
             </div>
-            <div className="card-actions">
-              <div className="btn connected">
-                Conectada <span className="status-connected connected"></span>
+            <div className="card-body">
+              <div className="card-details">
+                <p className="instance-name">Instance Name</p>
+                <p className="instance-description">Contact Name</p>
               </div>
-              <button className="btn disconnect">Desconectar</button>
-            </div>
-          </div>
-        </Card>
-        <Card className="instance-card">
-          <div className="card-header">
-            <div className="card-id">
-              <span>ya2o5deerwayme8sq20b2</span>
-              <Copy className="card-icon" size="15" />
-            </div>
-            <div className="card-menu" onClick={handleInstance}>
-              <Cog className="card-icon" size="20" />
-            </div>
-          </div>
-          <div className="card-body">
-            <div className="card-details">
-              <p className="instance-name">Instance Name</p>
-              <p className="instance-description">Contact Name</p>
-            </div>
-            <div className="card-contact">
-              <p>+55 11 123456789</p>
-            </div>
-          </div>
-          <div className="card-footer">
-            <div className="card-stats">
-              <div className="stat">
-                <CircleUser className="stat-icon" size="20" />
-                <span>0</span>
-              </div>
-              <div className="stat">
-                <MessageCircle className="stat-icon" size="20" />
-                <span>0</span>
+              <div className="card-contact">
+                <p>+55 11 123456789</p>
               </div>
             </div>
-            <div className="card-actions">
-              <div className="btn connected">
-                Conectando{" "}
-                <span className="status-connecting connecting"></span>
+            <div className="card-footer">
+              <div className="card-stats">
+                <div className="stat">
+                  <CircleUser className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
+                <div className="stat">
+                  <MessageCircle className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
               </div>
-              <button className="btn disconnect">Desconectar</button>
-            </div>
-          </div>
-        </Card>
-        <Card className="instance-card">
-          <div className="card-header">
-            <div className="card-id">
-              <span>ya2o5deerwayme8sq20b2</span>
-              <Copy className="card-icon" size="15" />
-            </div>
-            <div className="card-menu" onClick={handleInstance}>
-              <Cog className="card-icon" size="20" />
-            </div>
-          </div>
-          <div className="card-body">
-            <div className="card-details">
-              <p className="instance-name">Instance Name</p>
-              <p className="instance-description">Contact Name</p>
-            </div>
-            <div className="card-contact">
-              <p>+55 11 123456789</p>
-            </div>
-          </div>
-          <div className="card-footer">
-            <div className="card-stats">
-              <div className="stat">
-                <CircleUser className="stat-icon" size="20" />
-                <span>0</span>
-              </div>
-              <div className="stat">
-                <MessageCircle className="stat-icon" size="20" />
-                <span>0</span>
+              <div className="card-actions">
+                <div className="btn connected">
+                  Conectada <span className="status-connected connected"></span>
+                </div>
+                <button className="btn disconnect">Desconectar</button>
               </div>
             </div>
-            <div className="card-actions">
-              <div className="btn connected">
-                Desconectada{" "}
-                <span className="status-disconnected connected"></span>
+          </Card>
+          <Card className="instance-card">
+            <div className="card-header">
+              <div className="card-id">
+                <span>ya2o5deerwayme8sq20b2</span>
+                <Copy className="card-icon" size="15" />
               </div>
-              <button className="btn disconnect">Desconectar</button>
-            </div>
-          </div>
-        </Card>
-        <Card className="instance-card">
-          <div className="card-header">
-            <div className="card-id">
-              <span>ya2o5deerwayme8sq20b2</span>
-              <Copy className="card-icon" size="15" />
-            </div>
-            <div className="card-menu" onClick={handleInstance}>
-              <Cog className="card-icon" size="20" />
-            </div>
-          </div>
-          <div className="card-body">
-            <div className="card-details">
-              <p className="instance-name">Instance Name</p>
-              <p className="instance-description">Contact Name</p>
-            </div>
-            <div className="card-contact">
-              <p>+55 11 123456789</p>
-            </div>
-          </div>
-          <div className="card-footer">
-            <div className="card-stats">
-              <div className="stat">
-                <CircleUser className="stat-icon" size="20" />
-                <span>0</span>
-              </div>
-              <div className="stat">
-                <MessageCircle className="stat-icon" size="20" />
-                <span>0</span>
+              <div className="card-menu" onClick={handleInstance}>
+                <Cog className="card-icon" size="20" />
               </div>
             </div>
-            <div className="card-actions">
-              <div className="btn connected">
-                Conectada <span className="status-connected connected"></span>
+            <div className="card-body">
+              <div className="card-details">
+                <p className="instance-name">Instance Name</p>
+                <p className="instance-description">Contact Name</p>
               </div>
-              <button className="btn disconnect">Desconectar</button>
-            </div>
-          </div>
-        </Card>
-        <Card className="instance-card">
-          <div className="card-header">
-            <div className="card-id">
-              <span>ya2o5deerwayme8sq20b2</span>
-              <Copy className="card-icon" size="15" />
-            </div>
-            <div className="card-menu" onClick={handleInstance}>
-              <Cog className="card-icon" size="20" />
-            </div>
-          </div>
-          <div className="card-body">
-            <div className="card-details">
-              <p className="instance-name">Instance Name</p>
-              <p className="instance-description">Contact Name</p>
-            </div>
-            <div className="card-contact">
-              <p>+55 11 123456789</p>
-            </div>
-          </div>
-          <div className="card-footer">
-            <div className="card-stats">
-              <div className="stat">
-                <CircleUser className="stat-icon" size="20" />
-                <span>0</span>
-              </div>
-              <div className="stat">
-                <MessageCircle className="stat-icon" size="20" />
-                <span>0</span>
+              <div className="card-contact">
+                <p>+55 11 123456789</p>
               </div>
             </div>
-            <div className="card-actions">
-              <div className="btn connected">
-                Conectada <span className="status-connected connected"></span>
+            <div className="card-footer">
+              <div className="card-stats">
+                <div className="stat">
+                  <CircleUser className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
+                <div className="stat">
+                  <MessageCircle className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
               </div>
-              <button className="btn disconnect">Desconectar</button>
-            </div>
-          </div>
-        </Card>
-        <Card className="instance-card">
-          <div className="card-header">
-            <div className="card-id">
-              <span>ya2o5deerwayme8sq20b2</span>
-              <Copy className="card-icon" size="15" />
-            </div>
-            <div className="card-menu" onClick={handleInstance}>
-              <Cog className="card-icon" size="20" />
-            </div>
-          </div>
-          <div className="card-body">
-            <div className="card-details">
-              <p className="instance-name">Instance Name</p>
-              <p className="instance-description">Contact Name</p>
-            </div>
-            <div className="card-contact">
-              <p>+55 11 123456789</p>
-            </div>
-          </div>
-          <div className="card-footer">
-            <div className="card-stats">
-              <div className="stat">
-                <CircleUser className="stat-icon" size="20" />
-                <span>0</span>
-              </div>
-              <div className="stat">
-                <MessageCircle className="stat-icon" size="20" />
-                <span>0</span>
+              <div className="card-actions">
+                <div className="btn connected">
+                  Conectando{" "}
+                  <span className="status-connecting connecting"></span>
+                </div>
+                <button className="btn disconnect">Desconectar</button>
               </div>
             </div>
-            <div className="card-actions">
-              <div className="btn connected">
-                Conectada <span className="status-connected connected"></span>
+          </Card>
+          <Card className="instance-card">
+            <div className="card-header">
+              <div className="card-id">
+                <span>ya2o5deerwayme8sq20b2</span>
+                <Copy className="card-icon" size="15" />
               </div>
-              <button className="btn disconnect">Desconectar</button>
+              <div className="card-menu" onClick={handleInstance}>
+                <Cog className="card-icon" size="20" />
+              </div>
             </div>
-          </div>
-        </Card>
-      </main>
+            <div className="card-body">
+              <div className="card-details">
+                <p className="instance-name">Instance Name</p>
+                <p className="instance-description">Contact Name</p>
+              </div>
+              <div className="card-contact">
+                <p>+55 11 123456789</p>
+              </div>
+            </div>
+            <div className="card-footer">
+              <div className="card-stats">
+                <div className="stat">
+                  <CircleUser className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
+                <div className="stat">
+                  <MessageCircle className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
+              </div>
+              <div className="card-actions">
+                <div className="btn connected">
+                  Desconectada{" "}
+                  <span className="status-disconnected connected"></span>
+                </div>
+                <button className="btn disconnect">Desconectar</button>
+              </div>
+            </div>
+          </Card>
+          <Card className="instance-card">
+            <div className="card-header">
+              <div className="card-id">
+                <span>ya2o5deerwayme8sq20b2</span>
+                <Copy className="card-icon" size="15" />
+              </div>
+              <div className="card-menu" onClick={handleInstance}>
+                <Cog className="card-icon" size="20" />
+              </div>
+            </div>
+            <div className="card-body">
+              <div className="card-details">
+                <p className="instance-name">Instance Name</p>
+                <p className="instance-description">Contact Name</p>
+              </div>
+              <div className="card-contact">
+                <p>+55 11 123456789</p>
+              </div>
+            </div>
+            <div className="card-footer">
+              <div className="card-stats">
+                <div className="stat">
+                  <CircleUser className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
+                <div className="stat">
+                  <MessageCircle className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
+              </div>
+              <div className="card-actions">
+                <div className="btn connected">
+                  Conectada <span className="status-connected connected"></span>
+                </div>
+                <button className="btn disconnect">Desconectar</button>
+              </div>
+            </div>
+          </Card>
+          <Card className="instance-card">
+            <div className="card-header">
+              <div className="card-id">
+                <span>ya2o5deerwayme8sq20b2</span>
+                <Copy className="card-icon" size="15" />
+              </div>
+              <div className="card-menu" onClick={handleInstance}>
+                <Cog className="card-icon" size="20" />
+              </div>
+            </div>
+            <div className="card-body">
+              <div className="card-details">
+                <p className="instance-name">Instance Name</p>
+                <p className="instance-description">Contact Name</p>
+              </div>
+              <div className="card-contact">
+                <p>+55 11 123456789</p>
+              </div>
+            </div>
+            <div className="card-footer">
+              <div className="card-stats">
+                <div className="stat">
+                  <CircleUser className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
+                <div className="stat">
+                  <MessageCircle className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
+              </div>
+              <div className="card-actions">
+                <div className="btn connected">
+                  Conectada <span className="status-connected connected"></span>
+                </div>
+                <button className="btn disconnect">Desconectar</button>
+              </div>
+            </div>
+          </Card>
+          <Card className="instance-card">
+            <div className="card-header">
+              <div className="card-id">
+                <span>ya2o5deerwayme8sq20b2</span>
+                <Copy className="card-icon" size="15" />
+              </div>
+              <div className="card-menu" onClick={handleInstance}>
+                <Cog className="card-icon" size="20" />
+              </div>
+            </div>
+            <div className="card-body">
+              <div className="card-details">
+                <p className="instance-name">Instance Name</p>
+                <p className="instance-description">Contact Name</p>
+              </div>
+              <div className="card-contact">
+                <p>+55 11 123456789</p>
+              </div>
+            </div>
+            <div className="card-footer">
+              <div className="card-stats">
+                <div className="stat">
+                  <CircleUser className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
+                <div className="stat">
+                  <MessageCircle className="stat-icon" size="20" />
+                  <span>0</span>
+                </div>
+              </div>
+              <div className="card-actions">
+                <div className="btn connected">
+                  Conectada <span className="status-connected connected"></span>
+                </div>
+                <button className="btn disconnect">Desconectar</button>
+              </div>
+            </div>
+          </Card>
+        </main>
+      </ScrollArea>
     </>
   );
 }

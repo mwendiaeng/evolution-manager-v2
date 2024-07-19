@@ -1,3 +1,5 @@
+import ProtectedRoute from "@/components/providers/protected-route";
+import PublicRoute from "@/components/providers/public-route";
 import { InstanceLayout } from "@/layout/InstanceLayout";
 import { MainLayout } from "@/layout/MainLayout";
 import Dashboard from "@/pages/Dashboard";
@@ -17,102 +19,130 @@ import { createBrowserRouter } from "react-router-dom";
 const router = createBrowserRouter([
   {
     path: "/login",
-    element: <Login />,
+    element: (
+      <PublicRoute>
+        <Login />
+      </PublicRoute>
+    ),
   },
   {
     path: "/",
     element: (
-      <MainLayout>
-        <Dashboard />
-      </MainLayout>
+      <ProtectedRoute>
+        <MainLayout>
+          <Dashboard />
+        </MainLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/dashboard",
     element: (
-      <InstanceLayout>
-        <DashboardInstance />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <DashboardInstance />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/chat",
     element: (
-      <InstanceLayout>
-        <Chat />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Chat />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/chat/:chatId",
     element: (
-      <InstanceLayout>
-        <Chat />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Chat />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/settings",
     element: (
-      <InstanceLayout>
-        <Settings />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Settings />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/openai",
     element: (
-      <InstanceLayout>
-        <Openai />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Openai />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/webhook",
     element: (
-      <InstanceLayout>
-        <Webhook />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Webhook />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/websocket",
     element: (
-      <InstanceLayout>
-        <Websocket />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Websocket />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/rabbitmq",
     element: (
-      <InstanceLayout>
-        <Rabbitmq />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Rabbitmq />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/sqs",
     element: (
-      <InstanceLayout>
-        <Sqs />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Sqs />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/chatwoot",
     element: (
-      <InstanceLayout>
-        <Chatwoot />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Chatwoot />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
   {
     path: "instance/:instanceId/typebot",
     element: (
-      <InstanceLayout>
-        <Typebot />
-      </InstanceLayout>
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Typebot />
+        </InstanceLayout>
+      </ProtectedRoute>
     ),
   },
 ]);

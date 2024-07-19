@@ -5,7 +5,7 @@ function Footer() {
     <footer className="footer">
       <div className="footer-info">
         Client Name: <strong>Evolution Manager</strong> Version:{" "}
-        <strong>1.0.0</strong>
+        <strong>{localStorage.getItem("version")}</strong>
       </div>
       <div className="footer-buttons">
         <Button variant="link">

@@ -1,3 +1,4 @@
+import { logout } from "@/services/auth.service";
 import { DoorOpen } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -9,6 +10,7 @@ function Header({ perfil }: HeaderProps) {
   const navigate = useNavigate();
 
   const handleClose = () => {
+    logout();
     navigate("/login");
   };
   return (

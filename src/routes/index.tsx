@@ -44,6 +44,14 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "instance/:instanceId/chat/:chatId",
+    element: (
+      <InstanceLayout>
+        <Chat />
+      </InstanceLayout>
+    ),
+  },
+  {
     path: "instance/:instanceId/settings",
     element: (
       <InstanceLayout>

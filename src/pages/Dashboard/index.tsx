@@ -10,11 +10,11 @@ import {
   Cog,
   Copy,
   MessageCircle,
-  Plus,
   RefreshCw,
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { NewInstance } from "./NewInstance";
 
 const fetchData = async (callback: (data: Instance[]) => void) => {
   try {
@@ -90,9 +90,7 @@ function Dashboard() {
           <Button variant="outline" className="refresh-button">
             <RefreshCw />
           </Button>
-          <Button variant="default" className="new-instance-button">
-            <Plus /> Instância
-          </Button>
+          <NewInstance />
         </div>
       </div>
       <div className="search">

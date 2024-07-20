@@ -10,15 +10,21 @@ import {
 } from "@/components/ui/resizable";
 import { Messages } from "./messages";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { findChats } from "@/services/chat.service";
+import { useInstance } from "@/contexts/InstanceContext";
+import { Chat as ChatType } from "@/types/evolution.types";
 
 function Chat() {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const [textareaHeight] = useState("auto");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
+  const [chats, setChats] = useState([]);
 
-  const { instanceId, chatId } = useParams<{
+  const { instance } = useInstance();
+
+  const { instanceId, remoteJid } = useParams<{
     instanceId: string;
-    chatId: string;
+    remoteJid: string;
   }>();
 
   const navigate = useNavigate();
@@ -45,8 +51,21 @@ function Chat() {
   };
 
   useEffect(() => {
+    const fetchData = async (instanceName: string) => {
+      try {
+        const data = await findChats(instanceName);
+        setChats(data);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    };
+
+    if (instance) {
+      fetchData(instance.name);
+    }
+
     scrollToBottom();
-  }, []);
+  }, [instance]);
 
   const handleChat = (id: string) => {
     navigate(`/instance/${instanceId}/chat/${id}`);
@@ -81,71 +100,74 @@ function Chat() {
                   <div className="px-2 text-xs font-medium text-muted-foreground">
                     Contatos
                   </div>
-                  <Link
-                    to="#"
-                    onClick={() => handleChat("557499879409")}
-                    className="flex-1 block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item active"
-                  >
-                    Davidson Gomes - 557499879409
-                  </Link>
-                  <Link
-                    to="#"
-                    onClick={() => handleChat("557499879409")}
-                    className="flex-1 block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item"
-                  >
-                    Davidson Gomes - 557499879409
-                  </Link>
-                  <Link
-                    to="#"
-                    onClick={() => handleChat("557499879409")}
-                    className="flex-1 block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item"
-                  >
-                    Davidson Gomes - 557499879409
-                  </Link>
-                  <Link
-                    to="#"
-                    onClick={() => handleChat("557499879409")}
-                    className="flex-1 block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item"
-                  >
-                    Davidson Gomes - 557499879409
-                  </Link>
+                  {chats.map(
+                    (chat: ChatType) =>
+                      chat.remoteJid.includes("@s.whatsapp.net") && (
+                        <Link
+                          to="#"
+                          onClick={() => handleChat(chat.remoteJid)}
+                          className={`flex items-center block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item border-b border-gray-600/50 ${
+                            remoteJid === chat.remoteJid ? "active" : ""
+                          }`}
+                        >
+                          <span className="chat-avatar mr-2">
+                            <img
+                              src={
+                                chat.profilePicUrl ||
+                                "https://via.placeholder.com/150"
+                              }
+                              alt="Avatar"
+                              className="w-8 h-8 rounded-full"
+                            />
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <span className="chat-title block font-medium">
+                              {chat.pushName}
+                            </span>
+                            <span className="chat-description block text-xs text-gray-500">
+                              {chat.remoteJid.split("@")[0]}
+                            </span>
+                          </div>
+                        </Link>
+                      )
+                  )}
                 </div>
               </div>
             </TabsContent>
             <TabsContent value="groups">
               <div className="flex-1 overflow-auto">
                 <div className="grid gap-1 p-2 text-foreground">
-                  <div className="px-2 text-xs font-medium text-muted-foreground">
-                    Grupos
-                  </div>
-                  <Link
-                    to="#"
-                    onClick={() => handleChat("557499879409")}
-                    className="flex-1 block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item"
-                  >
-                    Evolution API - 123456789@g.us
-                  </Link>
-                  <Link
-                    to="#"
-                    onClick={() => handleChat("557499879409")}
-                    className="flex-1 block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item"
-                  >
-                    Evolution API - 123456789@g.us
-                  </Link>
-                  <Link
-                    to="#"
-                    onClick={() => handleChat("557499879409")}
-                    className="flex-1 block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item"
-                  >
-                    Evolution API - 123456789@g.us
-                  </Link>
-                  <Link
-                    to="#"
-                    onClick={() => handleChat("557499879409")}
-                    className="flex-1 block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item"
-                  >
-                    Evolution API - 123456789@g.us
-                  </Link>
+                  {chats.map(
+                    (chat: ChatType) =>
+                      chat.remoteJid.includes("@g.us") && (
+                        <Link
+                          to="#"
+                          onClick={() => handleChat(chat.remoteJid)}
+                          className={`flex items-center block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item border-b border-gray-600/50 ${
+                            remoteJid === chat.remoteJid ? "active" : ""
+                          }`}
+                        >
+                          <span className="chat-avatar mr-2">
+                            <img
+                              src={
+                                chat.profilePicUrl ||
+                                "https://via.placeholder.com/150"
+                              }
+                              alt="Avatar"
+                              className="w-8 h-8 rounded-full"
+                            />
+                          </span>
+                          <div className="flex-1 min-w-0">
+                            <span className="chat-title block font-medium">
+                              {chat.pushName}
+                            </span>
+                            <span className="chat-description block text-xs text-gray-500">
+                              {chat.remoteJid}
+                            </span>
+                          </div>
+                        </Link>
+                      )
+                  )}
                 </div>
               </div>
             </TabsContent>
@@ -154,12 +176,13 @@ function Chat() {
       </ResizablePanel>
       <ResizableHandle withHandle className="border border-black" />
       <ResizablePanel>
-        {chatId && (
+        {remoteJid && (
           <Messages
             textareaRef={textareaRef}
             handleTextareaChange={handleTextareaChange}
             textareaHeight={textareaHeight}
             lastMessageRef={lastMessageRef}
+            scrollToBottom={scrollToBottom}
           />
         )}
       </ResizablePanel>

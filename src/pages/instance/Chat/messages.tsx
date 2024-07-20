@@ -5,6 +5,9 @@ import {
   DropdownMenuSeparator,
 } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
+import { useInstance } from "@/contexts/InstanceContext";
+import { findChat, findMessages } from "@/services/chat.service";
+import { Chat, Message } from "@/types/evolution.types";
 import {
   DropdownMenu,
   DropdownMenuTrigger,
@@ -16,12 +19,15 @@ import {
   SparkleIcon,
   ZapIcon,
 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 type MessagesProps = {
   textareaRef: React.RefObject<HTMLTextAreaElement>;
   handleTextareaChange: () => void;
   textareaHeight: string;
   lastMessageRef: React.RefObject<HTMLDivElement>;
+  scrollToBottom: () => void;
 };
 
 function Messages({
@@ -29,7 +35,71 @@ function Messages({
   handleTextareaChange,
   textareaHeight,
   lastMessageRef,
+  scrollToBottom,
 }: MessagesProps) {
+  const { instance } = useInstance();
+
+  const [chat, setChat] = useState<Chat | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+
+  const { remoteJid } = useParams<{
+    remoteJid: string;
+  }>();
+
+  useEffect(() => {
+    const fetchChat = async (instanceName: string, remoteJid: string) => {
+      try {
+        const data = await findChat(instanceName, remoteJid);
+        setChat(data[0]);
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    };
+
+    const fetchMsgs = async (instanceName: string, remoteJid: string) => {
+      try {
+        const data = await findMessages(instanceName, remoteJid);
+        setMessages(data.messages.records);
+        scrollToBottom();
+      } catch (error) {
+        console.error("Erro ao buscar dados:", error);
+      }
+    };
+
+    if (instance && remoteJid) {
+      fetchChat(instance.name, remoteJid);
+      fetchMsgs(instance.name, remoteJid);
+    }
+  }, [remoteJid, instance, scrollToBottom]);
+
+  const renderBubbleRight = (message: Message) => {
+    return (
+      <div className="bubble-right">
+        <div className="flex items-start gap-4 self-end">
+          <div className="grid gap-1">
+            <div className="prose text-muted-foreground">
+              <div className="bubble">{JSON.stringify(message.message)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderBubbleLeft = (message: Message) => {
+    return (
+      <div className="bubble-left">
+        <div className="flex items-start gap-4">
+          <div className="grid gap-1">
+            <div className="prose text-muted-foreground">
+              <div className="bubble">{JSON.stringify(message.message)}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen flex flex-col">
       <div className="sticky top-0 p-2">
@@ -39,7 +109,7 @@ function Messages({
               variant="ghost"
               className="gap-1 rounded-xl px-3 h-10 data-[state=open]:bg-muted text-lg"
             >
-              Davidson Gomes
+              {chat?.pushName || chat?.remoteJid.split("@")[0]}
               <ChevronDownIcon className="w-4 h-4 text-muted-foreground" />
             </Button>
           </DropdownMenuTrigger>
@@ -68,123 +138,13 @@ function Messages({
         </DropdownMenu>
       </div>
       <div className="flex flex-col flex-1 max-w-4xl gap-8 px-4 mx-auto message-container overflow-y-auto">
-        <div className="bubble-right">
-          <div className="flex items-start gap-4 self-end">
-            <div className="grid gap-1">
-              <div className="prose text-muted-foreground">
-                <div className="bubble">
-                  <p>
-                    Can you explain airplane turbulence to someone who has never
-                    flown before? Make it conversational and concise.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="bubble-left">
-          <div className="flex items-start gap-4">
-            <div className="grid gap-1">
-              <div className="prose text-muted-foreground">
-                <div className="bubble">
-                  <p>
-                    Of course! Imagine you&apos;re in a car driving down a bumpy
-                    road, and the ride isn&apos;t perfectly smooth. Sometimes,
-                    you hit small potholes or bumps, right? Well, when
-                    you&apos;re in an airplane, it&apos;s kind of like that, but
-                    in the sky.
-                  </p>
-                  <p>
-                    Airplane turbulence happens when the plane encounters
-                    pockets of air that are moving differently. It&apos;s like
-                    sailing a boat on choppy water. These air pockets can make
-                    the plane feel like it&apos;s bouncing or shaking a bit.
-                    It&apos;s completely normal and usually not dangerous at
-                    all.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="bubble-right">
-          <div className="flex items-start gap-4 self-end">
-            <div className="grid gap-1">
-              <div className="prose text-muted-foreground">
-                <div className="bubble">
-                  <p>
-                    Can you explain airplane turbulence to someone who has never
-                    flown before? Make it conversational and concise.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="bubble-left">
-          <div className="flex items-start gap-4">
-            <div className="grid gap-1">
-              <div className="prose text-muted-foreground">
-                <div className="bubble">
-                  <p>
-                    Of course! Imagine you&apos;re in a car driving down a bumpy
-                    road, and the ride isn&apos;t perfectly smooth. Sometimes,
-                    you hit small potholes or bumps, right? Well, when
-                    you&apos;re in an airplane, it&apos;s kind of like that, but
-                    in the sky.
-                  </p>
-                  <p>
-                    Airplane turbulence happens when the plane encounters
-                    pockets of air that are moving differently. It&apos;s like
-                    sailing a boat on choppy water. These air pockets can make
-                    the plane feel like it&apos;s bouncing or shaking a bit.
-                    It&apos;s completely normal and usually not dangerous at
-                    all.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="bubble-right">
-          <div className="flex items-start gap-4 self-end">
-            <div className="grid gap-1">
-              <div className="prose text-muted-foreground">
-                <div className="bubble">
-                  <p>
-                    Can you explain airplane turbulence to someone who has never
-                    flown before? Make it conversational and concise.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="bubble-left">
-          <div className="flex items-start gap-4">
-            <div className="grid gap-1">
-              <div className="prose text-muted-foreground">
-                <div className="bubble">
-                  <p>
-                    Of course! Imagine you&apos;re in a car driving down a bumpy
-                    road, and the ride isn&apos;t perfectly smooth. Sometimes,
-                    you hit small potholes or bumps, right? Well, when
-                    you&apos;re in an airplane, it&apos;s kind of like that, but
-                    in the sky.
-                  </p>
-                  <p>
-                    Airplane turbulence happens when the plane encounters
-                    pockets of air that are moving differently. It&apos;s like
-                    sailing a boat on choppy water. These air pockets can make
-                    the plane feel like it&apos;s bouncing or shaking a bit.
-                    It&apos;s completely normal and usually not dangerous at
-                    all.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        {messages.map((message) => {
+          if (message.key.fromMe) {
+            return renderBubbleRight(message);
+          } else {
+            return renderBubbleLeft(message);
+          }
+        })}
         <div ref={lastMessageRef as never} />
       </div>
       <div className="max-w-2xl w-full sticky bottom-0 mx-auto py-2 flex flex-col gap-1.5 px-4 bg-background">

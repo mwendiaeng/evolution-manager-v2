@@ -56,7 +56,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/chat/:chatId",
+    path: "instance/:instanceId/chat/:remoteJid",
     element: (
       <ProtectedRoute>
         <InstanceLayout>

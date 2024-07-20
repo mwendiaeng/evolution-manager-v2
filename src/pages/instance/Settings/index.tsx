@@ -1,6 +1,8 @@
+import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -15,10 +17,15 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import {
+  settingsfind,
+  updateSettings,
+} from "@/services/instances.service";
+import { Settings as SettingsType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   rejectCall: z.boolean(),
-  msgCall: z.string(),
+  msgCall: z.string().optional(),
   groupsIgnore: z.boolean(),
   alwaysOnline: z.boolean(),
   readMessages: z.boolean(),
@@ -27,6 +34,11 @@ const FormSchema = z.object({
 });
 
 function Settings() {
+  const { instanceId } = useParams<{ instanceId: string }>();
+  const [loading, setLoading] = useState(true);
+  const [updating, setUpdating] = useState(false);
+  const [token, setToken] = useState("");
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -40,15 +52,75 @@ function Settings() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedToken = localStorage.getItem("token");
+
+        if (storedToken && instanceId) {
+          setToken(storedToken);
+
+          const data: SettingsType = await settingsfind(
+            instanceId,
+            storedToken
+          );
+          form.reset({
+            rejectCall: data.rejectCall,
+            msgCall: data.msgCall || "",
+            groupsIgnore: data.groupsIgnore,
+            alwaysOnline: data.alwaysOnline,
+            readMessages: data.readMessages,
+            syncFullHistory: data.syncFullHistory,
+            readStatus: data.readStatus,
+          });
+        } else {
+          console.error("Token ou ID da instância não encontrados.");
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Erro ao carregar configurações:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [form, instanceId]);
+
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    try {
+      if (!instanceId) {
+        throw new Error("ID da instância não encontrado.");
+      }
+
+      setUpdating(true);
+      const settingData: SettingsType = {
+        rejectCall: data.rejectCall,
+        msgCall: data.msgCall,
+        groupsIgnore: data.groupsIgnore,
+        alwaysOnline: data.alwaysOnline,
+        readMessages: data.readMessages,
+        syncFullHistory: data.syncFullHistory,
+        readStatus: data.readStatus,
+      }
+      await updateSettings(instanceId, token, settingData);
+      toast({
+        title: "Configurações atualizadas",
+        description: "As configurações foram salvas com sucesso.",
+      });
+    } catch (error) {
+      console.error("Erro ao atualizar configurações:", error);
+      toast({
+        title: "Erro ao atualizar configurações",
+        description:
+          "Ocorreu um erro ao salvar as configurações. Tente novamente.",
+      });
+    } finally {
+      setUpdating(false);
+    }
+  };
+
+  if (loading) {
+    return <div>Carregando...</div>;
   }
 
   return (
@@ -175,7 +247,7 @@ function Settings() {
                         Sincronizar Histórico Completo
                       </FormLabel>
                       <FormDescription>
-                        Sinconiza o histórico completo de mensagens ao ler o
+                        Sincroniza o histórico completo de mensagens ao ler o
                         qrcode
                       </FormDescription>
                     </div>
@@ -213,7 +285,9 @@ function Settings() {
               />
             </div>
           </div>
-          <Button type="submit">Salvar</Button>
+          <Button type="submit" disabled={updating}>
+            {updating ? "Salvando..." : "Salvar"}
+          </Button>
         </form>
       </Form>
     </main>

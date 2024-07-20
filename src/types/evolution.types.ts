@@ -1,15 +1,15 @@
 export type Settings = {
-  id: string;
+  id?: string;
   rejectCall: boolean;
-  msgCall: string;
+  msgCall?: string;
   groupsIgnore: boolean;
   alwaysOnline: boolean;
   readMessages: boolean;
   readStatus: boolean;
   syncFullHistory: boolean;
-  createdAt: string;
-  updatedAt: string;
-  instanceId: string;
+  createdAt?: string;
+  updatedAt?: string;
+  instanceId?: string;
 };
 
 export type Instance = {

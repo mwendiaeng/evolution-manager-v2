@@ -1,4 +1,3 @@
-// InstanceLayout.tsx
 import "./instance-layout.css";
 import React from "react";
 import { Header } from "@/components/header";

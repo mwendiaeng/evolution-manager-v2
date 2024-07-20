@@ -19,7 +19,6 @@ import { useNavigate } from "react-router-dom";
 const fetchData = async (callback: (data: Instance[]) => void) => {
   try {
     const data = await fetchInstances();
-
     callback(data);
   } catch (error) {
     console.error("Erro ao buscar dados:", error);
@@ -37,9 +36,9 @@ function Dashboard() {
   };
 
   const handleInstance =
-    (instanceId: string): (() => void) =>
+    (instanceName: string): (() => void) =>
     () => {
-      navigate(`/instance/${instanceId}/dashboard`);
+      navigate(`/instance/${instanceName}/dashboard`);
     };
 
   useEffect(() => {

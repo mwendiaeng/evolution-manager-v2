@@ -5,6 +5,7 @@ export const fetchInstances = async () => {
   return response.data;
 };
 
+<<<<<<< HEAD
 export const restart = async () => {
   const response = await ApiInstance.delete("/instance/restart");
   return response.data;
@@ -70,3 +71,9 @@ export const updateSettings = async (instanceName: string, token: string, settin
     throw error.response?.data || error.response || error;
   }
 };
+=======
+export const fetchInstance = async (instanceId: string) => {
+    const response = await ApiInstance.get(`/instance/fetchInstances?instanceId=${instanceId}`);
+    return response.data;
+}
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392

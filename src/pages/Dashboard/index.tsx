@@ -19,6 +19,10 @@ import { useNavigate } from "react-router-dom";
 const fetchData = async (callback: (data: Instance[]) => void) => {
   try {
     const data = await fetchInstances();
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
     callback(data);
   } catch (error) {
     console.error("Erro ao buscar dados:", error);
@@ -35,9 +39,17 @@ function Dashboard() {
     setDropdownOpen(!dropdownOpen);
   };
 
+<<<<<<< HEAD
   const handleInstance = (instanceName: string) => {
     navigate(`/instance/${instanceName}/dashboard`);
   };
+=======
+  const handleInstance =
+    (instanceId: string): (() => void) =>
+    () => {
+      navigate(`/instance/${instanceId}/dashboard`);
+    };
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
 
   useEffect(() => {
     const getData = async () => {
@@ -124,7 +136,11 @@ function Dashboard() {
                 <span>{instance.token}</span>
                 <Copy className="card-icon" size="15" />
               </div>
+<<<<<<< HEAD
               <div className="card-menu" onClick={() => handleInstance(instance.name)}>
+=======
+              <div className="card-menu" onClick={handleInstance(instance.id)}>
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
                 <Cog className="card-icon" size="20" />
               </div>
             </div>

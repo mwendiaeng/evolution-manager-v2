@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import Menus from "./constants/menus";
+<<<<<<< HEAD
 
 type SidebarProps = {
   instanceId: string;
@@ -12,6 +13,19 @@ function Sidebar({ instanceId }: SidebarProps) {
     if (!path) return;
 
     navigate(`/instance/${instanceId}/${path}`);
+=======
+import { useInstance } from "@/contexts/InstanceContext";
+
+function Sidebar() {
+  const navigate = useNavigate();
+
+  const { instance } = useInstance();
+
+  const handleNavigate = (path?: string) => {
+    if (!path || !instance) return;
+
+    navigate(`/instance/${instance.id}/${path}`);
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
   };
 
   return (

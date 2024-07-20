@@ -31,7 +31,10 @@
     margin-right: 10px;
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
 .status-icon.disconnected {
     background-color: red;
 }
@@ -85,10 +88,15 @@
     padding: 20px;
     border-radius: 8px;
     color: #fff;
+<<<<<<< HEAD
     margin-top: 10px;
 }
 
 
+=======
+}
+
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
 .connect-button {
     background-color: #000;
     color: #fff;
@@ -96,5 +104,9 @@
     padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
+<<<<<<< HEAD
     margin-left: 10px;
 }
+=======
+}
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392

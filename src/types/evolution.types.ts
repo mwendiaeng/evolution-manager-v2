@@ -28,7 +28,10 @@ export type Instance = {
   updatedAt: string;
   Setting: Settings;
 };
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392

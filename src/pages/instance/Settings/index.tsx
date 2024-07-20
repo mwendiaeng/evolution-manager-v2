@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useParams } from "react-router-dom";
+=======
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
 
 import { Button } from "@/components/ui/button";
 import {
@@ -17,12 +23,19 @@ import { Switch } from "@/components/ui/switch";
 import { toast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+<<<<<<< HEAD
 import { fetchInstances, settingsfind, updateSettings } from "@/services/instances.service";
 import { Settings as SettingsType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   rejectCall: z.boolean(),
   msgCall: z.string().optional(),
+=======
+
+const FormSchema = z.object({
+  rejectCall: z.boolean(),
+  msgCall: z.string(),
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
   groupsIgnore: z.boolean(),
   alwaysOnline: z.boolean(),
   readMessages: z.boolean(),
@@ -31,11 +44,14 @@ const FormSchema = z.object({
 });
 
 function Settings() {
+<<<<<<< HEAD
   const { instanceId } = useParams<{ instanceId: string }>();
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [token, setToken] = useState("");
 
+=======
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -49,6 +65,7 @@ function Settings() {
     },
   });
 
+<<<<<<< HEAD
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -101,6 +118,17 @@ function Settings() {
 
   if (loading) {
     return <div>Carregando...</div>;
+=======
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    });
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
   }
 
   return (
@@ -125,7 +153,11 @@ function Settings() {
                           Rejeitar Chamadas
                         </FormLabel>
                         <FormDescription>
+<<<<<<< HEAD
                           Rejeita chamadas de voz e vídeo no Whatsapp
+=======
+                          Rejeitas chamadas de voz e vídeo no Whatsapp
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
                         </FormDescription>
                       </div>
                       <FormControl>
@@ -227,7 +259,11 @@ function Settings() {
                         Sincronizar Histórico Completo
                       </FormLabel>
                       <FormDescription>
+<<<<<<< HEAD
                         Sincroniza o histórico completo de mensagens ao ler o
+=======
+                        Sinconiza o histórico completo de mensagens ao ler o
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
                         qrcode
                       </FormDescription>
                     </div>
@@ -265,9 +301,13 @@ function Settings() {
               />
             </div>
           </div>
+<<<<<<< HEAD
           <Button type="submit" disabled={updating}>
             {updating ? "Salvando..." : "Salvar"}
           </Button>
+=======
+          <Button type="submit">Salvar</Button>
+>>>>>>> 4cc9370dbfe3c7a3d271f87e6e12747f59f42392
         </form>
       </Form>
     </main>

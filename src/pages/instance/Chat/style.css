@@ -1,0 +1,69 @@
+.tabs-chat {
+    background-color: transparent;
+    width: 100%;
+    border-radius: 0;
+}
+
+.chat-item {
+    display: flex;
+    padding: 10px;
+    cursor: pointer;
+    background-color: hsl(var(--background));
+}
+
+.chat-item:hover {
+    background-color: #2F2F2F;
+}
+
+.chat-item.active {
+    background-color: #2F2F2F;
+}
+
+.bubble {
+    border-radius: 16px;
+    padding: 12px;
+    word-wrap: break-word;
+}
+
+.bubble-right .bubble {
+    background-color: #0a0a0a;
+    text-align: right;
+    max-width: 100%;
+}
+
+.bubble-left .bubble {
+    background-color: #1b1b1b;
+    max-width: 100%;
+}
+
+.bubble-right {
+    align-self: flex-end;
+    display: flex;
+    justify-content: flex-end;
+    width: 80%;
+}
+
+.bubble-left {
+    align-self: flex-start;
+    display: flex;
+    justify-content: flex-start;
+    width: 80%;
+}
+
+.input-message textarea {
+    background-color: #2F2F2F;
+    padding-left: 48px;
+}
+
+.input-message textarea:focus {
+    outline: none;
+    border: none;
+    box-shadow: none;
+}
+
+.message-container {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100vh - 110px);
+    padding-top: 50px;
+}

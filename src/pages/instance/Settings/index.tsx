@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useParams } from "react-router-dom";
-
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -22,6 +20,7 @@ import {
   updateSettings,
 } from "@/services/instances.service";
 import { Settings as SettingsType } from "@/types/evolution.types";
+import { useInstance } from "@/contexts/InstanceContext";
 
 const FormSchema = z.object({
   rejectCall: z.boolean(),
@@ -34,11 +33,12 @@ const FormSchema = z.object({
 });
 
 function Settings() {
-  const { instanceId } = useParams<{ instanceId: string }>();
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [token, setToken] = useState("");
 
+  const { instance } = useInstance();
+  
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -57,13 +57,10 @@ function Settings() {
       try {
         const storedToken = localStorage.getItem("token");
 
-        if (storedToken && instanceId) {
+        if (storedToken && instance && instance.name) {
           setToken(storedToken);
 
-          const data: SettingsType = await settingsfind(
-            instanceId,
-            storedToken
-          );
+          const data: SettingsType = await settingsfind(instance.name, storedToken);
           form.reset({
             rejectCall: data.rejectCall,
             msgCall: data.msgCall || "",
@@ -74,7 +71,7 @@ function Settings() {
             readStatus: data.readStatus,
           });
         } else {
-          console.error("Token ou ID da instância não encontrados.");
+          console.error("Token ou nome da instância não encontrados.");
         }
         setLoading(false);
       } catch (error) {
@@ -84,12 +81,12 @@ function Settings() {
     };
 
     fetchData();
-  }, [form, instanceId]);
+  }, [form, instance]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
-      if (!instanceId) {
-        throw new Error("ID da instância não encontrado.");
+      if (!instance || !instance.name) {
+        throw new Error("Nome da instância não encontrado.");
       }
 
       setUpdating(true);
@@ -102,7 +99,7 @@ function Settings() {
         syncFullHistory: data.syncFullHistory,
         readStatus: data.readStatus,
       }
-      await updateSettings(instanceId, token, settingData);
+      await updateSettings(instance.name, token, settingData);
       toast({
         title: "Configurações atualizadas",
         description: "As configurações foram salvas com sucesso.",

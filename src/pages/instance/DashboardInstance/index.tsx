@@ -72,45 +72,6 @@ function DashboardInstance() {
     }
   };
 
-  // const checkInstanceStatus = useCallback(async () => {
-  //   try {
-  //     if (!instance) {
-  //       return;
-  //     }
-  //     const instancesData = await fetchInstances();
-  //     const updatedInstance = instancesData.find(
-  //       (inst: Instance) => inst.name === instance.name
-  //     );
-  //     if (updatedInstance) {
-  //       setInstance(updatedInstance);
-
-  //       const status = updatedInstance.connectionStatus;
-
-  //       if (status === "open") {
-  //         setShowQRCode(false);
-  //         setQRCodeData("");
-  //       } else if (status === "close") {
-  //         setTimer((prevTimer) => {
-  //           if (prevTimer >= 45) {
-  //             handleConnect(instanceId);
-  //             return 0;
-  //           }
-  //           return prevTimer + 10;
-  //         });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Erro ao verificar status:", error);
-  //   }
-  // }, [instanceId]);
-
-  // useEffect(() => {
-  //   if (showQRCode) {
-  //     const interval = setInterval(checkInstanceStatus, 10000); // Verifica a cada 10 segundos
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [showQRCode, checkInstanceStatus]);
-
   const closeQRCodePopup = () => {
     setShowQRCode(false);
     setQRCodeData("");

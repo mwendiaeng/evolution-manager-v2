@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
+import { useForm, SubmitHandler } from "react-hook-form";
 import { z } from "zod";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,19 +25,28 @@ import {
   MultiSelectorTrigger,
 } from "@/components/ui/multiselector";
 
+import { createwebhook, fetchwebhook } from "@/services/webhook";
+import { useInstance } from "@/contexts/InstanceContext";
+
 const FormSchema = z.object({
   enabled: z.boolean(),
-  url: z.string(),
+  url: z.string().url("Invalid URL format"),
   events: z.array(z.string()),
   webhookBase64: z.boolean(),
   webhookByEvents: z.boolean(),
 });
 
+type FormSchemaType = z.infer<typeof FormSchema>;
+
 function Webhook() {
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const { instance } = useInstance();
+  const [loading, setLoading] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enabled: true,
+      enabled: false,
       url: "",
       events: ["MESSAGES_UPSERT", "QRCODE_UPDATED"],
       webhookBase64: false,
@@ -44,16 +54,47 @@ function Webhook() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  useEffect(() => {
+    const loadWebhookData = async () => {
+      if (!instance) return;
+      setLoading(true);
+      try {
+        const data = await fetchwebhook(instance.name, "your-api-key");
+        form.reset(data);
+      } catch (error) {
+        console.error("Erro ao buscar dados do webhook:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadWebhookData();
+  }, [instance, form]);
+
+  const onSubmit: SubmitHandler<FormSchemaType> = async (data) => {
+    if (!instance) return;
+
+    setLoading(true);
+    try {
+      await createwebhook(instance.name, "your-api-key", data);
+      toast({
+        title: "Webhook criado com sucesso",
+        description: (
+          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+          </pre>
+        ),
+      });
+    } catch (error) {
+      console.error("Erro ao criar webhook:", error);
+      toast({
+        title: "Erro ao criar webhook",
+        description: "Não foi possível criar o webhook. Tente novamente.",
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const events = [
     "APPLICATION_STARTUP",
@@ -138,14 +179,30 @@ function Webhook() {
                         }}
                         loop
                         className="w-full border border-gray-600"
+                        isOpen={isDropdownOpen}
+                        onOpenChange={setIsDropdownOpen}
                       >
                         <MultiSelectorTrigger>
-                          <MultiSelectorInput placeholder="Selecione os Eventos" />
+                          <MultiSelectorInput 
+                            placeholder="Selecione os Eventos"
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                          />
                         </MultiSelectorTrigger>
                         <MultiSelectorContent>
                           <MultiSelectorList>
                             {events.map((event) => (
-                              <MultiSelectorItem key={event} value={event}>
+                              <MultiSelectorItem 
+                                key={event} 
+                                value={event}
+                                selected={field.value.includes(event)}
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  const newValue = field.value.includes(event)
+                                    ? field.value.filter((e) => e !== event)
+                                    : [...field.value, event];
+                                  field.onChange(newValue);
+                                }}
+                              >
                                 {event}
                               </MultiSelectorItem>
                             ))}
@@ -203,7 +260,9 @@ function Webhook() {
               />
             </div>
           </div>
-          <Button type="submit">Salvar</Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Salvando..." : "Salvar"}
+          </Button>
         </form>
       </Form>
     </main>

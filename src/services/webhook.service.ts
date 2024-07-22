@@ -2,16 +2,16 @@ import { Settings } from "@/types/evolution.types";
 import ApiInstance from "@/utils/instance";
 
 
-export const fetchwebhook = async (instanceName: string, token: string) => {
+export const fetchWebhook = async (instanceName: string, token: string) => {
   const response = await ApiInstance.get(`/webhook/find/${instanceName}`, {
     headers: {
       apikey: token,
     },
   });
   return response.data;
-}; 
+};
 
-export const createwebhook = async (
+export const createWebhook = async (
   instanceName: string,
   token: string,
   settings: Settings

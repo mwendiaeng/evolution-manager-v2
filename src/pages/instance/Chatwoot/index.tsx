@@ -14,9 +14,9 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import toastService from "@/utils/custom-toast.service";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -61,14 +61,8 @@ function Chatwoot() {
   });
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
+    toastService.success("You submitted");
+    console.log(data);
   }
 
   return (

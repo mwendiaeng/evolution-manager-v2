@@ -13,7 +13,6 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import {
@@ -25,8 +24,9 @@ import {
   MultiSelectorTrigger,
 } from "@/components/ui/multiselector";
 
-import { createwebhook, fetchwebhook } from "@/services/webhook";
+import { createWebhook, fetchWebhook } from "@/services/webhook.service";
 import { useInstance } from "@/contexts/InstanceContext";
+import toastService from "@/utils/custom-toast.service";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -59,7 +59,7 @@ function Webhook() {
       if (!instance) return;
       setLoading(true);
       try {
-        const data = await fetchwebhook(instance.name, "your-api-key");
+        const data = await fetchWebhook(instance.name, "your-api-key");
         form.reset(data);
       } catch (error) {
         console.error("Erro ao buscar dados do webhook:", error);
@@ -76,21 +76,11 @@ function Webhook() {
 
     setLoading(true);
     try {
-      await createwebhook(instance.name, "your-api-key", data);
-      toast({
-        title: "Webhook criado com sucesso",
-        description: (
-          <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-            <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-          </pre>
-        ),
-      });
+      await createWebhook(instance.name, "your-api-key", data);
+      toastService.success("Webhook criado com sucesso");
     } catch (error) {
       console.error("Erro ao criar webhook:", error);
-      toast({
-        title: "Erro ao criar webhook",
-        description: "Não foi possível criar o webhook. Tente novamente.",
-      });
+      toastService.error("Erro ao criar webhook");
     } finally {
       setLoading(false);
     }
@@ -183,7 +173,7 @@ function Webhook() {
                         onOpenChange={setIsDropdownOpen}
                       >
                         <MultiSelectorTrigger>
-                          <MultiSelectorInput 
+                          <MultiSelectorInput
                             placeholder="Selecione os Eventos"
                             onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                           />
@@ -191,8 +181,8 @@ function Webhook() {
                         <MultiSelectorContent>
                           <MultiSelectorList>
                             {events.map((event) => (
-                              <MultiSelectorItem 
-                                key={event} 
+                              <MultiSelectorItem
+                                key={event}
                                 value={event}
                                 selected={field.value.includes(event)}
                                 onClick={(e) => {

@@ -106,3 +106,21 @@ export type OpenaiBot = {
   debounceTime: number;
   ignoreJids?: string[];
 };
+
+export type Typebot = {
+  id?: string;
+  enabled: boolean;
+  url: string;
+  typebot: string;
+  triggerType: string;
+  triggerOperator: string;
+  triggerValue: string;
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+};

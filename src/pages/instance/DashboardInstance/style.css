@@ -80,7 +80,7 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background-color: #cc3300;
+    background-color: #cf5228;
     padding: 20px;
     border-radius: 8px;
     color: #fff;
@@ -89,6 +89,16 @@
 
 .connect-button {
     background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+}
+
+.connect-code-button {
+    background-color: #2a2a2a;
     color: #fff;
     border: none;
     padding: 10px 15px;

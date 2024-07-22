@@ -33,7 +33,7 @@ const fetchData = async (callback: (data: Instance[]) => void) => {
 function Dashboard() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [instances, setInstances] = useState<Instance[]>([]);
-  const [deleting, setDeleting] = useState(false);
+  const [deleting, setDeleting] = useState<string[]>([]);
 
   const navigate = useNavigate();
 
@@ -92,11 +92,16 @@ function Dashboard() {
     });
   };
 
-  const handleDelete = async (instanceId: string) => {
-    setDeleting(true);
+  const handleDelete = async (instanceName: string) => {
+    setDeleting([...deleting, instanceName]);
     try {
-      await logout(instanceId);
-      await deleteInstance(instanceId);
+      try {
+        await logout(instanceName);
+      } catch (error) {
+        console.error("Erro ao fazer logout:", error);
+      }
+      await deleteInstance(instanceName);
+      await new Promise((resolve) => setTimeout(resolve, 1000));
       resetTable();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -105,7 +110,7 @@ function Dashboard() {
         `Erro ao deletar : ${error?.response?.data?.response?.message}`
       );
     } finally {
-      setDeleting(false);
+      setDeleting(deleting.filter((item) => item !== instanceName));
     }
   };
 
@@ -181,10 +186,14 @@ function Dashboard() {
                 {renderStatus(instance.connectionStatus)}
                 <button
                   className="btn disconnect"
-                  onClick={() => handleDelete(instance.id)}
-                  disabled={deleting}
+                  onClick={() => handleDelete(instance.name)}
+                  disabled={deleting.includes(instance.name)}
                 >
-                  {deleting ? "Deletando..." : "Deletar"}
+                  {deleting.includes(instance.name) ? (
+                    <span>Deletando...</span>
+                  ) : (
+                    <span>Deletar</span>
+                  )}
                 </button>
               </div>
             </div>

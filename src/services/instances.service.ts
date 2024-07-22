@@ -33,8 +33,15 @@ export const deleteInstance = async (instanceName: string) => {
   return response.data;
 };
 
-export const connect = async (instanceName: string, token: string) => {
-  const response = await ApiInstance.get(`/instance/connect/${instanceName}`, {
+export const connect = async (
+  instanceName: string,
+  token: string,
+  number?: string
+) => {
+  let url = `/instance/connect/${instanceName}`;
+  if (number) url += `?number=${number}`;
+
+  const response = await ApiInstance.get(url, {
     headers: {
       apikey: token,
     },

@@ -41,6 +41,7 @@ const getStatusText = (status: string) => {
 
 function DashboardInstance() {
   const [qrCodeData, setQRCodeData] = useState("");
+  const [pairingCode, setPairingCode] = useState("");
   const [, setTimer] = useState(0);
   const token = localStorage.getItem("token");
 
@@ -56,7 +57,7 @@ function DashboardInstance() {
     }
   };
 
-  const handleConnect = async (instanceName: string) => {
+  const handleConnect = async (instanceName: string, pairingCode: boolean) => {
     try {
       setQRCodeData("");
 
@@ -65,8 +66,15 @@ function DashboardInstance() {
         return;
       }
 
-      const data = await connect(instanceName, token);
-      setQRCodeData(data.base64);
+      if (pairingCode) {
+        const data = await connect(instanceName, token, instance?.number);
+
+        setPairingCode(data.pairingCode);
+      } else {
+        const data = await connect(instanceName, token);
+
+        setQRCodeData(data.base64);
+      }
       setTimer(0);
     } catch (error) {
       console.error("Erro ao conectar:", error);
@@ -109,9 +117,9 @@ function DashboardInstance() {
                 <Dialog>
                   <DialogTrigger
                     className="connect-button"
-                    onClick={() => handleConnect(instance.name)}
+                    onClick={() => handleConnect(instance.name, false)}
                   >
-                    CONECTAR
+                    Gerar QRCODE
                   </DialogTrigger>
                   <DialogContent onCloseAutoFocus={closeQRCodePopup}>
                     <DialogHeader>
@@ -128,6 +136,35 @@ function DashboardInstance() {
                     </DialogHeader>
                   </DialogContent>
                 </Dialog>
+
+                {instance.number && (
+                  <Dialog>
+                    <DialogTrigger
+                      className="connect-code-button"
+                      onClick={() => handleConnect(instance.name, true)}
+                    >
+                      Solicitar Código
+                    </DialogTrigger>
+                    <DialogContent onCloseAutoFocus={closeQRCodePopup}>
+                      <DialogHeader>
+                        <DialogDescription>
+                          {pairingCode ? (
+                            <div>
+                              <p>
+                                <strong>Código de emparelhamento:</strong>
+                              </p>
+                              <p>{pairingCode}</p>
+                            </div>
+                          ) : (
+                            <div>
+                              <p>Carregando...</p>
+                            </div>
+                          )}
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                )}
               </div>
             )}
           </div>

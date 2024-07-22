@@ -40,7 +40,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
     defaultValues: {
       name: "",
       integration: "WHATSAPP-BAILEYS",
-      token: "",
+      token: crypto.randomUUID().replace("-", "").toLocaleUpperCase(),
       number: "",
     },
   });
@@ -70,7 +70,12 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
   };
 
   const onReset = () => {
-    form.reset();
+    form.reset({
+      name: "",
+      integration: "WHATSAPP-BAILEYS",
+      token: crypto.randomUUID().replace("-", "").toLocaleUpperCase(),
+      number: "",
+    });
   };
 
   return (
@@ -80,7 +85,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
           <PlusIcon /> Instância
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[650px]" onCloseAutoFocus={onReset}>
         <DialogHeader>
           <DialogTitle>Nova Instância</DialogTitle>
         </DialogHeader>

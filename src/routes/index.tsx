@@ -155,6 +155,16 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+  {
+    path: "instance/:instanceId/typebot/:typebotId",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Typebot />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
 ]);
 
 export default router;

@@ -13,10 +13,15 @@ function Header({ perfil }: HeaderProps) {
     logout();
     navigate("/login");
   };
+
+  const navigateToDashboard = () => {
+    navigate("/");
+  };
+
   return (
     <header>
       <div className="header-logo">
-        <a href="/">
+        <a href="#" onClick={navigateToDashboard}>
           <img src="/assets/images/evolution-logo.png" alt="Logo" />
         </a>
         <span className="header-title">Evolution Manager</span>

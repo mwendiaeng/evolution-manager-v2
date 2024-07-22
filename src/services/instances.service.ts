@@ -1,5 +1,10 @@
-import { Settings } from "@/types/evolution.types";
+import { NewInstance, Settings } from "@/types/evolution.types";
 import ApiInstance from "@/utils/instance";
+
+export const createInstance = async (instance: NewInstance) => {
+  const response = await ApiInstance.post("/instance/create", instance);
+  return response.data;
+};
 
 export const fetchInstances = async () => {
   const response = await ApiInstance.get("/instance/fetchInstances");
@@ -20,6 +25,11 @@ export const restart = async () => {
 
 export const logout = async (instanceName: string) => {
   const response = await ApiInstance.delete(`/instance/logout/${instanceName}`);
+  return response.data;
+};
+
+export const deleteInstance = async (instanceName: string) => {
+  const response = await ApiInstance.delete(`/instance/delete/${instanceName}`);
   return response.data;
 };
 

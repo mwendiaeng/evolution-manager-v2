@@ -12,6 +12,14 @@ export type Settings = {
   instanceId?: string;
 };
 
+export type NewInstance = {
+  instanceName: string;
+  qrcode?: boolean;
+  integration: string;
+  token?: string;
+  number?: string;
+};
+
 export type Instance = {
   id: string;
   name: string;
@@ -54,7 +62,7 @@ export type Key = {
   id: string;
   fromMe: boolean;
   remoteJid: string;
-}
+};
 
 export type Message = {
   id: string;
@@ -66,4 +74,35 @@ export type Message = {
   messageTimestamp: string;
   instanceId: string;
   source: string;
-}
+};
+
+export type OpenaiCreds = {
+  id?: string;
+  name: string;
+  apiKey: string;
+};
+
+export type OpenaiBot = {
+  id?: string;
+  openaiCredsId: string;
+  enabled: boolean;
+  botType: string;
+  assistantId: string;
+  model: string;
+  systemMessages: string;
+  assistantMessages: string;
+  userMessages: string;
+  maxTokens: number;
+  triggerType: string;
+  triggerOperator: string;
+  triggerValue: string;
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  ignoreJids?: string[];
+};

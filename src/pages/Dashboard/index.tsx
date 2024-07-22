@@ -1,7 +1,11 @@
 import "./style.css";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { fetchInstances } from "@/services/instances.service";
+import {
+  deleteInstance,
+  fetchInstances,
+  logout,
+} from "@/services/instances.service";
 import { Instance } from "@/types/evolution.types";
 import {
   Check,
@@ -15,6 +19,7 @@ import {
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NewInstance } from "./NewInstance";
+import toastService from "@/utils/custom-toast.service";
 
 const fetchData = async (callback: (data: Instance[]) => void) => {
   try {
@@ -28,6 +33,7 @@ const fetchData = async (callback: (data: Instance[]) => void) => {
 function Dashboard() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [instances, setInstances] = useState<Instance[]>([]);
+  const [deleting, setDeleting] = useState(false);
 
   const navigate = useNavigate();
 
@@ -80,6 +86,29 @@ function Dashboard() {
     }
   };
 
+  const resetTable = () => {
+    fetchData((result) => {
+      setInstances(result);
+    });
+  };
+
+  const handleDelete = async (instanceId: string) => {
+    setDeleting(true);
+    try {
+      await logout(instanceId);
+      await deleteInstance(instanceId);
+      resetTable();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Erro ao deletar instância:", error);
+      toastService.error(
+        `Erro ao deletar : ${error?.response?.data?.response?.message}`
+      );
+    } finally {
+      setDeleting(false);
+    }
+  };
+
   return (
     <>
       <div className="toolbar">
@@ -90,7 +119,7 @@ function Dashboard() {
           <Button variant="outline" className="refresh-button">
             <RefreshCw />
           </Button>
-          <NewInstance />
+          <NewInstance resetTable={resetTable} />
         </div>
       </div>
       <div className="search">
@@ -134,7 +163,7 @@ function Dashboard() {
                 <p className="instance-description">{instance.profileName}</p>
               </div>
               <div className="card-contact">
-                <p>{instance.ownerJid.split("@")[0]}</p>
+                <p>{instance.ownerJid && instance.ownerJid.split("@")[0]}</p>
               </div>
             </div>
             <div className="card-footer">
@@ -150,7 +179,13 @@ function Dashboard() {
               </div>
               <div className="card-actions">
                 {renderStatus(instance.connectionStatus)}
-                <button className="btn disconnect">Deletar</button>
+                <button
+                  className="btn disconnect"
+                  onClick={() => handleDelete(instance.id)}
+                  disabled={deleting}
+                >
+                  {deleting ? "Deletando..." : "Deletar"}
+                </button>
               </div>
             </div>
           </Card>

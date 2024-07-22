@@ -4,8 +4,14 @@ import { Button } from "@/components/ui/button";
 import "./style.css";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { logout, connect } from "@/services/instances.service";
-import QRCodePopup from "@/components/QRCodePopup";
 import { useInstance } from "@/contexts/InstanceContext";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const getStatusClass = (status: string) => {
   switch (status) {
@@ -34,21 +40,17 @@ const getStatusText = (status: string) => {
 };
 
 function DashboardInstance() {
-  const [showQRCode, setShowQRCode] = useState(false);
   const [qrCodeData, setQRCodeData] = useState("");
   const [, setTimer] = useState(0);
   const token = localStorage.getItem("token");
 
   const { instance } = useInstance();
 
-  const handleRestart = async () => {
-    // verificar
-  };
+  const handleRestart = async () => {};
 
   const handleLogout = async (instanceName: string) => {
     try {
       await logout(instanceName);
-      // verificar
     } catch (error) {
       console.error("Erro ao desconectar:", error);
     }
@@ -56,7 +58,6 @@ function DashboardInstance() {
 
   const handleConnect = async (instanceName: string) => {
     try {
-      setShowQRCode(true);
       setQRCodeData("");
 
       if (!token) {
@@ -73,7 +74,6 @@ function DashboardInstance() {
   };
 
   const closeQRCodePopup = () => {
-    setShowQRCode(false);
     setQRCodeData("");
   };
 
@@ -105,12 +105,29 @@ function DashboardInstance() {
             {instance.connectionStatus === "close" && (
               <div className="connection-warning">
                 <span>Telefone não conectado</span>
-                <Button
-                  className="connect-button"
-                  onClick={() => handleConnect(instance.name)}
-                >
-                  CONECTAR
-                </Button>
+
+                <Dialog>
+                  <DialogTrigger
+                    className="connect-button"
+                    onClick={() => handleConnect(instance.name)}
+                  >
+                    CONECTAR
+                  </DialogTrigger>
+                  <DialogContent onCloseAutoFocus={closeQRCodePopup}>
+                    <DialogHeader>
+                      <DialogDescription>
+                        {qrCodeData ? (
+                          <img src={qrCodeData} alt="QR Code" />
+                        ) : (
+                          <img
+                            src="/assets/images/evolution-logo.png"
+                            alt="Carregando..."
+                          />
+                        )}
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
               </div>
             )}
           </div>
@@ -150,9 +167,6 @@ function DashboardInstance() {
           <CardContent>0</CardContent>
         </Card>
       </main>
-      {showQRCode && (
-        <QRCodePopup qrCodeData={qrCodeData} onClose={closeQRCodePopup} />
-      )}
     </>
   );
 }

@@ -86,6 +86,16 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "instance/:instanceId/openai/:openaiBotId",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Openai />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "instance/:instanceId/webhook",
     element: (
       <ProtectedRoute>

@@ -14,11 +14,10 @@ import "./style.css";
 import { Footer } from "@/components/footer";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
 import { logout, saveCredentials, verifyServer } from "@/services/auth.service";
+import toastService from "@/utils/custom-toast.service";
 
 function Login() {
-  const { toast } = useToast();
 
   const navigate = useNavigate();
 
@@ -27,22 +26,14 @@ function Login() {
 
   const handleLogin = async () => {
     if (!serverUrl || !apiKey) {
-      toast({
-        variant: "destructive",
-        title: "Oops!",
-        description: "Credenciais inválidas",
-      });
+      toastService.error("Credenciais inválidas");
       return;
     }
 
     const saveCreds = await saveCredentials(serverUrl, apiKey);
 
     if (!saveCreds) {
-      toast({
-        variant: "destructive",
-        title: "Oops!",
-        description: "Credenciais inválidas",
-      });
+      toastService.error("Credenciais inválidas");
       return;
     }
 
@@ -50,11 +41,7 @@ function Login() {
 
     if (!server) {
       logout();
-      toast({
-        variant: "destructive",
-        title: "Oops!",
-        description: "Servidor inválido",
-      });
+      toastService.error("Servidor inválido");
       return;
     }
 

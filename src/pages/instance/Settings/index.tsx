@@ -12,15 +12,13 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "@/components/ui/use-toast";
 import { Textarea } from "@/components/ui/textarea";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import {
-  settingsfind,
-  updateSettings,
-} from "@/services/instances.service";
+import { settingsfind, updateSettings } from "@/services/instances.service";
 import { Settings as SettingsType } from "@/types/evolution.types";
 import { useInstance } from "@/contexts/InstanceContext";
+import "react-toastify/dist/ReactToastify.css";
+import toastService from "@/utils/custom-toast.service";
 
 const FormSchema = z.object({
   rejectCall: z.boolean(),
@@ -38,7 +36,7 @@ function Settings() {
   const [token, setToken] = useState("");
 
   const { instance } = useInstance();
-  
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -55,12 +53,13 @@ function Settings() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedToken = localStorage.getItem("token");
+        if (instance && instance.name && instance.token) {
+          setToken(instance.token);
 
-        if (storedToken && instance && instance.name) {
-          setToken(storedToken);
-
-          const data: SettingsType = await settingsfind(instance.name, storedToken);
+          const data: SettingsType = await settingsfind(
+            instance.name,
+            instance.token
+          );
           form.reset({
             rejectCall: data.rejectCall,
             msgCall: data.msgCall || "",
@@ -98,19 +97,12 @@ function Settings() {
         readMessages: data.readMessages,
         syncFullHistory: data.syncFullHistory,
         readStatus: data.readStatus,
-      }
+      };
       await updateSettings(instance.name, token, settingData);
-      toast({
-        title: "Configurações atualizadas",
-        description: "As configurações foram salvas com sucesso.",
-      });
+      toastService.success("Configurações atualizadas com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar configurações:", error);
-      toast({
-        title: "Erro ao atualizar configurações",
-        description:
-          "Ocorreu um erro ao salvar as configurações. Tente novamente.",
-      });
+      toastService.error("Erro ao atualizar configurações.");
     } finally {
       setUpdating(false);
     }

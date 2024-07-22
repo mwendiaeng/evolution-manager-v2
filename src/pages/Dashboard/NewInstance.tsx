@@ -17,14 +17,64 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { createInstance } from "@/services/instances.service";
+import { NewInstance as NewInstanceType } from "@/types/evolution.types";
+import toastService from "@/utils/custom-toast.service";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
+import { useState } from "react";
 import { useForm, FormProvider, Controller } from "react-hook-form";
+import { z } from "zod";
 
-function NewInstance() {
-  const methods = useForm();
+const FormSchema = z.object({
+  name: z.string(),
+  integration: z.string(),
+  token: z.string(),
+  number: z.string(),
+});
+
+function NewInstance({ resetTable }: { resetTable: () => void }) {
+  const [open, setOpen] = useState(false);
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      name: "",
+      integration: "WHATSAPP-BAILEYS",
+      token: "",
+      number: "",
+    },
+  });
+
+  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+    try {
+      const instanceData: NewInstanceType = {
+        instanceName: data.name,
+        integration: data.integration,
+        token: data.token === "" ? undefined : data.token,
+        number: data.number === "" ? undefined : data.number,
+      };
+
+      await createInstance(instanceData);
+
+      toastService.success("Instância criada com sucesso");
+      setOpen(false);
+      onReset();
+      resetTable();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Erro ao criar instância:", error);
+      toastService.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      );
+    }
+  };
+
+  const onReset = () => {
+    form.reset();
+  };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default">
           <PlusIcon /> Instância
@@ -34,9 +84,9 @@ function NewInstance() {
         <DialogHeader>
           <DialogTitle>Nova Instância</DialogTitle>
         </DialogHeader>
-        <FormProvider {...methods}>
+        <FormProvider {...form}>
           <form
-            onSubmit={methods.handleSubmit((data) => console.log(data))}
+            onSubmit={form.handleSubmit(onSubmit)}
             className="grid gap-4 py-4"
           >
             <div className="grid grid-cols-4 items-center gap-4">
@@ -45,7 +95,7 @@ function NewInstance() {
               </Label>
               <Input
                 id="name"
-                {...methods.register("name")}
+                {...form.register("name")}
                 className="col-span-3 border border-gray-600"
               />
             </div>
@@ -55,7 +105,7 @@ function NewInstance() {
               </Label>
               <Controller
                 name="integration"
-                control={methods.control}
+                control={form.control}
                 render={({ field }) => (
                   <Select {...field} defaultValue="WHATSAPP-BAILEYS">
                     <FormControl className="col-span-3 w-full border border-gray-600">
@@ -82,7 +132,17 @@ function NewInstance() {
               </Label>
               <Input
                 id="token"
-                {...methods.register("token")}
+                {...form.register("token")}
+                className="col-span-3 border border-gray-600"
+              />
+            </div>
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="number" className="text-right">
+                Número
+              </Label>
+              <Input
+                id="number"
+                {...form.register("number")}
                 className="col-span-3 border border-gray-600"
               />
             </div>

@@ -38,6 +38,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -230,7 +231,7 @@ function UpdateOpenai({
 
   return (
     <div className="form">
-      {loading && <p>Carregando...</p>}
+      {loading && <LoadingSpinner />}
       {!loading && (
         <Form {...form}>
           <form

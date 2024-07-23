@@ -14,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { findTypebot } from "@/services/typebot.service";
 import { NewTypebot } from "./NewTypebot";
 import { UpdateTypebot } from "./UpdateTypebot";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const fetchData = async (
   instance: Instance | null,
@@ -72,7 +73,7 @@ function Typebot() {
         <ResizablePanel defaultSize={35} className="p-5">
           <div className="table">
             {loading ? (
-              <p>Carregando...</p>
+              <LoadingSpinner />
             ) : (
               <>
                 {typebots && typebots.length > 0 ? (

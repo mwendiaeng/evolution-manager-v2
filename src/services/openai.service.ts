@@ -27,6 +27,16 @@ export const createOpenaiCreds = async (
   return response.data;
 };
 
+export const deleteOpenaiCreds = async (
+  openaiCredsId: string,
+  instanceName: string
+) => {
+  const response = await ApiInstance.delete(
+    `/openai/creds/${openaiCredsId}/${instanceName}`
+  );
+  return response.data;
+};
+
 export const findOpenai = async (instanceName: string, token: string) => {
   const response = await ApiInstance.get(`/openai/find/${instanceName}`, {
     headers: {
@@ -59,28 +69,7 @@ export const createOpenai = async (
 ) => {
   const response = await ApiInstance.post(
     `/openai/create/${instanceName}`,
-    {
-      enabled: data.enabled,
-      openaiCredsId: data.openaiCredsId,
-      botType: data.botType,
-      assistantId: data.assistantId,
-      model: data.model,
-      systemMessages: [data.systemMessages],
-      assistantMessages: [data.assistantMessages],
-      userMessages: [data.userMessages],
-      maxTokens: data.maxTokens,
-      triggerType: data.triggerType,
-      triggerOperator: data.triggerOperator,
-      triggerValue: data.triggerValue,
-      expire: data.expire,
-      keywordFinish: data.keywordFinish,
-      delayMessage: data.delayMessage,
-      unknownMessage: data.unknownMessage,
-      listeningFromMe: data.listeningFromMe,
-      stopBotFromMe: data.stopBotFromMe,
-      keepOpen: data.keepOpen,
-      debounceTime: data.debounceTime,
-    },
+    data,
     {
       headers: {
         apikey: token,

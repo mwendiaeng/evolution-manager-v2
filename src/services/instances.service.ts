@@ -18,8 +18,8 @@ export const fetchInstance = async (instanceId: string) => {
   return response.data;
 };
 
-export const restart = async () => {
-  const response = await ApiInstance.delete("/instance/restart");
+export const restart = async (instanceName: string) => {
+  const response = await ApiInstance.post(`/instance/restart/${instanceName}`);
   return response.data;
 };
 

@@ -1,4 +1,4 @@
-import { Cog, LayoutDashboard, MessageCircle } from "lucide-react";
+import { Cog, LayoutDashboard } from "lucide-react";
 
 const Menus = [
   {
@@ -7,12 +7,12 @@ const Menus = [
     icon: LayoutDashboard,
     path: "dashboard",
   },
-  {
-    id: "chat",
-    title: "Chat",
-    icon: MessageCircle,
-    path: "chat",
-  },
+  // {
+  //   id: "chat",
+  //   title: "Chat",
+  //   icon: MessageCircle,
+  //   path: "chat",
+  // },
   {
     navLabel: true,
     title: "Configurações",

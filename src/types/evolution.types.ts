@@ -35,6 +35,11 @@ export type Instance = {
   createdAt: string;
   updatedAt: string;
   Setting: Settings;
+  _count?: {
+    Message?: number;
+    Contact?: number;
+    Chat?: number;
+  }
 };
 
 export type Contact = {
@@ -89,9 +94,9 @@ export type OpenaiBot = {
   botType: string;
   assistantId: string;
   model: string;
-  systemMessages: string;
-  assistantMessages: string;
-  userMessages: string;
+  systemMessages: string | string[];
+  assistantMessages: string | string[];
+  userMessages: string | string[];
   maxTokens: number;
   triggerType: string;
   triggerOperator: string;

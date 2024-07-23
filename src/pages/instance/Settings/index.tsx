@@ -19,6 +19,7 @@ import { Settings as SettingsType } from "@/types/evolution.types";
 import { useInstance } from "@/contexts/InstanceContext";
 import "react-toastify/dist/ReactToastify.css";
 import toastService from "@/utils/custom-toast.service";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const FormSchema = z.object({
   rejectCall: z.boolean(),
@@ -109,7 +110,7 @@ function Settings() {
   };
 
   if (loading) {
-    return <div>Carregando...</div>;
+    return <LoadingSpinner />;
   }
 
   return (

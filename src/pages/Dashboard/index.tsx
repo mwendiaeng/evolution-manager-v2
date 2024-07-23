@@ -13,6 +13,8 @@ import {
   CircleUser,
   Cog,
   Copy,
+  Eye,
+  EyeOff,
   MessageCircle,
   RefreshCw,
 } from "lucide-react";
@@ -20,6 +22,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { NewInstance } from "./NewInstance";
 import toastService from "@/utils/custom-toast.service";
+import { copyToClipboard } from "@/utils/copy-to-clipboard";
 
 const fetchData = async (callback: (data: Instance[]) => void) => {
   try {
@@ -34,6 +37,8 @@ function Dashboard() {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [instances, setInstances] = useState<Instance[]>([]);
   const [deleting, setDeleting] = useState<string[]>([]);
+  const [visible, setVisible] = useState<string[]>([]);
+  const [searchStatus, setSearchStatus] = useState<string>("all");
 
   const navigate = useNavigate();
 
@@ -86,8 +91,8 @@ function Dashboard() {
     }
   };
 
-  const resetTable = () => {
-    fetchData((result) => {
+  const resetTable = async () => {
+    await fetchData((result) => {
       setInstances(result);
     });
   };
@@ -114,6 +119,33 @@ function Dashboard() {
     }
   };
 
+  const searchByName = async (name: string) => {
+    if (name === "") {
+      await resetTable();
+      return;
+    }
+
+    const data = instances.filter((instance) => {
+      return instance.name.toLowerCase().includes(name.toLowerCase());
+    });
+    setInstances(data);
+  };
+
+  const searchByStatus = async (status: string) => {
+    setSearchStatus(status);
+    if (status === "all") {
+      await resetTable();
+      return;
+    }
+
+    await fetchData((result) => {
+      const data = result.filter((instance) => {
+        return instance.connectionStatus === status;
+      });
+      setInstances(data);
+    });
+  };
+
   return (
     <>
       <div className="toolbar">
@@ -122,14 +154,18 @@ function Dashboard() {
         </div>
         <div className="toolbar-buttons">
           <Button variant="outline" className="refresh-button">
-            <RefreshCw />
+            <RefreshCw onClick={resetTable} size="20" />
           </Button>
           <NewInstance resetTable={resetTable} />
         </div>
       </div>
       <div className="search">
         <div className="search-bar">
-          <input type="text" placeholder="Pesquisar" />
+          <input
+            type="text"
+            placeholder="Pesquisar"
+            onChange={(e) => searchByName(e.target.value)}
+          />
         </div>
         <div className="status-dropdown">
           <button className="dropdown-button" onClick={toggleDropdown}>
@@ -137,15 +173,58 @@ function Dashboard() {
           </button>
           {dropdownOpen && (
             <div className="dropdown-menu">
-              <button className="dropdown-item active">
+              <button
+                className={`dropdown-item ${
+                  searchStatus === "all" ? "active" : ""
+                }`}
+                onClick={() => searchByStatus("all")}
+              >
                 Todos
-                <span>
-                  <Check size="15" className="ml-2" />
-                </span>
+                {searchStatus === "all" && (
+                  <span>
+                    <Check size="15" className="ml-2" />
+                  </span>
+                )}
               </button>
-              <button className="dropdown-item">Desconectado</button>
-              <button className="dropdown-item">Conectando</button>
-              <button className="dropdown-item">Conectado</button>
+              <button
+                onClick={() => searchByStatus("close")}
+                className={`dropdown-item ${
+                  searchStatus === "close" ? "active" : ""
+                }`}
+              >
+                Desconectado
+                {searchStatus === "close" && (
+                  <span>
+                    <Check size="15" className="ml-2" />
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => searchByStatus("connecting")}
+                className={`dropdown-item ${
+                  searchStatus === "connecting" ? "active" : ""
+                }`}
+              >
+                Conectando
+                {searchStatus === "connecting" && (
+                  <span>
+                    <Check size="15" className="ml-2" />
+                  </span>
+                )}
+              </button>
+              <button
+                onClick={() => searchByStatus("open")}
+                className={`dropdown-item ${
+                  searchStatus === "open" ? "active" : ""
+                }`}
+              >
+                Conectado
+                {searchStatus === "open" && (
+                  <span>
+                    <Check size="15" className="ml-2" />
+                  </span>
+                )}
+              </button>
             </div>
           )}
         </div>
@@ -155,8 +234,40 @@ function Dashboard() {
           <Card className="instance-card" key={instance.id}>
             <div className="card-header">
               <div className="card-id">
-                <span>{instance.token}</span>
-                <Copy className="card-icon" size="15" />
+                <span>
+                  {visible.includes(instance.token)
+                    ? instance.token
+                    : instance.token
+                        .split("")
+                        .map(() => "*")
+                        .join("")}
+                </span>
+                <Copy
+                  className="card-icon"
+                  size="15"
+                  onClick={() => {
+                    copyToClipboard(instance.token);
+                  }}
+                />
+                {visible.includes(instance.token) ? (
+                  <EyeOff
+                    className="card-icon"
+                    size="15"
+                    onClick={() => {
+                      setVisible(
+                        visible.filter((item) => item !== instance.token)
+                      );
+                    }}
+                  />
+                ) : (
+                  <Eye
+                    className="card-icon"
+                    size="15"
+                    onClick={() => {
+                      setVisible([...visible, instance.token]);
+                    }}
+                  />
+                )}
               </div>
               <div className="card-menu" onClick={handleInstance(instance.id)}>
                 <Cog className="card-icon" size="20" />
@@ -175,11 +286,11 @@ function Dashboard() {
               <div className="card-stats">
                 <div className="stat">
                   <CircleUser className="stat-icon" size="20" />
-                  <span>0</span>
+                  <span>{instance?._count?.Contact || 0}</span>
                 </div>
                 <div className="stat">
                   <MessageCircle className="stat-icon" size="20" />
-                  <span>0</span>
+                  <span>{instance?._count?.Message || 0}</span>
                 </div>
               </div>
               <div className="card-actions">

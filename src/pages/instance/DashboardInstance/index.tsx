@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import "./style.css";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { logout, connect } from "@/services/instances.service";
+import { logout, connect, restart } from "@/services/instances.service";
 import { useInstance } from "@/contexts/InstanceContext";
 import {
   Dialog,
@@ -12,6 +12,9 @@ import {
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Copy, Eye, EyeOff } from "lucide-react";
+import { copyToClipboard } from "@/utils/copy-to-clipboard";
 
 const getStatusClass = (status: string) => {
   switch (status) {
@@ -44,10 +47,17 @@ function DashboardInstance() {
   const [pairingCode, setPairingCode] = useState("");
   const [, setTimer] = useState(0);
   const token = localStorage.getItem("token");
+  const [visible, setVisible] = useState<string[]>([]);
 
   const { instance } = useInstance();
 
-  const handleRestart = async () => {};
+  const handleRestart = async (instanceName: string) => {
+    try {
+      restart(instanceName);
+    } catch (error) {
+      console.error("Erro ao reiniciar:", error);
+    }
+  };
 
   const handleLogout = async (instanceName: string) => {
     try {
@@ -86,7 +96,7 @@ function DashboardInstance() {
   };
 
   if (!instance) {
-    return <div>Carregando...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
@@ -110,7 +120,43 @@ function DashboardInstance() {
             </div>
             <div className="dashboard-name">{instance.name}</div>
             <div className="dashboard-description">{instance.ownerJid}</div>
-            {instance.connectionStatus === "close" && (
+            <div className="card-id">
+              <span>
+                {visible.includes(instance.token)
+                  ? instance.token
+                  : instance.token
+                      .split("")
+                      .map(() => "*")
+                      .join("")}
+              </span>
+              <Copy
+                className="card-icon"
+                size="15"
+                onClick={() => {
+                  copyToClipboard(instance.token);
+                }}
+              />
+              {visible.includes(instance.token) ? (
+                <EyeOff
+                  className="card-icon"
+                  size="15"
+                  onClick={() => {
+                    setVisible(
+                      visible.filter((item) => item !== instance.token)
+                    );
+                  }}
+                />
+              ) : (
+                <Eye
+                  className="card-icon"
+                  size="15"
+                  onClick={() => {
+                    setVisible([...visible, instance.token]);
+                  }}
+                />
+              )}
+            </div>
+            {instance.connectionStatus !== "open" && (
               <div className="connection-warning">
                 <span>Telefone não conectado</span>
 
@@ -125,11 +171,12 @@ function DashboardInstance() {
                     <DialogHeader>
                       <DialogDescription>
                         {qrCodeData ? (
-                          <img src={qrCodeData} alt="QR Code" />
+                          <img src={qrCodeData} alt="QR Code" width="500" />
                         ) : (
                           <img
                             src="/assets/images/evolution-logo.png"
                             alt="Carregando..."
+                            width="500"
                           />
                         )}
                       </DialogDescription>
@@ -156,9 +203,7 @@ function DashboardInstance() {
                               <p>{pairingCode}</p>
                             </div>
                           ) : (
-                            <div>
-                              <p>Carregando...</p>
-                            </div>
+                            <LoadingSpinner />
                           )}
                         </DialogDescription>
                       </DialogHeader>
@@ -169,7 +214,10 @@ function DashboardInstance() {
             )}
           </div>
           <div className="dashboard-actions">
-            <Button className="action-button" onClick={handleRestart}>
+            <Button
+              className="action-button"
+              onClick={() => handleRestart(instance.name)}
+            >
               REINICIAR
             </Button>
             <Button
@@ -189,19 +237,19 @@ function DashboardInstance() {
           <CardHeader>
             <CardTitle>Contatos</CardTitle>
           </CardHeader>
-          <CardContent>0</CardContent>
+          <CardContent>{instance?._count?.Contact || 0}</CardContent>
         </Card>
         <Card className="instance-card">
           <CardHeader>
             <CardTitle>Chats</CardTitle>
           </CardHeader>
-          <CardContent>0</CardContent>
+          <CardContent>{instance?._count?.Chat || 0}</CardContent>
         </Card>
         <Card className="instance-card">
           <CardHeader>
             <CardTitle>Mensagens</CardTitle>
           </CardHeader>
-          <CardContent>0</CardContent>
+          <CardContent>{instance?._count?.Message || 0}</CardContent>
         </Card>
       </main>
     </>

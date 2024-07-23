@@ -37,6 +37,7 @@ import {
   getTypebot,
   updateTypebot,
 } from "@/services/typebot.service";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -196,7 +197,7 @@ function UpdateTypebot({
 
   return (
     <div className="form">
-      {loading && <p>Carregando...</p>}
+      {loading && <LoadingSpinner />}
       {!loading && (
         <Form {...form}>
           <form

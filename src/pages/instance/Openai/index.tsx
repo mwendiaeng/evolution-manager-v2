@@ -14,6 +14,8 @@ import { Instance, OpenaiBot, OpenaiCreds } from "@/types/evolution.types";
 import { useNavigate, useParams } from "react-router-dom";
 import { UpdateOpenai } from "./UpdateOpenai";
 import { NewOpenai } from "./NewOpenai";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { CredentialsOpenai } from "./CredentialsOpenai";
 
 const fetchData = async (
   instance: Instance | null,
@@ -74,14 +76,17 @@ function Openai() {
     <main className="main-table pt-5">
       <div className="flex items-center justify-between">
         <h3 className="ml-5 mb-1 text-lg font-medium">Openai Bots</h3>
-        <NewOpenai resetTable={resetTable} creds={creds} />
+        <div>
+          <CredentialsOpenai />
+          <NewOpenai resetTable={resetTable} creds={creds} />
+        </div>
       </div>
       <Separator className="mt-4 border border-black" />
       <ResizablePanelGroup direction="horizontal">
         <ResizablePanel defaultSize={35} className="p-5">
           <div className="table">
             {loading ? (
-              <p>Carregando...</p>
+              <LoadingSpinner />
             ) : (
               <>
                 {bots && bots.length > 0 ? (

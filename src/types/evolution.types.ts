@@ -39,7 +39,7 @@ export type Instance = {
     Message?: number;
     Contact?: number;
     Chat?: number;
-  }
+  };
 };
 
 export type Contact = {
@@ -128,4 +128,61 @@ export type Typebot = {
   stopBotFromMe: boolean;
   keepOpen: boolean;
   debounceTime: number;
+};
+
+export type Webhook = {
+  id?: string;
+  enabled: boolean;
+  url: string;
+  events: string[];
+  webhookBase64: boolean;
+  webhookByEvents: boolean;
+};
+
+export type Websocket = {
+  id?: string;
+  enabled: boolean;
+  events: string[];
+};
+
+export type Rabbitmq = {
+  id?: string;
+  enabled: boolean;
+  events: string[];
+};
+
+export type Sqs = {
+  id?: string;
+  enabled: boolean;
+  events: string[];
+};
+
+export type Proxy = {
+  id?: string;
+  enabled: boolean;
+  host: string;
+  port: string;
+  protocol: string;
+  username?: string;
+  password?: string;
+};
+
+export type Chatwoot = {
+  id?: string;
+  enabled: boolean;
+  accountId: string;
+  token: string;
+  url: string;
+  signMsg: boolean;
+  reopenConversation: boolean;
+  conversationPending: boolean;
+  nameInbox: string;
+  mergeBrazilContacts: boolean;
+  importContacts: boolean;
+  importMessages: boolean;
+  daysLimitImportMessages: number;
+  signDelimiter: string;
+  autoCreate: boolean;
+  organization: string;
+  logo: string;
 };

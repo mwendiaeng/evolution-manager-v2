@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { useEffect, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -13,34 +15,71 @@ import {
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import {
-  MultiSelector,
-  MultiSelectorContent,
-  MultiSelectorInput,
-  MultiSelectorItem,
-  MultiSelectorList,
-  MultiSelectorTrigger,
-} from "@/components/ui/multiselector";
+
+import { createSqs, fetchSqs } from "@/services/sqs.service";
+import { useInstance } from "@/contexts/InstanceContext";
 import toastService from "@/utils/custom-toast.service";
+import { Sqs as SqsType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
   events: z.array(z.string()),
 });
 
+type FormSchemaType = z.infer<typeof FormSchema>;
+
 function Sqs() {
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const { instance } = useInstance();
+  const [loading, setLoading] = useState(false);
+
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enabled: true,
-      events: ["MESSAGES_UPSERT", "QRCODE_UPDATED"],
+      enabled: false,
+      events: [],
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toastService.success("You submitted");
-    console.log(data);
-  }
+  useEffect(() => {
+    const loadSqsData = async () => {
+      if (!instance) return;
+      setLoading(true);
+      try {
+        const data = await fetchSqs(instance.name, instance.token);
+        form.reset(data);
+      } catch (error) {
+        console.error("Erro ao buscar dados do sqs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSqsData();
+  }, [instance, form]);
+
+  const onSubmit = async () => {
+    if (!instance) return;
+
+    const data = form.getValues();
+
+    setLoading(true);
+    try {
+      const sqsData: SqsType = {
+        enabled: data.enabled,
+        events: data.events,
+      };
+
+      await createSqs(instance.name, instance.token, sqsData);
+      toastService.success("Sqs criado com sucesso");
+    } catch (error: any) {
+      console.error("Erro ao criar sqs:", error);
+      toastService.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const events = [
     "APPLICATION_STARTUP",
@@ -72,10 +111,7 @@ function Sqs() {
   return (
     <main className="main-content">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-6"
-        >
+        <form className="w-full space-y-6">
           <div>
             <h3 className="mb-1 text-lg font-medium">Sqs</h3>
             <Separator className="my-4 border-t border-gray-600" />
@@ -87,7 +123,9 @@ function Sqs() {
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-sm">Ativo</FormLabel>
-                      <FormDescription>Ativa ou desativa o sqs</FormDescription>
+                      <FormDescription>
+                        Ativa ou desativa o sqs
+                      </FormDescription>
                     </div>
                     <FormControl>
                       <Switch
@@ -105,34 +143,37 @@ function Sqs() {
                   <FormItem className="flex flex-col">
                     <FormLabel>Eventos</FormLabel>
                     <FormControl>
-                      <MultiSelector
-                        values={field.value}
-                        onValuesChange={(values) => {
-                          field.onChange(values);
-                        }}
-                        loop
-                        className="w-full border border-gray-600"
-                      >
-                        <MultiSelectorTrigger>
-                          <MultiSelectorInput placeholder="Selecione os Eventos" />
-                        </MultiSelectorTrigger>
-                        <MultiSelectorContent>
-                          <MultiSelectorList>
-                            {events.map((event) => (
-                              <MultiSelectorItem key={event} value={event}>
-                                {event}
-                              </MultiSelectorItem>
-                            ))}
-                          </MultiSelectorList>
-                        </MultiSelectorContent>
-                      </MultiSelector>
+                      <>
+                        {events.map((event) => (
+                          <div
+                            key={event}
+                            className="flex items-center justify-between rounded-lg border border-gray-600 p-4"
+                          >
+                            <span>{event}</span>
+                            <Switch
+                              checked={field.value.includes(event)}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  field.onChange([...field.value, event]);
+                                } else {
+                                  field.onChange(
+                                    field.value.filter((e) => e !== event)
+                                  );
+                                }
+                              }}
+                            />
+                          </div>
+                        ))}
+                      </>
                     </FormControl>
                   </FormItem>
                 )}
               />
             </div>
           </div>
-          <Button type="submit">Salvar</Button>
+          <Button disabled={loading} onClick={onSubmit}>
+            {loading ? "Salvando..." : "Salvar"}
+          </Button>
         </form>
       </Form>
     </main>

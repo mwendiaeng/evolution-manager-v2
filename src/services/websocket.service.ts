@@ -1,8 +1,8 @@
-import { Webhook } from "@/types/evolution.types";
+import { Websocket } from "@/types/evolution.types";
 import ApiInstance from "@/utils/instance";
 
-export const fetchWebhook = async (instanceName: string, token: string) => {
-  const response = await ApiInstance.get(`/webhook/find/${instanceName}`, {
+export const fetchWebsocket = async (instanceName: string, token: string) => {
+  const response = await ApiInstance.get(`/websocket/find/${instanceName}`, {
     headers: {
       apikey: token,
     },
@@ -10,13 +10,13 @@ export const fetchWebhook = async (instanceName: string, token: string) => {
   return response.data;
 };
 
-export const createWebhook = async (
+export const createWebsocket = async (
   instanceName: string,
   token: string,
-  data: Webhook
+  data: Websocket
 ) => {
   const response = await ApiInstance.post(
-    `/webhook/set/${instanceName}`,
+    `/websocket/set/${instanceName}`,
     data,
     {
       headers: {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import "./style.css";
 
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +18,10 @@ import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import toastService from "@/utils/custom-toast.service";
+import { createChatwoot, fetchChatwoot } from "@/services/chatwoot.service";
+import { useInstance } from "@/contexts/InstanceContext";
+import { useEffect, useState } from "react";
+import { Chatwoot as ChatwootType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -38,6 +43,9 @@ const FormSchema = z.object({
 });
 
 function Chatwoot() {
+  const { instance } = useInstance();
+  const [, setLoading] = useState(false);
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -60,10 +68,60 @@ function Chatwoot() {
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toastService.success("You submitted");
-    console.log(data);
-  }
+  useEffect(() => {
+    const loadChatwootData = async () => {
+      if (!instance) return;
+      setLoading(true);
+      try {
+        const data = await fetchChatwoot(instance.name, instance.token);
+        form.reset(data);
+      } catch (error) {
+        console.error("Erro ao buscar dados do chatwoot:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadChatwootData();
+  }, [instance, form]);
+
+  const onSubmit = async () => {
+    if (!instance) return;
+
+    const data = form.getValues();
+
+    setLoading(true);
+    try {
+      const chatwootData: ChatwootType = {
+        enabled: data.enabled,
+        accountId: data.accountId,
+        token: data.token,
+        url: data.url,
+        signMsg: data.signMsg,
+        signDelimiter: data.signDelimiter,
+        nameInbox: data.nameInbox,
+        organization: data.organization,
+        logo: data.logo,
+        reopenConversation: data.reopenConversation,
+        conversationPending: data.conversationPending,
+        mergeBrazilContacts: data.mergeBrazilContacts,
+        importContacts: data.importContacts,
+        importMessages: data.importMessages,
+        daysLimitImportMessages: data.daysLimitImportMessages,
+        autoCreate: data.autoCreate,
+      };
+
+      await createChatwoot(instance.name, instance.token, chatwootData);
+      toastService.success("Chatwoot criado com sucesso");
+    } catch (error: any) {
+      console.error("Erro ao criar chatwoot:", error);
+      toastService.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <main className="main-content">

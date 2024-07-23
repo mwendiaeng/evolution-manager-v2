@@ -14,21 +14,26 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 
-import { createWebsocket, fetchWebsocket } from "@/services/websocket.service";
+import { createProxy, fetchProxy } from "@/services/proxy.service";
 import { useInstance } from "@/contexts/InstanceContext";
 import toastService from "@/utils/custom-toast.service";
-import { Websocket as WebsocketType } from "@/types/evolution.types";
+import { Proxy as ProxyType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
-  events: z.array(z.string()),
+  host: z.string(),
+  port: z.string(),
+  protocol: z.string(),
+  username: z.string(),
+  password: z.string(),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
 
-function Websocket() {
+function Proxy() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
@@ -36,25 +41,29 @@ function Websocket() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       enabled: false,
-      events: [],
+      host: "",
+      port: "",
+      protocol: "http",
+      username: "",
+      password: "",
     },
   });
 
   useEffect(() => {
-    const loadWebsocketData = async () => {
+    const loadProxyData = async () => {
       if (!instance) return;
       setLoading(true);
       try {
-        const data = await fetchWebsocket(instance.name, instance.token);
+        const data = await fetchProxy(instance.name, instance.token);
         form.reset(data);
       } catch (error) {
-        console.error("Erro ao buscar dados do websocket:", error);
+        console.error("Erro ao buscar dados do proxy:", error);
       } finally {
         setLoading(false);
       }
     };
 
-    loadWebsocketData();
+    loadProxyData();
   }, [instance, form]);
 
   const onSubmit = async () => {
@@ -65,15 +74,19 @@ function Websocket() {
     console.log("data", data);
     setLoading(true);
     try {
-      const websocketData: WebsocketType = {
+      const proxyData: ProxyType = {
         enabled: data.enabled,
-        events: data.events,
+        host: data.host,
+        port: data.port,
+        protocol: data.protocol,
+        username: data.username,
+        password: data.password,
       };
 
-      await createWebsocket(instance.name, instance.token, websocketData);
-      toastService.success("Websocket criado com sucesso");
+      await createProxy(instance.name, instance.token, proxyData);
+      toastService.success("Proxy criado com sucesso");
     } catch (error: any) {
-      console.error("Erro ao criar websocket:", error);
+      console.error("Erro ao criar proxy:", error);
       toastService.error(
         `Erro ao criar : ${error?.response?.data?.response?.message}`
       );
@@ -82,39 +95,12 @@ function Websocket() {
     }
   };
 
-  const events = [
-    "APPLICATION_STARTUP",
-    "QRCODE_UPDATED",
-    "MESSAGES_SET",
-    "MESSAGES_UPSERT",
-    "MESSAGES_UPDATE",
-    "MESSAGES_DELETE",
-    "SEND_MESSAGE",
-    "CONTACTS_SET",
-    "CONTACTS_UPSERT",
-    "CONTACTS_UPDATE",
-    "PRESENCE_UPDATE",
-    "CHATS_SET",
-    "CHATS_UPSERT",
-    "CHATS_UPDATE",
-    "CHATS_DELETE",
-    "GROUPS_UPSERT",
-    "GROUP_UPDATE",
-    "GROUP_PARTICIPANTS_UPDATE",
-    "CONNECTION_UPDATE",
-    "LABELS_EDIT",
-    "LABELS_ASSOCIATION",
-    "CALL",
-    "TYPEBOT_START",
-    "TYPEBOT_CHANGE_STATUS",
-  ];
-
   return (
     <main className="main-content">
       <Form {...form}>
         <form className="w-full space-y-6">
           <div>
-            <h3 className="mb-1 text-lg font-medium">Websocket</h3>
+            <h3 className="mb-1 text-lg font-medium">Proxy</h3>
             <Separator className="my-4 border-t border-gray-600" />
             <div className="space-y-4">
               <FormField
@@ -125,7 +111,7 @@ function Websocket() {
                     <div className="space-y-0.5">
                       <FormLabel className="text-sm">Ativo</FormLabel>
                       <FormDescription>
-                        Ativa ou desativa o websocket
+                        Ativa ou desativa o proxy
                       </FormDescription>
                     </div>
                     <FormControl>
@@ -139,35 +125,59 @@ function Websocket() {
               />
               <FormField
                 control={form.control}
-                name="events"
+                name="host"
                 render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Eventos</FormLabel>
-                    <FormControl>
-                      <>
-                        {events.map((event) => (
-                          <div
-                            key={event}
-                            className="flex items-center justify-between rounded-lg border border-gray-600 p-4"
-                          >
-                            <span>{event}</span>
-                            <Switch
-                              checked={field.value.includes(event)}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  field.onChange([...field.value, event]);
-                                } else {
-                                  field.onChange(
-                                    field.value.filter((e) => e !== event)
-                                  );
-                                }
-                              }}
-                            />
-                          </div>
-                        ))}
-                      </>
-                    </FormControl>
-                  </FormItem>
+                  <Input
+                    {...field}
+                    className="border border-gray-600 w-full"
+                    placeholder="Host"
+                  />
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="port"
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    className="border border-gray-600 w-full"
+                    placeholder="Porta"
+                    type="number"
+                  />
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="protocol"
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    className="border border-gray-600 w-full"
+                    placeholder="Protocolo"
+                  />
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="username"
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    className="border border-gray-600 w-full"
+                    placeholder="Usuário"
+                  />
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    className="border border-gray-600 w-full"
+                    placeholder="Senha"
+                    type="password"
+                  />
                 )}
               />
             </div>
@@ -181,4 +191,4 @@ function Websocket() {
   );
 }
 
-export { Websocket };
+export { Proxy };

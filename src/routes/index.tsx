@@ -7,6 +7,7 @@ import { Chat } from "@/pages/instance/Chat";
 import { Chatwoot } from "@/pages/instance/Chatwoot";
 import { DashboardInstance } from "@/pages/instance/DashboardInstance";
 import { Openai } from "@/pages/instance/Openai";
+import { Proxy } from "@/pages/instance/Proxy";
 import { Rabbitmq } from "@/pages/instance/Rabbitmq";
 import { Settings } from "@/pages/instance/Settings";
 import { Sqs } from "@/pages/instance/Sqs";
@@ -161,6 +162,16 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <InstanceLayout>
           <Typebot />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "instance/:instanceId/proxy",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Proxy />
         </InstanceLayout>
       </ProtectedRoute>
     ),

@@ -1,8 +1,8 @@
-import { Webhook } from "@/types/evolution.types";
+import { Sqs } from "@/types/evolution.types";
 import ApiInstance from "@/utils/instance";
 
-export const fetchWebhook = async (instanceName: string, token: string) => {
-  const response = await ApiInstance.get(`/webhook/find/${instanceName}`, {
+export const fetchSqs = async (instanceName: string, token: string) => {
+  const response = await ApiInstance.get(`/sqs/find/${instanceName}`, {
     headers: {
       apikey: token,
     },
@@ -10,13 +10,13 @@ export const fetchWebhook = async (instanceName: string, token: string) => {
   return response.data;
 };
 
-export const createWebhook = async (
+export const createSqs = async (
   instanceName: string,
   token: string,
-  data: Webhook
+  data: Sqs
 ) => {
   const response = await ApiInstance.post(
-    `/webhook/set/${instanceName}`,
+    `/sqs/set/${instanceName}`,
     data,
     {
       headers: {

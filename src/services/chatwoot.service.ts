@@ -1,8 +1,8 @@
-import { Webhook } from "@/types/evolution.types";
+import { Chatwoot } from "@/types/evolution.types";
 import ApiInstance from "@/utils/instance";
 
-export const fetchWebhook = async (instanceName: string, token: string) => {
-  const response = await ApiInstance.get(`/webhook/find/${instanceName}`, {
+export const fetchChatwoot = async (instanceName: string, token: string) => {
+  const response = await ApiInstance.get(`/chatwoot/find/${instanceName}`, {
     headers: {
       apikey: token,
     },
@@ -10,13 +10,13 @@ export const fetchWebhook = async (instanceName: string, token: string) => {
   return response.data;
 };
 
-export const createWebhook = async (
+export const createChatwoot = async (
   instanceName: string,
   token: string,
-  data: Webhook
+  data: Chatwoot
 ) => {
   const response = await ApiInstance.post(
-    `/webhook/set/${instanceName}`,
+    `/chatwoot/set/${instanceName}`,
     data,
     {
       headers: {

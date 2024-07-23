@@ -1,5 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useEffect, useState } from "react";
 
@@ -15,18 +16,11 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import {
-  MultiSelector,
-  MultiSelectorContent,
-  MultiSelectorInput,
-  MultiSelectorItem,
-  MultiSelectorList,
-  MultiSelectorTrigger,
-} from "@/components/ui/multiselector";
 
 import { createWebhook, fetchWebhook } from "@/services/webhook.service";
 import { useInstance } from "@/contexts/InstanceContext";
 import toastService from "@/utils/custom-toast.service";
+import { Webhook as WebhookType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -41,14 +35,13 @@ type FormSchemaType = z.infer<typeof FormSchema>;
 function Webhook() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       enabled: false,
       url: "",
-      events: ["MESSAGES_UPSERT", "QRCODE_UPDATED"],
+      events: [],
       webhookBase64: false,
       webhookByEvents: false,
     },
@@ -59,7 +52,7 @@ function Webhook() {
       if (!instance) return;
       setLoading(true);
       try {
-        const data = await fetchWebhook(instance.name, "your-api-key");
+        const data = await fetchWebhook(instance.name, instance.token);
         form.reset(data);
       } catch (error) {
         console.error("Erro ao buscar dados do webhook:", error);
@@ -71,16 +64,29 @@ function Webhook() {
     loadWebhookData();
   }, [instance, form]);
 
-  const onSubmit: SubmitHandler<FormSchemaType> = async (data) => {
+  const onSubmit = async () => {
     if (!instance) return;
 
+    const data = form.getValues();
+
+    console.log("data", data);
     setLoading(true);
     try {
-      await createWebhook(instance.name, "your-api-key", data);
+      const webhookData: WebhookType = {
+        enabled: data.enabled,
+        url: data.url,
+        events: data.events,
+        webhookBase64: data.webhookBase64,
+        webhookByEvents: data.webhookByEvents,
+      };
+
+      await createWebhook(instance.name, instance.token, webhookData);
       toastService.success("Webhook criado com sucesso");
-    } catch (error) {
+    } catch (error: any) {
       console.error("Erro ao criar webhook:", error);
-      toastService.error("Erro ao criar webhook");
+      toastService.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      );
     } finally {
       setLoading(false);
     }
@@ -116,10 +122,7 @@ function Webhook() {
   return (
     <main className="main-content">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-6"
-        >
+        <form className="w-full space-y-6">
           <div>
             <h3 className="mb-1 text-lg font-medium">Webhook</h3>
             <Separator className="my-4 border-t border-gray-600" />
@@ -153,54 +156,6 @@ function Webhook() {
                     className="border border-gray-600 w-full"
                     placeholder="URL"
                   />
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="events"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col">
-                    <FormLabel>Eventos</FormLabel>
-                    <FormControl>
-                      <MultiSelector
-                        values={field.value}
-                        onValuesChange={(values) => {
-                          field.onChange(values);
-                        }}
-                        loop
-                        className="w-full border border-gray-600"
-                        isOpen={isDropdownOpen}
-                        onOpenChange={setIsDropdownOpen}
-                      >
-                        <MultiSelectorTrigger>
-                          <MultiSelectorInput
-                            placeholder="Selecione os Eventos"
-                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                          />
-                        </MultiSelectorTrigger>
-                        <MultiSelectorContent>
-                          <MultiSelectorList>
-                            {events.map((event) => (
-                              <MultiSelectorItem
-                                key={event}
-                                value={event}
-                                selected={field.value.includes(event)}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  const newValue = field.value.includes(event)
-                                    ? field.value.filter((e) => e !== event)
-                                    : [...field.value, event];
-                                  field.onChange(newValue);
-                                }}
-                              >
-                                {event}
-                              </MultiSelectorItem>
-                            ))}
-                          </MultiSelectorList>
-                        </MultiSelectorContent>
-                      </MultiSelector>
-                    </FormControl>
-                  </FormItem>
                 )}
               />
               <FormField
@@ -248,9 +203,42 @@ function Webhook() {
                   </FormItem>
                 )}
               />
+              <FormField
+                control={form.control}
+                name="events"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col">
+                    <FormLabel>Eventos</FormLabel>
+                    <FormControl>
+                      <>
+                        {events.map((event) => (
+                          <div
+                            key={event}
+                            className="flex items-center justify-between rounded-lg border border-gray-600 p-4"
+                          >
+                            <span>{event}</span>
+                            <Switch
+                              checked={field.value.includes(event)}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  field.onChange([...field.value, event]);
+                                } else {
+                                  field.onChange(
+                                    field.value.filter((e) => e !== event)
+                                  );
+                                }
+                              }}
+                            />
+                          </div>
+                        ))}
+                      </>
+                    </FormControl>
+                  </FormItem>
+                )}
+              />
             </div>
           </div>
-          <Button type="submit" disabled={loading}>
+          <Button disabled={loading} onClick={onSubmit}>
             {loading ? "Salvando..." : "Salvar"}
           </Button>
         </form>

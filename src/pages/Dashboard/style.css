@@ -207,6 +207,12 @@ header {
     cursor: pointer;
 }
 
+.disconnect.disabled {
+    background-color: #ac8f8f;
+    color: #ffffff;
+    cursor: not-allowed;
+}
+
 .status-connected {
     width: 10px;
     height: 10px;

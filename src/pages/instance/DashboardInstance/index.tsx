@@ -13,7 +13,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { Copy, Eye, EyeOff } from "lucide-react";
+import { Copy, Eye, EyeOff, RefreshCw } from "lucide-react";
 import { copyToClipboard } from "@/utils/copy-to-clipboard";
 
 const getStatusClass = (status: string) => {
@@ -45,7 +45,6 @@ const getStatusText = (status: string) => {
 function DashboardInstance() {
   const [qrCodeData, setQRCodeData] = useState("");
   const [pairingCode, setPairingCode] = useState("");
-  const [, setTimer] = useState(0);
   const token = localStorage.getItem("token");
   const [visible, setVisible] = useState<string[]>([]);
 
@@ -53,7 +52,8 @@ function DashboardInstance() {
 
   const handleRestart = async (instanceName: string) => {
     try {
-      restart(instanceName);
+      await restart(instanceName);
+      window.location.reload();
     } catch (error) {
       console.error("Erro ao reiniciar:", error);
     }
@@ -62,6 +62,7 @@ function DashboardInstance() {
   const handleLogout = async (instanceName: string) => {
     try {
       await logout(instanceName);
+      window.location.reload();
     } catch (error) {
       console.error("Erro ao desconectar:", error);
     }
@@ -85,7 +86,6 @@ function DashboardInstance() {
 
         setQRCodeData(data.base64);
       }
-      setTimer(0);
     } catch (error) {
       console.error("Erro ao conectar:", error);
     }
@@ -93,6 +93,8 @@ function DashboardInstance() {
 
   const closeQRCodePopup = () => {
     setQRCodeData("");
+    setPairingCode("");
+    window.location.reload();
   };
 
   if (!instance) {
@@ -196,11 +198,14 @@ function DashboardInstance() {
                       <DialogHeader>
                         <DialogDescription>
                           {pairingCode ? (
-                            <div>
-                              <p>
+                            <div className="py-3">
+                              <p className="text-center">
                                 <strong>Código de emparelhamento:</strong>
                               </p>
-                              <p>{pairingCode}</p>
+                              <p className="text-center pairing-code">
+                                {pairingCode.substring(0, 4)}-
+                                {pairingCode.substring(4, 8)}
+                              </p>
                             </div>
                           ) : (
                             <LoadingSpinner />
@@ -214,6 +219,9 @@ function DashboardInstance() {
             )}
           </div>
           <div className="dashboard-actions">
+            <Button variant="outline" className="refresh-button">
+              <RefreshCw onClick={window.location.reload} size="20" />
+            </Button>
             <Button
               className="action-button"
               onClick={() => handleRestart(instance.name)}

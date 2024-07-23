@@ -296,7 +296,9 @@ function Dashboard() {
               <div className="card-actions">
                 {renderStatus(instance.connectionStatus)}
                 <button
-                  className="btn disconnect"
+                  className={`btn disconnect ${
+                    deleting.includes(instance.name) ? "disabled" : ""
+                  }`}
                   onClick={() => handleDelete(instance.name)}
                   disabled={deleting.includes(instance.name)}
                 >

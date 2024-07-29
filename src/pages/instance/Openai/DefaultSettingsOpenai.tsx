@@ -243,14 +243,14 @@ function DefaultSettingsOpenai({ creds }: { creds: OpenaiCreds[] }) {
                   name="openaiIdFallback"
                   render={({ field }) => (
                     <FormItem className="pb-4">
-                      <FormLabel>Typebot Fallback</FormLabel>
+                      <FormLabel>Bot Fallback</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl className="border border-gray-600">
                           <SelectTrigger>
-                            <SelectValue placeholder="Selecione um typebot" />
+                            <SelectValue placeholder="Selecione um bot" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="border border-gray-600">

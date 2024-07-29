@@ -28,6 +28,7 @@ import {
 } from "@/components/ui/table";
 import { useInstance } from "@/contexts/InstanceContext";
 import {
+  Delete,
   ListCollapse,
   MoreHorizontal,
   Pause,
@@ -171,6 +172,12 @@ function SessionsTypebot({ typebotId }: { typebotId: string }) {
                   Fechar
                 </DropdownMenuItem>
               )}
+              <DropdownMenuItem
+                onClick={() => changeStatus(session.remoteJid, "delete")}
+              >
+                <Delete className="w-4 h-4 mr-2" />
+                Excluir
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );

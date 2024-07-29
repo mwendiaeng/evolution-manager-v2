@@ -581,7 +581,7 @@ function UpdateOpenai({
                       </FormControl>
                       <div className="ml-4 space-y-0.5">
                         <FormLabel className="text-sm">
-                          Para o bot quando eu enviar uma mensagem
+                          Pausa o bot quando eu enviar uma mensagem
                         </FormLabel>
                       </div>
                     </FormItem>
@@ -623,7 +623,7 @@ function UpdateOpenai({
                 />
               </div>
             </div>
-            
+
             <div>
               <SessionsOpenai openaiBotId={openaiBotId} />
             </div>

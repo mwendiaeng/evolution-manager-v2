@@ -28,13 +28,18 @@ import {
 } from "@/components/ui/table";
 import { useInstance } from "@/contexts/InstanceContext";
 import {
+  Delete,
   ListCollapse,
   MoreHorizontal,
   Pause,
   Play,
   StopCircle,
 } from "lucide-react";
-import { Instance, OpenaiSession, TypebotSession } from "@/types/evolution.types";
+import {
+  Instance,
+  OpenaiSession,
+  TypebotSession,
+} from "@/types/evolution.types";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -166,6 +171,13 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId: string }) {
                   Fechar
                 </DropdownMenuItem>
               )}
+
+              <DropdownMenuItem
+                onClick={() => changeStatus(session.remoteJid, "delete")}
+              >
+                <Delete className="w-4 h-4 mr-2" />
+                Excluir
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         );

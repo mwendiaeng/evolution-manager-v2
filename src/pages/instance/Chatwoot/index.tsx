@@ -128,7 +128,6 @@ function Chatwoot() {
       <div className="form-container">
         <Form {...form}>
           <form
-            onSubmit={form.handleSubmit(onSubmit)}
             className="w-full space-y-6"
           >
             <div>
@@ -279,6 +278,28 @@ function Chatwoot() {
                 />
                 <FormField
                   control={form.control}
+                  name="reopenConversation"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
+                      <div className="space-y-0.5">
+                        <FormLabel className="text-sm">
+                          Reabrir Conversa
+                        </FormLabel>
+                        <FormDescription>
+                          Reabre conversa ao receber mensagem
+                        </FormDescription>
+                      </div>
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="importContacts"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
@@ -359,7 +380,7 @@ function Chatwoot() {
                 />
               </div>
             </div>
-            <Button type="submit">Salvar</Button>
+            <Button type="button" onClick={onSubmit}>Salvar</Button>
           </form>
         </Form>
       </div>

@@ -230,89 +230,94 @@ function Dashboard() {
         </div>
       </div>
       <main className="instance-cards">
-        {instances.map((instance: Instance) => (
-          <Card className="instance-card" key={instance.id}>
-            <div className="card-header">
-              <div className="card-id">
-                <span>
-                  {visible.includes(instance.token)
-                    ? instance.token.substring(0, 36) + "..."
-                    : instance.token
-                        .substring(0, 36)
-                        .split("")
-                        .map(() => "*")
-                        .join("")}
-                </span>
-                <Copy
-                  className="card-icon"
-                  size="15"
-                  onClick={() => {
-                    copyToClipboard(instance.token);
-                  }}
-                />
-                {visible.includes(instance.token) ? (
-                  <EyeOff
+        {instances &&
+          instances.length > 0 &&
+          instances.map((instance: Instance) => (
+            <Card className="instance-card" key={instance.id}>
+              <div className="card-header">
+                <div className="card-id">
+                  <span>
+                    {visible.includes(instance.token)
+                      ? instance.token.substring(0, 36) + "..."
+                      : instance.token
+                          .substring(0, 36)
+                          .split("")
+                          .map(() => "*")
+                          .join("")}
+                  </span>
+                  <Copy
                     className="card-icon"
                     size="15"
                     onClick={() => {
-                      setVisible(
-                        visible.filter((item) => item !== instance.token)
-                      );
+                      copyToClipboard(instance.token);
                     }}
                   />
-                ) : (
-                  <Eye
-                    className="card-icon"
-                    size="15"
-                    onClick={() => {
-                      setVisible([...visible, instance.token]);
-                    }}
-                  />
-                )}
-              </div>
-              <div className="card-menu" onClick={handleInstance(instance.id)}>
-                <Cog className="card-icon" size="20" />
-              </div>
-            </div>
-            <div className="card-body">
-              <div className="card-details">
-                <p className="instance-name">{instance.name}</p>
-                <p className="instance-description">{instance.profileName}</p>
-              </div>
-              <div className="card-contact">
-                <p>{instance.ownerJid && instance.ownerJid.split("@")[0]}</p>
-              </div>
-            </div>
-            <div className="card-footer">
-              <div className="card-stats">
-                <div className="stat">
-                  <CircleUser className="stat-icon" size="20" />
-                  <span>{instance?._count?.Contact || 0}</span>
-                </div>
-                <div className="stat">
-                  <MessageCircle className="stat-icon" size="20" />
-                  <span>{instance?._count?.Message || 0}</span>
-                </div>
-              </div>
-              <div className="card-actions">
-                {renderStatus(instance.connectionStatus)}
-                <button
-                  className={`btn disconnect ${
-                    deleting.includes(instance.name) ? "disabled" : ""
-                  }`}
-                  onClick={() => handleDelete(instance.name)}
-                  disabled={deleting.includes(instance.name)}
-                >
-                  {deleting.includes(instance.name) ? (
-                    <span>Deletando...</span>
+                  {visible.includes(instance.token) ? (
+                    <EyeOff
+                      className="card-icon"
+                      size="15"
+                      onClick={() => {
+                        setVisible(
+                          visible.filter((item) => item !== instance.token)
+                        );
+                      }}
+                    />
                   ) : (
-                    <span>Deletar</span>
+                    <Eye
+                      className="card-icon"
+                      size="15"
+                      onClick={() => {
+                        setVisible([...visible, instance.token]);
+                      }}
+                    />
                   )}
-                </button>
+                </div>
+                <div
+                  className="card-menu"
+                  onClick={handleInstance(instance.id)}
+                >
+                  <Cog className="card-icon" size="20" />
+                </div>
               </div>
-            </div>
-          </Card>
-        ))}
+              <div className="card-body">
+                <div className="card-details">
+                  <p className="instance-name">{instance.name}</p>
+                  <p className="instance-description">{instance.profileName}</p>
+                </div>
+                <div className="card-contact">
+                  <p>{instance.ownerJid && instance.ownerJid.split("@")[0]}</p>
+                </div>
+              </div>
+              <div className="card-footer">
+                <div className="card-stats">
+                  <div className="stat">
+                    <CircleUser className="stat-icon" size="20" />
+                    <span>{instance?._count?.Contact || 0}</span>
+                  </div>
+                  <div className="stat">
+                    <MessageCircle className="stat-icon" size="20" />
+                    <span>{instance?._count?.Message || 0}</span>
+                  </div>
+                </div>
+                <div className="card-actions">
+                  {renderStatus(instance.connectionStatus)}
+                  <button
+                    className={`btn disconnect ${
+                      deleting.includes(instance.name) ? "disabled" : ""
+                    }`}
+                    onClick={() => handleDelete(instance.name)}
+                    disabled={deleting.includes(instance.name)}
+                  >
+                    {deleting.includes(instance.name) ? (
+                      <span>Deletando...</span>
+                    ) : (
+                      <span>Deletar</span>
+                    )}
+                  </button>
+                </div>
+              </div>
+            </Card>
+          ))}
       </main>
     </>
   );

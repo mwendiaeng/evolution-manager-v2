@@ -38,7 +38,7 @@ const FormSchema = z.object({
   mergeBrazilContacts: z.boolean(),
   importContacts: z.boolean(),
   importMessages: z.boolean(),
-  daysLimitImportMessages: z.number(),
+  daysLimitImportMessages: z.string(),
   autoCreate: z.boolean(),
 });
 
@@ -63,7 +63,7 @@ function Chatwoot() {
       mergeBrazilContacts: true,
       importContacts: false,
       importMessages: false,
-      daysLimitImportMessages: 7,
+      daysLimitImportMessages: "7",
       autoCreate: true,
     },
   });
@@ -107,7 +107,7 @@ function Chatwoot() {
         mergeBrazilContacts: data.mergeBrazilContacts,
         importContacts: data.importContacts,
         importMessages: data.importMessages,
-        daysLimitImportMessages: data.daysLimitImportMessages,
+        daysLimitImportMessages: parseInt(data.daysLimitImportMessages, 10),
         autoCreate: data.autoCreate,
       };
 

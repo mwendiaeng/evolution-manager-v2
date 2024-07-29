@@ -1,4 +1,4 @@
-import { OpenaiBot, OpenaiCreds } from "@/types/evolution.types";
+import { OpenaiBot, OpenaiCreds, OpenaiSettings } from "@/types/evolution.types";
 import ApiInstance from "@/utils/instance";
 
 export const findOpenaiCreds = async (instanceName: string, token: string) => {
@@ -104,6 +104,75 @@ export const deleteOpenai = async (
 ) => {
   const response = await ApiInstance.delete(
     `/openai/delete/${openaiBotId}/${instanceName}`,
+    {
+      headers: {
+        apikey: token,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const findDefaultSettingsOpenai = async (
+  instanceName: string,
+  token: string
+) => {
+  const response = await ApiInstance.get(
+    `/openai/fetchSettings/${instanceName}`,
+    {
+      headers: {
+        apikey: token,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const setDefaultSettingsOpenai = async (
+  instanceName: string,
+  token: string,
+  data: OpenaiSettings
+) => {
+  const response = await ApiInstance.post(
+    `/openai/settings/${instanceName}`,
+    data,
+    {
+      headers: {
+        apikey: token,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const fetchSessionsOpenai = async (
+  instanceName: string,
+  token: string,
+  openaiBotId: string
+) => {
+  const response = await ApiInstance.get(
+    `/openai/fetchSessions/${openaiBotId}/${instanceName}`,
+    {
+      headers: {
+        apikey: token,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const changeStatusOpenai = async (
+  instanceName: string,
+  token: string,
+  remoteJid: string,
+  status: string
+) => {
+  const response = await ApiInstance.post(
+    `/openai/changeStatus/${instanceName}`,
+    {
+      remoteJid,
+      status,
+    },
     {
       headers: {
         apikey: token,

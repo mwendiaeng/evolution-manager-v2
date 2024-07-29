@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/dialog";
 import { useNavigate } from "react-router-dom";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { SessionsOpenai } from "./SessionsOpenai";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -49,18 +50,18 @@ const FormSchema = z.object({
   systemMessages: z.string(),
   assistantMessages: z.string(),
   userMessages: z.string(),
-  maxTokens: z.number(),
+  maxTokens: z.string(),
   triggerType: z.string(),
-  triggerOperator: z.string(),
-  triggerValue: z.string(),
-  expire: z.number(),
+  triggerOperator: z.string().optional(),
+  triggerValue: z.string().optional(),
+  expire: z.string(),
   keywordFinish: z.string(),
-  delayMessage: z.number(),
+  delayMessage: z.string(),
   unknownMessage: z.string(),
   listeningFromMe: z.boolean(),
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
-  debounceTime: z.number(),
+  debounceTime: z.string(),
   ignoreJids: z.array(z.string()),
 });
 
@@ -94,19 +95,18 @@ function UpdateOpenai({
       systemMessages: "",
       assistantMessages: "",
       userMessages: "",
-      maxTokens: 300,
+      maxTokens: "300",
       triggerType: "keyword",
       triggerOperator: "contains",
       triggerValue: "",
-      expire: 0,
+      expire: "0",
       keywordFinish: "",
-      delayMessage: 0,
+      delayMessage: "0",
       unknownMessage: "",
       listeningFromMe: false,
       stopBotFromMe: false,
       keepOpen: false,
-      debounceTime: 0,
-      ignoreJids: [],
+      debounceTime: "0",
     },
   });
 
@@ -130,22 +130,21 @@ function UpdateOpenai({
             botType: data.botType,
             assistantId: data.assistantId,
             model: data.model,
-            systemMessages: data.systemMessages,
-            assistantMessages: data.assistantMessages,
-            userMessages: data.userMessages,
-            maxTokens: data.maxTokens,
+            systemMessages: data.systemMessages.toString(),
+            assistantMessages: data.assistantMessages.toString(),
+            userMessages: data.userMessages.toString(),
+            maxTokens: data.maxTokens.toString(),
             triggerType: data.triggerType,
             triggerOperator: data.triggerOperator,
             triggerValue: data.triggerValue,
-            expire: data.expire,
+            expire: data.expire.toString(),
             keywordFinish: data.keywordFinish,
-            delayMessage: data.delayMessage,
+            delayMessage: data.delayMessage.toString(),
             unknownMessage: data.unknownMessage,
             listeningFromMe: data.listeningFromMe,
             stopBotFromMe: data.stopBotFromMe,
             keepOpen: data.keepOpen,
-            debounceTime: data.debounceTime,
-            ignoreJids: data.ignoreJids,
+            debounceTime: data.debounceTime.toString(),
           });
         } else {
           console.error("Token ou nome da instância não encontrados.");
@@ -173,22 +172,21 @@ function UpdateOpenai({
           botType: data.botType,
           assistantId: data.assistantId,
           model: data.model,
-          systemMessages: data.systemMessages,
-          assistantMessages: data.assistantMessages,
-          userMessages: data.userMessages,
-          maxTokens: data.maxTokens,
+          systemMessages: [data.systemMessages],
+          assistantMessages: [data.assistantMessages],
+          userMessages: [data.userMessages],
+          maxTokens: parseInt(data.maxTokens, 10),
           triggerType: data.triggerType,
-          triggerOperator: data.triggerOperator,
-          triggerValue: data.triggerValue,
-          expire: data.expire,
+          triggerOperator: data.triggerOperator || "",
+          triggerValue: data.triggerValue || "",
+          expire: parseInt(data.expire, 10),
           keywordFinish: data.keywordFinish,
-          delayMessage: data.delayMessage,
+          delayMessage: parseInt(data.delayMessage, 10),
           unknownMessage: data.unknownMessage,
           listeningFromMe: data.listeningFromMe,
           stopBotFromMe: data.stopBotFromMe,
           keepOpen: data.keepOpen,
-          debounceTime: data.debounceTime,
-          ignoreJids: data.ignoreJids,
+          debounceTime: parseInt(data.debounceTime, 10),
         };
 
         await updateOpenai(
@@ -435,52 +433,60 @@ function UpdateOpenai({
                         <SelectContent className="border border-gray-600">
                           <SelectItem value="keyword">Palavra Chave</SelectItem>
                           <SelectItem value="all">Todos</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="triggerOperator"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Operador do gatilho</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="border border-gray-600">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione um operador" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border border-gray-600">
-                          <SelectItem value="contains">Contém</SelectItem>
-                          <SelectItem value="equals">Igual à</SelectItem>
-                          <SelectItem value="startsWith">Começa com</SelectItem>
-                          <SelectItem value="endsWith">Termina com</SelectItem>
-                          <SelectItem value="regex">Regex</SelectItem>
                           <SelectItem value="none">Nenhum</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="triggerValue"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Gatilho</FormLabel>
-                      <Input
-                        {...field}
-                        className="border border-gray-600 w-full"
-                        placeholder="Gatilho"
-                      />
-                    </FormItem>
-                  )}
-                />
+                {form.watch("triggerType") === "keyword" && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="triggerOperator"
+                      render={({ field }) => (
+                        <FormItem className="pb-4">
+                          <FormLabel>Operador do gatilho</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl className="border border-gray-600">
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione um operador" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="border border-gray-600">
+                              <SelectItem value="contains">Contém</SelectItem>
+                              <SelectItem value="equals">Igual à</SelectItem>
+                              <SelectItem value="startsWith">
+                                Começa com
+                              </SelectItem>
+                              <SelectItem value="endsWith">
+                                Termina com
+                              </SelectItem>
+                              <SelectItem value="regex">Regex</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="triggerValue"
+                      render={({ field }) => (
+                        <FormItem className="pb-4">
+                          <FormLabel>Gatilho</FormLabel>
+                          <Input
+                            {...field}
+                            className="border border-gray-600 w-full"
+                            placeholder="Gatilho"
+                          />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
                 <h3 className="mb-4 text-lg font-medium">Options Settings</h3>
                 <Separator className="border border-gray-700" />
                 <FormField
@@ -616,6 +622,10 @@ function UpdateOpenai({
                   )}
                 />
               </div>
+            </div>
+            
+            <div>
+              <SessionsOpenai openaiBotId={openaiBotId} />
             </div>
             <Button
               className="bg-blue-400 hover:bg-blue-600 text-white"

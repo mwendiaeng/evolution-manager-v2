@@ -38,22 +38,23 @@ import {
   updateTypebot,
 } from "@/services/typebot.service";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { SessionsTypebot } from "./SessionsTypebot";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
   url: z.string().url(),
   typebot: z.string(),
   triggerType: z.string(),
-  triggerOperator: z.string(),
-  triggerValue: z.string(),
-  expire: z.number(),
+  triggerOperator: z.string().optional(),
+  triggerValue: z.string().optional(),
+  expire: z.string(),
   keywordFinish: z.string(),
-  delayMessage: z.number(),
+  delayMessage: z.string(),
   unknownMessage: z.string(),
   listeningFromMe: z.boolean(),
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
-  debounceTime: z.number(),
+  debounceTime: z.string(),
   ignoreJids: z.array(z.string()),
 });
 
@@ -83,14 +84,14 @@ function UpdateTypebot({
       triggerType: "keyword",
       triggerOperator: "contains",
       triggerValue: "",
-      expire: 0,
+      expire: "0",
       keywordFinish: "",
-      delayMessage: 0,
+      delayMessage: "0",
       unknownMessage: "",
       listeningFromMe: false,
       stopBotFromMe: false,
       keepOpen: false,
-      debounceTime: 0,
+      debounceTime: "0",
       ignoreJids: [],
     },
   });
@@ -116,14 +117,14 @@ function UpdateTypebot({
             triggerType: data.triggerType,
             triggerOperator: data.triggerOperator,
             triggerValue: data.triggerValue,
-            expire: data.expire,
+            expire: data.expire.toString(),
             keywordFinish: data.keywordFinish,
-            delayMessage: data.delayMessage,
+            delayMessage: data.delayMessage.toString(),
             unknownMessage: data.unknownMessage,
             listeningFromMe: data.listeningFromMe,
             stopBotFromMe: data.stopBotFromMe,
             keepOpen: data.keepOpen,
-            debounceTime: data.debounceTime,
+            debounceTime: data.debounceTime.toString(),
           });
         } else {
           console.error("Token ou nome da instância não encontrados.");
@@ -150,16 +151,16 @@ function UpdateTypebot({
           url: data.url,
           typebot: data.typebot,
           triggerType: data.triggerType,
-          triggerOperator: data.triggerOperator,
-          triggerValue: data.triggerValue,
-          expire: data.expire,
+          triggerOperator: data.triggerOperator || "",
+          triggerValue: data.triggerValue || "",
+          expire: parseInt(data.expire, 10),
           keywordFinish: data.keywordFinish,
-          delayMessage: data.delayMessage,
+          delayMessage: parseInt(data.delayMessage, 10),
           unknownMessage: data.unknownMessage,
           listeningFromMe: data.listeningFromMe,
           stopBotFromMe: data.stopBotFromMe,
           keepOpen: data.keepOpen,
-          debounceTime: data.debounceTime,
+          debounceTime: parseInt(data.debounceTime, 10),
         };
 
         await updateTypebot(instance.name, storedToken, typebotId, typebotData);
@@ -274,52 +275,60 @@ function UpdateTypebot({
                         <SelectContent className="border border-gray-600">
                           <SelectItem value="keyword">Palavra Chave</SelectItem>
                           <SelectItem value="all">Todos</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="triggerOperator"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Operador do gatilho</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="border border-gray-600">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione um operador" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border border-gray-600">
-                          <SelectItem value="contains">Contém</SelectItem>
-                          <SelectItem value="equals">Igual à</SelectItem>
-                          <SelectItem value="startsWith">Começa com</SelectItem>
-                          <SelectItem value="endsWith">Termina com</SelectItem>
-                          <SelectItem value="regex">Regex</SelectItem>
                           <SelectItem value="none">Nenhum</SelectItem>
                         </SelectContent>
                       </Select>
                     </FormItem>
                   )}
                 />
-                <FormField
-                  control={form.control}
-                  name="triggerValue"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Gatilho</FormLabel>
-                      <Input
-                        {...field}
-                        className="border border-gray-600 w-full"
-                        placeholder="Gatilho"
-                      />
-                    </FormItem>
-                  )}
-                />
+                {form.watch("triggerType") === "keyword" && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="triggerOperator"
+                      render={({ field }) => (
+                        <FormItem className="pb-4">
+                          <FormLabel>Operador do gatilho</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl className="border border-gray-600">
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione um operador" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="border border-gray-600">
+                              <SelectItem value="contains">Contém</SelectItem>
+                              <SelectItem value="equals">Igual à</SelectItem>
+                              <SelectItem value="startsWith">
+                                Começa com
+                              </SelectItem>
+                              <SelectItem value="endsWith">
+                                Termina com
+                              </SelectItem>
+                              <SelectItem value="regex">Regex</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="triggerValue"
+                      render={({ field }) => (
+                        <FormItem className="pb-4">
+                          <FormLabel>Gatilho</FormLabel>
+                          <Input
+                            {...field}
+                            className="border border-gray-600 w-full"
+                            placeholder="Gatilho"
+                          />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
                 <h3 className="mb-4 text-lg font-medium">Options Settings</h3>
                 <Separator className="border border-gray-700" />
                 <FormField
@@ -455,6 +464,9 @@ function UpdateTypebot({
                   )}
                 />
               </div>
+            </div>
+            <div>
+              <SessionsTypebot typebotId={typebotId} />
             </div>
             <Button
               className="bg-blue-400 hover:bg-blue-600 text-white"

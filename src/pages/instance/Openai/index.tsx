@@ -16,6 +16,7 @@ import { UpdateOpenai } from "./UpdateOpenai";
 import { NewOpenai } from "./NewOpenai";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { CredentialsOpenai } from "./CredentialsOpenai";
+import { DefaultSettingsOpenai } from "./DefaultSettingsOpenai";
 
 const fetchData = async (
   instance: Instance | null,
@@ -77,6 +78,7 @@ function Openai() {
       <div className="flex items-center justify-between">
         <h3 className="ml-5 mb-1 text-lg font-medium">Openai Bots</h3>
         <div>
+          <DefaultSettingsOpenai creds={creds} />
           <CredentialsOpenai />
           <NewOpenai resetTable={resetTable} creds={creds} />
         </div>

@@ -236,8 +236,9 @@ function Dashboard() {
               <div className="card-id">
                 <span>
                   {visible.includes(instance.token)
-                    ? instance.token
+                    ? instance.token.substring(0, 36) + "..."
                     : instance.token
+                        .substring(0, 36)
                         .split("")
                         .map(() => "*")
                         .join("")}

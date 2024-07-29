@@ -1,4 +1,6 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -14,6 +16,21 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useInstance } from "@/contexts/InstanceContext";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Cog } from "lucide-react";
+import { useForm, FormProvider } from "react-hook-form";
+import { z } from "zod";
+import { Instance, Typebot, TypebotSettings } from "@/types/evolution.types";
+import toastService from "@/utils/custom-toast.service";
+import {
+  findDefaultSettingsTypebot,
+  findTypebot,
+  setDefaultSettingsTypebot,
+} from "@/services/typebot.service";
+import { Switch } from "@/components/ui/switch";
+import { WithContext as ReactTags } from "react-tag-input";
+import { Tag } from "node_modules/react-tag-input/types/components/SingleTag";
 import {
   Select,
   SelectContent,
@@ -21,25 +38,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { useInstance } from "@/contexts/InstanceContext";
-import { createTypebot } from "@/services/typebot.service";
-import { Typebot } from "@/types/evolution.types";
-import toastService from "@/utils/custom-toast.service";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
-import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { z } from "zod";
 
 const FormSchema = z.object({
-  enabled: z.boolean(),
-  url: z.string().url(),
-  typebot: z.string(),
-  triggerType: z.string(),
-  triggerOperator: z.string().optional(),
-  triggerValue: z.string().optional(),
   expire: z.string(),
   keywordFinish: z.string(),
   delayMessage: z.string(),
@@ -49,84 +49,148 @@ const FormSchema = z.object({
   keepOpen: z.boolean(),
   debounceTime: z.string(),
   ignoreJids: z.array(z.string()),
+  typebotIdFallback: z.string().optional(),
 });
 
-function NewTypebot({ resetTable }: { resetTable: () => void }) {
+const fetchData = async (
+  instance: Instance | null,
+  setSettings: any,
+  setTypebots: any
+) => {
+  try {
+    const storedToken = localStorage.getItem("token");
+
+    if (storedToken && instance && instance.name) {
+      const getSettings: TypebotSettings[] = await findDefaultSettingsTypebot(
+        instance.name,
+        storedToken
+      );
+
+      setSettings(getSettings);
+
+      const getTypebots: Typebot[] = await findTypebot(
+        instance.name,
+        storedToken
+      );
+
+      setTypebots(getTypebots);
+    } else {
+      console.error("Token ou nome da instância não encontrados.");
+    }
+  } catch (error) {
+    console.error("Erro ao carregar configurações:", error);
+  }
+};
+
+function DefaultSettingsTypebot() {
   const { instance } = useInstance();
 
-  const [updating, setUpdating] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [tags, setTags] = useState<Tag[]>([]);
+  const [settings, setSettings] = useState<TypebotSettings>();
+  const [typebots, setTypebots] = useState<Typebot[]>([]);
+
+  const handleDeleteTag = (i: number) => {
+    setTags(tags.filter((_tag, index) => index !== i));
+  };
+
+  const handleAdditionTag = (tag: Tag) => {
+    setTags([...tags, tag]);
+  };
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enabled: true,
-      url: "",
-      typebot: "",
-      triggerType: "keyword",
-      triggerOperator: "contains",
-      triggerValue: "",
       expire: "0",
-      keywordFinish: "",
-      delayMessage: "0",
-      unknownMessage: "",
+      keywordFinish: "#SAIR",
+      delayMessage: "1000",
+      unknownMessage: "Mensagem não reconhecida",
       listeningFromMe: false,
       stopBotFromMe: false,
       keepOpen: false,
       debounceTime: "0",
       ignoreJids: [],
+      typebotIdFallback: undefined,
     },
   });
 
-  const onSubmit = async (data: z.infer<typeof FormSchema>) => {
+  useEffect(() => {
+    fetchData(instance, setSettings, setTypebots);
+  }, [instance]);
+
+  useEffect(() => {
+    if (settings) {
+      form.reset({
+        expire: settings?.expire ? settings.expire.toString() : "0",
+        keywordFinish: settings.keywordFinish,
+        delayMessage: settings.delayMessage
+          ? settings.delayMessage.toString()
+          : "0",
+        unknownMessage: settings.unknownMessage,
+        listeningFromMe: settings.listeningFromMe,
+        stopBotFromMe: settings.stopBotFromMe,
+        keepOpen: settings.keepOpen,
+        debounceTime: settings.debounceTime
+          ? settings.debounceTime.toString()
+          : "0",
+        ignoreJids: settings.ignoreJids,
+        typebotIdFallback: settings.typebotIdFallback,
+      });
+      setTags(
+        settings.ignoreJids?.map((jid) => ({
+          id: jid,
+          text: jid,
+          className: "",
+        })) || []
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [settings]);
+
+  const onSubmit = async () => {
     try {
+      const data: z.infer<typeof FormSchema> = form.getValues();
+
       if (!instance || !instance.name) {
         throw new Error("Nome da instância não encontrado.");
       }
 
-      setUpdating(true);
-      const typebotData: Typebot = {
-        enabled: data.enabled,
-        url: data.url,
-        typebot: data.typebot,
-        triggerType: data.triggerType,
-        triggerOperator: data.triggerOperator || "",
-        triggerValue: data.triggerValue || "",
-        expire: parseInt(data.expire, 10),
+      const settingsData: TypebotSettings = {
+        expire: parseInt(data.expire),
         keywordFinish: data.keywordFinish,
-        delayMessage: parseInt(data.delayMessage, 10),
+        delayMessage: parseInt(data.delayMessage),
         unknownMessage: data.unknownMessage,
         listeningFromMe: data.listeningFromMe,
         stopBotFromMe: data.stopBotFromMe,
         keepOpen: data.keepOpen,
-        debounceTime: parseInt(data.debounceTime, 10),
+        debounceTime: parseInt(data.debounceTime),
+        typebotIdFallback: data.typebotIdFallback || undefined,
+        ignoreJids: tags.map((tag) => tag.text),
       };
 
-      await createTypebot(instance.name, instance.token, typebotData);
-      toastService.success("Typebot criado com sucesso!");
-      setOpen(false);
-      onReset();
-      resetTable();
+      await setDefaultSettingsTypebot(
+        instance.name,
+        instance.token,
+        settingsData
+      );
+      toastService.success("Configuração salva com sucesso!");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Erro ao criar typebot:", error);
+      console.error("Erro ao criar bot:", error);
       toastService.error(
         `Erro ao criar : ${error?.response?.data?.response?.message}`
       );
-    } finally {
-      setUpdating(false);
     }
   };
 
   function onReset() {
-    form.reset();
+    fetchData(instance, setSettings, setTypebots);
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog>
       <DialogTrigger asChild>
         <Button variant="default" className="mr-5">
-          <PlusIcon /> Typebot
+          <Cog /> Configurações Padrão
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -134,138 +198,41 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
-          <DialogTitle>Novo Typebot</DialogTitle>
+          <DialogTitle>Configurações Padrão</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full space-y-6"
-          >
+          <form className="w-full space-y-6">
             <div>
               <div className="space-y-4">
                 <FormField
                   control={form.control}
-                  name="enabled"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">Ativo</FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <h3 className="mb-4 text-lg font-medium">Typebot Settings</h3>
-                <Separator className="border border-gray-700" />
-                <FormField
-                  control={form.control}
-                  name="url"
+                  name="typebotIdFallback"
                   render={({ field }) => (
                     <FormItem className="pb-4">
-                      <FormLabel>URL da API do Typebot</FormLabel>
-                      <Input
-                        {...field}
-                        className="border border-gray-600 w-full"
-                        placeholder="URL da API do Typebot"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="typebot"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Nome do Typebot</FormLabel>
-                      <Input
-                        {...field}
-                        className="border border-gray-600 w-full"
-                        placeholder="Nome do Typebot"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <h3 className="mb-4 text-lg font-medium">Trigger Settings</h3>
-                <Separator className="border border-gray-700" />
-                <FormField
-                  control={form.control}
-                  name="triggerType"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Tipo de gatilho</FormLabel>
+                      <FormLabel>Typebot Fallback</FormLabel>
                       <Select
                         onValueChange={field.onChange}
                         defaultValue={field.value}
                       >
                         <FormControl className="border border-gray-600">
                           <SelectTrigger>
-                            <SelectValue placeholder="Selecione um tipo" />
+                            <SelectValue placeholder="Selecione um typebot" />
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="border border-gray-600">
-                          <SelectItem value="keyword">Palavra Chave</SelectItem>
-                          <SelectItem value="all">Todos</SelectItem>
-                          <SelectItem value="none">Nenhum</SelectItem>
+                          {typebots.map((typebot) => (
+                            <SelectItem
+                              key={typebot.id}
+                              value={`${typebot.id}`}
+                            >
+                              {typebot.typebot}
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </FormItem>
                   )}
                 />
-                {form.watch("triggerType") === "keyword" && (
-                  <>
-                    <FormField
-                      control={form.control}
-                      name="triggerOperator"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Operador do gatilho</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl className="border border-gray-600">
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione um operador" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="border border-gray-600">
-                              <SelectItem value="contains">Contém</SelectItem>
-                              <SelectItem value="equals">Igual à</SelectItem>
-                              <SelectItem value="startsWith">
-                                Começa com
-                              </SelectItem>
-                              <SelectItem value="endsWith">
-                                Termina com
-                              </SelectItem>
-                              <SelectItem value="regex">Regex</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="triggerValue"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Gatilho</FormLabel>
-                          <Input
-                            {...field}
-                            className="border border-gray-600 w-full"
-                            placeholder="Gatilho"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                  </>
-                )}
-                <h3 className="mb-4 text-lg font-medium">Options Settings</h3>
-                <Separator className="border border-gray-700" />
                 <FormField
                   control={form.control}
                   name="expire"
@@ -398,10 +365,47 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
                     </FormItem>
                   )}
                 />
+                <FormField
+                  control={form.control}
+                  name="ignoreJids"
+                  render={({ field }) => (
+                    <div className="pb-4">
+                      <label className="block text-sm font-medium">
+                        Ignorar JIDs
+                      </label>
+                      <ReactTags
+                        tags={tags}
+                        handleDelete={handleDeleteTag}
+                        handleAddition={handleAdditionTag}
+                        inputFieldPosition="bottom"
+                        placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
+                        autoFocus={false}
+                        classNames={{
+                          tags: "tagsClass",
+                          tagInput: "tagInputClass",
+                          tagInputField: "tagInputFieldClass",
+                          selected: "selectedClass",
+                          tag: "tagClass",
+                          remove: "removeClass",
+                          suggestions: "suggestionsClass",
+                          activeSuggestion: "activeSuggestionClass",
+                          editTagInput: "editTagInputClass",
+                          editTagInputField: "editTagInputFieldClass",
+                          clearAll: "clearAllClass",
+                        }}
+                      />
+                      <input
+                        type="hidden"
+                        {...field}
+                        value={tags.map((tag) => tag.text).join(",")}
+                      />
+                    </div>
+                  )}
+                />
               </div>
             </div>
             <DialogFooter>
-              <Button disabled={updating} variant="default" type="submit">
+              <Button variant="default" type="button" onClick={onSubmit}>
                 Salvar
               </Button>
             </DialogFooter>
@@ -412,4 +416,4 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
   );
 }
 
-export { NewTypebot };
+export { DefaultSettingsTypebot };

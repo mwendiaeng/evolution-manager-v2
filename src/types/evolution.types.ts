@@ -112,6 +112,32 @@ export type OpenaiBot = {
   ignoreJids?: string[];
 };
 
+export type OpenaiSettings = {
+  openaiCredsId: string;
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  openaiIdFallback?: string;
+  ignoreJids?: string[];
+};
+
+export type OpenaiSession = {
+  id?: string;
+  remoteJid: string;
+  pushName: string;
+  sessionId: string;
+  status: string;
+  awaitUser: boolean;
+  createdAt: string;
+  updatedAt: string;
+  typebotId: string;
+};
+
 export type Typebot = {
   id?: string;
   enabled: boolean;
@@ -128,6 +154,31 @@ export type Typebot = {
   stopBotFromMe: boolean;
   keepOpen: boolean;
   debounceTime: number;
+};
+
+export type TypebotSettings = {
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  typebotIdFallback?: string;
+  ignoreJids?: string[];
+};
+
+export type TypebotSession = {
+  id?: string;
+  remoteJid: string;
+  pushName: string;
+  sessionId: string;
+  status: string;
+  awaitUser: boolean;
+  createdAt: string;
+  updatedAt: string;
+  typebotId: string;
 };
 
 export type Webhook = {

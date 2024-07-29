@@ -44,8 +44,80 @@ body, html {
 }
 
 .form {
-    height: calc(100vh - 10rem)!important;
+    height: calc(100vh - 10rem) !important;
     padding: 1rem 2rem;
     border-radius: 0.5rem;
     overflow-y: auto;
+}
+
+.tagsClass {
+    margin-top: 0.7rem;
+    display: block;
+    border: 1px solid #444;
+    border-radius: 4px;
+    padding: 8px;
+    background-color: #2d2d2d;
+}
+
+.tagInputClass {
+    flex: 1;
+    min-width: 200px;
+}
+
+.tagInputFieldClass {
+    width: 100%;
+    padding: 8px;
+    margin-top: 4px;
+    background-color: #1a1a1a;
+    border: none;
+    color: #fff;
+}
+
+.selectedClass {
+    display: flex;
+    align-items: center;
+    background-color: transparent;
+    border-radius: 4px;
+    margin: 4px;
+}
+
+.tagClass {
+    background-color: #616161;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    margin: 8px
+}
+
+.removeClass {
+    margin-left: 8px;
+    cursor: pointer;
+    color: #ff5252;
+}
+
+.suggestionsClass {
+    background-color: #2d2d2d;
+    border: 1px solid #444;
+    border-radius: 4px;
+    max-height: 200px;
+    overflow-y: auto;
+    color: #fff;
+}
+
+.activeSuggestionClass {
+    background-color: #616161;
+}
+
+.editTagInputClass {
+    display: none;
+}
+
+.editTagInputFieldClass {
+    display: none;
+}
+
+.clearAllClass {
+    display: none;
 }

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useNavigate } from "react-router-dom";
 import Menus from "./constants/menus";
 
@@ -8,10 +9,11 @@ function Sidebar() {
 
   const { instance } = useInstance();
 
-  const handleNavigate = (path?: string) => {
-    if (!path || !instance) return;
+  const handleNavigate = (menu?: any) => {
+    if (!menu || !instance) return;
 
-    navigate(`/instance/${instance.id}/${path}`);
+    if (menu.path) navigate(`/instance/${instance.id}/${menu.path}`);
+    if (menu.link) window.open(menu.link, "_blank");
   };
 
   return (
@@ -30,7 +32,7 @@ function Sidebar() {
           return (
             <li key={menu.id} className="nav-item">
               <button
-                onClick={() => handleNavigate(menu.path)}
+                onClick={() => handleNavigate(menu)}
                 className={active ? "active" : ""}
               >
                 {menu.icon ? (

@@ -1,13 +1,13 @@
 import {
   CircleHelp,
   Cog,
-  Contact,
+  // Contact,
   FileQuestion,
   LayoutDashboard,
   LifeBuoy,
   MessageCircle,
-  MessageCircleCode,
-  Users,
+  // MessageCircleCode,
+  // Users,
 } from "lucide-react";
 
 const Menus = [

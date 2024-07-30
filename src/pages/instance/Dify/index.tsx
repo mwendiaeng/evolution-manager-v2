@@ -66,7 +66,7 @@ function Dify() {
   return (
     <main className="main-table pt-5">
       <div className="flex items-center justify-between">
-        <h3 className="ml-5 mb-1 text-lg font-medium">Openai Bots</h3>
+        <h3 className="ml-5 mb-1 text-lg font-medium">Dify Bots</h3>
         <div>
           <DefaultSettingsDify />
           <NewDify resetTable={resetTable} />

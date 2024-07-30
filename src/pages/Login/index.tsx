@@ -33,8 +33,6 @@ function Login() {
 
     const server = await verifyServer(serverUrl);
 
-    console.log("server", server);
-
     if (!server || !server.version) {
       logout();
       toastService.error("Servidor inválido");
@@ -49,6 +47,7 @@ function Login() {
     }
 
     localStorage.setItem("version", server.version);
+    localStorage.setItem("clientName", server.clientName);
 
     navigate("/manager/");
   };

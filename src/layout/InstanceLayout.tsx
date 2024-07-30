@@ -8,15 +8,19 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { InstanceProvider } from "@/contexts/InstanceContext";
+import { useParams } from "react-router-dom";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 function InstanceLayout({ children }: LayoutProps) {
+
+  const { instanceId } = useParams<{ instanceId: string }>();
+
   return (
     <InstanceProvider>
-      <Header perfil={true} />
+      <Header instanceId={instanceId} />
       <div className="layout-general">
         <div className="instance-layout">
           <ResizablePanelGroup direction="horizontal">

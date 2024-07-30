@@ -4,7 +4,7 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-info">
-        Client Name: <strong>Evolution Manager</strong> Version:{" "}
+        Client Name: <strong>{localStorage.getItem("clientName")}</strong> Version:{" "}
         <strong>{localStorage.getItem("version")}</strong>
       </div>
       <div className="footer-buttons">

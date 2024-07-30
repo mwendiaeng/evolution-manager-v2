@@ -62,7 +62,6 @@ function Rabbitmq() {
 
     const data = form.getValues();
 
-    console.log("data", data);
     setLoading(true);
     try {
       const rabbitmqData: RabbitmqType = {

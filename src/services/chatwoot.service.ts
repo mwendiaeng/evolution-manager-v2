@@ -1,12 +1,16 @@
 import { Chatwoot } from "@/types/evolution.types";
-import ApiInstance from "@/utils/instance";
+import ApiService from "@/utils/instance";
+
+const apiService = new ApiService();
 
 export const fetchChatwoot = async (instanceName: string, token: string) => {
-  const response = await ApiInstance.get(`/chatwoot/find/${instanceName}`, {
-    headers: {
-      apikey: token,
-    },
-  });
+  const response = await apiService
+    .getInstance()
+    .get(`/chatwoot/find/${instanceName}`, {
+      headers: {
+        apikey: token,
+      },
+    });
   return response.data;
 };
 
@@ -15,14 +19,12 @@ export const createChatwoot = async (
   token: string,
   data: Chatwoot
 ) => {
-  const response = await ApiInstance.post(
-    `/chatwoot/set/${instanceName}`,
-    data,
-    {
+  const response = await apiService
+    .getInstance()
+    .post(`/chatwoot/set/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };

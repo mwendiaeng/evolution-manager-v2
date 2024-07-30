@@ -20,12 +20,10 @@ function Header({ perfil }: HeaderProps) {
 
   return (
     <header>
-      <div className="header-logo">
-        <a href="#" onClick={navigateToDashboard}>
-          <img src="/assets/images/evolution-logo.png" alt="Logo" />
-        </a>
+      <a href="#" onClick={navigateToDashboard} className="header-logo">
+        <img src="/assets/images/evolution-logo.png" alt="Logo" />
         <span className="header-title">Evolution Manager</span>
-      </div>
+      </a>
       <div className="header-buttons">
         {perfil && (
           <button className="profile-button">

@@ -62,7 +62,6 @@ function Websocket() {
 
     const data = form.getValues();
 
-    console.log("data", data);
     setLoading(true);
     try {
       const websocketData: WebsocketType = {

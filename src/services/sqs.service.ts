@@ -1,8 +1,10 @@
 import { Sqs } from "@/types/evolution.types";
-import ApiInstance from "@/utils/instance";
+import ApiService from "@/utils/instance";
+
+const apiService = new ApiService();
 
 export const fetchSqs = async (instanceName: string, token: string) => {
-  const response = await ApiInstance.get(`/sqs/find/${instanceName}`, {
+  const response = await apiService.getInstance().get(`/sqs/find/${instanceName}`, {
     headers: {
       apikey: token,
     },
@@ -15,7 +17,7 @@ export const createSqs = async (
   token: string,
   data: Sqs
 ) => {
-  const response = await ApiInstance.post(
+  const response = await apiService.getInstance().post(
     `/sqs/set/${instanceName}`,
     data,
     {

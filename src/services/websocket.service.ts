@@ -1,8 +1,10 @@
 import { Websocket } from "@/types/evolution.types";
-import ApiInstance from "@/utils/instance";
+import ApiService from "@/utils/instance";
+
+const apiService = new ApiService();
 
 export const fetchWebsocket = async (instanceName: string, token: string) => {
-  const response = await ApiInstance.get(`/websocket/find/${instanceName}`, {
+  const response = await apiService.getInstance().get(`/websocket/find/${instanceName}`, {
     headers: {
       apikey: token,
     },
@@ -15,7 +17,7 @@ export const createWebsocket = async (
   token: string,
   data: Websocket
 ) => {
-  const response = await ApiInstance.post(
+  const response = await apiService.getInstance().post(
     `/websocket/set/${instanceName}`,
     data,
     {

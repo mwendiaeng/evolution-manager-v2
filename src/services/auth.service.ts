@@ -1,20 +1,20 @@
-import ApiInstance from "@/utils/instance";
+import axios from "axios";
 
 export const saveCredentials = async (url: string, token: string) => {
   try {
-    localStorage.setItem("apiUrl", url);
+    const urlFormatted = url.endsWith("/") ? url.slice(0, -1) : url;
+
+    localStorage.setItem("apiUrl", urlFormatted);
     localStorage.setItem("token", token);
 
-    console.log(localStorage.getItem("apiUrl"), localStorage.getItem("token"));
-    
     return true;
   } catch (error) {
     return false;
   }
 };
 
-export const verifyServer = async () => {
-  const response = await ApiInstance.get("/");
+export const verifyServer = async (url: string) => {
+  const response = await axios.get(`${url}/`);
   return response.data;
 };
 

@@ -1,8 +1,10 @@
 import { Typebot, TypebotSettings } from "@/types/evolution.types";
-import ApiInstance from "@/utils/instance";
+import ApiService from "@/utils/instance";
+
+const apiService = new ApiService();
 
 export const findTypebot = async (instanceName: string, token: string) => {
-  const response = await ApiInstance.get(`/typebot/find/${instanceName}`, {
+  const response = await apiService.getInstance().get(`/typebot/find/${instanceName}`, {
     headers: {
       apikey: token,
     },
@@ -15,7 +17,7 @@ export const getTypebot = async (
   token: string,
   typebotId: string
 ) => {
-  const response = await ApiInstance.get(
+  const response = await apiService.getInstance().get(
     `/typebot/fetch/${typebotId}/${instanceName}`,
     {
       headers: {
@@ -31,7 +33,7 @@ export const createTypebot = async (
   token: string,
   data: Typebot
 ) => {
-  const response = await ApiInstance.post(
+  const response = await apiService.getInstance().post(
     `/typebot/create/${instanceName}`,
     data,
     {
@@ -49,7 +51,7 @@ export const updateTypebot = async (
   typebotId: string,
   data: Typebot
 ) => {
-  const response = await ApiInstance.put(
+  const response = await apiService.getInstance().put(
     `/typebot/update/${typebotId}/${instanceName}`,
     data,
     {
@@ -66,7 +68,7 @@ export const deleteTypebot = async (
   token: string,
   typebotId: string
 ) => {
-  const response = await ApiInstance.delete(
+  const response = await apiService.getInstance().delete(
     `/typebot/delete/${typebotId}/${instanceName}`,
     {
       headers: {
@@ -81,7 +83,7 @@ export const findDefaultSettingsTypebot = async (
   instanceName: string,
   token: string
 ) => {
-  const response = await ApiInstance.get(
+  const response = await apiService.getInstance().get(
     `/typebot/fetchSettings/${instanceName}`,
     {
       headers: {
@@ -97,7 +99,7 @@ export const setDefaultSettingsTypebot = async (
   token: string,
   data: TypebotSettings
 ) => {
-  const response = await ApiInstance.post(
+  const response = await apiService.getInstance().post(
     `/typebot/settings/${instanceName}`,
     data,
     {
@@ -114,7 +116,7 @@ export const fetchSessionsTypebot = async (
   token: string,
   typebotId: string
 ) => {
-  const response = await ApiInstance.get(
+  const response = await apiService.getInstance().get(
     `/typebot/fetchSessions/${typebotId}/${instanceName}`,
     {
       headers: {
@@ -131,7 +133,7 @@ export const changeStatusTypebot = async (
   remoteJid: string,
   status: string
 ) => {
-  const response = await ApiInstance.post(
+  const response = await apiService.getInstance().post(
     `/typebot/changeStatus/${instanceName}`,
     {
       remoteJid,

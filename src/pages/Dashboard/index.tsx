@@ -232,6 +232,7 @@ function Dashboard() {
       <main className="instance-cards">
         {instances &&
           instances.length > 0 &&
+          Array.isArray(instances) &&
           instances.map((instance: Instance) => (
             <Card className="instance-card" key={instance.id}>
               <div className="card-header">

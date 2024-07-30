@@ -18,10 +18,11 @@ import { logout, saveCredentials, verifyServer } from "@/services/auth.service";
 import toastService from "@/utils/custom-toast.service";
 
 function Login() {
-
   const navigate = useNavigate();
 
-  const [serverUrl, setServerUrl] = useState("");
+  const [serverUrl, setServerUrl] = useState(
+    window.location.protocol + "//" + window.location.host
+  );
   const [apiKey, setApiKey] = useState("");
 
   const handleLogin = async () => {
@@ -30,18 +31,20 @@ function Login() {
       return;
     }
 
+    const server = await verifyServer(serverUrl);
+
+    console.log("server", server);
+
+    if (!server || !server.version) {
+      logout();
+      toastService.error("Servidor inválido");
+      return;
+    }
+
     const saveCreds = await saveCredentials(serverUrl, apiKey);
 
     if (!saveCreds) {
       toastService.error("Credenciais inválidas");
-      return;
-    }
-
-    const server = await verifyServer();
-
-    if (!server) {
-      logout();
-      toastService.error("Servidor inválido");
       return;
     }
 

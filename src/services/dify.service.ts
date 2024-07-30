@@ -1,12 +1,16 @@
 import { Dify, DifySettings } from "@/types/evolution.types";
-import ApiInstance from "@/utils/instance";
+import ApiService from "@/utils/instance";
+
+const apiService = new ApiService();
 
 export const findDify = async (instanceName: string, token: string) => {
-  const response = await ApiInstance.get(`/dify/find/${instanceName}`, {
-    headers: {
-      apikey: token,
-    },
-  });
+  const response = await apiService
+    .getInstance()
+    .get(`/dify/find/${instanceName}`, {
+      headers: {
+        apikey: token,
+      },
+    });
   return response.data;
 };
 
@@ -15,14 +19,13 @@ export const getDify = async (
   token: string,
   difyId: string
 ) => {
-  const response = await ApiInstance.get(
-    `/dify/fetch/${difyId}/${instanceName}`,
-    {
+  const response = await apiService
+    .getInstance()
+    .get(`/dify/fetch/${difyId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -31,15 +34,13 @@ export const createDify = async (
   token: string,
   data: Dify
 ) => {
-  const response = await ApiInstance.post(
-    `/dify/create/${instanceName}`,
-    data,
-    {
+  const response = await apiService
+    .getInstance()
+    .post(`/dify/create/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -49,15 +50,13 @@ export const updateDify = async (
   difyId: string,
   data: Dify
 ) => {
-  const response = await ApiInstance.put(
-    `/dify/update/${difyId}/${instanceName}`,
-    data,
-    {
+  const response = await apiService
+    .getInstance()
+    .put(`/dify/update/${difyId}/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -66,14 +65,13 @@ export const deleteDify = async (
   token: string,
   difyId: string
 ) => {
-  const response = await ApiInstance.delete(
-    `/dify/delete/${difyId}/${instanceName}`,
-    {
+  const response = await apiService
+    .getInstance()
+    .delete(`/dify/delete/${difyId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -81,14 +79,13 @@ export const findDefaultSettingsDify = async (
   instanceName: string,
   token: string
 ) => {
-  const response = await ApiInstance.get(
-    `/dify/fetchSettings/${instanceName}`,
-    {
+  const response = await apiService
+    .getInstance()
+    .get(`/dify/fetchSettings/${instanceName}`, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -97,15 +94,13 @@ export const setDefaultSettingsDify = async (
   token: string,
   data: DifySettings
 ) => {
-  const response = await ApiInstance.post(
-    `/dify/settings/${instanceName}`,
-    data,
-    {
+  const response = await apiService
+    .getInstance()
+    .post(`/dify/settings/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -114,14 +109,13 @@ export const fetchSessionsDify = async (
   token: string,
   difyId: string
 ) => {
-  const response = await ApiInstance.get(
-    `/dify/fetchSessions/${difyId}/${instanceName}`,
-    {
+  const response = await apiService
+    .getInstance()
+    .get(`/dify/fetchSessions/${difyId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -131,7 +125,7 @@ export const changeStatusDify = async (
   remoteJid: string,
   status: string
 ) => {
-  const response = await ApiInstance.post(
+  const response = await apiService.getInstance().post(
     `/dify/changeStatus/${instanceName}`,
     {
       remoteJid,

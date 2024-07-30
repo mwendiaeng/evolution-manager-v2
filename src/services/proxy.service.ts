@@ -1,8 +1,10 @@
 import { Proxy } from "@/types/evolution.types";
-import ApiInstance from "@/utils/instance";
+import ApiService from "@/utils/instance";
+
+const apiService = new ApiService();
 
 export const fetchProxy = async (instanceName: string, token: string) => {
-  const response = await ApiInstance.get(`/proxy/find/${instanceName}`, {
+  const response = await apiService.getInstance().get(`/proxy/find/${instanceName}`, {
     headers: {
       apikey: token,
     },
@@ -15,7 +17,7 @@ export const createProxy = async (
   token: string,
   data: Proxy
 ) => {
-  const response = await ApiInstance.post(`/proxy/set/${instanceName}`, data, {
+  const response = await apiService.getInstance().post(`/proxy/set/${instanceName}`, data, {
     headers: {
       apikey: token,
     },

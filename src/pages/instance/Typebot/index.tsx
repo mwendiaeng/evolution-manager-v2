@@ -56,7 +56,7 @@ function Typebot() {
   const handleBotClick = (botId: string) => {
     if (!instance) return;
 
-    navigate(`/instance/${instance.id}/typebot/${botId}`);
+    navigate(`/manager/instance/${instance.id}/typebot/${botId}`);
   };
 
   const resetTable = () => {

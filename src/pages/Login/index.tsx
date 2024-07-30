@@ -47,7 +47,7 @@ function Login() {
 
     localStorage.setItem("version", server.version);
 
-    navigate("/");
+    navigate("/manager/");
   };
 
   return (

@@ -218,7 +218,7 @@ function UpdateOpenai({
 
         setOpenDeletionDialog(false);
         resetTable();
-        navigate(`/instance/${instance.id}/openai`);
+        navigate(`/manager/instance/${instance.id}/openai`);
       } else {
         console.error("Token ou nome da instância não encontrados.");
       }

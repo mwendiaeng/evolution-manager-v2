@@ -66,7 +66,7 @@ function Openai() {
   const handleBotClick = (botId: string) => {
     if (!instance) return;
 
-    navigate(`/instance/${instance.id}/openai/${botId}`);
+    navigate(`/manager/instance/${instance.id}/openai/${botId}`);
   };
 
   const resetTable = () => {

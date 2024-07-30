@@ -11,11 +11,11 @@ function Header({ perfil }: HeaderProps) {
 
   const handleClose = () => {
     logout();
-    navigate("/login");
+    navigate("/manager/login");
   };
 
   const navigateToDashboard = () => {
-    navigate("/");
+    navigate("/manager/");
   };
 
   return (

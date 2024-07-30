@@ -49,7 +49,7 @@ function Dashboard() {
   const handleInstance =
     (instanceName: string): (() => void) =>
     () => {
-      navigate(`/instance/${instanceName}/dashboard`);
+      navigate(`/manager/instance/${instanceName}/dashboard`);
     };
 
   useEffect(() => {

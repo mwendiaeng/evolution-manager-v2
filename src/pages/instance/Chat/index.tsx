@@ -68,7 +68,7 @@ function Chat() {
   }, [instance]);
 
   const handleChat = (id: string) => {
-    navigate(`/instance/${instanceId}/chat/${id}`);
+    navigate(`/manager/instance/${instanceId}/chat/${id}`);
   };
 
   return (

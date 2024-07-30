@@ -19,7 +19,7 @@ import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
   {
-    path: "/login",
+    path: "/manager/login",
     element: (
       <PublicRoute>
         <Login />
@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/",
+    path: "/manager/",
     element: (
       <ProtectedRoute>
         <MainLayout>
@@ -37,7 +37,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/dashboard",
+    path: "/manager/instance/:instanceId/dashboard",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -47,7 +47,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/chat",
+    path: "/manager/instance/:instanceId/chat",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -57,7 +57,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/chat/:remoteJid",
+    path: "/manager/instance/:instanceId/chat/:remoteJid",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -67,7 +67,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/settings",
+    path: "/manager/instance/:instanceId/settings",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -77,7 +77,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/openai",
+    path: "/manager/instance/:instanceId/openai",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -87,7 +87,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/openai/:openaiBotId",
+    path: "/manager/instance/:instanceId/openai/:openaiBotId",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -97,7 +97,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/webhook",
+    path: "/manager/instance/:instanceId/webhook",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -107,7 +107,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/websocket",
+    path: "/manager/instance/:instanceId/websocket",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -117,7 +117,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/rabbitmq",
+    path: "/manager/instance/:instanceId/rabbitmq",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -127,7 +127,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/sqs",
+    path: "/manager/instance/:instanceId/sqs",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -137,7 +137,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/chatwoot",
+    path: "/manager/instance/:instanceId/chatwoot",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -147,7 +147,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/typebot",
+    path: "/manager/instance/:instanceId/typebot",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -157,7 +157,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/typebot/:typebotId",
+    path: "/manager/instance/:instanceId/typebot/:typebotId",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -167,7 +167,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "instance/:instanceId/proxy",
+    path: "/manager/instance/:instanceId/proxy",
     element: (
       <ProtectedRoute>
         <InstanceLayout>

@@ -187,7 +187,7 @@ function UpdateTypebot({
 
         setOpenDeletionDialog(false);
         resetTable();
-        navigate(`/instance/${instance.id}/typebot`);
+        navigate(`/manager/instance/${instance.id}/typebot`);
       } else {
         console.error("Token ou nome da instância não encontrados.");
       }

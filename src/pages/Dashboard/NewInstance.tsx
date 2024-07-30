@@ -7,7 +7,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FormControl } from "@/components/ui/form";
+import { FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -23,7 +23,7 @@ import toastService from "@/utils/custom-toast.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
-import { useForm, FormProvider, Controller } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 
 const FormSchema = z.object({
@@ -108,26 +108,30 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
               <Label htmlFor="integration" className="text-right">
                 Integração
               </Label>
-              <Controller
-                name="integration"
+              <FormField
                 control={form.control}
+                name="integration"
                 render={({ field }) => (
-                  <Select {...field} defaultValue="WHATSAPP-BAILEYS">
-                    <FormControl className="col-span-3 w-full border border-gray-600">
-                      <SelectTrigger className="w-full">
-                        <SelectValue
-                          className="w-full"
-                          placeholder="Selecione uma integração"
-                        />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent className="border border-gray-600">
-                      <SelectItem value="WHATSAPP-BAILEYS">Baileys</SelectItem>
-                      <SelectItem value="WHATSAPP-BUSINESS">
-                        Whatsapp Oficial
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <FormItem className="col-span-3 w-full border border-gray-600">
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl className="border border-gray-600">
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione uma credencial" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent className="border border-gray-600">
+                        <SelectItem value="WHATSAPP-BAILEYS">
+                          Baileys
+                        </SelectItem>
+                        <SelectItem value="WHATSAPP-BUSINESS">
+                          Whatsapp Cloud API
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormItem>
                 )}
               />
             </div>

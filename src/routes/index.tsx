@@ -12,6 +12,7 @@ import { Rabbitmq } from "@/pages/instance/Rabbitmq";
 import { Settings } from "@/pages/instance/Settings";
 import { Sqs } from "@/pages/instance/Sqs";
 import { Typebot } from "@/pages/instance/Typebot";
+import { Dify } from "@/pages/instance/Dify";
 import { Webhook } from "@/pages/instance/Webhook";
 import { Websocket } from "@/pages/instance/Websocket";
 import Login from "@/pages/Login";
@@ -162,6 +163,26 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <InstanceLayout>
           <Typebot />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/dify",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Dify />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/dify/:difyId",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Dify />
         </InstanceLayout>
       </ProtectedRoute>
     ),

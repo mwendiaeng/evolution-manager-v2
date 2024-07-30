@@ -129,13 +129,56 @@ export type OpenaiSettings = {
 export type OpenaiSession = {
   id?: string;
   remoteJid: string;
-  pushName: string;
   sessionId: string;
   status: string;
   awaitUser: boolean;
   createdAt: string;
   updatedAt: string;
-  typebotId: string;
+  openaiBotId: string;
+};
+
+export type Dify = {
+  id?: string;
+  enabled: boolean;
+  botType: string;
+  apiUrl: string;
+  apiKey: string;
+  triggerType: string;
+  triggerOperator: string;
+  triggerValue: string;
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  ignoreJids?: string[];
+};
+
+export type DifySettings = {
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  difyIdFallback?: string;
+  ignoreJids?: string[];
+};
+
+export type DifySession = {
+  id?: string;
+  remoteJid: string;
+  sessionId: string;
+  status: string;
+  awaitUser: boolean;
+  createdAt: string;
+  updatedAt: string;
+  difyId: string;
 };
 
 export type Typebot = {

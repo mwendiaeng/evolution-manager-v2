@@ -26,10 +26,10 @@ function Sidebar() {
     <menu className="sidebar">
       <ul className="sidebar-nav">
         {Menus.map((menu) => {
-          const path = window.location.pathname.split("/")[3];
+          const path = window.location.pathname;
 
           let active = false;
-          if (menu.path === path) {
+          if (menu.path && path.includes(menu.path)) {
             active = true;
           } else {
             active = false;
@@ -57,6 +57,15 @@ function Sidebar() {
                   <CollapsibleContent>
                     <ul className="sidebar-nav">
                       {menu.children.map((child: any) => {
+                        const path = window.location.pathname;
+
+                        let active = false;
+                        if (child.path && path.includes(child.path)) {
+                          active = true;
+                        } else {
+                          active = false;
+                        }
+
                         return (
                           <li key={child.id} className="nav-item">
                             <button

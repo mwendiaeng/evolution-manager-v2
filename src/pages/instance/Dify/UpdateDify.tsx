@@ -1,0 +1,539 @@
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Switch } from "@/components/ui/switch";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Dify, Instance } from "@/types/evolution.types";
+import { useEffect, useState } from "react";
+import toastService from "@/utils/custom-toast.service";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { useNavigate } from "react-router-dom";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { SessionsDify } from "./SessionsDify";
+import { deleteDify, getDify, updateDify } from "@/services/dify.service";
+
+const FormSchema = z.object({
+  enabled: z.boolean(),
+  botType: z.string(),
+  apiUrl: z.string(),
+  apiKey: z.string(),
+  triggerType: z.string(),
+  triggerOperator: z.string().optional(),
+  triggerValue: z.string().optional(),
+  expire: z.string(),
+  keywordFinish: z.string(),
+  delayMessage: z.string(),
+  unknownMessage: z.string(),
+  listeningFromMe: z.boolean(),
+  stopBotFromMe: z.boolean(),
+  keepOpen: z.boolean(),
+  debounceTime: z.string(),
+});
+
+type UpdateDifyProps = {
+  difyId: string;
+  instance: Instance | null;
+  resetTable: () => void;
+};
+
+function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
+  const [, setToken] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
+
+  const navigate = useNavigate();
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      enabled: true,
+      botType: "chatBot",
+      apiUrl: "",
+      apiKey: "",
+      triggerType: "keyword",
+      triggerOperator: "contains",
+      triggerValue: "",
+      expire: "0",
+      keywordFinish: "",
+      delayMessage: "0",
+      unknownMessage: "",
+      listeningFromMe: false,
+      stopBotFromMe: false,
+      keepOpen: false,
+      debounceTime: "0",
+    },
+  });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storedToken = localStorage.getItem("token");
+
+        if (storedToken && instance && instance.name && difyId) {
+          setToken(storedToken);
+
+          const data: Dify = await getDify(instance.name, storedToken, difyId);
+
+          form.reset({
+            enabled: data.enabled,
+            botType: data.botType,
+            apiUrl: data.apiUrl,
+            apiKey: data.apiKey,
+            triggerType: data.triggerType,
+            triggerOperator: data.triggerOperator,
+            triggerValue: data.triggerValue,
+            expire: data.expire.toString(),
+            keywordFinish: data.keywordFinish,
+            delayMessage: data.delayMessage.toString(),
+            unknownMessage: data.unknownMessage,
+            listeningFromMe: data.listeningFromMe,
+            stopBotFromMe: data.stopBotFromMe,
+            keepOpen: data.keepOpen,
+            debounceTime: data.debounceTime.toString(),
+          });
+        } else {
+          console.error("Token ou nome da instância não encontrados.");
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error("Erro ao carregar configurações:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [form, instance, difyId]);
+
+  const onSubmit = async () => {
+    try {
+      const data: z.infer<typeof FormSchema> = form.getValues();
+
+      const storedToken = localStorage.getItem("token");
+
+      if (storedToken && instance && instance.name && difyId) {
+        const difyData: Dify = {
+          enabled: data.enabled,
+          botType: data.botType,
+          apiUrl: data.apiUrl,
+          apiKey: data.apiKey,
+          triggerType: data.triggerType,
+          triggerOperator: data.triggerOperator || "",
+          triggerValue: data.triggerValue || "",
+          expire: parseInt(data.expire, 10),
+          keywordFinish: data.keywordFinish,
+          delayMessage: parseInt(data.delayMessage, 10),
+          unknownMessage: data.unknownMessage,
+          listeningFromMe: data.listeningFromMe,
+          stopBotFromMe: data.stopBotFromMe,
+          keepOpen: data.keepOpen,
+          debounceTime: parseInt(data.debounceTime, 10),
+        };
+
+        await updateDify(instance.name, storedToken, difyId, difyData);
+        toastService.success("Dify atualizado com sucesso.");
+      } else {
+        console.error("Token ou nome da instância não encontrados.");
+      }
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      console.error("Erro ao atualizar bot:", error);
+      toastService.error(
+        `Erro ao atualizar : ${error?.response?.data?.response?.message}`
+      );
+    }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const storedToken = localStorage.getItem("token");
+
+      if (storedToken && instance && instance.name && difyId) {
+        await deleteDify(instance.name, storedToken, difyId);
+        toastService.success("Dify excluído com sucesso.");
+
+        setOpenDeletionDialog(false);
+        resetTable();
+        navigate(`/manager/instance/${instance.id}/dify`);
+      } else {
+        console.error("Token ou nome da instância não encontrados.");
+      }
+    } catch (error) {
+      console.error("Erro ao excluir dify:", error);
+    }
+  };
+
+  return (
+    <div className="form">
+      {loading && <LoadingSpinner />}
+      {!loading && (
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="w-full space-y-6"
+          >
+            <div>
+              <h3 className="mb-4 text-lg font-medium">Dify</h3>
+              <div className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="enabled"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-start py-4">
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="ml-4 space-y-0.5">
+                        <FormLabel className="text-sm">Ativo</FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <h3 className="mb-4 text-lg font-medium">Dify Settings</h3>
+                <Separator className="border border-gray-700" />
+                <FormField
+                  control={form.control}
+                  name="botType"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>Tipo de Bot</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl className="border border-gray-600">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione uma tipo de bot" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="border border-gray-600">
+                          <SelectItem value="chatBot">Chat Bot</SelectItem>
+                          <SelectItem value="textGenerator">
+                            Gerador de texto
+                          </SelectItem>
+                          <SelectItem value="agent">Agente</SelectItem>
+                          <SelectItem value="workflow">Workflow</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="apiUrl"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>URL da API</FormLabel>
+                      <Input
+                        {...field}
+                        className="border border-gray-600 w-full"
+                        placeholder="URL da API"
+                      />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="apiKey"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>Chave da API</FormLabel>
+                      <Input
+                        {...field}
+                        className="border border-gray-600 w-full"
+                        placeholder="Chave da API"
+                        type="password"
+                      />
+                    </FormItem>
+                  )}
+                />
+                <h3 className="mb-4 text-lg font-medium">Trigger Settings</h3>
+                <Separator className="border border-gray-700" />
+                <FormField
+                  control={form.control}
+                  name="triggerType"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>Tipo de gatilho</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl className="border border-gray-600">
+                          <SelectTrigger>
+                            <SelectValue placeholder="Selecione um tipo" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent className="border border-gray-600">
+                          <SelectItem value="keyword">Palavra Chave</SelectItem>
+                          <SelectItem value="all">Todos</SelectItem>
+                          <SelectItem value="none">Nenhum</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </FormItem>
+                  )}
+                />
+                {form.watch("triggerType") === "keyword" && (
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="triggerOperator"
+                      render={({ field }) => (
+                        <FormItem className="pb-4">
+                          <FormLabel>Operador do gatilho</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl className="border border-gray-600">
+                              <SelectTrigger>
+                                <SelectValue placeholder="Selecione um operador" />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent className="border border-gray-600">
+                              <SelectItem value="contains">Contém</SelectItem>
+                              <SelectItem value="equals">Igual à</SelectItem>
+                              <SelectItem value="startsWith">
+                                Começa com
+                              </SelectItem>
+                              <SelectItem value="endsWith">
+                                Termina com
+                              </SelectItem>
+                              <SelectItem value="regex">Regex</SelectItem>
+                            </SelectContent>
+                          </Select>
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="triggerValue"
+                      render={({ field }) => (
+                        <FormItem className="pb-4">
+                          <FormLabel>Gatilho</FormLabel>
+                          <Input
+                            {...field}
+                            className="border border-gray-600 w-full"
+                            placeholder="Gatilho"
+                          />
+                        </FormItem>
+                      )}
+                    />
+                  </>
+                )}
+                <h3 className="mb-4 text-lg font-medium">Options Settings</h3>
+                <Separator className="border border-gray-700" />
+                <FormField
+                  control={form.control}
+                  name="expire"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>Expira em (minitos)</FormLabel>
+                      <Input
+                        {...field}
+                        className="border border-gray-600 w-full"
+                        placeholder="Expira em (minitos)"
+                        type="number"
+                      />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="keywordFinish"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>Palavra Chave de Finalização</FormLabel>
+                      <Input
+                        {...field}
+                        className="border border-gray-600 w-full"
+                        placeholder="Palavra Chave de Finalização"
+                      />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="delayMessage"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>Delay padrão da mensagem</FormLabel>
+                      <Input
+                        {...field}
+                        className="border border-gray-600 w-full"
+                        placeholder="Delay padrão da mensagem"
+                        type="number"
+                      />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="unknownMessage"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>
+                        Mensagem para tipo de mensagem desconhecida
+                      </FormLabel>
+                      <Input
+                        {...field}
+                        className="border border-gray-600 w-full"
+                        placeholder="Mensagem para tipo de mensagem desconhecida"
+                      />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="listeningFromMe"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-start py-4">
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="ml-4 space-y-0.5">
+                        <FormLabel className="text-sm">
+                          Escuta mensagens enviadas por mim
+                        </FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="stopBotFromMe"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-start py-4">
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="ml-4 space-y-0.5">
+                        <FormLabel className="text-sm">
+                          Pausa o bot quando eu enviar uma mensagem
+                        </FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="keepOpen"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-start py-4">
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="ml-4 space-y-0.5">
+                        <FormLabel className="text-sm">
+                          Mantem a sessão do bot aberta
+                        </FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="debounceTime"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>Tempo de espera</FormLabel>
+                      <Input
+                        {...field}
+                        className="border border-gray-600 w-full"
+                        placeholder="Tempo de espera"
+                        type="number"
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            </div>
+
+            <div>
+              <SessionsDify difyId={difyId} />
+            </div>
+            <Button
+              className="bg-blue-400 hover:bg-blue-600 text-white"
+              onClick={onSubmit}
+            >
+              Atualizar
+            </Button>
+            <Dialog
+              open={openDeletionDialog}
+              onOpenChange={setOpenDeletionDialog}
+            >
+              <DialogTrigger asChild>
+                <Button
+                  variant="secondary"
+                  className="ml-2 bg-red-400 hover:bg-red-600"
+                >
+                  Excluir
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Tem certeza que deseja excluir?</DialogTitle>
+                  <DialogDescription>
+                    Esta ação não pode ser desfeita.
+                  </DialogDescription>
+                  <DialogFooter>
+                    <Button
+                      variant="default"
+                      className="bg-red-400 hover:bg-red-600 text-white"
+                      onClick={handleDelete}
+                    >
+                      Exluir
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setOpenDeletionDialog(false)}
+                    >
+                      Cancelar
+                    </Button>
+                  </DialogFooter>
+                </DialogHeader>
+              </DialogContent>
+            </Dialog>
+          </form>
+        </Form>
+      )}
+    </div>
+  );
+}
+
+export { UpdateDify };

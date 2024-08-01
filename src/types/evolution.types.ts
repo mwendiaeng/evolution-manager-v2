@@ -122,6 +122,7 @@ export type OpenaiSettings = {
   stopBotFromMe: boolean;
   keepOpen: boolean;
   debounceTime: number;
+  speechToText: boolean;
   openaiIdFallback?: string;
   ignoreJids?: string[];
 };

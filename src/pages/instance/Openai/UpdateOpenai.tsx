@@ -272,13 +272,16 @@ function UpdateOpenai({
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="border border-gray-600">
-                          {creds.map((cred) => (
-                            <SelectItem key={cred.id} value={`${cred.id}`}>
-                              {cred.name
-                                ? cred.name
-                                : cred.apiKey.substring(0, 15) + "..."}
-                            </SelectItem>
-                          ))}
+                          {creds &&
+                            creds.length > 0 &&
+                            Array.isArray(creds) &&
+                            creds.map((cred) => (
+                              <SelectItem key={cred.id} value={`${cred.id}`}>
+                                {cred.name
+                                  ? cred.name
+                                  : cred.apiKey.substring(0, 15) + "..."}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </FormItem>

@@ -54,6 +54,7 @@ const FormSchema = z.object({
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
   debounceTime: z.string(),
+  speechToText: z.boolean(),
   ignoreJids: z.array(z.string()),
   openaiIdFallback: z.string().optional(),
 });
@@ -112,6 +113,7 @@ function DefaultSettingsOpenai({ creds }: { creds: OpenaiCreds[] }) {
       stopBotFromMe: false,
       keepOpen: false,
       debounceTime: "0",
+      speechToText: false,
       ignoreJids: [],
       openaiIdFallback: undefined,
     },
@@ -137,6 +139,7 @@ function DefaultSettingsOpenai({ creds }: { creds: OpenaiCreds[] }) {
         debounceTime: settings.debounceTime
           ? settings.debounceTime.toString()
           : "0",
+        speechToText: settings.speechToText,
         ignoreJids: settings.ignoreJids,
         openaiIdFallback: settings.openaiIdFallback,
       });
@@ -169,6 +172,7 @@ function DefaultSettingsOpenai({ creds }: { creds: OpenaiCreds[] }) {
         stopBotFromMe: data.stopBotFromMe,
         keepOpen: data.keepOpen,
         debounceTime: parseInt(data.debounceTime),
+        speechToText: data.speechToText,
         openaiIdFallback: data.openaiIdFallback || undefined,
         ignoreJids: tags.map((tag) => tag.text),
       };
@@ -226,13 +230,16 @@ function DefaultSettingsOpenai({ creds }: { creds: OpenaiCreds[] }) {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="border border-gray-600">
-                          {creds.map((cred) => (
-                            <SelectItem key={cred.id} value={`${cred.id}`}>
-                              {cred.name
-                                ? cred.name
-                                : cred.apiKey.substring(0, 15) + "..."}
-                            </SelectItem>
-                          ))}
+                          {creds &&
+                            creds.length > 0 &&
+                            Array.isArray(creds) &&
+                            creds.map((cred) => (
+                              <SelectItem key={cred.id} value={`${cred.id}`}>
+                                {cred.name
+                                  ? cred.name
+                                  : cred.apiKey.substring(0, 15) + "..."}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </FormItem>
@@ -256,6 +263,7 @@ function DefaultSettingsOpenai({ creds }: { creds: OpenaiCreds[] }) {
                         <SelectContent className="border border-gray-600">
                           {bots &&
                             bots.length > 0 &&
+                            Array.isArray(bots) &&
                             bots.map((bot) => (
                               <SelectItem key={bot.id} value={`${bot.id}`}>
                                 {bot.id}
@@ -378,6 +386,25 @@ function DefaultSettingsOpenai({ creds }: { creds: OpenaiCreds[] }) {
                       <div className="ml-4 space-y-0.5">
                         <FormLabel className="text-sm">
                           Mantem a sessão do bot aberta
+                        </FormLabel>
+                      </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="speechToText"
+                  render={({ field }) => (
+                    <FormItem className="flex flex-row items-center justify-start py-4">
+                      <FormControl>
+                        <Switch
+                          checked={field.value}
+                          onCheckedChange={field.onChange}
+                        />
+                      </FormControl>
+                      <div className="ml-4 space-y-0.5">
+                        <FormLabel className="text-sm">
+                          Converter áudio em texto
                         </FormLabel>
                       </div>
                     </FormItem>

@@ -220,14 +220,17 @@ function DefaultSettingsTypebot() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent className="border border-gray-600">
-                          {typebots.map((typebot) => (
-                            <SelectItem
-                              key={typebot.id}
-                              value={`${typebot.id}`}
-                            >
-                              {typebot.typebot}
-                            </SelectItem>
-                          ))}
+                          {typebots &&
+                            typebots.length > 0 &&
+                            Array.isArray(typebots) &&
+                            typebots.map((typebot) => (
+                              <SelectItem
+                                key={typebot.id}
+                                value={`${typebot.id}`}
+                              >
+                                {typebot.typebot}
+                              </SelectItem>
+                            ))}
                         </SelectContent>
                       </Select>
                     </FormItem>

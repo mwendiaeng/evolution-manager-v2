@@ -80,7 +80,7 @@ function Typebot() {
               <LoadingSpinner />
             ) : (
               <>
-                {typebots && typebots.length > 0 ? (
+                {typebots && typebots.length > 0 && Array.isArray(typebots) ? (
                   typebots.map((typebot) => (
                     <div
                       className={`table-item ${

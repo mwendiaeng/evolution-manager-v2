@@ -215,6 +215,7 @@ function DefaultSettingsDify() {
                         <SelectContent className="border border-gray-600">
                           {bots &&
                             bots.length > 0 &&
+                            Array.isArray(bots) &&
                             bots.map((bot) => (
                               <SelectItem key={bot.id} value={`${bot.id}`}>
                                 {bot.id}

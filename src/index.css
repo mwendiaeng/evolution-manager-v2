@@ -165,6 +165,7 @@
     position: fixed;
     width: 100%;
     bottom: 0;
+    background-color: hsl(var(--header));
   }
 
   .footer-buttons {

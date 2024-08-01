@@ -80,7 +80,7 @@ function Dify() {
               <LoadingSpinner />
             ) : (
               <>
-                {bots && bots.length > 0 ? (
+                {bots && bots.length > 0 && Array.isArray(bots) ? (
                   bots.map((bot) => (
                     <div
                       className={`table-item ${

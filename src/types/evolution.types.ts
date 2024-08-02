@@ -281,3 +281,10 @@ export type Chatwoot = {
   organization: string;
   logo: string;
 };
+
+export type ModelOpenai = {
+  id: string;
+  object: string;
+  created: number;
+  owned_by: string;
+};

@@ -25,12 +25,12 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useInstance } from "@/contexts/InstanceContext";
-import { createOpenai } from "@/services/openai.service";
-import { OpenaiBot, OpenaiCreds } from "@/types/evolution.types";
+import { createOpenai, getModels } from "@/services/openai.service";
+import { ModelOpenai, OpenaiBot, OpenaiCreds } from "@/types/evolution.types";
 import toastService from "@/utils/custom-toast.service";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 
@@ -68,6 +68,7 @@ function NewOpenai({
 
   const [updating, setUpdating] = useState(false);
   const [open, setOpen] = useState(false);
+  const [models, setModels] = useState<ModelOpenai[]>([]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -94,6 +95,21 @@ function NewOpenai({
       debounceTime: "0",
     },
   });
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        if (!instance) return;
+        const response = await getModels(instance.name, instance.token);
+
+        setModels(response);
+      } catch (error) {
+        console.error("Erro ao buscar modelos:", error);
+      }
+    };
+
+    fetchModels();
+  }, [instance]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
@@ -275,10 +291,14 @@ function NewOpenai({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent className="border border-gray-600">
-                              <SelectItem value="gpt-4o">gpt-4o</SelectItem>
-                              <SelectItem value="gpt-3.5-turbo">
-                                gpt-3.5-turbo
-                              </SelectItem>
+                              {models &&
+                                models.length > 0 &&
+                                Array.isArray(models) &&
+                                models.map((model) => (
+                                  <SelectItem key={model.id} value={model.id}>
+                                    {model.id}
+                                  </SelectItem>
+                                ))}
                             </SelectContent>
                           </Select>
                         </FormItem>

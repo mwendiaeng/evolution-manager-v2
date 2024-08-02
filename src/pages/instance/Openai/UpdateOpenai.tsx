@@ -20,10 +20,16 @@ import { Separator } from "@/components/ui/separator";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Instance, OpenaiBot, OpenaiCreds } from "@/types/evolution.types";
+import {
+  Instance,
+  ModelOpenai,
+  OpenaiBot,
+  OpenaiCreds,
+} from "@/types/evolution.types";
 import { useEffect, useState } from "react";
 import {
   deleteOpenai,
+  getModels,
   getOpenai,
   updateOpenai,
 } from "@/services/openai.service";
@@ -81,6 +87,7 @@ function UpdateOpenai({
   const [, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
+  const [models, setModels] = useState<ModelOpenai[]>([]);
 
   const navigate = useNavigate();
 
@@ -156,7 +163,19 @@ function UpdateOpenai({
       }
     };
 
+    const fetchModels = async () => {
+      try {
+        if (!instance) return;
+        const response = await getModels(instance.name, instance.token);
+
+        setModels(response);
+      } catch (error) {
+        console.error("Erro ao buscar modelos:", error);
+      }
+    };
+
     fetchData();
+    fetchModels();
   }, [form, instance, openaiBotId]);
 
   const onSubmit = async () => {
@@ -348,10 +367,14 @@ function UpdateOpenai({
                               </SelectTrigger>
                             </FormControl>
                             <SelectContent className="border border-gray-600">
-                              <SelectItem value="gpt-4o">gpt-4o</SelectItem>
-                              <SelectItem value="gpt-3.5-turbo">
-                                gpt-3.5-turbo
-                              </SelectItem>
+                              {models &&
+                                models.length > 0 &&
+                                Array.isArray(models) &&
+                                models.map((model) => (
+                                  <SelectItem key={model.id} value={model.id}>
+                                    {model.id}
+                                  </SelectItem>
+                                ))}
                             </SelectContent>
                           </Select>
                         </FormItem>

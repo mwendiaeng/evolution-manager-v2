@@ -1,14 +1,20 @@
-import { OpenaiBot, OpenaiCreds, OpenaiSettings } from "@/types/evolution.types";
+import {
+  OpenaiBot,
+  OpenaiCreds,
+  OpenaiSettings,
+} from "@/types/evolution.types";
 import ApiService from "@/utils/instance";
 
 const apiService = new ApiService();
 
 export const findOpenaiCreds = async (instanceName: string, token: string) => {
-  const response = await apiService.getInstance().get(`/openai/creds/${instanceName}`, {
-    headers: {
-      apikey: token,
-    },
-  });
+  const response = await apiService
+    .getInstance()
+    .get(`/openai/creds/${instanceName}`, {
+      headers: {
+        apikey: token,
+      },
+    });
   return response.data;
 };
 
@@ -17,15 +23,13 @@ export const createOpenaiCreds = async (
   token: string,
   data: OpenaiCreds
 ) => {
-  const response = await apiService.getInstance().post(
-    `/openai/creds/${instanceName}`,
-    data,
-    {
+  const response = await apiService
+    .getInstance()
+    .post(`/openai/creds/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -33,18 +37,20 @@ export const deleteOpenaiCreds = async (
   openaiCredsId: string,
   instanceName: string
 ) => {
-  const response = await apiService.getInstance().delete(
-    `/openai/creds/${openaiCredsId}/${instanceName}`
-  );
+  const response = await apiService
+    .getInstance()
+    .delete(`/openai/creds/${openaiCredsId}/${instanceName}`);
   return response.data;
 };
 
 export const findOpenai = async (instanceName: string, token: string) => {
-  const response = await apiService.getInstance().get(`/openai/find/${instanceName}`, {
-    headers: {
-      apikey: token,
-    },
-  });
+  const response = await apiService
+    .getInstance()
+    .get(`/openai/find/${instanceName}`, {
+      headers: {
+        apikey: token,
+      },
+    });
   return response.data;
 };
 
@@ -53,14 +59,13 @@ export const getOpenai = async (
   token: string,
   openaiBotId: string
 ) => {
-  const response = await apiService.getInstance().get(
-    `/openai/fetch/${openaiBotId}/${instanceName}`,
-    {
+  const response = await apiService
+    .getInstance()
+    .get(`/openai/fetch/${openaiBotId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -69,15 +74,13 @@ export const createOpenai = async (
   token: string,
   data: OpenaiBot
 ) => {
-  const response = await apiService.getInstance().post(
-    `/openai/create/${instanceName}`,
-    data,
-    {
+  const response = await apiService
+    .getInstance()
+    .post(`/openai/create/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -87,15 +90,13 @@ export const updateOpenai = async (
   openaiBotId: string,
   data: OpenaiBot
 ) => {
-  const response = await apiService.getInstance().put(
-    `/openai/update/${openaiBotId}/${instanceName}`,
-    data,
-    {
+  const response = await apiService
+    .getInstance()
+    .put(`/openai/update/${openaiBotId}/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -104,14 +105,13 @@ export const deleteOpenai = async (
   token: string,
   openaiBotId: string
 ) => {
-  const response = await apiService.getInstance().delete(
-    `/openai/delete/${openaiBotId}/${instanceName}`,
-    {
+  const response = await apiService
+    .getInstance()
+    .delete(`/openai/delete/${openaiBotId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -119,14 +119,13 @@ export const findDefaultSettingsOpenai = async (
   instanceName: string,
   token: string
 ) => {
-  const response = await apiService.getInstance().get(
-    `/openai/fetchSettings/${instanceName}`,
-    {
+  const response = await apiService
+    .getInstance()
+    .get(`/openai/fetchSettings/${instanceName}`, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -135,15 +134,13 @@ export const setDefaultSettingsOpenai = async (
   token: string,
   data: OpenaiSettings
 ) => {
-  const response = await apiService.getInstance().post(
-    `/openai/settings/${instanceName}`,
-    data,
-    {
+  const response = await apiService
+    .getInstance()
+    .post(`/openai/settings/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -152,14 +149,13 @@ export const fetchSessionsOpenai = async (
   token: string,
   openaiBotId: string
 ) => {
-  const response = await apiService.getInstance().get(
-    `/openai/fetchSessions/${openaiBotId}/${instanceName}`,
-    {
+  const response = await apiService
+    .getInstance()
+    .get(`/openai/fetchSessions/${openaiBotId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
-    }
-  );
+    });
   return response.data;
 };
 
@@ -181,5 +177,16 @@ export const changeStatusOpenai = async (
       },
     }
   );
+  return response.data;
+};
+
+export const getModels = async (instanceName: string, token: string) => {
+  const response = await apiService
+    .getInstance()
+    .get(`/openai/getModels/${instanceName}`, {
+      headers: {
+        apikey: token,
+      },
+    });
   return response.data;
 };

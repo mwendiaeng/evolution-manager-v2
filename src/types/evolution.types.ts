@@ -92,6 +92,7 @@ export type OpenaiBot = {
   id?: string;
   openaiCredsId: string;
   enabled: boolean;
+  description: string;
   botType: string;
   assistantId: string;
   model: string;
@@ -142,6 +143,7 @@ export type OpenaiSession = {
 export type Dify = {
   id?: string;
   enabled: boolean;
+  description: string;
   botType: string;
   apiUrl: string;
   apiKey: string;
@@ -186,6 +188,7 @@ export type DifySession = {
 export type Typebot = {
   id?: string;
   enabled: boolean;
+  description: string;
   url: string;
   typebot: string;
   triggerType: string;

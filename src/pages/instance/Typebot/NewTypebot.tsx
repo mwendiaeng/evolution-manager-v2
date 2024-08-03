@@ -35,6 +35,7 @@ import { z } from "zod";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
+  description: z.string(),
   url: z.string().url(),
   typebot: z.string(),
   triggerType: z.string(),
@@ -61,6 +62,7 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       enabled: true,
+      description: "",
       url: "",
       typebot: "",
       triggerType: "keyword",
@@ -87,6 +89,7 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
       setUpdating(true);
       const typebotData: Typebot = {
         enabled: data.enabled,
+        description: data.description,
         url: data.url,
         typebot: data.typebot,
         triggerType: data.triggerType,
@@ -157,6 +160,20 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
                       <div className="ml-4 space-y-0.5">
                         <FormLabel className="text-sm">Ativo</FormLabel>
                       </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>Descrição</FormLabel>
+                      <Input
+                        {...field}
+                        className="border border-gray-600 w-full"
+                        placeholder="Descrição"
+                      />
                     </FormItem>
                   )}
                 />

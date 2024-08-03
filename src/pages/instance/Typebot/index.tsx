@@ -88,10 +88,23 @@ function Typebot() {
                       }`}
                       onClick={() => handleBotClick(`${typebot.id}`)}
                     >
-                      <h3 className="table-item-title">{typebot.url}</h3>
-                      <p className="table-item-description">
-                        {typebot.typebot}
-                      </p>
+                      {typebot.description ? (
+                        <>
+                          <h3 className="table-item-title">
+                            {typebot.description}
+                          </h3>
+                          <p className="table-item-description">
+                            {typebot.url} - {typebot.typebot}
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <h3 className="table-item-title">{typebot.url}</h3>
+                          <p className="table-item-description">
+                            {typebot.typebot}
+                          </p>
+                        </>
+                      )}
                     </div>
                   ))
                 ) : (

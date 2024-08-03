@@ -49,6 +49,7 @@ import { SessionsOpenai } from "./SessionsOpenai";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
+  description: z.string(),
   openaiCredsId: z.string(),
   botType: z.string(),
   assistantId: z.string(),
@@ -95,6 +96,7 @@ function UpdateOpenai({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       enabled: true,
+      description: "",
       openaiCredsId: "",
       botType: "assistant",
       assistantId: "",
@@ -133,6 +135,7 @@ function UpdateOpenai({
 
           form.reset({
             enabled: data.enabled,
+            description: data.description,
             openaiCredsId: data.openaiCredsId,
             botType: data.botType,
             assistantId: data.assistantId,
@@ -187,6 +190,7 @@ function UpdateOpenai({
       if (storedToken && instance && instance.name && openaiBotId) {
         const openaiBotData: OpenaiBot = {
           enabled: data.enabled,
+          description: data.description,
           openaiCredsId: data.openaiCredsId,
           botType: data.botType,
           assistantId: data.assistantId,
@@ -272,6 +276,20 @@ function UpdateOpenai({
                       <div className="ml-4 space-y-0.5">
                         <FormLabel className="text-sm">Ativo</FormLabel>
                       </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>Descrição</FormLabel>
+                      <Input
+                        {...field}
+                        className="border border-gray-600 w-full"
+                        placeholder="Descrição"
+                      />
                     </FormItem>
                   )}
                 />

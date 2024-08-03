@@ -88,7 +88,9 @@ function Dify() {
                       }`}
                       onClick={() => handleBotClick(`${bot.id}`)}
                     >
-                      <h3 className="table-item-title">{bot.id}</h3>
+                      <h3 className="table-item-title">
+                        {bot.description || bot.id}
+                      </h3>
                       <p className="table-item-description">{bot.botType}</p>
                     </div>
                   ))

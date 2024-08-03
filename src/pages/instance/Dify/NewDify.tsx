@@ -35,6 +35,7 @@ import { z } from "zod";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
+  description: z.string(),
   botType: z.string(),
   apiUrl: z.string(),
   apiKey: z.string(),
@@ -61,6 +62,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       enabled: true,
+      description: "",
       botType: "chatBot",
       apiUrl: "",
       apiKey: "",
@@ -87,6 +89,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
       setUpdating(true);
       const difyData: Dify = {
         enabled: data.enabled,
+        description: data.description,
         botType: data.botType,
         apiUrl: data.apiUrl,
         apiKey: data.apiKey,
@@ -158,6 +161,20 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
                       <div className="ml-4 space-y-0.5">
                         <FormLabel className="text-sm">Ativo</FormLabel>
                       </div>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem className="pb-4">
+                      <FormLabel>Descrição</FormLabel>
+                      <Input
+                        {...field}
+                        className="border border-gray-600 w-full"
+                        placeholder="Descrição"
+                      />
                     </FormItem>
                   )}
                 />

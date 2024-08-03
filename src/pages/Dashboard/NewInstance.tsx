@@ -31,6 +31,7 @@ const FormSchema = z.object({
   integration: z.string(),
   token: z.string(),
   number: z.string(),
+  businessId: z.string(),
 });
 
 function NewInstance({ resetTable }: { resetTable: () => void }) {
@@ -42,6 +43,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
       integration: "WHATSAPP-BAILEYS",
       token: crypto.randomUUID().replace("-", "").toLocaleUpperCase(),
       number: "",
+      businessId: "",
     },
   });
 
@@ -52,6 +54,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
         integration: data.integration,
         token: data.token === "" ? undefined : data.token,
         number: data.number === "" ? undefined : data.number,
+        businessId: data.businessId === "" ? undefined : data.businessId,
       };
 
       await createInstance(instanceData);
@@ -75,6 +78,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
       integration: "WHATSAPP-BAILEYS",
       token: crypto.randomUUID().replace("-", "").toLocaleUpperCase(),
       number: "",
+      businessId: "",
     });
   };
 
@@ -155,6 +159,18 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
                 className="col-span-3 border border-gray-600"
               />
             </div>
+            {form.watch("integration") === "WHATSAPP-BUSINESS" && (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="businessId" className="text-right">
+                  Business ID
+                </Label>
+                <Input
+                  id="businessId"
+                  {...form.register("businessId")}
+                  className="col-span-3 border border-gray-600"
+                />
+              </div>
+            )}
             <DialogFooter>
               <Button type="submit">Salvar</Button>
             </DialogFooter>

@@ -18,6 +18,7 @@ export type NewInstance = {
   integration: string;
   token?: string;
   number?: string;
+  businessId?: string;
 };
 
 export type Instance = {

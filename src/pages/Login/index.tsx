@@ -14,7 +14,7 @@ import "./style.css";
 import { Footer } from "@/components/footer";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { logout, saveCredentials, verifyServer } from "@/services/auth.service";
+import { logout, saveCredentials, verifyCreds, verifyServer } from "@/services/auth.service";
 import toastService from "@/utils/custom-toast.service";
 
 function Login() {
@@ -36,6 +36,13 @@ function Login() {
     if (!server || !server.version) {
       logout();
       toastService.error("Servidor inválido");
+      return;
+    }
+
+    const verify = await verifyCreds(serverUrl, apiKey);
+
+    if (!verify) {
+      toastService.error("Credenciais inválidas");
       return;
     }
 

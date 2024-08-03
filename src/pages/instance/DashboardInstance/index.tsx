@@ -50,6 +50,10 @@ function DashboardInstance() {
 
   const { instance } = useInstance();
 
+  const handleReload = () => {
+    window.location.reload();
+  }
+
   const handleRestart = async (instanceName: string) => {
     try {
       await restart(instanceName);
@@ -220,7 +224,7 @@ function DashboardInstance() {
           </div>
           <div className="dashboard-actions">
             <Button variant="outline" className="refresh-button">
-              <RefreshCw onClick={window.location.reload} size="20" />
+              <RefreshCw onClick={handleReload} size="20" />
             </Button>
             <Button
               className="action-button"

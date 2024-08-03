@@ -23,3 +23,21 @@ export const logout = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("version");
 };
+
+export const verifyCreds = async (url: string, token: string) => {
+  try {
+    const response = await axios.post(
+      `${url}/verify-creds`,
+      {},
+      {
+        headers: {
+          apikey: token,
+        },
+      }
+    );
+
+    return response.data;
+  } catch (error) {
+    return null;
+  }
+};

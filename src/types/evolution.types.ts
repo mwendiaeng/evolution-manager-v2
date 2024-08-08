@@ -95,6 +95,7 @@ export type OpenaiBot = {
   description: string;
   botType: string;
   assistantId: string;
+  functionUrl: string;
   model: string;
   systemMessages: string | string[];
   assistantMessages: string | string[];

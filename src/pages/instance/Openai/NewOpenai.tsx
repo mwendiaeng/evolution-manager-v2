@@ -40,6 +40,7 @@ const FormSchema = z.object({
   openaiCredsId: z.string(),
   botType: z.string(),
   assistantId: z.string(),
+  functionUrl: z.string(),
   model: z.string(),
   systemMessages: z.string(),
   assistantMessages: z.string(),
@@ -79,6 +80,7 @@ function NewOpenai({
       openaiCredsId: "",
       botType: "assistant",
       assistantId: "",
+      functionUrl: "",
       model: "gpt-3.5-turbo",
       systemMessages: "",
       assistantMessages: "",
@@ -126,6 +128,7 @@ function NewOpenai({
         openaiCredsId: data.openaiCredsId,
         botType: data.botType,
         assistantId: data.assistantId,
+        functionUrl: data.functionUrl,
         model: data.model,
         systemMessages: [data.systemMessages],
         assistantMessages: [data.assistantMessages],
@@ -275,20 +278,36 @@ function NewOpenai({
                   )}
                 />
                 {form.watch("botType") === "assistant" && (
-                  <FormField
-                    control={form.control}
-                    name="assistantId"
-                    render={({ field }) => (
-                      <FormItem className="pb-4">
-                        <FormLabel>ID do Assistente</FormLabel>
-                        <Input
-                          {...field}
-                          className="border border-gray-600 w-full"
-                          placeholder="ID do Assistente"
-                        />
-                      </FormItem>
-                    )}
-                  />
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="assistantId"
+                      render={({ field }) => (
+                        <FormItem className="pb-4">
+                          <FormLabel>ID do Assistente</FormLabel>
+                          <Input
+                            {...field}
+                            className="border border-gray-600 w-full"
+                            placeholder="ID do Assistente"
+                          />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="functionUrl"
+                      render={({ field }) => (
+                        <FormItem className="pb-4">
+                          <FormLabel>URL das Funções</FormLabel>
+                          <Input
+                            {...field}
+                            className="border border-gray-600 w-full"
+                            placeholder="URL das Funções"
+                          />
+                        </FormItem>
+                      )}
+                    />
+                  </>
                 )}
                 {form.watch("botType") === "chatCompletion" && (
                   <>

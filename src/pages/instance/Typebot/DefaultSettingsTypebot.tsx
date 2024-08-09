@@ -88,6 +88,7 @@ function DefaultSettingsTypebot() {
   const [tags, setTags] = useState<Tag[]>([]);
   const [settings, setSettings] = useState<TypebotSettings>();
   const [typebots, setTypebots] = useState<Typebot[]>([]);
+  const [open, setOpen] = useState(false);
 
   const handleDeleteTag = (i: number) => {
     setTags(tags.filter((_tag, index) => index !== i));
@@ -114,8 +115,8 @@ function DefaultSettingsTypebot() {
   });
 
   useEffect(() => {
-    fetchData(instance, setSettings, setTypebots);
-  }, [instance]);
+    if (open) fetchData(instance, setSettings, setTypebots);
+  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -187,7 +188,7 @@ function DefaultSettingsTypebot() {
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default" className="mr-5">
           <Cog /> Configurações Padrão

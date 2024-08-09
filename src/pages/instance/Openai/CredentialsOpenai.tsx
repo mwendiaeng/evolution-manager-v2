@@ -91,8 +91,8 @@ function CredentialsOpenai() {
   });
 
   useEffect(() => {
-    fetchData(instance, setCreds);
-  }, [instance]);
+    if (open) fetchData(instance, setCreds);
+  }, [instance, open]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {

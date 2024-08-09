@@ -29,6 +29,7 @@ import {
 import { useEffect, useState } from "react";
 import {
   deleteOpenai,
+  findOpenaiCreds,
   getModels,
   getOpenai,
   updateOpenai,
@@ -53,6 +54,7 @@ const FormSchema = z.object({
   openaiCredsId: z.string(),
   botType: z.string(),
   assistantId: z.string(),
+  functionUrl: z.string().optional(),
   model: z.string(),
   systemMessages: z.string(),
   assistantMessages: z.string(),
@@ -75,20 +77,19 @@ const FormSchema = z.object({
 type UpdateOpenaiProps = {
   openaiBotId: string;
   instance: Instance | null;
-  creds: OpenaiCreds[];
   resetTable: () => void;
 };
 
 function UpdateOpenai({
   openaiBotId,
   instance,
-  creds,
   resetTable,
 }: UpdateOpenaiProps) {
   const [, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
   const [models, setModels] = useState<ModelOpenai[]>([]);
+  const [creds, setCreds] = useState<OpenaiCreds[]>([]);
 
   const navigate = useNavigate();
 
@@ -100,6 +101,7 @@ function UpdateOpenai({
       openaiCredsId: "",
       botType: "assistant",
       assistantId: "",
+      functionUrl: "",
       model: "gpt-3.5-turbo",
       systemMessages: "",
       assistantMessages: "",
@@ -139,6 +141,7 @@ function UpdateOpenai({
             openaiCredsId: data.openaiCredsId,
             botType: data.botType,
             assistantId: data.assistantId,
+            functionUrl: data.functionUrl,
             model: data.model,
             systemMessages: data.systemMessages.toString(),
             assistantMessages: data.assistantMessages.toString(),
@@ -172,6 +175,13 @@ function UpdateOpenai({
         const response = await getModels(instance.name, instance.token);
 
         setModels(response);
+
+        const getCreds: OpenaiCreds[] = await findOpenaiCreds(
+          instance.name,
+          instance.token
+        );
+
+        setCreds(getCreds);
       } catch (error) {
         console.error("Erro ao buscar modelos:", error);
       }
@@ -194,6 +204,7 @@ function UpdateOpenai({
           openaiCredsId: data.openaiCredsId,
           botType: data.botType,
           assistantId: data.assistantId,
+          functionUrl: data.functionUrl || "",
           model: data.model,
           systemMessages: [data.systemMessages],
           assistantMessages: [data.assistantMessages],
@@ -352,20 +363,36 @@ function UpdateOpenai({
                   )}
                 />
                 {form.watch("botType") === "assistant" && (
-                  <FormField
-                    control={form.control}
-                    name="assistantId"
-                    render={({ field }) => (
-                      <FormItem className="pb-4">
-                        <FormLabel>ID do Assistente</FormLabel>
-                        <Input
-                          {...field}
-                          className="border border-gray-600 w-full"
-                          placeholder="ID do Assistente"
-                        />
-                      </FormItem>
-                    )}
-                  />
+                  <>
+                    <FormField
+                      control={form.control}
+                      name="assistantId"
+                      render={({ field }) => (
+                        <FormItem className="pb-4">
+                          <FormLabel>ID do Assistente</FormLabel>
+                          <Input
+                            {...field}
+                            className="border border-gray-600 w-full"
+                            placeholder="ID do Assistente"
+                          />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="functionUrl"
+                      render={({ field }) => (
+                        <FormItem className="pb-4">
+                          <FormLabel>URL das Funções</FormLabel>
+                          <Input
+                            {...field}
+                            className="border border-gray-600 w-full"
+                            placeholder="URL das Funções"
+                          />
+                        </FormItem>
+                      )}
+                    />
+                  </>
                 )}
                 {form.watch("botType") === "chatCompletion" && (
                   <>

@@ -41,6 +41,7 @@ import {
 import {
   findDefaultSettingsOpenai,
   findOpenai,
+  findOpenaiCreds,
   setDefaultSettingsOpenai,
 } from "@/services/openai.service";
 
@@ -62,7 +63,8 @@ const FormSchema = z.object({
 const fetchData = async (
   instance: Instance | null,
   setSettings: any,
-  setBots: any
+  setBots: any,
+  setCreds: any
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
@@ -78,6 +80,13 @@ const fetchData = async (
       const getBots: OpenaiBot[] = await findOpenai(instance.name, storedToken);
 
       setBots(getBots);
+
+      const getCreds: OpenaiCreds[] = await findOpenaiCreds(
+        instance.name,
+        storedToken
+      );
+
+      setCreds(getCreds);
     } else {
       console.error("Token ou nome da instância não encontrados.");
     }
@@ -86,12 +95,14 @@ const fetchData = async (
   }
 };
 
-function DefaultSettingsOpenai({ creds }: { creds: OpenaiCreds[] }) {
+function DefaultSettingsOpenai() {
   const { instance } = useInstance();
 
+  const [open, setOpen] = useState(false);
   const [tags, setTags] = useState<Tag[]>([]);
   const [settings, setSettings] = useState<OpenaiSettings>();
   const [bots, setBots] = useState<OpenaiBot[]>([]);
+  const [creds, setCreds] = useState<OpenaiCreds[]>();
 
   const handleDeleteTag = (i: number) => {
     setTags(tags.filter((_tag, index) => index !== i));
@@ -120,8 +131,8 @@ function DefaultSettingsOpenai({ creds }: { creds: OpenaiCreds[] }) {
   });
 
   useEffect(() => {
-    fetchData(instance, setSettings, setBots);
-  }, [instance]);
+    if (open) fetchData(instance, setSettings, setBots, setCreds);
+  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -193,11 +204,11 @@ function DefaultSettingsOpenai({ creds }: { creds: OpenaiCreds[] }) {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setBots);
+    fetchData(instance, setSettings, setBots, setCreds);
   }
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default" className="mr-5">
           <Cog /> Configurações Padrão

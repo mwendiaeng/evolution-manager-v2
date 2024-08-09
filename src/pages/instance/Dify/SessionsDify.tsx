@@ -33,6 +33,7 @@ import {
   MoreHorizontal,
   Pause,
   Play,
+  RotateCcw,
   StopCircle,
 } from "lucide-react";
 import { DifySession, Instance } from "@/types/evolution.types";
@@ -77,10 +78,11 @@ function SessionsDify({ difyId }: { difyId: string }) {
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [sessions, setSessions] = useState<DifySession[] | []>([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    fetchData(instance, difyId, setSessions);
-  }, [instance, difyId]);
+    if (open) fetchData(instance, difyId, setSessions);
+  }, [instance, difyId, open]);
 
   function onReset() {
     fetchData(instance, difyId, setSessions);
@@ -187,7 +189,7 @@ function SessionsDify({ difyId }: { difyId: string }) {
   });
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default" className="mr-5 text-white">
           <ListCollapse /> Sessões
@@ -201,16 +203,25 @@ function SessionsDify({ difyId }: { difyId: string }) {
           <DialogTitle>Sessões</DialogTitle>
         </DialogHeader>
         <div>
-          <Input
-            placeholder="Search by remoteJid..."
-            value={
-              (table.getColumn("remoteJid")?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn("remoteJid")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm border border-gray-300 rounded-md"
-          />
+          <div className="flex items-center justify-between p-5">
+            <Input
+              placeholder="Search by remoteJid..."
+              value={
+                (table.getColumn("remoteJid")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn("remoteJid")?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm border border-gray-300 rounded-md"
+            />
+            <Button
+              variant="outline"
+              onClick={onReset}
+              className="ml-2 text-white"
+            >
+              <RotateCcw />
+            </Button>
+          </div>
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (

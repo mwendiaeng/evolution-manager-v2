@@ -33,6 +33,7 @@ import {
   MoreHorizontal,
   Pause,
   Play,
+  RotateCcw,
   StopCircle,
 } from "lucide-react";
 import { Instance, TypebotSession } from "@/types/evolution.types";
@@ -80,10 +81,11 @@ function SessionsTypebot({ typebotId }: { typebotId: string }) {
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [sessions, setSessions] = useState<TypebotSession[] | []>([]);
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    fetchData(instance, typebotId, setSessions);
-  }, [instance, typebotId]);
+    if (open) fetchData(instance, typebotId, setSessions);
+  }, [instance, typebotId, open]);
 
   function onReset() {
     fetchData(instance, typebotId, setSessions);
@@ -199,7 +201,7 @@ function SessionsTypebot({ typebotId }: { typebotId: string }) {
   });
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default" className="mr-5 text-white">
           <ListCollapse /> Sessões
@@ -213,16 +215,25 @@ function SessionsTypebot({ typebotId }: { typebotId: string }) {
           <DialogTitle>Sessões</DialogTitle>
         </DialogHeader>
         <div>
-          <Input
-            placeholder="Search by remoteJid..."
-            value={
-              (table.getColumn("remoteJid")?.getFilterValue() as string) ?? ""
-            }
-            onChange={(event) =>
-              table.getColumn("remoteJid")?.setFilterValue(event.target.value)
-            }
-            className="max-w-sm border border-gray-300 rounded-md"
-          />
+          <div className="flex items-center justify-between p-5">
+            <Input
+              placeholder="Search by remoteJid..."
+              value={
+                (table.getColumn("remoteJid")?.getFilterValue() as string) ?? ""
+              }
+              onChange={(event) =>
+                table.getColumn("remoteJid")?.setFilterValue(event.target.value)
+              }
+              className="max-w-sm border border-gray-300 rounded-md"
+            />
+            <Button
+              variant="outline"
+              onClick={onReset}
+              className="ml-2 text-white"
+            >
+              <RotateCcw />
+            </Button>
+          </div>
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (

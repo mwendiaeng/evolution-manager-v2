@@ -50,6 +50,7 @@ function Typebot() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!instance) return;
     fetchData(instance, setTypebots, setLoading);
   }, [instance]);
 

@@ -9,8 +9,8 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { useInstance } from "@/contexts/InstanceContext";
 import { useEffect, useState } from "react";
-import { findOpenai, findOpenaiCreds } from "@/services/openai.service";
-import { Instance, OpenaiBot, OpenaiCreds } from "@/types/evolution.types";
+import { findOpenai } from "@/services/openai.service";
+import { Instance, OpenaiBot } from "@/types/evolution.types";
 import { useNavigate, useParams } from "react-router-dom";
 import { UpdateOpenai } from "./UpdateOpenai";
 import { NewOpenai } from "./NewOpenai";
@@ -21,7 +21,6 @@ import { DefaultSettingsOpenai } from "./DefaultSettingsOpenai";
 const fetchData = async (
   instance: Instance | null,
   setBots: any,
-  setCreds: any,
   setLoading: any
 ) => {
   try {
@@ -31,13 +30,6 @@ const fetchData = async (
       const data: OpenaiBot[] = await findOpenai(instance.name, storedToken);
 
       setBots(data);
-
-      const getCreds: OpenaiCreds[] = await findOpenaiCreds(
-        instance.name,
-        storedToken
-      );
-
-      setCreds(getCreds);
     } else {
       console.error("Token ou nome da instância não encontrados.");
     }
@@ -55,12 +47,12 @@ function Openai() {
 
   const [loading, setLoading] = useState<boolean>(true);
   const [bots, setBots] = useState<OpenaiBot[]>([]);
-  const [creds, setCreds] = useState<OpenaiCreds[] | []>([]);
 
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchData(instance, setBots, setCreds, setLoading);
+    if (!instance) return;
+    fetchData(instance, setBots, setLoading);
   }, [instance]);
 
   const handleBotClick = (botId: string) => {
@@ -70,7 +62,7 @@ function Openai() {
   };
 
   const resetTable = () => {
-    fetchData(instance, setBots, setCreds, setLoading);
+    fetchData(instance, setBots, setLoading);
   };
 
   return (
@@ -78,9 +70,9 @@ function Openai() {
       <div className="flex items-center justify-between">
         <h3 className="ml-5 mb-1 text-lg font-medium">Openai Bots</h3>
         <div>
-          <DefaultSettingsOpenai creds={creds} />
+          <DefaultSettingsOpenai />
           <CredentialsOpenai />
-          <NewOpenai resetTable={resetTable} creds={creds} />
+          <NewOpenai resetTable={resetTable} />
         </div>
       </div>
       <Separator className="mt-4 border border-black" />
@@ -116,7 +108,6 @@ function Openai() {
         <ResizablePanel className="">
           {openaiBotId && (
             <UpdateOpenai
-              creds={creds}
               openaiBotId={openaiBotId}
               instance={instance}
               resetTable={resetTable}

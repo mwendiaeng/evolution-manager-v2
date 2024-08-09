@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,7 +26,11 @@ import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useInstance } from "@/contexts/InstanceContext";
-import { createOpenai, getModels } from "@/services/openai.service";
+import {
+  createOpenai,
+  findOpenaiCreds,
+  getModels,
+} from "@/services/openai.service";
 import { ModelOpenai, OpenaiBot, OpenaiCreds } from "@/types/evolution.types";
 import toastService from "@/utils/custom-toast.service";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -59,18 +64,13 @@ const FormSchema = z.object({
   debounceTime: z.string(),
 });
 
-function NewOpenai({
-  creds,
-  resetTable,
-}: {
-  creds: OpenaiCreds[];
-  resetTable: () => void;
-}) {
+function NewOpenai({ resetTable }: { resetTable: () => void }) {
   const { instance } = useInstance();
 
   const [updating, setUpdating] = useState(false);
   const [open, setOpen] = useState(false);
   const [models, setModels] = useState<ModelOpenai[]>([]);
+  const [creds, setCreds] = useState<OpenaiCreds[]>([]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -101,19 +101,28 @@ function NewOpenai({
   });
 
   useEffect(() => {
-    const fetchModels = async () => {
-      try {
-        if (!instance) return;
-        const response = await getModels(instance.name, instance.token);
+    if (open) {
+      const fetchData = async () => {
+        try {
+          if (!instance) return;
+          const response = await getModels(instance.name, instance.token);
 
-        setModels(response);
-      } catch (error) {
-        console.error("Erro ao buscar modelos:", error);
-      }
-    };
+          setModels(response);
 
-    fetchModels();
-  }, [instance]);
+          const getCreds: OpenaiCreds[] = await findOpenaiCreds(
+            instance.name,
+            instance.token
+          );
+
+          setCreds(getCreds);
+        } catch (error) {
+          console.error("Erro ao buscar modelos:", error);
+        }
+      };
+
+      fetchData();
+    }
+  }, [instance, open]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {

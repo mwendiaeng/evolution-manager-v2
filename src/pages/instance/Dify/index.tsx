@@ -50,6 +50,7 @@ function Dify() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!instance) return;
     fetchData(instance, setBots, setLoading);
   }, [instance]);
 

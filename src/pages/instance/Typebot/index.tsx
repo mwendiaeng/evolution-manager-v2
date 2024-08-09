@@ -16,6 +16,7 @@ import { NewTypebot } from "./NewTypebot";
 import { UpdateTypebot } from "./UpdateTypebot";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { DefaultSettingsTypebot } from "./DefaultSettingsTypebot";
+import { SessionsTypebot } from "./SessionsTypebot";
 
 const fetchData = async (
   instance: Instance | null,
@@ -69,6 +70,7 @@ function Typebot() {
       <div className="flex items-center justify-between">
         <h3 className="ml-5 mb-1 text-lg font-medium">Typebots</h3>
         <div>
+          <SessionsTypebot />
           <DefaultSettingsTypebot />
           <NewTypebot resetTable={resetTable} />
         </div>

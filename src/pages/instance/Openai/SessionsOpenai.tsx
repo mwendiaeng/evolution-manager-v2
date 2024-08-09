@@ -58,8 +58,8 @@ import {
 
 const fetchData = async (
   instance: Instance | null,
-  openaiBotId: string,
-  setSessions: any
+  setSessions: any,
+  openaiBotId?: string
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
@@ -80,7 +80,7 @@ const fetchData = async (
   }
 };
 
-function SessionsOpenai({ openaiBotId }: { openaiBotId: string }) {
+function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -88,11 +88,11 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId: string }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (open) fetchData(instance, openaiBotId, setSessions);
+    if (open) fetchData(instance, setSessions, openaiBotId);
   }, [instance, openaiBotId, open]);
 
   function onReset() {
-    fetchData(instance, openaiBotId, setSessions);
+    fetchData(instance, setSessions, openaiBotId);
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {
@@ -116,11 +116,19 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId: string }) {
     }
   };
 
-  const columns: ColumnDef<TypebotSession>[] = [
+  const columns: ColumnDef<OpenaiSession>[] = [
     {
       accessorKey: "remoteJid",
       header: () => <div className="text-center">Remote Jid</div>,
       cell: ({ row }) => <div>{row.getValue("remoteJid")}</div>,
+    },
+    {
+      accessorKey: "bot",
+      header: () => <div className="text-center">Bot</div>,
+      cell: ({ row }) => {
+        const session = row.original;
+        return <div>{session.OpenaiBot?.description}</div>;
+      },
     },
     {
       accessorKey: "sessionId",

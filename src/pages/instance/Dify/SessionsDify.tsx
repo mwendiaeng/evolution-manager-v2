@@ -51,8 +51,8 @@ import { changeStatusDify, fetchSessionsDify } from "@/services/dify.service";
 
 const fetchData = async (
   instance: Instance | null,
-  difyId: string,
-  setSessions: any
+  setSessions: any,
+  difyId?: string,
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
@@ -73,7 +73,7 @@ const fetchData = async (
   }
 };
 
-function SessionsDify({ difyId }: { difyId: string }) {
+function SessionsDify({ difyId }: { difyId?: string }) {
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -81,11 +81,11 @@ function SessionsDify({ difyId }: { difyId: string }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (open) fetchData(instance, difyId, setSessions);
+    if (open) fetchData(instance, setSessions, difyId);
   }, [instance, difyId, open]);
 
   function onReset() {
-    fetchData(instance, difyId, setSessions);
+    fetchData(instance, setSessions, difyId);
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {

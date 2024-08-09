@@ -107,7 +107,7 @@ export const setDefaultSettingsDify = async (
 export const fetchSessionsDify = async (
   instanceName: string,
   token: string,
-  difyId: string
+  difyId?: string
 ) => {
   const response = await apiService
     .getInstance()

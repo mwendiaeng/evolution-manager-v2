@@ -114,7 +114,7 @@ export const setDefaultSettingsTypebot = async (
 export const fetchSessionsTypebot = async (
   instanceName: string,
   token: string,
-  typebotId: string
+  typebotId?: string
 ) => {
   const response = await apiService.getInstance().get(
     `/typebot/fetchSessions/${typebotId}/${instanceName}`,

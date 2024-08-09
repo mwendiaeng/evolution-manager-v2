@@ -139,6 +139,7 @@ export type OpenaiSession = {
   createdAt: string;
   updatedAt: string;
   openaiBotId: string;
+  OpenaiBot?: OpenaiBot;
 };
 
 export type Dify = {
@@ -184,6 +185,7 @@ export type DifySession = {
   createdAt: string;
   updatedAt: string;
   difyId: string;
+  Dify?: Dify;
 };
 
 export type Typebot = {
@@ -228,6 +230,7 @@ export type TypebotSession = {
   createdAt: string;
   updatedAt: string;
   typebotId: string;
+  Typebot?: Typebot;
 };
 
 export type Webhook = {

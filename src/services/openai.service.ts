@@ -147,7 +147,7 @@ export const setDefaultSettingsOpenai = async (
 export const fetchSessionsOpenai = async (
   instanceName: string,
   token: string,
-  openaiBotId: string
+  openaiBotId?: string
 ) => {
   const response = await apiService
     .getInstance()

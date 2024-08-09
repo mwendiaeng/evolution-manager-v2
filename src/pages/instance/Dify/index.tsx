@@ -16,6 +16,7 @@ import { NewDify } from "./NewDify";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { DefaultSettingsDify } from "./DefaultSettingsDify";
 import { findDify } from "@/services/dify.service";
+import { SessionsDify } from "./SessionsDify";
 
 const fetchData = async (
   instance: Instance | null,
@@ -69,6 +70,7 @@ function Dify() {
       <div className="flex items-center justify-between">
         <h3 className="ml-5 mb-1 text-lg font-medium">Dify Bots</h3>
         <div>
+          <SessionsDify />
           <DefaultSettingsDify />
           <NewDify resetTable={resetTable} />
         </div>

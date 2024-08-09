@@ -54,8 +54,8 @@ import toastService from "@/utils/custom-toast.service";
 
 const fetchData = async (
   instance: Instance | null,
-  typebotId: string,
-  setSessions: any
+  setSessions: any,
+  typebotId?: string
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
@@ -76,7 +76,7 @@ const fetchData = async (
   }
 };
 
-function SessionsTypebot({ typebotId }: { typebotId: string }) {
+function SessionsTypebot({ typebotId }: { typebotId?: string }) {
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -84,11 +84,11 @@ function SessionsTypebot({ typebotId }: { typebotId: string }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (open) fetchData(instance, typebotId, setSessions);
+    if (open) fetchData(instance, setSessions, typebotId);
   }, [instance, typebotId, open]);
 
   function onReset() {
-    fetchData(instance, typebotId, setSessions);
+    fetchData(instance, setSessions, typebotId);
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {

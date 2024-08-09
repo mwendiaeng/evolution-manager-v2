@@ -129,7 +129,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="mr-5">
+        <Button variant="default" className="mr-5 text-white">
           <PlusIcon /> Dify
         </Button>
       </DialogTrigger>

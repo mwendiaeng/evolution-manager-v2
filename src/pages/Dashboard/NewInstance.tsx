@@ -26,6 +26,7 @@ import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 import { LoginWhatsappButton } from "./LoginWhatsappButton";
+import { v4 as uuidv4 } from 'uuid';
 
 const FormSchema = z.object({
   name: z.string(),
@@ -42,7 +43,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
     defaultValues: {
       name: "",
       integration: "WHATSAPP-BAILEYS",
-      token: crypto.randomUUID().replace("-", "").toLocaleUpperCase(),
+      token: uuidv4().replace("-", "").toLocaleUpperCase(),
       number: "",
       businessId: "",
     },
@@ -77,7 +78,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
     form.reset({
       name: "",
       integration: "WHATSAPP-BAILEYS",
-      token: crypto.randomUUID().replace("-", "").toLocaleUpperCase(),
+      token: uuidv4().replace("-", "").toLocaleUpperCase(),
       number: "",
       businessId: "",
     });

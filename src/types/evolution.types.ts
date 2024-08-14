@@ -288,6 +288,7 @@ export type Chatwoot = {
   autoCreate: boolean;
   organization: string;
   logo: string;
+  ignoreJids?: string[];
 };
 
 export type ModelOpenai = {

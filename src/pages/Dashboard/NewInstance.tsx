@@ -25,6 +25,7 @@ import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
+import { LoginWhatsappButton } from "./LoginWhatsappButton";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -173,6 +174,14 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
             )}
             <DialogFooter>
               <Button type="submit">Salvar</Button>
+              {form.watch("integration") === "WHATSAPP-BUSINESS" && (
+                <LoginWhatsappButton
+                  setNumber={(number) => form.setValue("number", number)}
+                  setBusiness={(businessId) =>
+                    form.setValue("businessId", businessId)
+                  }
+                />
+              )}
             </DialogFooter>
           </form>
         </FormProvider>

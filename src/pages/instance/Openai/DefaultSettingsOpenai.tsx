@@ -290,11 +290,11 @@ function DefaultSettingsOpenai() {
                   name="expire"
                   render={({ field }) => (
                     <FormItem className="pb-4">
-                      <FormLabel>Expira em (minitos)</FormLabel>
+                      <FormLabel>Expira em (minutos)</FormLabel>
                       <Input
                         {...field}
                         className="border border-gray-600 w-full"
-                        placeholder="Expira em (minitos)"
+                        placeholder="Expira em (minutos)"
                         type="number"
                       />
                     </FormItem>

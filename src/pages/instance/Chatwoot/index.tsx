@@ -22,6 +22,8 @@ import { createChatwoot, fetchChatwoot } from "@/services/chatwoot.service";
 import { useInstance } from "@/contexts/InstanceContext";
 import { useEffect, useState } from "react";
 import { Chatwoot as ChatwootType } from "@/types/evolution.types";
+import { WithContext as ReactTags } from "react-tag-input";
+import { Tag } from "node_modules/react-tag-input/types/components/SingleTag";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -40,11 +42,21 @@ const FormSchema = z.object({
   importMessages: z.boolean(),
   daysLimitImportMessages: z.string(),
   autoCreate: z.boolean(),
+  ignoreJids: z.array(z.string()).optional(),
 });
 
 function Chatwoot() {
   const { instance } = useInstance();
   const [, setLoading] = useState(false);
+  const [tags, setTags] = useState<Tag[]>([]);
+
+  const handleDeleteTag = (i: number) => {
+    setTags(tags.filter((_tag, index) => index !== i));
+  };
+
+  const handleAdditionTag = (tag: Tag) => {
+    setTags([...tags, tag]);
+  };
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -65,6 +77,7 @@ function Chatwoot() {
       importMessages: false,
       daysLimitImportMessages: "7",
       autoCreate: true,
+      ignoreJids: [],
     },
   });
 
@@ -74,6 +87,13 @@ function Chatwoot() {
       setLoading(true);
       try {
         const data = await fetchChatwoot(instance.name, instance.token);
+        setTags(
+          data.ignoreJids?.map((jid: any) => ({
+            id: jid,
+            text: jid,
+            className: "",
+          })) || []
+        );
         form.reset(data);
       } catch (error) {
         console.error("Erro ao buscar dados do chatwoot:", error);
@@ -109,6 +129,7 @@ function Chatwoot() {
         importMessages: data.importMessages,
         daysLimitImportMessages: parseInt(data.daysLimitImportMessages, 10),
         autoCreate: data.autoCreate,
+        ignoreJids: data.ignoreJids,
       };
 
       await createChatwoot(instance.name, instance.token, chatwootData);
@@ -127,9 +148,7 @@ function Chatwoot() {
     <main className="main-content">
       <div className="form-container">
         <Form {...form}>
-          <form
-            className="w-full space-y-6"
-          >
+          <form className="w-full space-y-6">
             <div>
               <h3 className="mb-1 text-lg font-medium">Chatwoot</h3>
               <Separator className="my-4 border-t border-gray-600" />
@@ -358,6 +377,43 @@ function Chatwoot() {
                 />
                 <FormField
                   control={form.control}
+                  name="ignoreJids"
+                  render={({ field }) => (
+                    <div className="pb-4">
+                      <label className="block text-sm font-medium">
+                        Ignorar JIDs
+                      </label>
+                      <ReactTags
+                        tags={tags}
+                        handleDelete={handleDeleteTag}
+                        handleAddition={handleAdditionTag}
+                        inputFieldPosition="bottom"
+                        placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
+                        autoFocus={false}
+                        classNames={{
+                          tags: "tagsClass",
+                          tagInput: "tagInputClass",
+                          tagInputField: "tagInputFieldClass",
+                          selected: "selectedClass",
+                          tag: "tagClass",
+                          remove: "removeClass",
+                          suggestions: "suggestionsClass",
+                          activeSuggestion: "activeSuggestionClass",
+                          editTagInput: "editTagInputClass",
+                          editTagInputField: "editTagInputFieldClass",
+                          clearAll: "clearAllClass",
+                        }}
+                      />
+                      <input
+                        type="hidden"
+                        {...field}
+                        value={tags.map((tag) => tag.text).join(",")}
+                      />
+                    </div>
+                  )}
+                />
+                <FormField
+                  control={form.control}
                   name="autoCreate"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
@@ -380,7 +436,9 @@ function Chatwoot() {
                 />
               </div>
             </div>
-            <Button type="button" onClick={onSubmit}>Salvar</Button>
+            <Button type="button" onClick={onSubmit}>
+              Salvar
+            </Button>
           </form>
         </Form>
       </div>

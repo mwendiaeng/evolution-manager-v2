@@ -1,8 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import "./style.css";
-import { Copy, Eye, EyeOff, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useState } from "react";
 
+import { InstanceToken } from "@/components/instance-token";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
@@ -17,8 +18,6 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { logout, connect, restart } from "@/services/instances.service";
-
-import { copyToClipboard } from "@/utils/copy-to-clipboard";
 
 const getStatusClass = (status: string) => {
   switch (status) {
@@ -50,7 +49,6 @@ function DashboardInstance() {
   const [qrCodeData, setQRCodeData] = useState("");
   const [pairingCode, setPairingCode] = useState("");
   const token = localStorage.getItem("token");
-  const [visible, setVisible] = useState<string[]>([]);
 
   const { instance } = useInstance();
 
@@ -130,43 +128,7 @@ function DashboardInstance() {
             </div>
             <div className="dashboard-name">{instance.name}</div>
             <div className="dashboard-description">{instance.ownerJid}</div>
-            <div className="card-id">
-              <span>
-                {visible.includes(instance.token)
-                  ? instance.token.substring(0, 32) + "..."
-                  : instance.token
-                      .substring(0, 32)
-                      .split("")
-                      .map(() => "*")
-                      .join("")}
-              </span>
-              <Copy
-                className="card-icon"
-                size="15"
-                onClick={() => {
-                  copyToClipboard(instance.token);
-                }}
-              />
-              {visible.includes(instance.token) ? (
-                <EyeOff
-                  className="card-icon"
-                  size="15"
-                  onClick={() => {
-                    setVisible(
-                      visible.filter((item) => item !== instance.token),
-                    );
-                  }}
-                />
-              ) : (
-                <Eye
-                  className="card-icon"
-                  size="15"
-                  onClick={() => {
-                    setVisible([...visible, instance.token]);
-                  }}
-                />
-              )}
-            </div>
+            <InstanceToken token={instance.token} />
             {instance.connectionStatus !== "open" && (
               <div className="connection-warning">
                 <span>Telefone não conectado</span>

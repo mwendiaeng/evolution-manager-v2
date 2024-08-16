@@ -2,9 +2,6 @@ import {
   ChevronsUpDown,
   CircleUser,
   Cog,
-  Copy,
-  Eye,
-  EyeOff,
   MessageCircle,
   RefreshCw,
 } from "lucide-react";
@@ -12,6 +9,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import { InstanceToken } from "@/components/instance-token";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,8 +42,6 @@ import {
 
 import { Instance } from "@/types/evolution.types";
 
-import { copyToClipboard } from "@/utils/copy-to-clipboard";
-
 import { NewInstance } from "./NewInstance";
 
 const fetchData = async (callback: (data: Instance[]) => void) => {
@@ -63,7 +59,6 @@ function Dashboard() {
   );
   const [instances, setInstances] = useState<Instance[]>([]);
   const [deleting, setDeleting] = useState<string[]>([]);
-  const [visible, setVisible] = useState<string[]>([]);
   const [searchStatus, setSearchStatus] = useState<string>("all");
 
   useEffect(() => {
@@ -200,49 +195,19 @@ function Dashboard() {
           Array.isArray(instances) &&
           instances.map((instance: Instance) => (
             <Card key={instance.id}>
-              <CardHeader className="w-full flex-row items-center justify-between gap-4">
-                <h3 className="text-wrap font-semibold">{instance.name}</h3>
-                <Button variant="ghost" size="icon" asChild>
-                  <Link to={`/manager/instance/${instance.id}/dashboard`}>
+              <CardHeader>
+                <Link
+                  to={`/manager/instance/${instance.id}/dashboard`}
+                  className="flex w-full flex-row items-center justify-between gap-4"
+                >
+                  <h3 className="text-wrap font-semibold">{instance.name}</h3>
+                  <Button variant="ghost" size="icon">
                     <Cog className="card-icon" size="20" />
-                  </Link>
-                </Button>
+                  </Button>
+                </Link>
               </CardHeader>
               <CardContent className="flex-1 space-y-6">
-                <div className="flex items-center gap-3 self-start truncate rounded-sm bg-primary/20 px-2 py-1">
-                  <span className="block truncate text-xs">
-                    {visible.includes(instance.token)
-                      ? instance.token
-                      : instance.token.replace(/\w/g, "*")}
-                  </span>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      copyToClipboard(instance.token);
-                    }}
-                  >
-                    <Copy className="card-icon" size="15" />
-                  </Button>
-
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => {
-                      setVisible((old) =>
-                        old.includes(instance.token)
-                          ? old.filter((item) => item !== instance.token)
-                          : [...old, instance.token],
-                      );
-                    }}
-                  >
-                    {visible.includes(instance.token) ? (
-                      <EyeOff size="15" />
-                    ) : (
-                      <Eye size="15" />
-                    )}
-                  </Button>
-                </div>
+                <InstanceToken token={instance.token} />
                 <div className="flex w-full flex-wrap">
                   <div className="flex flex-1 gap-2">
                     {instance.profileName && (

@@ -18,10 +18,15 @@ export const fetchInstances = async () => {
   return response.data;
 };
 
-export const fetchInstance = async (instanceId: string) => {
+export const fetchInstance = async (
+  instanceId: string,
+  abortSignal?: AbortSignal,
+) => {
   const response = await apiService
     .getInstance()
-    .get(`/instance/fetchInstances?instanceId=${instanceId}`);
+    .get(`/instance/fetchInstances?instanceId=${instanceId}`, {
+      signal: abortSignal,
+    });
   return response.data;
 };
 

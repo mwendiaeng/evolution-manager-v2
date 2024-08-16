@@ -9,9 +9,9 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import { InstanceStatus } from "@/components/instance-status";
 import { InstanceToken } from "@/components/instance-token";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -70,20 +70,6 @@ function Dashboard() {
 
     getData();
   }, []);
-
-  const renderStatus = (status: string) => {
-    switch (status) {
-      case "open":
-        return <Badge>Conectada</Badge>;
-      case "connecting":
-        return <Badge variant="warning">Conectando</Badge>;
-      case "closed":
-      case "close":
-        return <Badge variant="destructive">Desconectado</Badge>;
-      default:
-        return <Badge variant="secondary">{status}</Badge>;
-    }
-  };
 
   const resetTable = async () => {
     await fetchData((result) => {
@@ -250,7 +236,7 @@ function Dashboard() {
                 </div>
               </CardContent>
               <CardFooter className="justify-between">
-                {renderStatus(instance.connectionStatus)}
+                <InstanceStatus status={instance.connectionStatus} />
                 <Button
                   variant="destructive"
                   size="sm"

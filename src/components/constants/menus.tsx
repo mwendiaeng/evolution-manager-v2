@@ -123,6 +123,6 @@ const Menus = [
     icon: LifeBuoy,
     link: "https://evolution-api.com/suporte-pro",
   },
-];
+] as const;
 
 export default Menus;

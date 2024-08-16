@@ -1,18 +1,31 @@
 import { Copy, Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 
+import { cn } from "@/lib/utils";
+
 import { copyToClipboard } from "@/utils/copy-to-clipboard";
 
 import { Button } from "./ui/button";
 
-export function InstanceToken({ token }: { token: string }) {
+export function InstanceToken({
+  token,
+  className,
+}: {
+  token: string;
+  className?: string;
+}) {
   const [visible, setVisible] = useState(false);
 
   return (
-    <div className="flex items-center gap-3 self-start truncate rounded-sm bg-primary/20 px-2 py-1">
-      <span className="block truncate text-xs">
+    <div
+      className={cn(
+        "flex items-center gap-3 truncate rounded-sm bg-primary/20 px-2 py-1",
+        className,
+      )}
+    >
+      <pre className="block truncate text-xs">
         {visible ? token : token.replace(/\w/g, "*")}
-      </span>
+      </pre>
       <Button
         variant="ghost"
         size="icon"

@@ -1,14 +1,10 @@
-import "./instance-layout.css";
 import React from "react";
 import { useParams } from "react-router-dom";
 
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Separator } from "@/components/ui/separator";
 
 import { InstanceProvider } from "@/contexts/InstanceContext";
 
@@ -21,8 +17,25 @@ function InstanceLayout({ children }: LayoutProps) {
 
   return (
     <InstanceProvider>
-      <Header instanceId={instanceId} />
-      <div className="layout-general">
+      <div className="flex h-screen flex-col">
+        <Header instanceId={instanceId} />
+
+        <div className="flex flex-col md:flex-row">
+          <div className="flex flex-col md:w-20 md:flex-row lg:w-64">
+            <Sidebar />
+            <Separator
+              orientation="vertical"
+              className="mx-auto h-[1px] w-[95%] md:my-auto md:h-[95%] md:w-[1px]"
+            />
+          </div>
+          <ScrollArea className="w-full">
+            <div className="flex min-h-[calc(100vh_-_81px)] flex-col gap-2 md:min-h-screen">
+              {children}
+            </div>
+          </ScrollArea>
+        </div>
+      </div>
+      {/* <div className="layout-general">
         <div className="instance-layout">
           <ResizablePanelGroup direction="horizontal">
             <ResizablePanel defaultSize={15}>
@@ -32,7 +45,7 @@ function InstanceLayout({ children }: LayoutProps) {
             <ResizablePanel>{children}</ResizablePanel>
           </ResizablePanelGroup>
         </div>
-      </div>
+      </div> */}
     </InstanceProvider>
   );
 }

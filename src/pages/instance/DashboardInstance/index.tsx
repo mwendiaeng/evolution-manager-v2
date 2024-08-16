@@ -1,11 +1,21 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import "./style.css";
-import { RefreshCw } from "lucide-react";
-import { useState } from "react";
+import { CircleUser, MessageCircle, RefreshCw, UsersRound } from "lucide-react";
+import { useMemo, useState } from "react";
+import QRCode from "react-qr-code";
 
+import { InstanceStatus } from "@/components/instance-status";
 import { InstanceToken } from "@/components/instance-token";
+import { useTheme } from "@/components/theme-provider";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -19,36 +29,13 @@ import { useInstance } from "@/contexts/InstanceContext";
 
 import { logout, connect, restart } from "@/services/instances.service";
 
-const getStatusClass = (status: string) => {
-  switch (status) {
-    case "open":
-      return "status-connected";
-    case "close":
-      return "status-disconnected";
-    case "connecting":
-      return "status-connecting";
-    default:
-      return "status-disconnected";
-  }
-};
-
-const getStatusText = (status: string) => {
-  switch (status) {
-    case "open":
-      return "Conectado";
-    case "close":
-      return "Desconectado";
-    case "connecting":
-      return "Conectando";
-    default:
-      return "Desconectado";
-  }
-};
+const numberFormatter = new Intl.NumberFormat("pt-BR");
 
 function DashboardInstance() {
-  const [qrCodeData, setQRCodeData] = useState("");
+  const [qrCode, setQRCode] = useState<string | null>(null);
   const [pairingCode, setPairingCode] = useState("");
   const token = localStorage.getItem("token");
+  const { theme } = useTheme();
 
   const { instance } = useInstance();
 
@@ -76,7 +63,7 @@ function DashboardInstance() {
 
   const handleConnect = async (instanceName: string, pairingCode: boolean) => {
     try {
-      setQRCodeData("");
+      setQRCode(null);
 
       if (!token) {
         console.error("Token não encontrado.");
@@ -90,7 +77,7 @@ function DashboardInstance() {
       } else {
         const data = await connect(instanceName, token);
 
-        setQRCodeData(data.base64);
+        setQRCode(data.code);
       }
     } catch (error) {
       console.error("Erro ao conectar:", error);
@@ -98,62 +85,96 @@ function DashboardInstance() {
   };
 
   const closeQRCodePopup = () => {
-    setQRCodeData("");
+    setQRCode(null);
     setPairingCode("");
     window.location.reload();
   };
+
+  const stats = useMemo(() => {
+    if (!instance) {
+      return {
+        contacts: 0,
+        chats: 0,
+        messages: 0,
+      };
+    }
+
+    return {
+      contacts: instance._count?.Contact || 0,
+      chats: instance._count?.Chat || 0,
+      messages: instance._count?.Message || 0,
+    };
+  }, [instance]);
+
+  const qrCodeColor = useMemo(() => {
+    if (theme === "dark") {
+      return "#fff";
+    }
+    if (theme === "light") {
+      return "#000";
+    }
+    return "#189d68";
+  }, [theme]);
 
   if (!instance) {
     return <LoadingSpinner />;
   }
 
   return (
-    <>
-      <main className="dashboard-instance">
-        <div className="dashboard-card" key={instance.id}>
-          <div className="dashboard-info">
-            <div
-              className={`dashboard-status ${getStatusClass(
-                instance.connectionStatus,
-              )}`}
-            >
-              <i
-                className={`status-icon ${getStatusClass(
-                  instance.connectionStatus,
-                )}`}
-              />
-              <span className="status-text">
-                {getStatusText(instance.connectionStatus)}
-              </span>
+    <main className="flex flex-col gap-8 px-4 py-6">
+      <section>
+        <Card>
+          <CardHeader>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h2 className="text-lg font-semibold">{instance.name}</h2>
+              <InstanceStatus status={instance.connectionStatus} />
             </div>
-            <div className="dashboard-name">{instance.name}</div>
-            <div className="dashboard-description">{instance.ownerJid}</div>
+          </CardHeader>
+          <CardContent className="flex flex-col items-start space-y-6">
             <InstanceToken token={instance.token} />
+
+            {instance.profileName && (
+              <div className="flex flex-1 gap-2">
+                <Avatar>
+                  <AvatarImage src={instance.profilePicUrl} alt="" />
+                </Avatar>
+                <div className="space-y-1">
+                  <strong>{instance.profileName}</strong>
+                  <p className="break-all text-sm text-muted-foreground">
+                    {instance.ownerJid}
+                  </p>
+                </div>
+              </div>
+            )}
             {instance.connectionStatus !== "open" && (
-              <div className="connection-warning">
-                <span>Telefone não conectado</span>
+              <Alert
+                variant="warning"
+                className="flex flex-wrap items-center justify-between gap-3"
+              >
+                <AlertTitle className="text-lg font-bold tracking-wide">
+                  Telefone não conectado
+                </AlertTitle>
 
                 <Dialog>
                   <DialogTrigger
-                    className="connect-button"
                     onClick={() => handleConnect(instance.name, false)}
+                    asChild
                   >
-                    Gerar QRCODE
+                    <Button variant="warning">Gerar QRCODE</Button>
                   </DialogTrigger>
                   <DialogContent onCloseAutoFocus={closeQRCodePopup}>
-                    <DialogHeader>
-                      <DialogDescription>
-                        {qrCodeData ? (
-                          <img src={qrCodeData} alt="QR Code" width="500" />
-                        ) : (
-                          <img
-                            src="/assets/images/evolution-logo.png"
-                            alt="Carregando..."
-                            width="500"
-                          />
-                        )}
-                      </DialogDescription>
-                    </DialogHeader>
+                    <DialogHeader>Leia o QR Code para conectar</DialogHeader>
+                    <div className="flex items-center justify-center">
+                      {qrCode && (
+                        <QRCode
+                          value={qrCode}
+                          size={256}
+                          bgColor="transparent"
+                          fgColor={qrCodeColor}
+                          className="rounded-sm"
+                        />
+                      )}
+                    </div>
                   </DialogContent>
                 </Dialog>
 
@@ -186,52 +207,64 @@ function DashboardInstance() {
                     </DialogContent>
                   </Dialog>
                 )}
-              </div>
+              </Alert>
             )}
-          </div>
-          <div className="dashboard-actions">
-            <Button variant="outline" className="refresh-button">
-              <RefreshCw onClick={handleReload} size="20" />
+          </CardContent>
+          <CardFooter className="flex items-center justify-end gap-3">
+            <Button
+              variant="outline"
+              className="refresh-button"
+              size="icon"
+              onClick={handleReload}
+            >
+              <RefreshCw size="20" />
             </Button>
             <Button
               className="action-button"
+              variant="secondary"
               onClick={() => handleRestart(instance.name)}
             >
               REINICIAR
             </Button>
             <Button
-              className={`action-button ${
-                instance.connectionStatus === "close" ? "disabled" : ""
-              }`}
+              variant="destructive"
               onClick={() => handleLogout(instance.name)}
-              disabled={instance.connectionStatus === "close"}
+              disabled={instance.connectionStatus !== "open"}
             >
               DESCONECTAR
             </Button>
-          </div>
-        </div>
-      </main>
-      <main className="instance-cards">
+          </CardFooter>
+        </Card>
+      </section>
+      <section className="grid grid-cols-[repeat(auto-fit,_minmax(15rem,_1fr))] gap-6">
         <Card className="instance-card">
           <CardHeader>
-            <CardTitle>Contatos</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <CircleUser size="20" /> Contatos
+            </CardTitle>
           </CardHeader>
-          <CardContent>{instance?._count?.Contact || 0}</CardContent>
+          <CardContent>{numberFormatter.format(stats.contacts)}</CardContent>
         </Card>
         <Card className="instance-card">
           <CardHeader>
-            <CardTitle>Chats</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <UsersRound size="20" />
+              Chats
+            </CardTitle>
           </CardHeader>
-          <CardContent>{instance?._count?.Chat || 0}</CardContent>
+          <CardContent>{numberFormatter.format(stats.chats)}</CardContent>
         </Card>
         <Card className="instance-card">
           <CardHeader>
-            <CardTitle>Mensagens</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <MessageCircle size="20" />
+              Mensagens
+            </CardTitle>
           </CardHeader>
-          <CardContent>{instance?._count?.Message || 0}</CardContent>
+          <CardContent>{numberFormatter.format(stats.messages)}</CardContent>
         </Card>
-      </main>
-    </>
+      </section>
+    </main>
   );
 }
 

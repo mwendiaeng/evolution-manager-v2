@@ -121,7 +121,7 @@ function DashboardInstance() {
   }
 
   return (
-    <main className="flex flex-col gap-8 px-4 py-6">
+    <main className="flex flex-col gap-8">
       <section>
         <Card>
           <CardHeader>

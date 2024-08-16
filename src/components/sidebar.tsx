@@ -14,7 +14,6 @@ import {
   CollapsibleContent,
   CollapsibleTrigger,
 } from "./ui/collapsible";
-import { ScrollArea } from "./ui/scroll-area";
 
 function Sidebar() {
   const navigate = useNavigate();
@@ -53,8 +52,8 @@ function Sidebar() {
   );
 
   return (
-    <ScrollArea>
-      <ul className="my-6 flex flex-col gap-2">
+    <>
+      <ul className="flex w-full flex-col gap-2 border-r border-border pr-2">
         {links.map((menu) => (
           <li key={menu.title}>
             {menu.children ? (
@@ -120,7 +119,7 @@ function Sidebar() {
           </li>
         ))}
       </ul>
-    </ScrollArea>
+    </>
   );
 }
 

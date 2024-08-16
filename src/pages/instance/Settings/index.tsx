@@ -117,7 +117,7 @@ function Settings() {
   }
 
   return (
-    <main className="main-content">
+    <main>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

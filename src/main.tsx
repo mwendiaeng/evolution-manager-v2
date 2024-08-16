@@ -1,4 +1,6 @@
 import "./index.css";
+import "react-toastify/dist/ReactToastify.css";
+
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider } from "react-router-dom";
@@ -12,6 +14,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <RouterProvider router={router} />
     </ThemeProvider>
-    <ToastContainer />
+    <ToastContainer theme="colored" />
   </React.StrictMode>,
 );

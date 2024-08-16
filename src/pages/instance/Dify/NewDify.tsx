@@ -1,3 +1,10 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon } from "lucide-react";
+import { useState } from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { toast } from "react-toastify";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -23,15 +30,12 @@ import {
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
+
 import { useInstance } from "@/contexts/InstanceContext";
+
 import { createDify } from "@/services/dify.service";
+
 import { Dify } from "@/types/evolution.types";
-import toastService from "@/utils/custom-toast.service";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
-import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { z } from "zod";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -107,15 +111,15 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
       };
 
       await createDify(instance.name, instance.token, difyData);
-      toastService.success("Dify criado com sucesso!");
+      toast.success("Dify criado com sucesso!");
       setOpen(false);
       onReset();
       resetTable();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao criar bot:", error);
-      toastService.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`,
       );
     } finally {
       setUpdating(false);
@@ -134,7 +138,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-[740px] sm:max-h-[600px] overflow-y-auto"
+        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
@@ -172,7 +176,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Descrição</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Descrição"
                       />
                     </FormItem>
@@ -215,7 +219,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>URL da API</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="URL da API"
                       />
                     </FormItem>
@@ -229,7 +233,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Chave da API</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Chave da API"
                         type="password"
                       />
@@ -302,7 +306,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
                           <FormLabel>Gatilho</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Gatilho"
                           />
                         </FormItem>
@@ -320,7 +324,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Expira em (minutos)</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Expira em (minutos)"
                         type="number"
                       />
@@ -335,7 +339,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Palavra Chave de Finalização</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Palavra Chave de Finalização"
                       />
                     </FormItem>
@@ -349,7 +353,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Delay padrão da mensagem</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Delay padrão da mensagem"
                         type="number"
                       />
@@ -366,7 +370,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
                       </FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Mensagem para tipo de mensagem desconhecida"
                       />
                     </FormItem>
@@ -437,7 +441,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Tempo de espera</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Tempo de espera"
                         type="number"
                       />

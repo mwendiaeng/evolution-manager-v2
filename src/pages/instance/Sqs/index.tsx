@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,11 +16,11 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@radix-ui/react-dropdown-menu";
+
+import { useInstance } from "@/contexts/InstanceContext";
 
 import { createSqs, fetchSqs } from "@/services/sqs.service";
-import { useInstance } from "@/contexts/InstanceContext";
-import toastService from "@/utils/custom-toast.service";
+
 import { Sqs as SqsType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
@@ -70,11 +72,11 @@ function Sqs() {
       };
 
       await createSqs(instance.name, instance.token, sqsData);
-      toastService.success("Sqs criado com sucesso");
+      toast.success("Sqs criado com sucesso");
     } catch (error: any) {
       console.error("Erro ao criar sqs:", error);
-      toastService.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`,
       );
     } finally {
       setLoading(false);
@@ -123,9 +125,7 @@ function Sqs() {
                   <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
                     <div className="space-y-0.5">
                       <FormLabel className="text-sm">Ativo</FormLabel>
-                      <FormDescription>
-                        Ativa ou desativa o sqs
-                      </FormDescription>
+                      <FormDescription>Ativa ou desativa o sqs</FormDescription>
                     </div>
                     <FormControl>
                       <Switch
@@ -157,7 +157,7 @@ function Sqs() {
                                   field.onChange([...field.value, event]);
                                 } else {
                                   field.onChange(
-                                    field.value.filter((e) => e !== event)
+                                    field.value.filter((e) => e !== event),
                                   );
                                 }
                               }}

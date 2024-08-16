@@ -1,27 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "./style.css";
 
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
+
 import { useInstance } from "@/contexts/InstanceContext";
-import { useEffect, useState } from "react";
-import { Dify as DifyType, Instance } from "@/types/evolution.types";
-import { useNavigate, useParams } from "react-router-dom";
-import { UpdateDify } from "./UpdateDify";
-import { NewDify } from "./NewDify";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { DefaultSettingsDify } from "./DefaultSettingsDify";
+
 import { findDify } from "@/services/dify.service";
+
+import { Dify as DifyType, Instance } from "@/types/evolution.types";
+
+import { DefaultSettingsDify } from "./DefaultSettingsDify";
+import { NewDify } from "./NewDify";
 import { SessionsDify } from "./SessionsDify";
+import { UpdateDify } from "./UpdateDify";
 
 const fetchData = async (
   instance: Instance | null,
   setBots: any,
-  setLoading: any
+  setLoading: any,
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
@@ -68,7 +73,7 @@ function Dify() {
   return (
     <main className="main-table pt-5">
       <div className="flex items-center justify-between">
-        <h3 className="ml-5 mb-1 text-lg font-medium">Dify Bots</h3>
+        <h3 className="mb-1 ml-5 text-lg font-medium">Dify Bots</h3>
         <div>
           <SessionsDify />
           <DefaultSettingsDify />
@@ -86,6 +91,7 @@ function Dify() {
                 {bots && bots.length > 0 && Array.isArray(bots) ? (
                   bots.map((bot) => (
                     <div
+                      key={bot.id ?? bot.apiKey}
                       className={`table-item ${
                         bot.id === difyId ? "selected" : ""
                       }`}

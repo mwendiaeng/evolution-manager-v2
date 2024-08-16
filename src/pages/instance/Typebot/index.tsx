@@ -1,27 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "./style.css";
 
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
+
 import { useInstance } from "@/contexts/InstanceContext";
-import { useEffect, useState } from "react";
-import { Instance, Typebot as TypebotType } from "@/types/evolution.types";
-import { useNavigate, useParams } from "react-router-dom";
+
 import { findTypebot } from "@/services/typebot.service";
-import { NewTypebot } from "./NewTypebot";
-import { UpdateTypebot } from "./UpdateTypebot";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
+import { Instance, Typebot as TypebotType } from "@/types/evolution.types";
+
 import { DefaultSettingsTypebot } from "./DefaultSettingsTypebot";
+import { NewTypebot } from "./NewTypebot";
 import { SessionsTypebot } from "./SessionsTypebot";
+import { UpdateTypebot } from "./UpdateTypebot";
 
 const fetchData = async (
   instance: Instance | null,
   setTypebots: any,
-  setLoading: any
+  setLoading: any,
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
@@ -68,7 +73,7 @@ function Typebot() {
   return (
     <main className="main-table pt-5">
       <div className="flex items-center justify-between">
-        <h3 className="ml-5 mb-1 text-lg font-medium">Typebots</h3>
+        <h3 className="mb-1 ml-5 text-lg font-medium">Typebots</h3>
         <div>
           <SessionsTypebot />
           <DefaultSettingsTypebot />
@@ -86,6 +91,7 @@ function Typebot() {
                 {typebots && typebots.length > 0 && Array.isArray(typebots) ? (
                   typebots.map((typebot) => (
                     <div
+                      key={typebot.id}
                       className={`table-item ${
                         typebot.id === typebotId ? "selected" : ""
                       }`}

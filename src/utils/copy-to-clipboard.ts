@@ -1,6 +1,6 @@
-import toastService from "./custom-toast.service";
+import { toast } from "react-toastify";
 
 export const copyToClipboard = (text: string): void => {
   navigator.clipboard.writeText(text);
-  toastService.success("Copiado para a área de transferência");
+  toast.success("Copiado para a área de transferência");
 };

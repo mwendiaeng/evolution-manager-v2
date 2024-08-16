@@ -32,6 +32,7 @@ import { NewInstance as NewInstanceType } from "@/types/evolution.types";
 
 import { LoginWhatsappButton } from "./LoginWhatsappButton";
 import { LoginFacebookButton } from "./LoginFacebookButton";
+import { LoginInstagramButton } from "./LoginInstagramButton";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -140,8 +141,11 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
                         <SelectItem value="WHATSAPP-BUSINESS">
                           Whatsapp Cloud API
                         </SelectItem>
-                        <SelectItem value="META">
-                          Facebook / Instagram
+                        <SelectItem value="META-FACEBOOK">
+                          Facebook
+                        </SelectItem>
+                        <SelectItem value="META-INSTAGRAM">
+                          Instagram
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -192,8 +196,14 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
                   setToken={(token) => form.setValue("token", token)}
                 />
               )}
-              {form.watch("integration") === "META" && (
+              {form.watch("integration") === "META-FACEBOOK" && (
                 <LoginFacebookButton
+                  setUserID={(userID) => form.setValue("number", userID)}
+                  setToken={(token) => form.setValue("token", token)}
+                />
+              )}
+              {form.watch("integration") === "META-INSTAGRAM" && (
+                <LoginInstagramButton
                   setUserID={(userID) => form.setValue("number", userID)}
                   setToken={(token) => form.setValue("token", token)}
                 />

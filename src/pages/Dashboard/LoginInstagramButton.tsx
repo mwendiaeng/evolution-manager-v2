@@ -3,7 +3,7 @@ import { getFacebookAppID } from "@/utils/getConfig";
 import { useEffect, useState } from "react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
-type LoginFacebookButtonProps = {
+type LoginInstagramButtonProps = {
   setUserID: (userID: string) => void;
   setToken: (token: string) => void;
 };
@@ -16,10 +16,10 @@ declare global {
   }
 }
 
-function LoginFacebookButton({
+function LoginInstagramButton({
   setUserID,
   setToken,
-}: LoginFacebookButtonProps) {
+}: LoginInstagramButtonProps) {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ function LoginFacebookButton({
       },
       {
         scope:
-          "public_profile,pages_messaging,pages_show_list,pages_manage_metadata,pages_read_engagement",
+          "public_profile,instagram_basic,instagram_manage_messages,pages_messaging,pages_show_list,pages_manage_metadata,pages_read_engagement",
       }
     );
   }
@@ -90,13 +90,13 @@ function LoginFacebookButton({
     <Button
       variant="default"
       onClick={handleFacebookLogin}
-      className="bg-blue-600 text-white hover:bg-blue-700"
+      className="bg-[#983b71] text-white hover:bg-[#5a2d6f]"
       type="button"
       disabled={loading}
     >
-      {loading ? "Conectando..." : "Conectar Facebook"}
+      {loading ? "Conectando..." : "Conectar Instagram"}
     </Button>
   );
 }
 
-export { LoginFacebookButton };
+export { LoginInstagramButton };

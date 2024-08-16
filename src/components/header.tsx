@@ -7,6 +7,7 @@ import { fetchInstance } from "@/services/instances.service";
 
 import { Instance } from "@/types/evolution.types";
 
+import { ModeToggle } from "./mode-toggle";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -72,6 +73,7 @@ function Header({ instanceId }: { instanceId?: string }) {
             />
           </Avatar>
         )}
+        <ModeToggle />
         <Button
           onClick={() => setLogoutConfirmation(true)}
           variant="destructive"

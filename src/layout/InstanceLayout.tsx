@@ -1,5 +1,7 @@
 import "./instance-layout.css";
 import React from "react";
+import { useParams } from "react-router-dom";
+
 import { Header } from "@/components/header";
 import { Sidebar } from "@/components/sidebar";
 import {
@@ -7,15 +9,14 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+
 import { InstanceProvider } from "@/contexts/InstanceContext";
-import { useParams } from "react-router-dom";
 
 interface LayoutProps {
   children: React.ReactNode;
 }
 
 function InstanceLayout({ children }: LayoutProps) {
-
   const { instanceId } = useParams<{ instanceId: string }>();
 
   return (

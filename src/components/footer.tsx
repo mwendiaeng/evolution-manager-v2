@@ -1,11 +1,22 @@
 import { Button } from "./ui/button";
 
 function Footer() {
+  const version = localStorage.getItem("version");
+  const clientName = localStorage.getItem("clientName");
+
   return (
     <footer className="footer">
-      <div className="footer-info">
-        Client Name: <strong>{localStorage.getItem("clientName")}</strong> Version:{" "}
-        <strong>{localStorage.getItem("version")}</strong>
+      <div className="footer-info flex items-center space-x-3 divide-x">
+        {clientName && clientName !== "" && (
+          <span>
+            Client Name: <strong>{clientName}</strong>
+          </span>
+        )}
+        {version && version !== "" && (
+          <span className="pl-3">
+            Version: <strong>{version}</strong>
+          </span>
+        )}
       </div>
       <div className="footer-buttons">
         <Button variant="link">

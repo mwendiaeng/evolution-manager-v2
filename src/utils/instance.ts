@@ -18,7 +18,7 @@ class ApiService {
       },
       (error) => {
         return Promise.reject(error);
-      }
+      },
     );
   }
 

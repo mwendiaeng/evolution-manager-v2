@@ -1,4 +1,5 @@
 import { Dify, DifySettings } from "@/types/evolution.types";
+
 import ApiService from "@/utils/instance";
 
 const apiService = new ApiService();
@@ -17,7 +18,7 @@ export const findDify = async (instanceName: string, token: string) => {
 export const getDify = async (
   instanceName: string,
   token: string,
-  difyId: string
+  difyId: string,
 ) => {
   const response = await apiService
     .getInstance()
@@ -32,7 +33,7 @@ export const getDify = async (
 export const createDify = async (
   instanceName: string,
   token: string,
-  data: Dify
+  data: Dify,
 ) => {
   const response = await apiService
     .getInstance()
@@ -48,7 +49,7 @@ export const updateDify = async (
   instanceName: string,
   token: string,
   difyId: string,
-  data: Dify
+  data: Dify,
 ) => {
   const response = await apiService
     .getInstance()
@@ -63,7 +64,7 @@ export const updateDify = async (
 export const deleteDify = async (
   instanceName: string,
   token: string,
-  difyId: string
+  difyId: string,
 ) => {
   const response = await apiService
     .getInstance()
@@ -77,7 +78,7 @@ export const deleteDify = async (
 
 export const findDefaultSettingsDify = async (
   instanceName: string,
-  token: string
+  token: string,
 ) => {
   const response = await apiService
     .getInstance()
@@ -92,7 +93,7 @@ export const findDefaultSettingsDify = async (
 export const setDefaultSettingsDify = async (
   instanceName: string,
   token: string,
-  data: DifySettings
+  data: DifySettings,
 ) => {
   const response = await apiService
     .getInstance()
@@ -107,7 +108,7 @@ export const setDefaultSettingsDify = async (
 export const fetchSessionsDify = async (
   instanceName: string,
   token: string,
-  difyId?: string
+  difyId?: string,
 ) => {
   const response = await apiService
     .getInstance()
@@ -123,7 +124,7 @@ export const changeStatusDify = async (
   instanceName: string,
   token: string,
   remoteJid: string,
-  status: string
+  status: string,
 ) => {
   const response = await apiService.getInstance().post(
     `/dify/changeStatus/${instanceName}`,
@@ -135,7 +136,7 @@ export const changeStatusDify = async (
       headers: {
         apikey: token,
       },
-    }
+    },
   );
   return response.data;
 };

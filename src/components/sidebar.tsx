@@ -1,9 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import Menus from "./constants/menus";
 
 import { useInstance } from "@/contexts/InstanceContext";
-import { ChevronDown } from "lucide-react";
+
+import Menus from "./constants/menus";
 import {
   Collapsible,
   CollapsibleContent,

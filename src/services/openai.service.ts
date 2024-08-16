@@ -3,6 +3,7 @@ import {
   OpenaiCreds,
   OpenaiSettings,
 } from "@/types/evolution.types";
+
 import ApiService from "@/utils/instance";
 
 const apiService = new ApiService();
@@ -21,7 +22,7 @@ export const findOpenaiCreds = async (instanceName: string, token: string) => {
 export const createOpenaiCreds = async (
   instanceName: string,
   token: string,
-  data: OpenaiCreds
+  data: OpenaiCreds,
 ) => {
   const response = await apiService
     .getInstance()
@@ -35,7 +36,7 @@ export const createOpenaiCreds = async (
 
 export const deleteOpenaiCreds = async (
   openaiCredsId: string,
-  instanceName: string
+  instanceName: string,
 ) => {
   const response = await apiService
     .getInstance()
@@ -57,7 +58,7 @@ export const findOpenai = async (instanceName: string, token: string) => {
 export const getOpenai = async (
   instanceName: string,
   token: string,
-  openaiBotId: string
+  openaiBotId: string,
 ) => {
   const response = await apiService
     .getInstance()
@@ -72,7 +73,7 @@ export const getOpenai = async (
 export const createOpenai = async (
   instanceName: string,
   token: string,
-  data: OpenaiBot
+  data: OpenaiBot,
 ) => {
   const response = await apiService
     .getInstance()
@@ -88,7 +89,7 @@ export const updateOpenai = async (
   instanceName: string,
   token: string,
   openaiBotId: string,
-  data: OpenaiBot
+  data: OpenaiBot,
 ) => {
   const response = await apiService
     .getInstance()
@@ -103,7 +104,7 @@ export const updateOpenai = async (
 export const deleteOpenai = async (
   instanceName: string,
   token: string,
-  openaiBotId: string
+  openaiBotId: string,
 ) => {
   const response = await apiService
     .getInstance()
@@ -117,7 +118,7 @@ export const deleteOpenai = async (
 
 export const findDefaultSettingsOpenai = async (
   instanceName: string,
-  token: string
+  token: string,
 ) => {
   const response = await apiService
     .getInstance()
@@ -132,7 +133,7 @@ export const findDefaultSettingsOpenai = async (
 export const setDefaultSettingsOpenai = async (
   instanceName: string,
   token: string,
-  data: OpenaiSettings
+  data: OpenaiSettings,
 ) => {
   const response = await apiService
     .getInstance()
@@ -147,7 +148,7 @@ export const setDefaultSettingsOpenai = async (
 export const fetchSessionsOpenai = async (
   instanceName: string,
   token: string,
-  openaiBotId?: string
+  openaiBotId?: string,
 ) => {
   const response = await apiService
     .getInstance()
@@ -163,7 +164,7 @@ export const changeStatusOpenai = async (
   instanceName: string,
   token: string,
   remoteJid: string,
-  status: string
+  status: string,
 ) => {
   const response = await apiService.getInstance().post(
     `/openai/changeStatus/${instanceName}`,
@@ -175,7 +176,7 @@ export const changeStatusOpenai = async (
       headers: {
         apikey: token,
       },
-    }
+    },
   );
   return response.data;
 };

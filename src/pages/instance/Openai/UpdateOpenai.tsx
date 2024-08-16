@@ -1,40 +1,11 @@
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Instance,
-  ModelOpenai,
-  OpenaiBot,
-  OpenaiCreds,
-} from "@/types/evolution.types";
 import { useEffect, useState } from "react";
-import {
-  deleteOpenai,
-  findOpenaiCreds,
-  getModels,
-  getOpenai,
-  updateOpenai,
-} from "@/services/openai.service";
-import toastService from "@/utils/custom-toast.service";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -44,8 +15,41 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useNavigate } from "react-router-dom";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+
+import {
+  deleteOpenai,
+  findOpenaiCreds,
+  getModels,
+  getOpenai,
+  updateOpenai,
+} from "@/services/openai.service";
+
+import {
+  Instance,
+  ModelOpenai,
+  OpenaiBot,
+  OpenaiCreds,
+} from "@/types/evolution.types";
+
 import { SessionsOpenai } from "./SessionsOpenai";
 
 const FormSchema = z.object({
@@ -132,7 +136,7 @@ function UpdateOpenai({
           const data: OpenaiBot = await getOpenai(
             instance.name,
             storedToken,
-            openaiBotId
+            openaiBotId,
           );
 
           form.reset({
@@ -178,7 +182,7 @@ function UpdateOpenai({
 
         const getCreds: OpenaiCreds[] = await findOpenaiCreds(
           instance.name,
-          instance.token
+          instance.token,
         );
 
         setCreds(getCreds);
@@ -227,17 +231,17 @@ function UpdateOpenai({
           instance.name,
           storedToken,
           openaiBotId,
-          openaiBotData
+          openaiBotData,
         );
-        toastService.success("Bot atualizado com sucesso.");
+        toast.success("Bot atualizado com sucesso.");
       } else {
         console.error("Token ou nome da instância não encontrados.");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao atualizar bot:", error);
-      toastService.error(
-        `Erro ao atualizar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao atualizar : ${error?.response?.data?.response?.message}`,
       );
     }
   };
@@ -248,7 +252,7 @@ function UpdateOpenai({
 
       if (storedToken && instance && instance.name && openaiBotId) {
         await deleteOpenai(instance.name, storedToken, openaiBotId);
-        toastService.success("Bot excluído com sucesso.");
+        toast.success("Bot excluído com sucesso.");
 
         setOpenDeletionDialog(false);
         resetTable();
@@ -298,7 +302,7 @@ function UpdateOpenai({
                       <FormLabel>Descrição</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Descrição"
                       />
                     </FormItem>
@@ -372,7 +376,7 @@ function UpdateOpenai({
                           <FormLabel>ID do Assistente</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="ID do Assistente"
                           />
                         </FormItem>
@@ -386,7 +390,7 @@ function UpdateOpenai({
                           <FormLabel>URL das Funções</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="URL das Funções"
                           />
                         </FormItem>
@@ -433,7 +437,7 @@ function UpdateOpenai({
                           <FormLabel>Mensagem do Sistem</FormLabel>
                           <Textarea
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Mensagem do Sistem"
                           />
                         </FormItem>
@@ -447,7 +451,7 @@ function UpdateOpenai({
                           <FormLabel>Mensagem do Asistente</FormLabel>
                           <Textarea
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Mensagem do Asistente"
                           />
                         </FormItem>
@@ -461,7 +465,7 @@ function UpdateOpenai({
                           <FormLabel>Mensagem do Usuário</FormLabel>
                           <Textarea
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Mensagem do Usuário"
                           />
                         </FormItem>
@@ -475,7 +479,7 @@ function UpdateOpenai({
                           <FormLabel>Máximo de tokens</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Máximo de tokens"
                             type="number"
                           />
@@ -550,7 +554,7 @@ function UpdateOpenai({
                           <FormLabel>Gatilho</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Gatilho"
                           />
                         </FormItem>
@@ -568,7 +572,7 @@ function UpdateOpenai({
                       <FormLabel>Expira em (minutos)</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Expira em (minutos)"
                         type="number"
                       />
@@ -583,7 +587,7 @@ function UpdateOpenai({
                       <FormLabel>Palavra Chave de Finalização</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Palavra Chave de Finalização"
                       />
                     </FormItem>
@@ -597,7 +601,7 @@ function UpdateOpenai({
                       <FormLabel>Delay padrão da mensagem</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Delay padrão da mensagem"
                         type="number"
                       />
@@ -614,7 +618,7 @@ function UpdateOpenai({
                       </FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Mensagem para tipo de mensagem desconhecida"
                       />
                     </FormItem>
@@ -685,7 +689,7 @@ function UpdateOpenai({
                       <FormLabel>Tempo de espera</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Tempo de espera"
                         type="number"
                       />
@@ -699,7 +703,7 @@ function UpdateOpenai({
               <SessionsOpenai openaiBotId={openaiBotId} />
             </div>
             <Button
-              className="bg-blue-400 hover:bg-blue-600 text-white"
+              className="bg-blue-400 text-white hover:bg-blue-600"
               onClick={onSubmit}
             >
               Atualizar
@@ -725,7 +729,7 @@ function UpdateOpenai({
                   <DialogFooter>
                     <Button
                       variant="default"
-                      className="bg-red-400 hover:bg-red-600 text-white"
+                      className="bg-red-400 text-white hover:bg-red-600"
                       onClick={handleDelete}
                     >
                       Exluir

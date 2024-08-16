@@ -1,5 +1,6 @@
-import { Button } from "@/components/ui/button";
 import { useEffect } from "react";
+
+import { Button } from "@/components/ui/button";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type LoginWhatsappButtonProps = {
@@ -39,7 +40,7 @@ function LoginWhatsappButton({
 
     ((d, s, id) => {
       let js: HTMLScriptElement | null = d.getElementById(
-        id
+        id,
       ) as HTMLScriptElement;
       const fjs = d.getElementsByTagName(s)[0] as HTMLElement;
       if (js) {
@@ -58,7 +59,7 @@ function LoginWhatsappButton({
     return () => {
       window.removeEventListener("message", sessionInfoListener);
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sessionInfoListener = (event: MessageEvent) => {
     if (
@@ -72,7 +73,7 @@ function LoginWhatsappButton({
       const data = JSON.parse(event.data);
       if (data.type === "WA_EMBEDDED_SIGNUP") {
         if (data.event === "FINISH") {
-          const { phone_number_id, waba_id } = data.data;
+          const { phone_number_id, waba_id } = data.data; // eslint-disable-line camelcase
           setNumber(phone_number_id);
           setBusiness(waba_id);
         }
@@ -108,7 +109,7 @@ function LoginWhatsappButton({
           feature: "whatsapp_embedded_signup",
           sessionInfoVersion: 2,
         },
-      }
+      },
     );
   }
 

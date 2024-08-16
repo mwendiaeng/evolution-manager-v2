@@ -1,27 +1,11 @@
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Instance, Typebot } from "@/types/evolution.types";
 import { useEffect, useState } from "react";
-import toastService from "@/utils/custom-toast.service";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -31,13 +15,33 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useNavigate } from "react-router-dom";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+
 import {
   deleteTypebot,
   getTypebot,
   updateTypebot,
 } from "@/services/typebot.service";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
+import { Instance, Typebot } from "@/types/evolution.types";
+
 import { SessionsTypebot } from "./SessionsTypebot";
 
 const FormSchema = z.object({
@@ -109,7 +113,7 @@ function UpdateTypebot({
           const data: Typebot = await getTypebot(
             instance.name,
             storedToken,
-            typebotId
+            typebotId,
           );
 
           form.reset({
@@ -168,15 +172,15 @@ function UpdateTypebot({
         };
 
         await updateTypebot(instance.name, storedToken, typebotId, typebotData);
-        toastService.success("Typebot atualizado com sucesso.");
+        toast.success("Typebot atualizado com sucesso.");
       } else {
         console.error("Token ou nome da instância não encontrados.");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao atualizar typebot:", error);
-      toastService.error(
-        `Erro ao atualizar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao atualizar : ${error?.response?.data?.response?.message}`,
       );
     }
   };
@@ -187,7 +191,7 @@ function UpdateTypebot({
 
       if (storedToken && instance && instance.name && typebotId) {
         await deleteTypebot(instance.name, storedToken, typebotId);
-        toastService.success("Typebot excluído com sucesso.");
+        toast.success("Typebot excluído com sucesso.");
 
         setOpenDeletionDialog(false);
         resetTable();
@@ -237,7 +241,7 @@ function UpdateTypebot({
                       <FormLabel>Descrição</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Descrição"
                       />
                     </FormItem>
@@ -253,7 +257,7 @@ function UpdateTypebot({
                       <FormLabel>URL da API do Typebot</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="URL da API do Typebot"
                       />
                     </FormItem>
@@ -267,7 +271,7 @@ function UpdateTypebot({
                       <FormLabel>Nome do Typebot</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Nome do Typebot"
                       />
                     </FormItem>
@@ -339,7 +343,7 @@ function UpdateTypebot({
                           <FormLabel>Gatilho</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Gatilho"
                           />
                         </FormItem>
@@ -357,7 +361,7 @@ function UpdateTypebot({
                       <FormLabel>Expira em (minutos)</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Expira em (minutos)"
                         type="number"
                       />
@@ -372,7 +376,7 @@ function UpdateTypebot({
                       <FormLabel>Palavra Chave de Finalização</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Palavra Chave de Finalização"
                       />
                     </FormItem>
@@ -386,7 +390,7 @@ function UpdateTypebot({
                       <FormLabel>Delay padrão da mensagem</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Delay padrão da mensagem"
                         type="number"
                       />
@@ -403,7 +407,7 @@ function UpdateTypebot({
                       </FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Mensagem para tipo de mensagem desconhecida"
                       />
                     </FormItem>
@@ -474,7 +478,7 @@ function UpdateTypebot({
                       <FormLabel>Tempo de espera</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Tempo de espera"
                         type="number"
                       />
@@ -487,7 +491,7 @@ function UpdateTypebot({
               <SessionsTypebot typebotId={typebotId} />
             </div>
             <Button
-              className="bg-blue-400 hover:bg-blue-600 text-white"
+              className="bg-blue-400 text-white hover:bg-blue-600"
               onClick={onSubmit}
             >
               Atualizar
@@ -513,7 +517,7 @@ function UpdateTypebot({
                   <DialogFooter>
                     <Button
                       variant="default"
-                      className="bg-red-400 hover:bg-red-600 text-white"
+                      className="bg-red-400 text-white hover:bg-red-600"
                       onClick={handleDelete}
                     >
                       Exluir

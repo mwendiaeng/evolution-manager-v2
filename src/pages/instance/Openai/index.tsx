@@ -1,28 +1,33 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import "./style.css";
 
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
+
 import { useInstance } from "@/contexts/InstanceContext";
-import { useEffect, useState } from "react";
+
 import { findOpenai } from "@/services/openai.service";
+
 import { Instance, OpenaiBot } from "@/types/evolution.types";
-import { useNavigate, useParams } from "react-router-dom";
-import { UpdateOpenai } from "./UpdateOpenai";
-import { NewOpenai } from "./NewOpenai";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
 import { CredentialsOpenai } from "./CredentialsOpenai";
 import { DefaultSettingsOpenai } from "./DefaultSettingsOpenai";
+import { NewOpenai } from "./NewOpenai";
 import { SessionsOpenai } from "./SessionsOpenai";
+import { UpdateOpenai } from "./UpdateOpenai";
 
 const fetchData = async (
   instance: Instance | null,
   setBots: any,
-  setLoading: any
+  setLoading: any,
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
@@ -69,7 +74,7 @@ function Openai() {
   return (
     <main className="main-table pt-5">
       <div className="flex items-center justify-between">
-        <h3 className="ml-5 mb-1 text-lg font-medium">Openai Bots</h3>
+        <h3 className="mb-1 ml-5 text-lg font-medium">Openai Bots</h3>
         <div>
           <SessionsOpenai />
           <DefaultSettingsOpenai />
@@ -88,6 +93,7 @@ function Openai() {
                 {bots && bots.length > 0 && Array.isArray(bots) ? (
                   bots.map((bot) => (
                     <div
+                      key={bot.id}
                       className={`table-item ${
                         bot.id === openaiBotId ? "selected" : ""
                       }`}

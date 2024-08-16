@@ -1,4 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { toast } from "react-toastify";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -25,19 +32,16 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
+
 import { useInstance } from "@/contexts/InstanceContext";
+
 import {
   createOpenai,
   findOpenaiCreds,
   getModels,
 } from "@/services/openai.service";
+
 import { ModelOpenai, OpenaiBot, OpenaiCreds } from "@/types/evolution.types";
-import toastService from "@/utils/custom-toast.service";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { z } from "zod";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -111,7 +115,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
 
           const getCreds: OpenaiCreds[] = await findOpenaiCreds(
             instance.name,
-            instance.token
+            instance.token,
           );
 
           setCreds(getCreds);
@@ -157,15 +161,15 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
       };
 
       await createOpenai(instance.name, instance.token, openaiData);
-      toastService.success("Bot criado com sucesso!");
+      toast.success("Bot criado com sucesso!");
       setOpen(false);
       onReset();
       resetTable();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao criar bot:", error);
-      toastService.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`,
       );
     } finally {
       setUpdating(false);
@@ -184,7 +188,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-[740px] sm:max-h-[600px] overflow-y-auto"
+        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
@@ -222,7 +226,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Descrição</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Descrição"
                       />
                     </FormItem>
@@ -296,7 +300,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                           <FormLabel>ID do Assistente</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="ID do Assistente"
                           />
                         </FormItem>
@@ -310,7 +314,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                           <FormLabel>URL das Funções</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="URL das Funções"
                           />
                         </FormItem>
@@ -357,7 +361,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                           <FormLabel>Mensagem do Sistem</FormLabel>
                           <Textarea
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Mensagem do Sistem"
                           />
                         </FormItem>
@@ -371,7 +375,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                           <FormLabel>Mensagem do Asistente</FormLabel>
                           <Textarea
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Mensagem do Asistente"
                           />
                         </FormItem>
@@ -385,7 +389,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                           <FormLabel>Mensagem do Usuário</FormLabel>
                           <Textarea
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Mensagem do Usuário"
                           />
                         </FormItem>
@@ -399,7 +403,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                           <FormLabel>Máximo de tokens</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Máximo de tokens"
                             type="number"
                           />
@@ -474,7 +478,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                           <FormLabel>Gatilho</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Gatilho"
                           />
                         </FormItem>
@@ -492,7 +496,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Expira em (minutos)</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Expira em (minutos)"
                         type="number"
                       />
@@ -507,7 +511,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Palavra Chave de Finalização</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Palavra Chave de Finalização"
                       />
                     </FormItem>
@@ -521,7 +525,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Delay padrão da mensagem</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Delay padrão da mensagem"
                         type="number"
                       />
@@ -538,7 +542,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                       </FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Mensagem para tipo de mensagem desconhecida"
                       />
                     </FormItem>
@@ -609,7 +613,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
                       <FormLabel>Tempo de espera</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Tempo de espera"
                         type="number"
                       />

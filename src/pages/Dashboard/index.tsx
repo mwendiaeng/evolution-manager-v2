@@ -1,12 +1,4 @@
 import "./style.css";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import {
-  deleteInstance,
-  fetchInstances,
-  logout,
-} from "@/services/instances.service";
-import { Instance } from "@/types/evolution.types";
 import {
   Check,
   ChevronsUpDown,
@@ -20,9 +12,22 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { NewInstance } from "./NewInstance";
-import toastService from "@/utils/custom-toast.service";
+import { toast } from "react-toastify";
+
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+
+import {
+  deleteInstance,
+  fetchInstances,
+  logout,
+} from "@/services/instances.service";
+
+import { Instance } from "@/types/evolution.types";
+
 import { copyToClipboard } from "@/utils/copy-to-clipboard";
+
+import { NewInstance } from "./NewInstance";
 
 const fetchData = async (callback: (data: Instance[]) => void) => {
   try {
@@ -67,25 +72,25 @@ function Dashboard() {
       case "open":
         return (
           <div className="btn connected">
-            Conectada <span className="status-connected connected"></span>
+            Conectada <span className="status-connected connected" />
           </div>
         );
       case "connecting":
         return (
           <div className="btn connected">
-            Conectando <span className="status-connecting connected"></span>
+            Conectando <span className="status-connecting connected" />
           </div>
         );
       case "closed":
         return (
           <div className="btn connected">
-            Desconectado <span className="status-disconnected connected"></span>
+            Desconectado <span className="status-disconnected connected" />
           </div>
         );
       default:
         return (
           <div className="btn connected">
-            Desconectado <span className="status-disconnected connected"></span>
+            Desconectado <span className="status-disconnected connected" />
           </div>
         );
     }
@@ -111,8 +116,8 @@ function Dashboard() {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao deletar instância:", error);
-      toastService.error(
-        `Erro ao deletar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao deletar : ${error?.response?.data?.response?.message}`,
       );
     } finally {
       setDeleting(deleting.filter((item) => item !== instanceName));
@@ -259,7 +264,7 @@ function Dashboard() {
                       size="15"
                       onClick={() => {
                         setVisible(
-                          visible.filter((item) => item !== instance.token)
+                          visible.filter((item) => item !== instance.token),
                         );
                       }}
                     />

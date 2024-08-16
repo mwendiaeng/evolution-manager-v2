@@ -1,3 +1,9 @@
+import "./style.css";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+
+import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,24 +16,24 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import "./style.css";
-import { Footer } from "@/components/footer";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { logout, saveCredentials, verifyCreds, verifyServer } from "@/services/auth.service";
-import toastService from "@/utils/custom-toast.service";
+import {
+  logout,
+  saveCredentials,
+  verifyCreds,
+  verifyServer,
+} from "@/services/auth.service";
 
 function Login() {
   const navigate = useNavigate();
 
   const [serverUrl, setServerUrl] = useState(
-    window.location.protocol + "//" + window.location.host
+    window.location.protocol + "//" + window.location.host,
   );
   const [apiKey, setApiKey] = useState("");
 
   const handleLogin = async () => {
     if (!serverUrl || !apiKey) {
-      toastService.error("Credenciais inválidas");
+      toast.error("Credenciais inválidas");
       return;
     }
 
@@ -35,21 +41,21 @@ function Login() {
 
     if (!server || !server.version) {
       logout();
-      toastService.error("Servidor inválido");
+      toast.error("Servidor inválido");
       return;
     }
 
     const verify = await verifyCreds(serverUrl, apiKey);
 
     if (!verify) {
-      toastService.error("Credenciais inválidas");
+      toast.error("Credenciais inválidas");
       return;
     }
 
     const saveCreds = await saveCredentials(serverUrl, apiKey);
 
     if (!saveCreds) {
-      toastService.error("Credenciais inválidas");
+      toast.error("Credenciais inválidas");
       return;
     }
 
@@ -69,7 +75,7 @@ function Login() {
         />
       </div>
       <div className="root">
-        <Card className="w-[350px] no-border">
+        <Card className="no-border w-[350px]">
           <CardHeader>
             <CardTitle className="text-center">Evolution Manager</CardTitle>
             <CardDescription className="text-center">

@@ -1,14 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { zodResolver } from "@hookform/resolvers/zod";
 import {
   ColumnDef,
   SortingState,
@@ -19,23 +10,21 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { FormField, FormItem, FormLabel } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Separator } from "@/components/ui/separator";
-import { useInstance } from "@/contexts/InstanceContext";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { ArrowUpDown, Lock, MoreHorizontal } from "lucide-react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
-import { Instance, OpenaiCreds } from "@/types/evolution.types";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,12 +33,27 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import { useInstance } from "@/contexts/InstanceContext";
+
 import {
   createOpenaiCreds,
   deleteOpenaiCreds,
   findOpenaiCreds,
 } from "@/services/openai.service";
-import toastService from "@/utils/custom-toast.service";
+
+import { Instance, OpenaiCreds } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -63,7 +67,7 @@ const fetchData = async (instance: Instance | null, setCreds: any) => {
     if (storedToken && instance && instance.name) {
       const getCreds: OpenaiCreds[] = await findOpenaiCreds(
         instance.name,
-        storedToken
+        storedToken,
       );
 
       setCreds(getCreds);
@@ -106,13 +110,13 @@ function CredentialsOpenai() {
       };
 
       await createOpenaiCreds(instance.name, instance.token, credsData);
-      toastService.success("Credencial criada com sucesso!");
+      toast.success("Credencial criada com sucesso!");
       onReset();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao criar bot:", error);
-      toastService.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`,
       );
     }
   };
@@ -125,12 +129,12 @@ function CredentialsOpenai() {
   const handleDelete = async (id: string) => {
     try {
       await deleteOpenaiCreds(id, instance?.name as string);
-      toastService.success("Credencial excluída com sucesso!");
+      toast.success("Credencial excluída com sucesso!");
       fetchData(instance, setCreds);
     } catch (error: any) {
       console.error("Erro ao excluir credencial:", error);
-      toastService.error(
-        `Erro ao excluir credencial: ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao excluir credencial: ${error?.response?.data?.response?.message}`,
       );
     }
   };
@@ -208,7 +212,7 @@ function CredentialsOpenai() {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-[740px] sm:max-h-[600px] overflow-y-auto"
+        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
@@ -229,7 +233,7 @@ function CredentialsOpenai() {
                       <FormLabel>Nome</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Nome"
                       />
                     </FormItem>
@@ -243,7 +247,7 @@ function CredentialsOpenai() {
                       <FormLabel>Api Key</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Api Key"
                         type="password"
                       />
@@ -272,7 +276,7 @@ function CredentialsOpenai() {
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     );
@@ -291,7 +295,7 @@ function CredentialsOpenai() {
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}

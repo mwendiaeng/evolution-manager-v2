@@ -14,6 +14,14 @@ import { Label } from "@/components/ui/label";
 
 import { cn } from "@/lib/utils";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./select";
+
 const Form = FormProvider;
 
 type FormFieldContextValue<
@@ -210,6 +218,60 @@ const FormInput = <
   );
 };
 
+const FormSelect = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
+  name,
+  label,
+  helper,
+  required,
+  options,
+  placeholder,
+  ...props
+}: Omit<ControllerProps<TFieldValues, TName>, "render"> & {
+  label?: string;
+  required?: boolean;
+  helper?: string;
+  placeholder?: string;
+  options: { value: string; label: string }[];
+}) => {
+  return (
+    <FormField
+      {...props}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          {label && (
+            <FormLabel>
+              {label}
+              {required && <span className="ml-2 text-rose-600">*</span>}
+            </FormLabel>
+          )}
+          <FormControl>
+            <Select onValueChange={field.onChange} defaultValue={field.value}>
+              <FormControl>
+                <SelectTrigger>
+                  <SelectValue placeholder={placeholder} />
+                </SelectTrigger>
+              </FormControl>
+              <SelectContent>
+                {options.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </FormControl>
+          {helper && <FormDescription>{helper}</FormDescription>}
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
 export {
   useFormField,
   Form,
@@ -220,4 +282,5 @@ export {
   FormMessage,
   FormField,
   FormInput,
+  FormSelect,
 };

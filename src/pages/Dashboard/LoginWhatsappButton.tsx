@@ -1,11 +1,13 @@
+import axios from "axios";
+import { useEffect, useState } from "react";
+
 import { Button } from "@/components/ui/button";
+
 import {
   getFacebookAppID,
   getFacebookConfigID,
   getFacebookUserToken,
 } from "@/utils/getConfig";
-import axios from "axios";
-import { useEffect, useState } from "react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type LoginWhatsappButtonProps = {
@@ -108,7 +110,7 @@ function LoginWhatsappButton({
           headers: {
             Authorization: `Bearer ${getFacebookUserToken()}`,
           },
-        }
+        },
       );
 
       await axios.post(
@@ -118,7 +120,7 @@ function LoginWhatsappButton({
           headers: {
             Authorization: `Bearer ${getFacebookUserToken()}`,
           },
-        }
+        },
       );
 
       setNumber(number);

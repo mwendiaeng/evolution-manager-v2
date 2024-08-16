@@ -153,11 +153,11 @@ function Dashboard() {
   };
 
   return (
-    <>
-      <div className="flex w-full items-center justify-between px-4 py-8">
+    <div className="my-4 px-4">
+      <div className="flex w-full items-center justify-between">
         <h2 className="text-lg">Instâncias</h2>
         <div className="flex gap-2">
-          <Button variant="outline">
+          <Button variant="outline" size="icon">
             <RefreshCw onClick={resetTable} size="20" />
           </Button>
           <NewInstance resetTable={resetTable} />
@@ -323,7 +323,7 @@ function Dashboard() {
             </Card>
           ))}
       </main>
-    </>
+    </div>
   );
 }
 

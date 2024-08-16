@@ -15,31 +15,32 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FormControl, FormField, FormItem } from "@/components/ui/form";
+import { FormInput, FormSelect } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
 import { createInstance } from "@/services/instances.service";
 
 import { NewInstance as NewInstanceType } from "@/types/evolution.types";
 
-import { LoginWhatsappButton } from "./LoginWhatsappButton";
 import { LoginFacebookButton } from "./LoginFacebookButton";
 import { LoginInstagramButton } from "./LoginInstagramButton";
+import { LoginWhatsappButton } from "./LoginWhatsappButton";
+
+const stringOrNullSchema = z
+  .union([z.string(), z.null()])
+  .transform((value) => (value === "" ? null : value));
 
 const FormSchema = z.object({
   name: z.string(),
-  integration: z.string(),
-  token: z.string(),
-  number: z.string(),
-  businessId: z.string(),
+  token: stringOrNullSchema,
+  number: stringOrNullSchema,
+  businessId: stringOrNullSchema,
+  integration: z.enum([
+    "WHATSAPP-BUSINESS",
+    "WHATSAPP-BAILEYS",
+    "META-FACEBOOK",
+    "META-INSTAGRAM",
+  ]),
 });
 
 function NewInstance({ resetTable }: { resetTable: () => void }) {
@@ -49,20 +50,22 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
     defaultValues: {
       name: "",
       integration: "WHATSAPP-BAILEYS",
-      token: uuidv4().replace("-", "").toLocaleUpperCase(),
+      token: uuidv4().replace("-", "").toUpperCase(),
       number: "",
       businessId: "",
     },
   });
+
+  const integrationSelected = form.watch("integration");
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       const instanceData: NewInstanceType = {
         instanceName: data.name,
         integration: data.integration,
-        token: data.token === "" ? undefined : data.token,
-        number: data.number === "" ? undefined : data.number,
-        businessId: data.businessId === "" ? undefined : data.businessId,
+        token: data.token === "" ? null : data.token,
+        number: data.number === "" ? null : data.number,
+        businessId: data.businessId === "" ? null : data.businessId,
       };
 
       await createInstance(instanceData);
@@ -93,8 +96,8 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default">
-          <PlusIcon /> Instância
+        <Button variant="default" size="sm">
+          Instância <PlusIcon size="18" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[650px]" onCloseAutoFocus={onReset}>
@@ -106,88 +109,32 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
             onSubmit={form.handleSubmit(onSubmit)}
             className="grid gap-4 py-4"
           >
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="name" className="text-right">
-                Nome
-              </Label>
-              <Input
-                id="name"
-                {...form.register("name")}
-                className="col-span-3 border border-gray-600"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="integration" className="text-right">
-                Integração
-              </Label>
-              <FormField
-                control={form.control}
-                name="integration"
-                render={({ field }) => (
-                  <FormItem className="col-span-3 w-full border border-gray-600">
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      <FormControl className="border border-gray-600">
-                        <SelectTrigger>
-                          <SelectValue placeholder="Selecione uma credencial" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent className="border border-gray-600">
-                        <SelectItem value="WHATSAPP-BAILEYS">
-                          Baileys
-                        </SelectItem>
-                        <SelectItem value="WHATSAPP-BUSINESS">
-                          Whatsapp Cloud API
-                        </SelectItem>
-                        <SelectItem value="META-FACEBOOK">
-                          Facebook
-                        </SelectItem>
-                        <SelectItem value="META-INSTAGRAM">
-                          Instagram
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormItem>
-                )}
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="token" className="text-right">
-                Token
-              </Label>
-              <Input
-                id="token"
-                {...form.register("token")}
-                className="col-span-3 border border-gray-600"
-              />
-            </div>
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label htmlFor="number" className="text-right">
-                Número
-              </Label>
-              <Input
-                id="number"
-                {...form.register("number")}
-                className="col-span-3 border border-gray-600"
-              />
-            </div>
-            {form.watch("integration") === "WHATSAPP-BUSINESS" && (
-              <div className="grid grid-cols-4 items-center gap-4">
-                <Label htmlFor="businessId" className="text-right">
-                  Business ID
-                </Label>
-                <Input
-                  id="businessId"
-                  {...form.register("businessId")}
-                  className="col-span-3 border border-gray-600"
-                />
-              </div>
+            <FormInput required name="name" label="Nome">
+              <Input />
+            </FormInput>
+            <FormSelect
+              name="integration"
+              label="Integração"
+              options={[
+                { value: "WHATSAPP-BAILEYS", label: "Baileys" },
+                { value: "WHATSAPP-BUSINESS", label: "Whatsapp Cloud API" },
+                { value: "META-FACEBOOK", label: "Facebook" },
+                { value: "META-INSTAGRAM", label: "Instagram" },
+              ]}
+            />
+            <FormInput required name="token" label="Token">
+              <Input />
+            </FormInput>
+            <FormInput name="number" label="Número">
+              <Input type="tel" />
+            </FormInput>
+            {integrationSelected === "WHATSAPP-BUSINESS" && (
+              <FormInput required name="businessId" label="Business ID">
+                <Input />
+              </FormInput>
             )}
             <DialogFooter>
-              <Button type="submit">Salvar</Button>
-              {form.watch("integration") === "WHATSAPP-BUSINESS" && (
+              {integrationSelected === "WHATSAPP-BUSINESS" && (
                 <LoginWhatsappButton
                   setNumber={(number) => form.setValue("number", number)}
                   setBusiness={(businessId) =>
@@ -196,18 +143,19 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
                   setToken={(token) => form.setValue("token", token)}
                 />
               )}
-              {form.watch("integration") === "META-FACEBOOK" && (
+              {integrationSelected === "META-FACEBOOK" && (
                 <LoginFacebookButton
                   setUserID={(userID) => form.setValue("number", userID)}
                   setToken={(token) => form.setValue("token", token)}
                 />
               )}
-              {form.watch("integration") === "META-INSTAGRAM" && (
+              {integrationSelected === "META-INSTAGRAM" && (
                 <LoginInstagramButton
                   setUserID={(userID) => form.setValue("number", userID)}
                   setToken={(token) => form.setValue("token", token)}
                 />
               )}
+              <Button type="submit">Salvar</Button>
             </DialogFooter>
           </form>
         </FormProvider>

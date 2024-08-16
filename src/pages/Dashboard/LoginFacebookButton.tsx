@@ -1,6 +1,8 @@
-import { Button } from "@/components/ui/button";
-import { getFacebookAppID } from "@/utils/getConfig";
 import { useEffect, useState } from "react";
+
+import { Button } from "@/components/ui/button";
+
+import { getFacebookAppID } from "@/utils/getConfig";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type LoginFacebookButtonProps = {
@@ -50,7 +52,7 @@ function LoginFacebookButton({
       {
         scope:
           "public_profile,pages_messaging,pages_show_list,pages_manage_metadata,pages_read_engagement",
-      }
+      },
     );
   }
 
@@ -67,9 +69,9 @@ function LoginFacebookButton({
               "Good to see you, " +
                 userInfo.name +
                 ". I see your email address is " +
-                userInfo.email
+                userInfo.email,
             );
-          }
+          },
         );
 
         setUserID(userID);

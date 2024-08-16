@@ -16,9 +16,9 @@ export type NewInstance = {
   instanceName: string;
   qrcode?: boolean;
   integration: string;
-  token?: string;
-  number?: string;
-  businessId?: string;
+  token?: string | null;
+  number?: string | null;
+  businessId?: string | null;
 };
 
 export type Instance = {

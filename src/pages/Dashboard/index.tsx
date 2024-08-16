@@ -1,6 +1,4 @@
-import "./style.css";
 import {
-  Check,
   ChevronsUpDown,
   CircleUser,
   Cog,
@@ -11,11 +9,31 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+} from "@/components/ui/dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuCheckboxItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 
 import {
@@ -40,23 +58,13 @@ const fetchData = async (callback: (data: Instance[]) => void) => {
 };
 
 function Dashboard() {
-  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(
+    null,
+  );
   const [instances, setInstances] = useState<Instance[]>([]);
   const [deleting, setDeleting] = useState<string[]>([]);
   const [visible, setVisible] = useState<string[]>([]);
   const [searchStatus, setSearchStatus] = useState<string>("all");
-
-  const navigate = useNavigate();
-
-  const toggleDropdown = () => {
-    setDropdownOpen(!dropdownOpen);
-  };
-
-  const handleInstance =
-    (instanceName: string): (() => void) =>
-    () => {
-      navigate(`/manager/instance/${instanceName}/dashboard`);
-    };
 
   useEffect(() => {
     const getData = async () => {
@@ -71,29 +79,14 @@ function Dashboard() {
   const renderStatus = (status: string) => {
     switch (status) {
       case "open":
-        return (
-          <div className="btn connected">
-            Conectada <span className="status-connected connected" />
-          </div>
-        );
+        return <Badge>Conectada</Badge>;
       case "connecting":
-        return (
-          <div className="btn connected">
-            Conectando <span className="status-connecting connected" />
-          </div>
-        );
+        return <Badge variant="warning">Conectando</Badge>;
       case "closed":
-        return (
-          <div className="btn connected">
-            Desconectado <span className="status-disconnected connected" />
-          </div>
-        );
+      case "close":
+        return <Badge variant="destructive">Desconectado</Badge>;
       default:
-        return (
-          <div className="btn connected">
-            Desconectado <span className="status-disconnected connected" />
-          </div>
-        );
+        return <Badge variant="secondary">{status}</Badge>;
     }
   };
 
@@ -104,6 +97,7 @@ function Dashboard() {
   };
 
   const handleDelete = async (instanceName: string) => {
+    setDeleteConfirmation(null);
     setDeleting([...deleting, instanceName]);
     try {
       try {
@@ -152,6 +146,13 @@ function Dashboard() {
     });
   };
 
+  const instanceStatus = [
+    { value: "all", label: "Todos" },
+    { value: "close", label: "Desconectado" },
+    { value: "connecting", label: "Conectando" },
+    { value: "open", label: "Conectado" },
+  ];
+
   return (
     <div className="my-4 px-4">
       <div className="flex w-full items-center justify-between">
@@ -163,166 +164,175 @@ function Dashboard() {
           <NewInstance resetTable={resetTable} />
         </div>
       </div>
-      <div className="flex items-center justify-between pl-4">
-        <div className="flex-1 p-4">
+      <div className="my-4 flex items-center justify-between gap-3 px-4">
+        <div className="flex-1">
           <Input
             placeholder="Pesquisar"
             onChange={(e) => searchByName(e.target.value)}
           />
         </div>
-        <div className="relative">
-          <Button onClick={toggleDropdown}>
-            Status <ChevronsUpDown size="15" />
-          </Button>
-          {dropdownOpen && (
-            <div className="dropdown-menu">
-              <button
-                className={`dropdown-item ${
-                  searchStatus === "all" ? "active" : ""
-                }`}
-                onClick={() => searchByStatus("all")}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="secondary">
+              Status <ChevronsUpDown size="15" />
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent>
+            {instanceStatus.map((status) => (
+              <DropdownMenuCheckboxItem
+                key={status.value}
+                checked={searchStatus === status.value}
+                onCheckedChange={(checked) => {
+                  if (checked) {
+                    searchByStatus(status.value);
+                  }
+                }}
               >
-                Todos
-                {searchStatus === "all" && (
-                  <span>
-                    <Check size="15" className="ml-2" />
-                  </span>
-                )}
-              </button>
-              <button
-                onClick={() => searchByStatus("close")}
-                className={`dropdown-item ${
-                  searchStatus === "close" ? "active" : ""
-                }`}
-              >
-                Desconectado
-                {searchStatus === "close" && (
-                  <span>
-                    <Check size="15" className="ml-2" />
-                  </span>
-                )}
-              </button>
-              <button
-                onClick={() => searchByStatus("connecting")}
-                className={`dropdown-item ${
-                  searchStatus === "connecting" ? "active" : ""
-                }`}
-              >
-                Conectando
-                {searchStatus === "connecting" && (
-                  <span>
-                    <Check size="15" className="ml-2" />
-                  </span>
-                )}
-              </button>
-              <button
-                onClick={() => searchByStatus("open")}
-                className={`dropdown-item ${
-                  searchStatus === "open" ? "active" : ""
-                }`}
-              >
-                Conectado
-                {searchStatus === "open" && (
-                  <span>
-                    <Check size="15" className="ml-2" />
-                  </span>
-                )}
-              </button>
-            </div>
-          )}
-        </div>
+                {status.label}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
-      <main className="instance-cards">
+      <main className="grid grid-cols-[repeat(auto-fit,_minmax(20rem,_1fr))] gap-6">
         {instances &&
           instances.length > 0 &&
           Array.isArray(instances) &&
           instances.map((instance: Instance) => (
-            <Card className="instance-card" key={instance.id}>
-              <div className="card-header">
-                <div className="card-id">
-                  <span>
+            <Card key={instance.id}>
+              <CardHeader className="w-full flex-row items-center justify-between gap-4">
+                <h3 className="text-wrap font-semibold">{instance.name}</h3>
+                <Button variant="ghost" size="icon" asChild>
+                  <Link to={`/manager/instance/${instance.id}/dashboard`}>
+                    <Cog className="card-icon" size="20" />
+                  </Link>
+                </Button>
+              </CardHeader>
+              <CardContent className="flex-1 space-y-6">
+                <div className="flex items-center gap-3 self-start truncate rounded-sm bg-primary/20 px-2 py-1">
+                  <span className="block truncate text-xs">
                     {visible.includes(instance.token)
-                      ? instance.token.substring(0, 36) + "..."
-                      : instance.token
-                          .substring(0, 36)
-                          .split("")
-                          .map(() => "*")
-                          .join("")}
+                      ? instance.token
+                      : instance.token.replace(/\w/g, "*")}
                   </span>
-                  <Copy
-                    className="card-icon"
-                    size="15"
+                  <Button
+                    variant="ghost"
+                    size="icon"
                     onClick={() => {
                       copyToClipboard(instance.token);
                     }}
-                  />
-                  {visible.includes(instance.token) ? (
-                    <EyeOff
-                      className="card-icon"
-                      size="15"
-                      onClick={() => {
-                        setVisible(
-                          visible.filter((item) => item !== instance.token),
-                        );
-                      }}
-                    />
-                  ) : (
-                    <Eye
-                      className="card-icon"
-                      size="15"
-                      onClick={() => {
-                        setVisible([...visible, instance.token]);
-                      }}
-                    />
-                  )}
-                </div>
-                <div
-                  className="card-menu"
-                  onClick={handleInstance(instance.id)}
-                >
-                  <Cog className="card-icon" size="20" />
-                </div>
-              </div>
-              <div className="card-body">
-                <div className="card-details">
-                  <p className="instance-name">{instance.name}</p>
-                  <p className="instance-description">{instance.profileName}</p>
-                </div>
-                <div className="card-contact">
-                  <p>{instance.ownerJid && instance.ownerJid.split("@")[0]}</p>
-                </div>
-              </div>
-              <div className="card-footer">
-                <div className="card-stats">
-                  <div className="stat">
-                    <CircleUser className="stat-icon" size="20" />
-                    <span>{instance?._count?.Contact || 0}</span>
-                  </div>
-                  <div className="stat">
-                    <MessageCircle className="stat-icon" size="20" />
-                    <span>{instance?._count?.Message || 0}</span>
-                  </div>
-                </div>
-                <div className="card-actions">
-                  {renderStatus(instance.connectionStatus)}
-                  <button
-                    className={`btn disconnect ${
-                      deleting.includes(instance.name) ? "disabled" : ""
-                    }`}
-                    onClick={() => handleDelete(instance.name)}
-                    disabled={deleting.includes(instance.name)}
                   >
-                    {deleting.includes(instance.name) ? (
-                      <span>Deletando...</span>
+                    <Copy className="card-icon" size="15" />
+                  </Button>
+
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => {
+                      setVisible((old) =>
+                        old.includes(instance.token)
+                          ? old.filter((item) => item !== instance.token)
+                          : [...old, instance.token],
+                      );
+                    }}
+                  >
+                    {visible.includes(instance.token) ? (
+                      <EyeOff size="15" />
                     ) : (
-                      <span>Deletar</span>
+                      <Eye size="15" />
                     )}
-                  </button>
+                  </Button>
                 </div>
-              </div>
+                <div className="flex w-full flex-wrap">
+                  <div className="flex flex-1 gap-2">
+                    {instance.profileName && (
+                      <>
+                        <Avatar>
+                          <AvatarImage src={instance.profilePicUrl} alt="" />
+                        </Avatar>
+                        <div className="space-y-1">
+                          <strong>{instance.profileName}</strong>
+                          <p className="text-sm text-muted-foreground">
+                            {instance.ownerJid &&
+                              instance.ownerJid.split("@")[0]}
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+
+                  <div className="flex items-center justify-end gap-4 text-sm">
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      <CircleUser className="text-muted-foreground" size="20" />
+                      <span>
+                        {new Intl.NumberFormat("pt-BR").format(
+                          instance?._count?.Contact || 0,
+                        )}
+                      </span>
+                    </div>
+                    <div className="flex flex-col items-center justify-center gap-1">
+                      <MessageCircle
+                        className="text-muted-foreground"
+                        size="20"
+                      />
+                      <span>
+                        {new Intl.NumberFormat("pt-BR").format(
+                          instance?._count?.Message || 0,
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+              <CardFooter className="justify-between">
+                {renderStatus(instance.connectionStatus)}
+                <Button
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => setDeleteConfirmation(instance.name)}
+                  disabled={deleting.includes(instance.name)}
+                >
+                  {deleting.includes(instance.name) ? (
+                    <span>Deletando...</span>
+                  ) : (
+                    <span>Deletar</span>
+                  )}
+                </Button>
+              </CardFooter>
             </Card>
           ))}
       </main>
+
+      {!!deleteConfirmation && (
+        <Dialog onOpenChange={() => setDeleteConfirmation(null)} open>
+          <DialogContent>
+            <DialogClose />
+            <DialogHeader>Deseja realmente deletar?</DialogHeader>
+            <p>
+              Você está prestes a desconectar a instância{" "}
+              <strong>{deleteConfirmation}</strong>. Tem certeza que deseja
+              continuar?
+            </p>
+            <DialogFooter>
+              <div className="flex items-center gap-4">
+                <Button
+                  onClick={() => setDeleteConfirmation(null)}
+                  size="sm"
+                  variant="outline"
+                >
+                  Cancelar
+                </Button>
+                <Button
+                  onClick={() => handleDelete(deleteConfirmation)}
+                  variant="destructive"
+                >
+                  Desconectar
+                </Button>
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }

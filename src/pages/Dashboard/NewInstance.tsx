@@ -26,15 +26,16 @@ import { LoginFacebookButton } from "./LoginFacebookButton";
 import { LoginInstagramButton } from "./LoginInstagramButton";
 import { LoginWhatsappButton } from "./LoginWhatsappButton";
 
-const stringOrNullSchema = z
-  .union([z.string(), z.null()])
-  .transform((value) => (value === "" ? null : value));
+const stringOrUndefined = z
+  .string()
+  .optional()
+  .transform((value) => (value === "" ? undefined : value));
 
 const FormSchema = z.object({
   name: z.string(),
-  token: stringOrNullSchema,
-  number: stringOrNullSchema,
-  businessId: stringOrNullSchema,
+  token: stringOrUndefined,
+  number: stringOrUndefined,
+  businessId: stringOrUndefined,
   integration: z.enum([
     "WHATSAPP-BUSINESS",
     "WHATSAPP-BAILEYS",

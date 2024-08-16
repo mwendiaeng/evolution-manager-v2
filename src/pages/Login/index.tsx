@@ -1,7 +1,8 @@
-import "./style.css";
-import { useState } from "react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { z } from "zod";
 
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
@@ -13,8 +14,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Form, FormInput } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 import {
   logout,
@@ -23,36 +24,47 @@ import {
   verifyServer,
 } from "@/services/auth.service";
 
+const loginSchema = z.object({
+  serverUrl: z
+    .string({ required_error: "URL do servidor é obrigatória" })
+    .url("URL inválida"),
+  apiKey: z.string({ required_error: "ApiKey é obrigatória" }),
+});
+type LoginSchema = z.infer<typeof loginSchema>;
+
 function Login() {
   const navigate = useNavigate();
+  const loginForm = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      serverUrl: window.location.protocol + "//" + window.location.host,
+      apiKey: "",
+    },
+  });
 
-  const [serverUrl, setServerUrl] = useState(
-    window.location.protocol + "//" + window.location.host,
-  );
-  const [apiKey, setApiKey] = useState("");
-
-  const handleLogin = async () => {
-    if (!serverUrl || !apiKey) {
-      toast.error("Credenciais inválidas");
-      return;
-    }
-
-    const server = await verifyServer(serverUrl);
+  const handleLogin: SubmitHandler<LoginSchema> = async (data) => {
+    const server = await verifyServer(data.serverUrl);
 
     if (!server || !server.version) {
       logout();
-      toast.error("Servidor inválido");
+      loginForm.setError("serverUrl", {
+        type: "manual",
+        message: "Servidor inválido",
+      });
       return;
     }
 
-    const verify = await verifyCreds(serverUrl, apiKey);
+    const verify = await verifyCreds(data.serverUrl, data.apiKey);
 
     if (!verify) {
-      toast.error("Credenciais inválidas");
+      loginForm.setError("apiKey", {
+        type: "manual",
+        message: "Credenciais inválidas",
+      });
       return;
     }
 
-    const saveCreds = await saveCredentials(serverUrl, apiKey);
+    const saveCreds = await saveCredentials(data.serverUrl, data.apiKey);
 
     if (!saveCreds) {
       toast.error("Credenciais inválidas");
@@ -66,56 +78,41 @@ function Login() {
   };
 
   return (
-    <div>
-      <div className="pt-2">
+    <div className="flex min-h-screen flex-col">
+      <div className="flex items-center justify-center pt-2">
         <img
-          className="logo"
+          className="h-10"
           src="/assets/images/evolution-logo.png"
           alt="logo"
         />
       </div>
-      <div className="root">
-        <Card className="no-border w-[350px]">
+      <div className="flex flex-1 items-center justify-center p-8">
+        <Card className="b-none w-[350px] shadow-none">
           <CardHeader>
             <CardTitle className="text-center">Evolution Manager</CardTitle>
             <CardDescription className="text-center">
-              Login to your evolution api server
+              Conecte no servidor de sua API Evolution
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Label className="text-center" htmlFor="serverUrl">
-                  Server URL
-                </Label>
-                <Input
-                  className="border border-gray-300"
-                  id="serverUrl"
-                  placeholder="Server URL"
-                  value={serverUrl}
-                  onChange={(e) => setServerUrl(e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label className="text-center" htmlFor="apiKey">
-                  Global ApiKey
-                </Label>
-                <Input
-                  id="apiKey"
-                  className="border border-gray-300"
-                  placeholder="Global ApiKey"
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                />
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <Button className="w-full" onClick={handleLogin}>
-              Login
-            </Button>
-          </CardFooter>
+          <Form {...loginForm}>
+            <form onSubmit={loginForm.handleSubmit(handleLogin)}>
+              <CardContent>
+                <div className="grid w-full items-center gap-4">
+                  <FormInput required name="serverUrl" label="Server URL">
+                    <Input />
+                  </FormInput>
+                  <FormInput required name="apiKey" label="Global ApiKey">
+                    <Input type="password" />
+                  </FormInput>
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-center">
+                <Button className="w-full" type="submit">
+                  Conectar
+                </Button>
+              </CardFooter>
+            </form>
+          </Form>
         </Card>
       </div>
       <Footer />

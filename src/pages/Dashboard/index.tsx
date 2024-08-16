@@ -16,6 +16,7 @@ import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
 
 import {
   deleteInstance,
@@ -153,29 +154,26 @@ function Dashboard() {
 
   return (
     <>
-      <div className="toolbar">
-        <div className="toolbar-title">
-          <h2>Instâncias</h2>
-        </div>
-        <div className="toolbar-buttons">
-          <Button variant="outline" className="refresh-button">
+      <div className="flex w-full items-center justify-between px-4 py-8">
+        <h2 className="text-lg">Instâncias</h2>
+        <div className="flex gap-2">
+          <Button variant="outline">
             <RefreshCw onClick={resetTable} size="20" />
           </Button>
           <NewInstance resetTable={resetTable} />
         </div>
       </div>
-      <div className="search">
-        <div className="search-bar">
-          <input
-            type="text"
+      <div className="flex items-center justify-between pl-4">
+        <div className="flex-1 p-4">
+          <Input
             placeholder="Pesquisar"
             onChange={(e) => searchByName(e.target.value)}
           />
         </div>
-        <div className="status-dropdown">
-          <button className="dropdown-button" onClick={toggleDropdown}>
+        <div className="relative">
+          <Button onClick={toggleDropdown}>
             Status <ChevronsUpDown size="15" />
-          </button>
+          </Button>
           {dropdownOpen && (
             <div className="dropdown-menu">
               <button

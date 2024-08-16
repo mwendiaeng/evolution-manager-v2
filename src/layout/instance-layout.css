@@ -1,13 +1,3 @@
-body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    font-family: 'Inter', sans-serif;
-    background-color: hsl(var(--header)) !important;
-}
-
 .layout-general {
     margin: 0.5rem;
     border-radius: 0.5rem;

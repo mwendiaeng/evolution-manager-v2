@@ -1,13 +1,24 @@
 import { DoorOpen } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { logout } from "@/services/auth.service";
 import { fetchInstance } from "@/services/instances.service";
 
 import { Instance } from "@/types/evolution.types";
 
+import { Avatar, AvatarImage } from "./ui/avatar";
+import { Button } from "./ui/button";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+} from "./ui/dialog";
+
 function Header({ instanceId }: { instanceId?: string }) {
+  const [logoutConfirmation, setLogoutConfirmation] = useState(false);
   const navigate = useNavigate();
 
   const handleClose = () => {
@@ -37,27 +48,61 @@ function Header({ instanceId }: { instanceId?: string }) {
   }, [instanceId]);
 
   return (
-    <header>
-      <a href="#" onClick={navigateToDashboard} className="header-logo">
-        <img src="/assets/images/evolution-logo.png" alt="Logo" />
-        <span className="header-title">Evolution Manager</span>
-      </a>
-      <div className="header-buttons">
+    <header className="flex items-center justify-between px-4 py-2">
+      <Link
+        to="/manager"
+        onClick={navigateToDashboard}
+        className="flex h-8 items-center gap-4"
+      >
+        <img
+          src="/assets/images/evolution-logo.png"
+          alt="Logo"
+          className="h-full"
+        />
+        <span>Evolution Manager</span>
+      </Link>
+      <div className="flex items-center gap-4">
         {instanceId && (
-          <button className="profile-button">
-            <img
+          <Avatar className="h-8 w-8">
+            <AvatarImage
               src={
                 instance?.profilePicUrl || "/assets/images/evolution-logo.png"
               }
-              alt="Perfil"
-              className="profile-picture"
+              alt={instance?.name}
             />
-          </button>
+          </Avatar>
         )}
-        <button onClick={handleClose} className="exit-button">
+        <Button
+          onClick={() => setLogoutConfirmation(true)}
+          variant="destructive"
+          size="icon"
+        >
           <DoorOpen size="18" />
-        </button>
+        </Button>
       </div>
+
+      {logoutConfirmation && (
+        <Dialog onOpenChange={setLogoutConfirmation} open={logoutConfirmation}>
+          <DialogContent>
+            <DialogClose />
+            <DialogHeader>Deseja realmente desconectar?</DialogHeader>
+            <DialogFooter>
+              <div className="flex items-center gap-4">
+                <Button
+                  onClick={() => setLogoutConfirmation(false)}
+                  size="sm"
+                  variant="outline"
+                >
+                  Cancelar
+                </Button>
+                <Button onClick={handleClose} variant="destructive">
+                  Desconectar
+                </Button>
+              </div>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </header>
   );
 }

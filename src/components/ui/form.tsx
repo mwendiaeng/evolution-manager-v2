@@ -21,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./select";
+import { Switch } from "./switch";
 
 const Form = FormProvider;
 
@@ -183,10 +184,12 @@ const FormInput = <
   children,
   required,
   readOnly,
+  className,
   ...props
 }: Omit<ControllerProps<TFieldValues, TName>, "render"> & {
   label?: string;
   children: React.ReactNode;
+  className?: string;
   required?: boolean;
   readOnly?: boolean;
 }) => {
@@ -195,7 +198,7 @@ const FormInput = <
       {...props}
       name={name}
       render={({ field }) => (
-        <FormItem>
+        <FormItem className={className}>
           {label && (
             <FormLabel>
               {label}
@@ -209,7 +212,54 @@ const FormInput = <
                 value: field.value ?? "",
                 required,
                 readOnly,
+                checked: field.value,
+                onCheckedChange: field.onChange,
               })}
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
+  );
+};
+
+const FormSwitch = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
+  name,
+  label,
+  required,
+  className,
+  helper,
+  ...props
+}: Omit<ControllerProps<TFieldValues, TName>, "render"> & {
+  label?: string;
+  helper?: string;
+  className?: string;
+  required?: boolean;
+}) => {
+  return (
+    <FormField
+      {...props}
+      name={name}
+      render={({ field }) => (
+        <FormItem className={cn("flex", className)}>
+          <div className="flex flex-col gap-2">
+            {label && (
+              <FormLabel>
+                {label}
+                {required && <span className="ml-2 text-rose-600">*</span>}
+              </FormLabel>
+            )}
+            {helper && <FormDescription>{helper}</FormDescription>}
+          </div>
+          <FormControl>
+            <Switch
+              checked={field.value}
+              onCheckedChange={field.onChange}
+              required={required}
+            />
           </FormControl>
           <FormMessage />
         </FormItem>
@@ -283,4 +333,5 @@ export {
   FormField,
   FormInput,
   FormSelect,
+  FormSwitch,
 };

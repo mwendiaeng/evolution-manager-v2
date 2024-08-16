@@ -1,10 +1,17 @@
 import { Button } from "@/components/ui/button";
-import { useEffect } from "react";
+import {
+  getFacebookAppID,
+  getFacebookConfigID,
+  getFacebookUserToken,
+} from "@/utils/getConfig";
+import axios from "axios";
+import { useEffect, useState } from "react";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type LoginWhatsappButtonProps = {
   setNumber: (number: string) => void;
   setBusiness: (business: string) => void;
+  setToken: (token: string) => void;
 };
 
 declare global {
@@ -18,7 +25,10 @@ declare global {
 function LoginWhatsappButton({
   setNumber,
   setBusiness,
+  setToken,
 }: LoginWhatsappButtonProps) {
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const script = document.createElement("script");
     const src = "https://connect.facebook.net/en_US/sdk.js";
@@ -30,7 +40,7 @@ function LoginWhatsappButton({
 
     window.fbAsyncInit = () => {
       window.FB.init({
-        appId: "1236499684427109",
+        appId: getFacebookAppID(),
         cookie: true,
         xfbml: true,
         version: "v20.0",
@@ -73,20 +83,60 @@ function LoginWhatsappButton({
       if (data.type === "WA_EMBEDDED_SIGNUP") {
         if (data.event === "FINISH") {
           const { phone_number_id, waba_id } = data.data;
-          setNumber(phone_number_id);
-          setBusiness(waba_id);
+          registerWaba(phone_number_id, waba_id);
         }
+      } else {
+        setLoading(false);
       }
     } catch {
+      setLoading(false);
       // console.log("Non JSON Response", event.data);
     }
   };
 
+  async function registerWaba(number: string, businessId: string) {
+    if (!number || !businessId) return;
+
+    try {
+      await axios.post(
+        `https://graph.facebook.com/v20.0/${number}/register`,
+        {
+          messaging_product: "whatsapp",
+          pin: "123456",
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${getFacebookUserToken()}`,
+          },
+        }
+      );
+
+      await axios.post(
+        `https://graph.facebook.com/v20.0/${businessId}/subscribed_apps`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${getFacebookUserToken()}`,
+          },
+        }
+      );
+
+      setNumber(number);
+      setBusiness(businessId);
+      setToken(getFacebookUserToken());
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   function launchWhatsAppSignup() {
+    setLoading(true);
     // Conversion tracking code
     if (window.fbq) {
       window.fbq("trackCustom", "WhatsAppOnboardingStart", {
-        appId: "1236499684427109",
+        appId: getFacebookAppID(),
         feature: "whatsapp_embedded_signup",
       });
     }
@@ -101,7 +151,7 @@ function LoginWhatsappButton({
         }
       },
       {
-        config_id: "449052921382894",
+        config_id: getFacebookConfigID(),
         response_type: "code",
         override_default_response_type: true,
         extras: {
@@ -116,10 +166,11 @@ function LoginWhatsappButton({
     <Button
       variant="default"
       onClick={launchWhatsAppSignup}
-      className=""
+      className="bg-green-600 text-white hover:bg-green-700"
       type="button"
+      disabled={loading}
     >
-      Conectar Whatsapp
+      {loading ? "Conectando..." : "Conectar Whatsapp"}
     </Button>
   );
 }

@@ -26,7 +26,8 @@ import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { z } from "zod";
 import { LoginWhatsappButton } from "./LoginWhatsappButton";
-import { v4 as uuidv4 } from 'uuid';
+import { v4 as uuidv4 } from "uuid";
+import { LoginFacebookButton } from "./LoginFacebookButton";
 
 const FormSchema = z.object({
   name: z.string(),
@@ -135,6 +136,9 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
                         <SelectItem value="WHATSAPP-BUSINESS">
                           Whatsapp Cloud API
                         </SelectItem>
+                        <SelectItem value="META">
+                          Facebook / Instagram
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </FormItem>
@@ -181,6 +185,13 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
                   setBusiness={(businessId) =>
                     form.setValue("businessId", businessId)
                   }
+                  setToken={(token) => form.setValue("token", token)}
+                />
+              )}
+              {form.watch("integration") === "META" && (
+                <LoginFacebookButton
+                  setUserID={(userID) => form.setValue("number", userID)}
+                  setToken={(token) => form.setValue("token", token)}
                 />
               )}
             </DialogFooter>

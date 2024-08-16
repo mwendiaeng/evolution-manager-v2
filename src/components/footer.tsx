@@ -1,11 +1,24 @@
+import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
+import { verifyServer } from "@/services/auth.service";
 
 function Footer() {
+  const [version, setVersion] = useState<string | null>(null);
+
+  useEffect(() => {
+    const url = localStorage.getItem("apiUrl");
+
+    if (!url) return;
+
+    verifyServer(url)
+      .then((data) => setVersion(data.version));
+  }, []);
+
   return (
     <footer className="footer">
       <div className="footer-info">
-        Client Name: <strong>{localStorage.getItem("clientName")}</strong> Version:{" "}
-        <strong>{localStorage.getItem("version")}</strong>
+        Client Name: <strong>{localStorage.getItem("clientName")}</strong>{" "}
+        Version: <strong>{version}</strong>
       </div>
       <div className="footer-buttons">
         <Button variant="link">

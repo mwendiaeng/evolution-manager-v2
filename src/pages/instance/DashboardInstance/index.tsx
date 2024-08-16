@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import "./style.css";
+import { Copy, Eye, EyeOff, RefreshCw } from "lucide-react";
+import { useState } from "react";
+
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { logout, connect, restart } from "@/services/instances.service";
-import { useInstance } from "@/contexts/InstanceContext";
 import {
   Dialog,
   DialogContent,
@@ -13,7 +13,11 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { Copy, Eye, EyeOff, RefreshCw } from "lucide-react";
+
+import { useInstance } from "@/contexts/InstanceContext";
+
+import { logout, connect, restart } from "@/services/instances.service";
+
 import { copyToClipboard } from "@/utils/copy-to-clipboard";
 
 const getStatusClass = (status: string) => {
@@ -52,7 +56,7 @@ function DashboardInstance() {
 
   const handleReload = () => {
     window.location.reload();
-  }
+  };
 
   const handleRestart = async (instanceName: string) => {
     try {
@@ -112,14 +116,14 @@ function DashboardInstance() {
           <div className="dashboard-info">
             <div
               className={`dashboard-status ${getStatusClass(
-                instance.connectionStatus
+                instance.connectionStatus,
               )}`}
             >
               <i
                 className={`status-icon ${getStatusClass(
-                  instance.connectionStatus
+                  instance.connectionStatus,
                 )}`}
-              ></i>
+              />
               <span className="status-text">
                 {getStatusText(instance.connectionStatus)}
               </span>
@@ -130,7 +134,8 @@ function DashboardInstance() {
               <span>
                 {visible.includes(instance.token)
                   ? instance.token.substring(0, 32) + "..."
-                  : instance.token.substring(0, 32)
+                  : instance.token
+                      .substring(0, 32)
                       .split("")
                       .map(() => "*")
                       .join("")}
@@ -148,7 +153,7 @@ function DashboardInstance() {
                   size="15"
                   onClick={() => {
                     setVisible(
-                      visible.filter((item) => item !== instance.token)
+                      visible.filter((item) => item !== instance.token),
                     );
                   }}
                 />
@@ -206,7 +211,7 @@ function DashboardInstance() {
                               <p className="text-center">
                                 <strong>Código de emparelhamento:</strong>
                               </p>
-                              <p className="text-center pairing-code">
+                              <p className="pairing-code text-center">
                                 {pairingCode.substring(0, 4)}-
                                 {pairingCode.substring(4, 8)}
                               </p>

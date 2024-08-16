@@ -2,7 +2,12 @@
 import "./style.css";
 
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import { Tag } from "node_modules/react-tag-input/types/components/SingleTag";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { WithContext as ReactTags } from "react-tag-input";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
@@ -14,16 +19,14 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@radix-ui/react-dropdown-menu";
-import toastService from "@/utils/custom-toast.service";
-import { createChatwoot, fetchChatwoot } from "@/services/chatwoot.service";
+import { Switch } from "@/components/ui/switch";
+
 import { useInstance } from "@/contexts/InstanceContext";
-import { useEffect, useState } from "react";
+
+import { createChatwoot, fetchChatwoot } from "@/services/chatwoot.service";
+
 import { Chatwoot as ChatwootType } from "@/types/evolution.types";
-import { WithContext as ReactTags } from "react-tag-input";
-import { Tag } from "node_modules/react-tag-input/types/components/SingleTag";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -92,7 +95,7 @@ function Chatwoot() {
             id: jid,
             text: jid,
             className: "",
-          })) || []
+          })) || [],
         );
         form.reset(data);
       } catch (error) {
@@ -133,11 +136,11 @@ function Chatwoot() {
       };
 
       await createChatwoot(instance.name, instance.token, chatwootData);
-      toastService.success("Chatwoot criado com sucesso");
+      toast.success("Chatwoot criado com sucesso");
     } catch (error: any) {
       console.error("Erro ao criar chatwoot:", error);
-      toastService.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`,
       );
     } finally {
       setLoading(false);
@@ -179,7 +182,7 @@ function Chatwoot() {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      className="border border-gray-600 w-full"
+                      className="w-full border border-gray-600"
                       placeholder="URL do chatwoot"
                     />
                   )}
@@ -190,7 +193,7 @@ function Chatwoot() {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      className="border border-gray-600 w-full"
+                      className="w-full border border-gray-600"
                       placeholder="ID da Conta"
                     />
                   )}
@@ -201,7 +204,7 @@ function Chatwoot() {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      className="border border-gray-600 w-full"
+                      className="w-full border border-gray-600"
                       placeholder="Token da Conta"
                       type="password"
                     />
@@ -235,7 +238,7 @@ function Chatwoot() {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      className="border border-gray-600 w-full"
+                      className="w-full border border-gray-600"
                       placeholder="Delimitador de Assinatura"
                     />
                   )}
@@ -246,7 +249,7 @@ function Chatwoot() {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      className="border border-gray-600 w-full"
+                      className="w-full border border-gray-600"
                       placeholder="Nome da Caixa de Entrada"
                     />
                   )}
@@ -257,7 +260,7 @@ function Chatwoot() {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      className="border border-gray-600 w-full"
+                      className="w-full border border-gray-600"
                       placeholder="Nome da organização"
                     />
                   )}
@@ -268,7 +271,7 @@ function Chatwoot() {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      className="border border-gray-600 w-full"
+                      className="w-full border border-gray-600"
                       placeholder="URL do logo"
                     />
                   )}
@@ -369,7 +372,7 @@ function Chatwoot() {
                   render={({ field }) => (
                     <Input
                       {...field}
-                      className="border border-gray-600 w-full"
+                      className="w-full border border-gray-600"
                       placeholder="Limite de Dias para Importar Mensagens"
                       type="number"
                     />

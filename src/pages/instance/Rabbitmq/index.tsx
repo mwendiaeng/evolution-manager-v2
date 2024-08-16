@@ -1,8 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -14,11 +16,11 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@radix-ui/react-dropdown-menu";
+
+import { useInstance } from "@/contexts/InstanceContext";
 
 import { createRabbitmq, fetchRabbitmq } from "@/services/rabbitmq.service";
-import { useInstance } from "@/contexts/InstanceContext";
-import toastService from "@/utils/custom-toast.service";
+
 import { Rabbitmq as RabbitmqType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
@@ -70,11 +72,11 @@ function Rabbitmq() {
       };
 
       await createRabbitmq(instance.name, instance.token, rabbitmqData);
-      toastService.success("Rabbitmq criado com sucesso");
+      toast.success("Rabbitmq criado com sucesso");
     } catch (error: any) {
       console.error("Erro ao criar rabbitmq:", error);
-      toastService.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`,
       );
     } finally {
       setLoading(false);
@@ -157,7 +159,7 @@ function Rabbitmq() {
                                   field.onChange([...field.value, event]);
                                 } else {
                                   field.onChange(
-                                    field.value.filter((e) => e !== event)
+                                    field.value.filter((e) => e !== event),
                                   );
                                 }
                               }}

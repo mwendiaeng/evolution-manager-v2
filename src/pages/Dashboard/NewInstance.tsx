@@ -1,3 +1,11 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PlusIcon } from "lucide-react";
+import { useState } from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { toast } from "react-toastify";
+import { v4 as uuidv4 } from "uuid";
+import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -17,16 +25,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
 import { createInstance } from "@/services/instances.service";
+
 import { NewInstance as NewInstanceType } from "@/types/evolution.types";
-import toastService from "@/utils/custom-toast.service";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { PlusIcon } from "lucide-react";
-import { useState } from "react";
-import { useForm, FormProvider } from "react-hook-form";
-import { z } from "zod";
+
 import { LoginWhatsappButton } from "./LoginWhatsappButton";
-import { v4 as uuidv4 } from "uuid";
 import { LoginFacebookButton } from "./LoginFacebookButton";
 
 const FormSchema = z.object({
@@ -62,15 +66,15 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
 
       await createInstance(instanceData);
 
-      toastService.success("Instância criada com sucesso");
+      toast.success("Instância criada com sucesso");
       setOpen(false);
       onReset();
       resetTable();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao criar instância:", error);
-      toastService.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`,
       );
     }
   };

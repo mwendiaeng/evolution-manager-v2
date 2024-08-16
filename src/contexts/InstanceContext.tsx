@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, {
   createContext,
   useContext,
@@ -6,8 +7,10 @@ import React, {
   ReactNode,
 } from "react";
 import { useParams } from "react-router-dom";
-import { Instance } from "@/types/evolution.types";
+
 import { fetchInstance } from "@/services/instances.service";
+
+import { Instance } from "@/types/evolution.types";
 
 interface InstanceContextProps {
   instance: Instance | null;

@@ -1,9 +1,11 @@
-import { logout } from "@/services/auth.service";
-import { fetchInstance } from "@/services/instances.service";
-import { Instance } from "@/types/evolution.types";
 import { DoorOpen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { logout } from "@/services/auth.service";
+import { fetchInstance } from "@/services/instances.service";
+
+import { Instance } from "@/types/evolution.types";
 
 function Header({ instanceId }: { instanceId?: string }) {
   const navigate = useNavigate();
@@ -20,7 +22,7 @@ function Header({ instanceId }: { instanceId?: string }) {
   const [instance, setInstance] = useState<Instance | null>(null);
 
   useEffect(() => {
-    if(instanceId){
+    if (instanceId) {
       const fetchData = async (instanceId: string) => {
         try {
           const data = await fetchInstance(instanceId);
@@ -29,7 +31,7 @@ function Header({ instanceId }: { instanceId?: string }) {
           console.error("Erro ao buscar dados:", error);
         }
       };
-      
+
       fetchData(instanceId);
     }
   }, [instanceId]);

@@ -49,7 +49,7 @@ function LoginWhatsappButton({
 
     ((d, s, id) => {
       let js: HTMLScriptElement | null = d.getElementById(
-        id
+        id,
       ) as HTMLScriptElement;
       const fjs = d.getElementsByTagName(s)[0] as HTMLElement;
       if (js) {
@@ -68,7 +68,7 @@ function LoginWhatsappButton({
     return () => {
       window.removeEventListener("message", sessionInfoListener);
     };
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const sessionInfoListener = (event: MessageEvent) => {
     if (
@@ -158,7 +158,7 @@ function LoginWhatsappButton({
           feature: "whatsapp_embedded_signup",
           sessionInfoVersion: 2,
         },
-      }
+      },
     );
   }
 

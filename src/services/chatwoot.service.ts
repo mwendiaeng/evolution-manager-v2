@@ -1,4 +1,5 @@
 import { Chatwoot } from "@/types/evolution.types";
+
 import ApiService from "@/utils/instance";
 
 const apiService = new ApiService();
@@ -17,7 +18,7 @@ export const fetchChatwoot = async (instanceName: string, token: string) => {
 export const createChatwoot = async (
   instanceName: string,
   token: string,
-  data: Chatwoot
+  data: Chatwoot,
 ) => {
   const response = await apiService
     .getInstance()

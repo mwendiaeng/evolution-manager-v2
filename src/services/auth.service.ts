@@ -33,7 +33,7 @@ export const verifyCreds = async (url: string, token: string) => {
         headers: {
           apikey: token,
         },
-      }
+      },
     );
 
     return response.data;

@@ -4,6 +4,7 @@ import { verifyServer } from "@/services/auth.service";
 
 function Footer() {
   const [version, setVersion] = useState<string | null>(null);
+  const clientName = localStorage.getItem("clientName");
 
   useEffect(() => {
     const url = localStorage.getItem("apiUrl");
@@ -17,7 +18,7 @@ function Footer() {
   return (
     <footer className="footer">
       <div className="footer-info">
-        Client Name: <strong>{localStorage.getItem("clientName")}</strong>{" "}
+        Client Name: <strong>{clientName}</strong>{" "}
         Version: <strong>{version}</strong>
       </div>
       <div className="footer-buttons">

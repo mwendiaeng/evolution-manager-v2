@@ -1,9 +1,16 @@
-import { createContext, useContext, useEffect, useState } from "react";
+/* eslint-disable react-refresh/only-export-components */
+import {
+  createContext,
+  ReactNode,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 type Theme = "dark" | "light" | "system";
 
 type ThemeProviderProps = {
-  children: React.ReactNode;
+  children: ReactNode;
   defaultTheme?: Theme;
   storageKey?: string;
 };
@@ -27,7 +34,7 @@ export function ThemeProvider({
   ...props
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
+    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme,
   );
 
   useEffect(() => {

@@ -1,7 +1,10 @@
-import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
 import { z } from "zod";
+
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -11,15 +14,15 @@ import {
   FormItem,
   FormLabel,
 } from "@/components/ui/form";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@radix-ui/react-dropdown-menu";
-import { settingsfind, updateSettings } from "@/services/instances.service";
-import { Settings as SettingsType } from "@/types/evolution.types";
+
 import { useInstance } from "@/contexts/InstanceContext";
-import "react-toastify/dist/ReactToastify.css";
-import toastService from "@/utils/custom-toast.service";
-import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
+import { settingsfind, updateSettings } from "@/services/instances.service";
+
+import { Settings as SettingsType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   rejectCall: z.boolean(),
@@ -59,7 +62,7 @@ function Settings() {
 
           const data: SettingsType = await settingsfind(
             instance.name,
-            instance.token
+            instance.token,
           );
           form.reset({
             rejectCall: data.rejectCall,
@@ -100,10 +103,10 @@ function Settings() {
         readStatus: data.readStatus,
       };
       await updateSettings(instance.name, token, settingData);
-      toastService.success("Configurações atualizadas com sucesso!");
+      toast.success("Configurações atualizadas com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar configurações:", error);
-      toastService.error("Erro ao atualizar configurações.");
+      toast.error("Erro ao atualizar configurações.");
     } finally {
       setUpdating(false);
     }
@@ -129,7 +132,7 @@ function Settings() {
                 name="rejectCall"
                 render={({ field }) => (
                   <FormItem className="flex flex-col items-start rounded-lg border border-gray-600 p-4">
-                    <div className="flex flex-row items-center justify-between w-full">
+                    <div className="flex w-full flex-row items-center justify-between">
                       <div className="space-y-0.5">
                         <FormLabel className="text-sm">
                           Rejeitar Chamadas
@@ -146,7 +149,7 @@ function Settings() {
                       </FormControl>
                     </div>
                     {field.value && (
-                      <div className="w-full mt-4">
+                      <div className="mt-4 w-full">
                         <FormField
                           control={form.control}
                           name="msgCall"
@@ -155,7 +158,7 @@ function Settings() {
                               <Textarea
                                 {...field}
                                 placeholder="Mensagem ao rejeitar chamada"
-                                className="border border-gray-600 w-full"
+                                className="w-full border border-gray-600"
                               />
                             </FormControl>
                           )}

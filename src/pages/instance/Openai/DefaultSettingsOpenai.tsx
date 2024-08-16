@@ -1,6 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Cog } from "lucide-react";
+import { Tag } from "node_modules/react-tag-input/types/components/SingleTag";
 import { useEffect, useState } from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { WithContext as ReactTags } from "react-tag-input";
+import { toast } from "react-toastify";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -16,21 +24,6 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useInstance } from "@/contexts/InstanceContext";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Cog } from "lucide-react";
-import { useForm, FormProvider } from "react-hook-form";
-import { z } from "zod";
-import {
-  Instance,
-  OpenaiBot,
-  OpenaiCreds,
-  OpenaiSettings,
-} from "@/types/evolution.types";
-import toastService from "@/utils/custom-toast.service";
-import { Switch } from "@/components/ui/switch";
-import { WithContext as ReactTags } from "react-tag-input";
-import { Tag } from "node_modules/react-tag-input/types/components/SingleTag";
 import {
   Select,
   SelectContent,
@@ -38,12 +31,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Switch } from "@/components/ui/switch";
+
+import { useInstance } from "@/contexts/InstanceContext";
+
 import {
   findDefaultSettingsOpenai,
   findOpenai,
   findOpenaiCreds,
   setDefaultSettingsOpenai,
 } from "@/services/openai.service";
+
+import {
+  Instance,
+  OpenaiBot,
+  OpenaiCreds,
+  OpenaiSettings,
+} from "@/types/evolution.types";
 
 const FormSchema = z.object({
   openaiCredsId: z.string(),
@@ -64,7 +68,7 @@ const fetchData = async (
   instance: Instance | null,
   setSettings: any,
   setBots: any,
-  setCreds: any
+  setCreds: any,
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
@@ -72,7 +76,7 @@ const fetchData = async (
     if (storedToken && instance && instance.name) {
       const getSettings: OpenaiSettings[] = await findDefaultSettingsOpenai(
         instance.name,
-        storedToken
+        storedToken,
       );
 
       setSettings(getSettings);
@@ -83,7 +87,7 @@ const fetchData = async (
 
       const getCreds: OpenaiCreds[] = await findOpenaiCreds(
         instance.name,
-        storedToken
+        storedToken,
       );
 
       setCreds(getCreds);
@@ -159,7 +163,7 @@ function DefaultSettingsOpenai() {
           id: jid,
           text: jid,
           className: "",
-        })) || []
+        })) || [],
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -191,14 +195,14 @@ function DefaultSettingsOpenai() {
       await setDefaultSettingsOpenai(
         instance.name,
         instance.token,
-        settingsData
+        settingsData,
       );
-      toastService.success("Configuração salva com sucesso!");
+      toast.success("Configuração salva com sucesso!");
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao criar bot:", error);
-      toastService.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao criar : ${error?.response?.data?.response?.message}`,
       );
     }
   };
@@ -215,7 +219,7 @@ function DefaultSettingsOpenai() {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-[740px] sm:max-h-[600px] overflow-y-auto"
+        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
@@ -293,7 +297,7 @@ function DefaultSettingsOpenai() {
                       <FormLabel>Expira em (minutos)</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Expira em (minutos)"
                         type="number"
                       />
@@ -308,7 +312,7 @@ function DefaultSettingsOpenai() {
                       <FormLabel>Palavra Chave de Finalização</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Palavra Chave de Finalização"
                       />
                     </FormItem>
@@ -322,7 +326,7 @@ function DefaultSettingsOpenai() {
                       <FormLabel>Delay padrão da mensagem</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Delay padrão da mensagem"
                         type="number"
                       />
@@ -339,7 +343,7 @@ function DefaultSettingsOpenai() {
                       </FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Mensagem para tipo de mensagem desconhecida"
                       />
                     </FormItem>
@@ -429,7 +433,7 @@ function DefaultSettingsOpenai() {
                       <FormLabel>Tempo de espera</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Tempo de espera"
                         type="number"
                       />

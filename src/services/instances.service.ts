@@ -1,4 +1,5 @@
 import { NewInstance, Settings } from "@/types/evolution.types";
+
 import ApiService from "@/utils/instance";
 
 const apiService = new ApiService();
@@ -48,7 +49,7 @@ export const deleteInstance = async (instanceName: string) => {
 export const connect = async (
   instanceName: string,
   token: string,
-  number?: string
+  number?: string,
 ) => {
   let url = `/instance/connect/${instanceName}`;
   if (number) url += `?number=${number}`;
@@ -86,7 +87,7 @@ export const settingsfind = async (instanceName: string, token: string) => {
 export const updateSettings = async (
   instanceName: string,
   token: string,
-  settings: Settings
+  settings: Settings,
 ) => {
   const response = await apiService
     .getInstance()

@@ -1,16 +1,19 @@
+import "./index.css";
+import "react-toastify/dist/ReactToastify.css";
+
 import React from "react";
 import ReactDOM from "react-dom/client";
-import "./index.css";
-import router from "./routes/index.tsx";
 import { RouterProvider } from "react-router-dom";
-import { ThemeProvider } from "./components/theme-provider.tsx";
 import { ToastContainer } from "react-toastify";
+
+import { ThemeProvider } from "./components/theme-provider.tsx";
+import router from "./routes/index.tsx";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
       <RouterProvider router={router} />
     </ThemeProvider>
-    <ToastContainer />
-  </React.StrictMode>
+    <ToastContainer theme="colored" />
+  </React.StrictMode>,
 );

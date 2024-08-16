@@ -1,13 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Button } from "@/components/ui/button";
-import { useEffect, useState } from "react";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import {
   ColumnDef,
   SortingState,
@@ -19,15 +10,6 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { useInstance } from "@/contexts/InstanceContext";
-import {
   Delete,
   ListCollapse,
   MoreHorizontal,
@@ -36,7 +18,17 @@ import {
   RotateCcw,
   StopCircle,
 } from "lucide-react";
-import { Instance, TypebotSession } from "@/types/evolution.types";
+import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
+
+import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -45,17 +37,29 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+
+import { useInstance } from "@/contexts/InstanceContext";
+
 import {
   changeStatusTypebot,
   fetchSessionsTypebot,
 } from "@/services/typebot.service";
-import { Input } from "@/components/ui/input";
-import toastService from "@/utils/custom-toast.service";
+
+import { Instance, TypebotSession } from "@/types/evolution.types";
 
 const fetchData = async (
   instance: Instance | null,
   setSessions: any,
-  typebotId?: string
+  typebotId?: string,
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
@@ -64,7 +68,7 @@ const fetchData = async (
       const getSessions: TypebotSession[] = await fetchSessionsTypebot(
         instance.name,
         storedToken,
-        typebotId
+        typebotId,
       );
 
       setSessions(getSessions);
@@ -99,15 +103,15 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
         instance.name,
         instance.token,
         remoteJid,
-        status
+        status,
       );
 
-      toastService.success("Status alterado com sucesso.");
+      toast.success("Status alterado com sucesso.");
       onReset();
     } catch (error: any) {
       console.error("Erro ao atualizar:", error);
-      toastService.error(
-        `Erro ao atualizar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao atualizar : ${error?.response?.data?.response?.message}`,
       );
     }
   };
@@ -154,7 +158,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
                 <DropdownMenuItem
                   onClick={() => changeStatus(session.remoteJid, "opened")}
                 >
-                  <Play className="w-4 h-4 mr-2" />
+                  <Play className="mr-2 h-4 w-4" />
                   Abrir
                 </DropdownMenuItem>
               )}
@@ -162,7 +166,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
                 <DropdownMenuItem
                   onClick={() => changeStatus(session.remoteJid, "paused")}
                 >
-                  <Pause className="w-4 h-4 mr-2" />
+                  <Pause className="mr-2 h-4 w-4" />
                   Pausar
                 </DropdownMenuItem>
               )}
@@ -170,14 +174,14 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
                 <DropdownMenuItem
                   onClick={() => changeStatus(session.remoteJid, "closed")}
                 >
-                  <StopCircle className="w-4 h-4 mr-2" />
+                  <StopCircle className="mr-2 h-4 w-4" />
                   Fechar
                 </DropdownMenuItem>
               )}
               <DropdownMenuItem
                 onClick={() => changeStatus(session.remoteJid, "delete")}
               >
-                <Delete className="w-4 h-4 mr-2" />
+                <Delete className="mr-2 h-4 w-4" />
                 Excluir
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -208,7 +212,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
         </Button>
       </DialogTrigger>
       <DialogContent
-        className="sm:max-w-[950px] overflow-y-auto"
+        className="overflow-y-auto sm:max-w-[950px]"
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
@@ -224,7 +228,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
               onChange={(event) =>
                 table.getColumn("remoteJid")?.setFilterValue(event.target.value)
               }
-              className="max-w-sm border border-gray-300 rounded-md"
+              className="max-w-sm rounded-md border border-gray-300"
             />
             <Button
               variant="outline"
@@ -245,7 +249,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
                           ? null
                           : flexRender(
                               header.column.columnDef.header,
-                              header.getContext()
+                              header.getContext(),
                             )}
                       </TableHead>
                     );
@@ -264,7 +268,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
                       <TableCell key={cell.id}>
                         {flexRender(
                           cell.column.columnDef.cell,
-                          cell.getContext()
+                          cell.getContext(),
                         )}
                       </TableCell>
                     ))}

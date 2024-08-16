@@ -1,27 +1,11 @@
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Separator } from "@/components/ui/separator";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Dify, Instance } from "@/types/evolution.types";
 import { useEffect, useState } from "react";
-import toastService from "@/utils/custom-toast.service";
+import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { z } from "zod";
+
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -31,10 +15,30 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useNavigate } from "react-router-dom";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { SessionsDify } from "./SessionsDify";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Switch } from "@/components/ui/switch";
+
 import { deleteDify, getDify, updateDify } from "@/services/dify.service";
+
+import { Dify, Instance } from "@/types/evolution.types";
+
+import { SessionsDify } from "./SessionsDify";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
@@ -158,15 +162,15 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
         };
 
         await updateDify(instance.name, storedToken, difyId, difyData);
-        toastService.success("Dify atualizado com sucesso.");
+        toast.success("Dify atualizado com sucesso.");
       } else {
         console.error("Token ou nome da instância não encontrados.");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Erro ao atualizar bot:", error);
-      toastService.error(
-        `Erro ao atualizar : ${error?.response?.data?.response?.message}`
+      toast.error(
+        `Erro ao atualizar : ${error?.response?.data?.response?.message}`,
       );
     }
   };
@@ -177,7 +181,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
 
       if (storedToken && instance && instance.name && difyId) {
         await deleteDify(instance.name, storedToken, difyId);
-        toastService.success("Dify excluído com sucesso.");
+        toast.success("Dify excluído com sucesso.");
 
         setOpenDeletionDialog(false);
         resetTable();
@@ -227,7 +231,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                       <FormLabel>Descrição</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Descrição"
                       />
                     </FormItem>
@@ -270,7 +274,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                       <FormLabel>URL da API</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="URL da API"
                       />
                     </FormItem>
@@ -284,7 +288,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                       <FormLabel>Chave da API</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Chave da API"
                         type="password"
                       />
@@ -357,7 +361,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                           <FormLabel>Gatilho</FormLabel>
                           <Input
                             {...field}
-                            className="border border-gray-600 w-full"
+                            className="w-full border border-gray-600"
                             placeholder="Gatilho"
                           />
                         </FormItem>
@@ -375,7 +379,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                       <FormLabel>Expira em (minutos)</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Expira em (minutos)"
                         type="number"
                       />
@@ -390,7 +394,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                       <FormLabel>Palavra Chave de Finalização</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Palavra Chave de Finalização"
                       />
                     </FormItem>
@@ -404,7 +408,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                       <FormLabel>Delay padrão da mensagem</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Delay padrão da mensagem"
                         type="number"
                       />
@@ -421,7 +425,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                       </FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Mensagem para tipo de mensagem desconhecida"
                       />
                     </FormItem>
@@ -492,7 +496,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                       <FormLabel>Tempo de espera</FormLabel>
                       <Input
                         {...field}
-                        className="border border-gray-600 w-full"
+                        className="w-full border border-gray-600"
                         placeholder="Tempo de espera"
                         type="number"
                       />
@@ -506,7 +510,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
               <SessionsDify difyId={difyId} />
             </div>
             <Button
-              className="bg-blue-400 hover:bg-blue-600 text-white"
+              className="bg-blue-400 text-white hover:bg-blue-600"
               onClick={onSubmit}
             >
               Atualizar
@@ -532,7 +536,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                   <DialogFooter>
                     <Button
                       variant="default"
-                      className="bg-red-400 hover:bg-red-600 text-white"
+                      className="bg-red-400 text-white hover:bg-red-600"
                       onClick={handleDelete}
                     >
                       Exluir

@@ -1,22 +1,25 @@
+import { createBrowserRouter } from "react-router-dom";
+
 import ProtectedRoute from "@/components/providers/protected-route";
 import PublicRoute from "@/components/providers/public-route";
+
 import { InstanceLayout } from "@/layout/InstanceLayout";
 import { MainLayout } from "@/layout/MainLayout";
+
 import Dashboard from "@/pages/Dashboard";
 import { Chat } from "@/pages/instance/Chat";
 import { Chatwoot } from "@/pages/instance/Chatwoot";
 import { DashboardInstance } from "@/pages/instance/DashboardInstance";
+import { Dify } from "@/pages/instance/Dify";
 import { Openai } from "@/pages/instance/Openai";
 import { Proxy } from "@/pages/instance/Proxy";
 import { Rabbitmq } from "@/pages/instance/Rabbitmq";
 import { Settings } from "@/pages/instance/Settings";
 import { Sqs } from "@/pages/instance/Sqs";
 import { Typebot } from "@/pages/instance/Typebot";
-import { Dify } from "@/pages/instance/Dify";
 import { Webhook } from "@/pages/instance/Webhook";
 import { Websocket } from "@/pages/instance/Websocket";
 import Login from "@/pages/Login";
-import { createBrowserRouter } from "react-router-dom";
 
 const router = createBrowserRouter([
   {

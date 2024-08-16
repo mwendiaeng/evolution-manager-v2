@@ -23,7 +23,7 @@ export const findChat = async (instanceName: string, remoteJid: string) => {
       headers: {
         "Content-Type": "application/json",
       },
-    }
+    },
   );
   return response.data;
 };

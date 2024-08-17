@@ -53,7 +53,7 @@ function Sidebar() {
 
   return (
     <>
-      <ul className="flex w-full flex-col gap-2 border-r border-border pr-2">
+      <ul className="flex w-full flex-col gap-2 border-r border-border px-2">
         {links.map((menu) => (
           <li key={menu.title}>
             {menu.children ? (

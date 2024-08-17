@@ -232,19 +232,27 @@ const FormSwitch = <
   required,
   className,
   helper,
+  reverse,
   ...props
 }: Omit<ControllerProps<TFieldValues, TName>, "render"> & {
   label?: string;
   helper?: string;
   className?: string;
   required?: boolean;
+  reverse?: boolean;
 }) => {
   return (
     <FormField
       {...props}
       name={name}
       render={({ field }) => (
-        <FormItem className={cn("flex", className)}>
+        <FormItem
+          className={cn(
+            "flex items-center gap-3",
+            reverse && "flex-row-reverse justify-end",
+            className,
+          )}
+        >
           <div className="flex flex-col gap-2">
             {label && (
               <FormLabel>

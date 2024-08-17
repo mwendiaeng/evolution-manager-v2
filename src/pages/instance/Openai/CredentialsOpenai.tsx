@@ -33,7 +33,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { FormField, FormItem, FormLabel } from "@/components/ui/form";
+import { FormInput } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import {
@@ -207,8 +207,8 @@ function CredentialsOpenai() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="mr-5 text-white">
-          <Lock /> Credenciais
+        <Button variant="secondary" size="sm">
+          <Lock size={16} className="mr-1" /> Credenciais
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -224,46 +224,21 @@ function CredentialsOpenai() {
             className="w-full space-y-6"
           >
             <div>
-              <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="name"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Nome</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Nome"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="apiKey"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Api Key</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Api Key"
-                        type="password"
-                      />
-                    </FormItem>
-                  )}
-                />
+              <div className="grid gap-3 md:grid-cols-2">
+                <FormInput name="name" label="Nome">
+                  <Input />
+                </FormInput>
+                <FormInput name="apiKey" label="API Key">
+                  <Input type="password" />
+                </FormInput>
               </div>
             </div>
             <DialogFooter>
-              <Button variant="default" type="submit">
-                Salvar
-              </Button>
+              <Button type="submit">Salvar</Button>
             </DialogFooter>
           </form>
         </FormProvider>
-        <Separator className="border border-gray-700" />
+        <Separator />
         <div>
           <Table>
             <TableHeader>
@@ -307,7 +282,7 @@ function CredentialsOpenai() {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    Nenhuma credencial cadastrada
                   </TableCell>
                 </TableRow>
               )}

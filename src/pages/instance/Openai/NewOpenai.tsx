@@ -15,22 +15,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { FormInput, FormSelect, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -180,17 +167,17 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
     form.reset();
   }
 
+  const botType = form.watch("botType");
+  const triggerType = form.watch("triggerType");
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="mr-5 text-white">
-          <PlusIcon /> Openai Bot
+        <Button size="sm">
+          <PlusIcon size={16} className="mr-1" /> Openai Bot
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
-        onCloseAutoFocus={onReset}
-      >
+      <DialogContent className="max-w-xl" onCloseAutoFocus={onReset}>
         <DialogHeader>
           <DialogTitle>Novo Openai Bot</DialogTitle>
         </DialogHeader>
@@ -201,430 +188,171 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
           >
             <div>
               <div className="space-y-4">
-                <FormField
-                  control={form.control}
-                  name="enabled"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">Ativo</FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="description"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Descrição</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Descrição"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                <FormSwitch name="enabled" label="Ativo" reverse />
+                <FormInput name="description" label="Descrição" required>
+                  <Input />
+                </FormInput>
+                <FormSelect
                   name="openaiCredsId"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Credencial</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="border border-gray-600">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione uma credencial" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border border-gray-600">
-                          {creds &&
-                            creds.length > 0 &&
-                            Array.isArray(creds) &&
-                            creds.map((cred) => (
-                              <SelectItem key={cred.id} value={`${cred.id}`}>
-                                {cred.name
-                                  ? cred.name
-                                  : cred.apiKey.substring(0, 15) + "..."}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
+                  label="Credencial"
+                  required
+                  options={creds
+                    .filter((cred) => !!cred.id)
+                    .map((cred) => ({
+                      label: cred.name
+                        ? cred.name
+                        : cred.apiKey.substring(0, 15) + "...",
+                      value: cred.id!,
+                    }))}
                 />
-                <h3 className="mb-4 text-lg font-medium">Openai Settings</h3>
-                <Separator className="border border-gray-700" />
-                <FormField
-                  control={form.control}
+                <div className="flex flex-col">
+                  <h3 className="my-4 text-lg font-medium">Openai Settings</h3>
+                  <Separator />
+                </div>
+                <FormSelect
                   name="botType"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Tipo de Bot</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="border border-gray-600">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione uma tipo de bot" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border border-gray-600">
-                          <SelectItem value="assistant">Assistente</SelectItem>
-                          <SelectItem value="chatCompletion">
-                            Chat Completion
-                          </SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
+                  label="Tipo de Bot"
+                  required
+                  options={[
+                    { label: "Assistente", value: "assistant" },
+                    { label: "Chat Completion", value: "chatCompletion" },
+                  ]}
                 />
-                {form.watch("botType") === "assistant" && (
+                {botType === "assistant" && (
                   <>
-                    <FormField
-                      control={form.control}
+                    <FormInput
                       name="assistantId"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>ID do Assistente</FormLabel>
-                          <Input
-                            {...field}
-                            className="w-full border border-gray-600"
-                            placeholder="ID do Assistente"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
+                      label="ID do Assistente"
+                      required
+                    >
+                      <Input />
+                    </FormInput>
+                    <FormInput
                       name="functionUrl"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>URL das Funções</FormLabel>
-                          <Input
-                            {...field}
-                            className="w-full border border-gray-600"
-                            placeholder="URL das Funções"
-                          />
-                        </FormItem>
-                      )}
-                    />
+                      label="URL das Funções"
+                      required
+                    >
+                      <Input />
+                    </FormInput>
                   </>
                 )}
-                {form.watch("botType") === "chatCompletion" && (
+                {botType === "chatCompletion" && (
                   <>
-                    <FormField
-                      control={form.control}
+                    <FormSelect
                       name="model"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Modelo de Linguagem</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl className="border border-gray-600">
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione um modelo" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="border border-gray-600">
-                              {models &&
-                                models.length > 0 &&
-                                Array.isArray(models) &&
-                                models.map((model) => (
-                                  <SelectItem key={model.id} value={model.id}>
-                                    {model.id}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
-                        </FormItem>
-                      )}
+                      label="Modelo de Linguagem"
+                      required
+                      options={models.map((model) => ({
+                        label: model.id,
+                        value: model.id,
+                      }))}
                     />
-                    <FormField
-                      control={form.control}
+                    <FormInput
                       name="systemMessages"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Mensagem do Sistem</FormLabel>
-                          <Textarea
-                            {...field}
-                            className="w-full border border-gray-600"
-                            placeholder="Mensagem do Sistem"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
+                      label="Mensagem do Sistema"
+                    >
+                      <Textarea />
+                    </FormInput>
+                    <FormInput
                       name="assistantMessages"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Mensagem do Asistente</FormLabel>
-                          <Textarea
-                            {...field}
-                            className="w-full border border-gray-600"
-                            placeholder="Mensagem do Asistente"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="userMessages"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Mensagem do Usuário</FormLabel>
-                          <Textarea
-                            {...field}
-                            className="w-full border border-gray-600"
-                            placeholder="Mensagem do Usuário"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="maxTokens"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Máximo de tokens</FormLabel>
-                          <Input
-                            {...field}
-                            className="w-full border border-gray-600"
-                            placeholder="Máximo de tokens"
-                            type="number"
-                          />
-                        </FormItem>
-                      )}
-                    />
+                      label="Mensagem do Assistente"
+                    >
+                      <Textarea />
+                    </FormInput>
+                    <FormInput name="userMessages" label="Mensagem do Usuário">
+                      <Textarea />
+                    </FormInput>
+
+                    <FormInput name="maxTokens" label="Máximo de Tokens">
+                      <Input type="number" />
+                    </FormInput>
                   </>
                 )}
-                <h3 className="mb-4 text-lg font-medium">Trigger Settings</h3>
-                <Separator className="border border-gray-700" />
-                <FormField
-                  control={form.control}
+
+                <div className="flex flex-col">
+                  <h3 className="my-4 text-lg font-medium">Trigger Settings</h3>
+                  <Separator />
+                </div>
+                <FormSelect
                   name="triggerType"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Tipo de gatilho</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="border border-gray-600">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione um tipo" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border border-gray-600">
-                          <SelectItem value="keyword">Palavra Chave</SelectItem>
-                          <SelectItem value="all">Todos</SelectItem>
-                          <SelectItem value="none">Nenhum</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
+                  label="Tipo de Gatilho"
+                  required
+                  options={[
+                    { label: "Palavra Chave", value: "keyword" },
+                    { label: "Todos", value: "all" },
+                    { label: "Nenhum", value: "none" },
+                  ]}
                 />
-                {form.watch("triggerType") === "keyword" && (
+                {triggerType === "keyword" && (
                   <>
-                    <FormField
-                      control={form.control}
+                    <FormSelect
                       name="triggerOperator"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Operador do gatilho</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl className="border border-gray-600">
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione um operador" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="border border-gray-600">
-                              <SelectItem value="contains">Contém</SelectItem>
-                              <SelectItem value="equals">Igual à</SelectItem>
-                              <SelectItem value="startsWith">
-                                Começa com
-                              </SelectItem>
-                              <SelectItem value="endsWith">
-                                Termina com
-                              </SelectItem>
-                              <SelectItem value="regex">Regex</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormItem>
-                      )}
+                      label="Operador do Gatilho"
+                      required
+                      options={[
+                        { label: "Contém", value: "contains" },
+                        { label: "Igual à", value: "equals" },
+                        { label: "Começa com", value: "startsWith" },
+                        { label: "Termina com", value: "endsWith" },
+                        { label: "Regex", value: "regex" },
+                      ]}
                     />
-                    <FormField
-                      control={form.control}
-                      name="triggerValue"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Gatilho</FormLabel>
-                          <Input
-                            {...field}
-                            className="w-full border border-gray-600"
-                            placeholder="Gatilho"
-                          />
-                        </FormItem>
-                      )}
-                    />
+                    <FormInput name="triggerValue" label="Gatilho" required>
+                      <Input />
+                    </FormInput>
                   </>
                 )}
-                <h3 className="mb-4 text-lg font-medium">Options Settings</h3>
-                <Separator className="border border-gray-700" />
-                <FormField
-                  control={form.control}
-                  name="expire"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Expira em (minutos)</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Expira em (minutos)"
-                        type="number"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+
+                <div className="flex flex-col">
+                  <h3 className="my-4 text-lg font-medium">Options Settings</h3>
+                  <Separator />
+                </div>
+
+                <FormInput name="expire" label="Expira em (minutos)">
+                  <Input type="number" />
+                </FormInput>
+
+                <FormInput
                   name="keywordFinish"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Palavra Chave de Finalização</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Palavra Chave de Finalização"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="delayMessage"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Delay padrão da mensagem</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Delay padrão da mensagem"
-                        type="number"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                  label="Palavra Chave de Finalização"
+                >
+                  <Input />
+                </FormInput>
+
+                <FormInput name="delayMessage" label="Delay padrão da mensagem">
+                  <Input type="number" />
+                </FormInput>
+
+                <FormInput
                   name="unknownMessage"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>
-                        Mensagem para tipo de mensagem desconhecida
-                      </FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Mensagem para tipo de mensagem desconhecida"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                  label="Mensagem para tipo de mensagem desconhecida"
+                >
+                  <Input />
+                </FormInput>
+
+                <FormSwitch
                   name="listeningFromMe"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Escuta mensagens enviadas por mim
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
+                  label="Escuta mensagens enviadas por mim"
+                  reverse
                 />
-                <FormField
-                  control={form.control}
+                <FormSwitch
                   name="stopBotFromMe"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Pausa o bot quando eu enviar uma mensagem
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
+                  label="Pausa o bot quando eu enviar uma mensagem"
+                  reverse
                 />
-                <FormField
-                  control={form.control}
+                <FormSwitch
                   name="keepOpen"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Mantem a sessão do bot aberta
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
+                  label="Mantem a sessão do bot aberta"
+                  reverse
                 />
-                <FormField
-                  control={form.control}
-                  name="debounceTime"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Tempo de espera</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Tempo de espera"
-                        type="number"
-                      />
-                    </FormItem>
-                  )}
-                />
+                <FormInput name="debounceTime" label="Tempo de espera">
+                  <Input type="number" />
+                </FormInput>
               </div>
             </div>
             <DialogFooter>
-              <Button disabled={updating} variant="default" type="submit">
-                Salvar
+              <Button disabled={updating} type="submit">
+                {updating ? "Salvando…" : "Salvar"}
               </Button>
             </DialogFooter>
           </form>

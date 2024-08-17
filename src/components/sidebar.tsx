@@ -52,74 +52,72 @@ function Sidebar() {
   );
 
   return (
-    <>
-      <ul className="flex w-full flex-col gap-2 border-r border-border px-2">
-        {links.map((menu) => (
-          <li key={menu.title}>
-            {menu.children ? (
-              <Collapsible defaultOpen={menu.isActive}>
-                <CollapsibleTrigger asChild>
-                  <Button
-                    className={cn(
-                      "flex w-full items-center justify-start gap-2",
-                      menu.isActive && "pointer-events-none",
-                    )}
-                    variant={menu.isActive ? "secondary" : "link"}
-                  >
-                    {menu.icon && <menu.icon size="15" />}
-                    <span>{menu.title}</span>
-                    <ChevronDown size="15" className="ml-auto" />
-                  </Button>
-                </CollapsibleTrigger>
-                <CollapsibleContent>
-                  <ul className="my-4 ml-6 flex flex-col gap-2 text-sm">
-                    {menu.children.map((child) => (
-                      <li key={child.id}>
-                        <button
-                          onClick={() => handleNavigate(child)}
-                          className={cn(
-                            child.isActive
-                              ? "text-foreground"
-                              : "text-muted-foreground",
-                          )}
-                        >
-                          <span className="nav-label">{child.title}</span>
-                        </button>
-                      </li>
-                    ))}
-                  </ul>
-                </CollapsibleContent>
-              </Collapsible>
-            ) : (
-              <Button
-                className={cn(
-                  "relative flex w-full items-center justify-start gap-2",
-                  menu.isActive && "pointer-events-none",
-                )}
-                variant={menu.isActive ? "secondary" : "link"}
-              >
-                {"link" in menu && (
-                  <a
-                    href={menu.link}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="absolute inset-0 h-full w-full"
-                  />
-                )}
-                {"path" in menu && (
-                  <Link
-                    to={`/manager/instance/${instance?.id}/${menu.path}`}
-                    className="absolute inset-0 h-full w-full"
-                  />
-                )}
-                {menu.icon && <menu.icon size="15" />}
-                <span>{menu.title}</span>
-              </Button>
-            )}
-          </li>
-        ))}
-      </ul>
-    </>
+    <ul className="flex h-full w-full flex-col gap-2 border-r border-border px-2">
+      {links.map((menu) => (
+        <li key={menu.title}>
+          {menu.children ? (
+            <Collapsible defaultOpen={menu.isActive}>
+              <CollapsibleTrigger asChild>
+                <Button
+                  className={cn(
+                    "flex w-full items-center justify-start gap-2",
+                    menu.isActive && "pointer-events-none",
+                  )}
+                  variant={menu.isActive ? "secondary" : "link"}
+                >
+                  {menu.icon && <menu.icon size="15" />}
+                  <span>{menu.title}</span>
+                  <ChevronDown size="15" className="ml-auto" />
+                </Button>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                <ul className="my-4 ml-6 flex flex-col gap-2 text-sm">
+                  {menu.children.map((child) => (
+                    <li key={child.id}>
+                      <button
+                        onClick={() => handleNavigate(child)}
+                        className={cn(
+                          child.isActive
+                            ? "text-foreground"
+                            : "text-muted-foreground",
+                        )}
+                      >
+                        <span className="nav-label">{child.title}</span>
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              </CollapsibleContent>
+            </Collapsible>
+          ) : (
+            <Button
+              className={cn(
+                "relative flex w-full items-center justify-start gap-2",
+                menu.isActive && "pointer-events-none",
+              )}
+              variant={menu.isActive ? "secondary" : "link"}
+            >
+              {"link" in menu && (
+                <a
+                  href={menu.link}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="absolute inset-0 h-full w-full"
+                />
+              )}
+              {"path" in menu && (
+                <Link
+                  to={`/manager/instance/${instance?.id}/${menu.path}`}
+                  className="absolute inset-0 h-full w-full"
+                />
+              )}
+              {menu.icon && <menu.icon size="15" />}
+              <span>{menu.title}</span>
+            </Button>
+          )}
+        </li>
+      ))}
+    </ul>
   );
 }
 

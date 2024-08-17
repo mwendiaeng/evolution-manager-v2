@@ -165,6 +165,7 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
                   options={[
                     { label: "Palavra Chave", value: "keyword" },
                     { label: "Todos", value: "all" },
+                    { label: "Avançado", value: "advanced" },
                     { label: "Nenhum", value: "none" },
                   ]}
                 />
@@ -186,6 +187,11 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
                       <Input />
                     </FormInput>
                   </>
+                )}
+                {triggerType === "advanced" && (
+                  <FormInput name="triggerValue" label="Condições" required>
+                    <Input />
+                  </FormInput>
                 )}
 
                 <div className="flex flex-col">

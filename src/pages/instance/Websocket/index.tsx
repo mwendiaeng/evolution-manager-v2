@@ -127,7 +127,7 @@ function Websocket() {
                 name="enabled"
                 label="Ativo"
                 className="w-full justify-between"
-                helper="Ativa ou desativa o webhook"
+                helper="Ativa ou desativa o websocket"
               />
 
               <FormField

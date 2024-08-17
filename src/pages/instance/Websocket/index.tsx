@@ -10,14 +10,16 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormSwitch,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
+
+import { cn } from "@/lib/utils";
 
 import { createWebsocket, fetchWebsocket } from "@/services/websocket.service";
 
@@ -111,74 +113,76 @@ function Websocket() {
   ];
 
   return (
-    <main className="main-content">
+    <>
       <Form {...form}>
-        <form className="w-full space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-6"
+        >
           <div>
             <h3 className="mb-1 text-lg font-medium">Websocket</h3>
-            <Separator className="my-4 border-t border-gray-600" />
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
+            <Separator className="my-4" />
+            <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
+              <FormSwitch
                 name="enabled"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">Ativo</FormLabel>
-                      <FormDescription>
-                        Ativa ou desativa o websocket
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+                label="Ativo"
+                className="w-full justify-between"
+                helper="Ativa ou desativa o webhook"
               />
+
               <FormField
                 control={form.control}
                 name="events"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Eventos</FormLabel>
+                    <FormLabel className="my-2 text-lg">Eventos</FormLabel>
                     <FormControl>
-                      <>
-                        {events.map((event) => (
-                          <div
-                            key={event}
-                            className="flex items-center justify-between rounded-lg border border-gray-600 p-4"
-                          >
-                            <span>{event}</span>
-                            <Switch
-                              checked={field.value.includes(event)}
-                              onCheckedChange={(checked) => {
-                                if (checked) {
-                                  field.onChange([...field.value, event]);
-                                } else {
-                                  field.onChange(
-                                    field.value.filter((e) => e !== event),
-                                  );
-                                }
-                              }}
-                            />
-                          </div>
-                        ))}
-                      </>
+                      <div className="flex flex-col gap-2 space-y-1 divide-y">
+                        {events
+                          .sort((a, b) => a.localeCompare(b))
+                          .map((event) => (
+                            <div
+                              key={event}
+                              className="flex items-center justify-between gap-3 pt-3"
+                            >
+                              <FormLabel
+                                className={cn(
+                                  field.value.includes(event)
+                                    ? "text-foreground"
+                                    : "text-muted-foreground",
+                                )}
+                              >
+                                {event}
+                              </FormLabel>
+                              <Switch
+                                checked={field.value.includes(event)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    field.onChange([...field.value, event]);
+                                  } else {
+                                    field.onChange(
+                                      field.value.filter((e) => e !== event),
+                                    );
+                                  }
+                                }}
+                              />
+                            </div>
+                          ))}
+                      </div>
                     </FormControl>
                   </FormItem>
                 )}
               />
             </div>
+            <div className="mx-4 flex justify-end pt-6">
+              <Button type="submit" disabled={loading}>
+                {loading ? "Salvando..." : "Salvar"}
+              </Button>
+            </div>
           </div>
-          <Button disabled={loading} onClick={onSubmit}>
-            {loading ? "Salvando..." : "Salvar"}
-          </Button>
         </form>
       </Form>
-    </main>
+    </>
   );
 }
 

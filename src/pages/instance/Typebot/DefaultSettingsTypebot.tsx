@@ -42,8 +42,8 @@ const formSchema = z.object({
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
   debounceTime: z.coerce.number(),
-  ignoreJids: z.array(z.string()),
-  typebotIdFallback: z.string().optional(),
+  ignoreJids: z.array(z.string()).default([]),
+  typebotIdFallback: z.union([z.null(), z.string()]).optional(),
 });
 type FormSchema = z.infer<typeof formSchema>;
 

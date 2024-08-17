@@ -42,8 +42,8 @@ const FormSchema = z.object({
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
   debounceTime: z.string(),
-  ignoreJids: z.array(z.string()),
-  difyIdFallback: z.string().optional(),
+  ignoreJids: z.array(z.string()).default([]),
+  difyIdFallback: z.union([z.null(), z.string()]).optional(),
 });
 
 const fetchData = async (

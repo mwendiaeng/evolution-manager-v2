@@ -35,7 +35,7 @@ const formSchema = z.object({
   importMessages: z.boolean(),
   daysLimitImportMessages: z.coerce.number(),
   autoCreate: z.boolean(),
-  ignoreJids: z.array(z.string()).optional(),
+  ignoreJids: z.array(z.string()).default([]),
 });
 type FormSchema = z.infer<typeof formSchema>;
 

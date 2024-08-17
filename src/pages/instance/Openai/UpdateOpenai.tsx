@@ -61,7 +61,7 @@ const formSchema = z.object({
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
   debounceTime: z.coerce.number(),
-  ignoreJids: z.array(z.string()),
+  ignoreJids: z.array(z.string()).default([]),
 });
 type FormSchema = z.infer<typeof formSchema>;
 

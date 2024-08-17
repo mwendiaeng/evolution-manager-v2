@@ -53,7 +53,7 @@ const FormSchema = z.object({
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
   debounceTime: z.string(),
-  ignoreJids: z.array(z.string()),
+  ignoreJids: z.array(z.string()).default([]),
 });
 
 function NewTypebot({ resetTable }: { resetTable: () => void }) {

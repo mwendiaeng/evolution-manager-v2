@@ -50,8 +50,8 @@ const FormSchema = z.object({
   keepOpen: z.boolean(),
   debounceTime: z.coerce.number(),
   speechToText: z.boolean(),
-  ignoreJids: z.array(z.string()),
-  openaiIdFallback: z.string().optional(),
+  ignoreJids: z.array(z.string()).default([]),
+  openaiIdFallback: z.union([z.null(), z.string()]).optional(),
 });
 
 const fetchData = async (

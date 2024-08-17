@@ -36,7 +36,7 @@ function Footer() {
   ];
 
   return (
-    <footer className="flex w-full items-center justify-between p-6 text-xs text-secondary-foreground">
+    <footer className="flex w-full flex-col items-center justify-between p-6 text-xs text-secondary-foreground sm:flex-row">
       <div className="flex items-center space-x-3 divide-x">
         {clientName && clientName !== "" && (
           <span>

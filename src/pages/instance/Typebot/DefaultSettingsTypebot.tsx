@@ -164,7 +164,8 @@ function DefaultSettingsTypebot() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
-          <Cog size={16} className="mr-1" /> Configurações Padrão
+          <Cog size={16} className="mr-1" />
+          <span className="hidden sm:inline">Configurações Padrão</span>
         </Button>
       </DialogTrigger>
       <DialogContent

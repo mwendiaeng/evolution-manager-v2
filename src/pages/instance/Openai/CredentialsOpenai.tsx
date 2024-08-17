@@ -208,7 +208,8 @@ function CredentialsOpenai() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
-          <Lock size={16} className="mr-1" /> Credenciais
+          <Lock size={16} className="mr-1" />
+          <span className="hidden md:inline">Credenciais</span>
         </Button>
       </DialogTrigger>
       <DialogContent

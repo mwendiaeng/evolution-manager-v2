@@ -175,7 +175,7 @@ function Dashboard() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <main className="grid grid-cols-[repeat(auto-fit,_minmax(20rem,_1fr))] gap-6">
+      <main className="grid grid-cols-[repeat(auto-fit,_minmax(18rem,_1fr))] gap-6">
         {instances &&
           instances.length > 0 &&
           Array.isArray(instances) &&

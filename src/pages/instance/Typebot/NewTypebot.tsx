@@ -133,7 +133,8 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default" className="mr-5 text-white">
-          <PlusIcon /> Typebot
+          <PlusIcon />
+          <span className="hidden sm:inline">Typebot</span>
         </Button>
       </DialogTrigger>
       <DialogContent

@@ -17,6 +17,8 @@ import { findOpenai } from "@/services/openai.service";
 
 import { Instance, OpenaiBot } from "@/types/evolution.types";
 
+import { useMediaQuery } from "@/utils/useMediaQuery";
+
 import { CredentialsOpenai } from "./CredentialsOpenai";
 import { DefaultSettingsOpenai } from "./DefaultSettingsOpenai";
 import { NewOpenai } from "./NewOpenai";
@@ -46,6 +48,7 @@ const fetchData = async (
 };
 
 function Openai() {
+  const isMD = useMediaQuery("(min-width: 768px)");
   const { instance } = useInstance();
 
   const { openaiBotId } = useParams<{ openaiBotId: string }>();
@@ -82,7 +85,7 @@ function Openai() {
         </div>
       </div>
       <Separator className="my-4" />
-      <ResizablePanelGroup direction="horizontal">
+      <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
         <ResizablePanel defaultSize={35} className="pr-4">
           <div className="flex flex-col gap-3">
             {loading ? (

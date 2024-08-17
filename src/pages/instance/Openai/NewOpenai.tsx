@@ -174,7 +174,8 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="sm">
-          <PlusIcon size={16} className="mr-1" /> Openai Bot
+          <PlusIcon size={16} className="mr-1" />
+          <span className="hidden sm:inline">Openai Bot</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-xl" onCloseAutoFocus={onReset}>

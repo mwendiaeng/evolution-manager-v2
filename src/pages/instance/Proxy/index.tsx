@@ -114,7 +114,7 @@ function Proxy() {
                   <Input type="number" />
                 </FormInput>
               </div>
-              <div className="grid gap-8 sm:grid-cols-2">
+              <div className="grid gap-4 sm:grid-cols-2 md:gap-8">
                 <FormInput name="username" label="Usuário">
                   <Input />
                 </FormInput>

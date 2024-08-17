@@ -17,6 +17,8 @@ import { findTypebot } from "@/services/typebot.service";
 
 import { Instance, Typebot as TypebotType } from "@/types/evolution.types";
 
+import { useMediaQuery } from "@/utils/useMediaQuery";
+
 import { DefaultSettingsTypebot } from "./DefaultSettingsTypebot";
 import { NewTypebot } from "./NewTypebot";
 import { SessionsTypebot } from "./SessionsTypebot";
@@ -45,6 +47,7 @@ const fetchData = async (
 };
 
 function Typebot() {
+  const isMD = useMediaQuery("(min-width: 768px)");
   const { instance } = useInstance();
 
   const { typebotId } = useParams<{ typebotId: string }>();
@@ -73,14 +76,14 @@ function Typebot() {
     <main className="pt-5">
       <div className="mb-1 flex items-center justify-between">
         <h3 className="text-lg font-medium">Typebots</h3>
-        <div className="flex items-center justify-end gap-2">
+        <div className="flex flex-wrap items-center justify-end gap-2">
           <SessionsTypebot />
           <DefaultSettingsTypebot />
           <NewTypebot resetTable={resetTable} />
         </div>
       </div>
       <Separator className="my-4" />
-      <ResizablePanelGroup direction="horizontal">
+      <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
         <ResizablePanel defaultSize={35} className="pr-4">
           <div className="flex flex-col gap-3">
             {loading ? (

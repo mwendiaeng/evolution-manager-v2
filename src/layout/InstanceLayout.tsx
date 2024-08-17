@@ -21,7 +21,7 @@ function InstanceLayout({ children }: LayoutProps) {
         <Header instanceId={instanceId} />
 
         <div className="flex min-h-[calc(100vh_-_56px)] flex-1 flex-col md:flex-row">
-          <ScrollArea className="mr-2 py-6 md:w-20 lg:w-64">
+          <ScrollArea className="mr-2 py-6 md:w-64">
             <div className="flex h-full">
               <Sidebar />
             </div>

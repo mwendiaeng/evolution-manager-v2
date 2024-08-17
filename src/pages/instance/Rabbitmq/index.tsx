@@ -144,6 +144,7 @@ function Rabbitmq() {
                             >
                               <FormLabel
                                 className={cn(
+                                  "break-all",
                                   field.value.includes(event)
                                     ? "text-foreground"
                                     : "text-muted-foreground",

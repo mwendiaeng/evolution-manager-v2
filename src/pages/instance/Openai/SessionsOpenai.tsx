@@ -216,7 +216,8 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
-          <ListCollapse size={16} className="mr-1" /> Sessões
+          <ListCollapse size={16} className="mr-1" />
+          <span className="hidden md:inline">Sessões</span>
         </Button>
       </DialogTrigger>
       <DialogContent

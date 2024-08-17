@@ -126,12 +126,16 @@ function DashboardInstance() {
         <Card>
           <CardHeader>
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <h2 className="text-lg font-semibold">{instance.name}</h2>
+              <h2 className="break-all text-lg font-semibold">
+                {instance.name}
+              </h2>
               <InstanceStatus status={instance.connectionStatus} />
             </div>
           </CardHeader>
           <CardContent className="flex flex-col items-start space-y-6">
-            <InstanceToken token={instance.token} />
+            <div className="flex w-full flex-1">
+              <InstanceToken token={instance.token} />
+            </div>
 
             {instance.profileName && (
               <div className="flex flex-1 gap-2">
@@ -210,7 +214,7 @@ function DashboardInstance() {
               </Alert>
             )}
           </CardContent>
-          <CardFooter className="flex items-center justify-end gap-3">
+          <CardFooter className="flex flex-wrap items-center justify-end gap-3">
             <Button
               variant="outline"
               className="refresh-button"

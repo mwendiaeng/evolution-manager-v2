@@ -17,6 +17,8 @@ import { findDify } from "@/services/dify.service";
 
 import { Dify as DifyType, Instance } from "@/types/evolution.types";
 
+import { useMediaQuery } from "@/utils/useMediaQuery";
+
 import { DefaultSettingsDify } from "./DefaultSettingsDify";
 import { NewDify } from "./NewDify";
 import { SessionsDify } from "./SessionsDify";
@@ -45,6 +47,7 @@ const fetchData = async (
 };
 
 function Dify() {
+  const isMD = useMediaQuery("(min-width: 768px)");
   const { instance } = useInstance();
 
   const { difyId } = useParams<{ difyId: string }>();
@@ -80,7 +83,7 @@ function Dify() {
         </div>
       </div>
       <Separator className="my-4" />
-      <ResizablePanelGroup direction="horizontal">
+      <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
         <ResizablePanel defaultSize={35} className="pr-4">
           <div className="flex flex-col gap-3">
             {loading ? (

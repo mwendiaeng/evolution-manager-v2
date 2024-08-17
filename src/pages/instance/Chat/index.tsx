@@ -17,9 +17,12 @@ import { findChats } from "@/services/chat.service";
 
 import { Chat as ChatType } from "@/types/evolution.types";
 
+import { useMediaQuery } from "@/utils/useMediaQuery";
+
 import { Messages } from "./messages";
 
 function Chat() {
+  const isMD = useMediaQuery("(min-width: 768px)");
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const [textareaHeight] = useState("auto");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -77,7 +80,7 @@ function Chat() {
   };
 
   return (
-    <ResizablePanelGroup direction="horizontal">
+    <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
       <ResizablePanel defaultSize={20}>
         <div className="hidden flex-col gap-2 bg-background text-foreground md:flex">
           <div className="sticky top-0 p-2">

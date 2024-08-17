@@ -258,11 +258,15 @@ const FormSwitch = <
           <div className="flex flex-col gap-2">
             {label && (
               <FormLabel>
-                {label}
-                {required && <span className="ml-2 text-rose-600">*</span>}
+                <p className="break-all">
+                  {label}
+                  {required && <span className="ml-2 text-rose-600">*</span>}
+                </p>
+                {helper && (
+                  <FormDescription className="mt-2">{helper}</FormDescription>
+                )}
               </FormLabel>
             )}
-            {helper && <FormDescription>{helper}</FormDescription>}
           </div>
           <FormControl>
             <Switch

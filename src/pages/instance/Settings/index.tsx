@@ -140,7 +140,7 @@ function Settings() {
   }
 
   return (
-    <main>
+    <>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -150,7 +150,7 @@ function Settings() {
             <h3 className="mb-1 text-lg font-medium">Comportamento</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y">
-              <div className="flex flex-col px-4 py-4">
+              <div className="flex flex-col p-4">
                 <FormSwitch
                   name="rejectCall"
                   label="Rejeitar Chamadas"
@@ -166,7 +166,7 @@ function Settings() {
                 )}
               </div>
               {fields.map((field) => (
-                <div className="flex px-4 py-4" key={field.name}>
+                <div className="flex p-4" key={field.name}>
                   <FormSwitch
                     name={field.name}
                     label={field.label}
@@ -184,7 +184,7 @@ function Settings() {
           </div>
         </form>
       </Form>
-    </main>
+    </>
   );
 }
 

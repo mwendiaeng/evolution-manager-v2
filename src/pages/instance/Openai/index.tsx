@@ -71,7 +71,7 @@ function Openai() {
   };
 
   return (
-    <main className="main-table pt-5">
+    <main className="pt-5">
       <div className="mb-1 flex items-center justify-between">
         <h3 className="text-lg font-medium">Openai Bots</h3>
         <div className="flex items-center justify-end gap-2">
@@ -104,7 +104,7 @@ function Openai() {
                     </Button>
                   ))
                 ) : (
-                  <p>Nenhum bot encontrado.</p>
+                  <Button variant="link">Nenhum bot encontrado.</Button>
                 )}
               </>
             )}

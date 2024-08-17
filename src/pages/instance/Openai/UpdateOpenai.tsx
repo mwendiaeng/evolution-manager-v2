@@ -458,23 +458,20 @@ function UpdateOpenai({
                       </DialogDescription>
                       <DialogFooter>
                         <Button
-                          variant="default"
-                          className="bg-red-400 text-white hover:bg-red-600"
-                          onClick={handleDelete}
-                        >
-                          Exluir
-                        </Button>
-                        <Button
+                          size="sm"
                           variant="outline"
                           onClick={() => setOpenDeletionDialog(false)}
                         >
                           Cancelar
                         </Button>
+                        <Button variant="destructive" onClick={handleDelete}>
+                          Exluir
+                        </Button>
                       </DialogFooter>
                     </DialogHeader>
                   </DialogContent>
                 </Dialog>
-                <Button onClick={onSubmit}>Atualizar</Button>
+                <Button type="submit">Atualizar</Button>
               </div>
             </div>
           </form>

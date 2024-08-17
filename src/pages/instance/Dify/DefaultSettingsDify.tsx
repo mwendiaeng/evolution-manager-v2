@@ -18,20 +18,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  FormControl,
   FormField,
-  FormItem,
-  FormLabel,
+  FormInput,
+  FormSelect,
+  FormSwitch,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
@@ -187,8 +179,8 @@ function DefaultSettingsDify() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="mr-5 text-white">
-          <Cog /> Configurações Padrão
+        <Button variant="secondary" size="sm">
+          <Cog size={16} className="mr-1" /> Configurações Padrão
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -199,170 +191,61 @@ function DefaultSettingsDify() {
           <DialogTitle>Configurações Padrão</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form className="w-full space-y-6">
+          <form
+            className="w-full space-y-6"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
             <div>
               <div className="space-y-4">
-                <FormField
-                  control={form.control}
+                <FormSelect
                   name="difyIdFallback"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Bot Fallback</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="border border-gray-600">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione um bot" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border border-gray-600">
-                          {bots &&
-                            bots.length > 0 &&
-                            Array.isArray(bots) &&
-                            bots.map((bot) => (
-                              <SelectItem key={bot.id} value={`${bot.id}`}>
-                                {bot.id}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
+                  label="Bot Fallback"
+                  options={
+                    bots
+                      ?.filter((bot) => !!bot.id)
+                      .map((bot) => ({
+                        label: bot.id!,
+                        value: bot.id!,
+                      })) ?? []
+                  }
                 />
-                <FormField
-                  control={form.control}
-                  name="expire"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Expira em (minutos)</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Expira em (minutos)"
-                        type="number"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                <FormInput name="expire" label="Expira em (minutos)">
+                  <Input type="number" />
+                </FormInput>
+                <FormInput
                   name="keywordFinish"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Palavra Chave de Finalização</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Palavra Chave de Finalização"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="delayMessage"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Delay padrão da mensagem</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Delay padrão da mensagem"
-                        type="number"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                  label="Palavra Chave de Finalização"
+                >
+                  <Input />
+                </FormInput>
+                <FormInput name="delayMessage" label="Delay padrão da mensagem">
+                  <Input type="number" />
+                </FormInput>
+                <FormInput
                   name="unknownMessage"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>
-                        Mensagem para tipo de mensagem desconhecida
-                      </FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Mensagem para tipo de mensagem desconhecida"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                  label="Mensagem para tipo de mensagem desconhecida"
+                >
+                  <Input />
+                </FormInput>
+                <FormSwitch
                   name="listeningFromMe"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Escuta mensagens enviadas por mim
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
+                  label="Escuta mensagens enviadas por mim"
+                  reverse
                 />
-                <FormField
-                  control={form.control}
+                <FormSwitch
                   name="stopBotFromMe"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Pausa o bot quando eu enviar uma mensagem
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
+                  label="Pausa o bot quando eu enviar uma mensagem"
+                  reverse
                 />
-                <FormField
-                  control={form.control}
+                <FormSwitch
                   name="keepOpen"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Mantem a sessão do bot aberta
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
+                  label="Mantem a sessão do bot aberta"
+                  reverse
                 />
-                <FormField
-                  control={form.control}
-                  name="debounceTime"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Tempo de espera</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Tempo de espera"
-                        type="number"
-                      />
-                    </FormItem>
-                  )}
-                />
+                <FormInput name="debounceTime" label="Tempo de espera">
+                  <Input type="number" />
+                </FormInput>
+
                 <FormField
                   control={form.control}
                   name="ignoreJids"
@@ -403,9 +286,7 @@ function DefaultSettingsDify() {
               </div>
             </div>
             <DialogFooter>
-              <Button variant="default" type="button" onClick={onSubmit}>
-                Salvar
-              </Button>
+              <Button type="submit">Salvar</Button>
             </DialogFooter>
           </form>
         </FormProvider>

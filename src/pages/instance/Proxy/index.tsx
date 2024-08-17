@@ -7,16 +7,8 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormInput, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
@@ -97,98 +89,51 @@ function Proxy() {
   };
 
   return (
-    <main className="main-content">
+    <>
       <Form {...form}>
-        <form className="w-full space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-6"
+        >
           <div>
             <h3 className="mb-1 text-lg font-medium">Proxy</h3>
-            <Separator className="my-4 border-t border-gray-600" />
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
+            <Separator className="my-4" />
+            <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
+              <FormSwitch
                 name="enabled"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">Ativo</FormLabel>
-                      <FormDescription>
-                        Ativa ou desativa o proxy
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+                label="Ativo"
+                className="w-full justify-between"
+                helper="Ativa ou desativa o proxy"
               />
-              <FormField
-                control={form.control}
-                name="host"
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    className="w-full border border-gray-600"
-                    placeholder="Host"
-                  />
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="port"
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    className="w-full border border-gray-600"
-                    placeholder="Porta"
-                    type="number"
-                  />
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="protocol"
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    className="w-full border border-gray-600"
-                    placeholder="Protocolo"
-                  />
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    className="w-full border border-gray-600"
-                    placeholder="Usuário"
-                  />
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    className="w-full border border-gray-600"
-                    placeholder="Senha"
-                    type="password"
-                  />
-                )}
-              />
+              <div className="grid gap-4 sm:grid-cols-[10rem_1fr_10rem] md:gap-8">
+                <FormInput name="protocol" label="Protocolo">
+                  <Input />
+                </FormInput>
+                <FormInput name="host" label="Host">
+                  <Input />
+                </FormInput>
+                <FormInput name="port" label="Porta">
+                  <Input type="number" />
+                </FormInput>
+              </div>
+              <div className="grid gap-8 sm:grid-cols-2">
+                <FormInput name="username" label="Usuário">
+                  <Input />
+                </FormInput>
+                <FormInput name="password" label="Senha">
+                  <Input type="password" />
+                </FormInput>
+              </div>
+              <div className="flex justify-end px-4 pt-6">
+                <Button type="submit" disabled={loading}>
+                  {loading ? "Salvando..." : "Salvar"}
+                </Button>
+              </div>
             </div>
           </div>
-          <Button disabled={loading} onClick={onSubmit}>
-            {loading ? "Salvando..." : "Salvar"}
-          </Button>
         </form>
       </Form>
-    </main>
+    </>
   );
 }
 

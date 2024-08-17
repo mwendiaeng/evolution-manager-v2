@@ -207,8 +207,8 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="mr-5 text-white">
-          <ListCollapse /> Sessões
+        <Button variant="secondary" size="sm">
+          <ListCollapse size={16} className="mr-1" /> Sessões
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -219,23 +219,18 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
           <DialogTitle>Sessões</DialogTitle>
         </DialogHeader>
         <div>
-          <div className="flex items-center justify-between p-5">
+          <div className="flex items-center justify-between gap-6 p-5">
             <Input
-              placeholder="Search by remoteJid..."
+              placeholder="Pesquise pelo remoteJid..."
               value={
                 (table.getColumn("remoteJid")?.getFilterValue() as string) ?? ""
               }
               onChange={(event) =>
                 table.getColumn("remoteJid")?.setFilterValue(event.target.value)
               }
-              className="max-w-sm rounded-md border border-gray-300"
             />
-            <Button
-              variant="outline"
-              onClick={onReset}
-              className="ml-2 text-white"
-            >
-              <RotateCcw />
+            <Button variant="outline" onClick={onReset} size="icon">
+              <RotateCcw size={16} />
             </Button>
           </div>
           <Table>
@@ -280,7 +275,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    Nenhuma sessão encontrada
                   </TableCell>
                 </TableRow>
               )}

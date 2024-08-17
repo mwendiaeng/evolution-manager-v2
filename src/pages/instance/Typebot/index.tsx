@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import "./style.css";
-
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
+import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   ResizableHandle,
@@ -71,68 +70,67 @@ function Typebot() {
   };
 
   return (
-    <main className="main-table pt-5">
-      <div className="flex items-center justify-between">
-        <h3 className="mb-1 ml-5 text-lg font-medium">Typebots</h3>
-        <div>
+    <main className="pt-5">
+      <div className="mb-1 flex items-center justify-between">
+        <h3 className="text-lg font-medium">Typebots</h3>
+        <div className="flex items-center justify-end gap-2">
           <SessionsTypebot />
           <DefaultSettingsTypebot />
           <NewTypebot resetTable={resetTable} />
         </div>
       </div>
-      <Separator className="mt-4 border border-black" />
+      <Separator className="my-4" />
       <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel defaultSize={35} className="p-5">
-          <div className="table">
+        <ResizablePanel defaultSize={35} className="pr-4">
+          <div className="flex flex-col gap-3">
             {loading ? (
               <LoadingSpinner />
             ) : (
               <>
                 {typebots && typebots.length > 0 && Array.isArray(typebots) ? (
-                  typebots.map((typebot) => (
-                    <div
-                      key={typebot.id}
-                      className={`table-item ${
-                        typebot.id === typebotId ? "selected" : ""
-                      }`}
-                      onClick={() => handleBotClick(`${typebot.id}`)}
+                  typebots.map((bot) => (
+                    <Button
+                      className="flex h-auto flex-col items-start justify-start"
+                      key={bot.id}
+                      onClick={() => handleBotClick(`${bot.id}`)}
+                      variant={typebotId === bot.id ? "secondary" : "outline"}
                     >
-                      {typebot.description ? (
+                      {bot.description ? (
                         <>
-                          <h3 className="table-item-title">
-                            {typebot.description}
-                          </h3>
-                          <p className="table-item-description">
-                            {typebot.url} - {typebot.typebot}
+                          <h4 className="text-base">{bot.description}</h4>
+                          <p className="text-wrap text-sm font-normal text-muted-foreground">
+                            {bot.url} - {bot.typebot}
                           </p>
                         </>
                       ) : (
                         <>
-                          <h3 className="table-item-title">{typebot.url}</h3>
-                          <p className="table-item-description">
-                            {typebot.typebot}
+                          <h4 className="text-base">{bot.url}</h4>
+                          <p className="text-wrap text-sm font-normal text-muted-foreground">
+                            {bot.typebot}
                           </p>
                         </>
                       )}
-                    </div>
+                    </Button>
                   ))
                 ) : (
-                  <p>Nenhum typebot encontrado.</p>
+                  <Button variant="link">Nenhum typebot encontrado.</Button>
                 )}
               </>
             )}
           </div>
         </ResizablePanel>
-        <ResizableHandle withHandle className="border border-black" />
-        <ResizablePanel className="">
-          {typebotId && (
-            <UpdateTypebot
-              typebotId={typebotId}
-              instance={instance}
-              resetTable={resetTable}
-            />
-          )}
-        </ResizablePanel>
+        {typebotId && (
+          <>
+            <ResizableHandle withHandle className="border border-black" />
+            <ResizablePanel className="">
+              <UpdateTypebot
+                typebotId={typebotId}
+                instance={instance}
+                resetTable={resetTable}
+              />
+            </ResizablePanel>
+          </>
+        )}
       </ResizablePanelGroup>
     </main>
   );

@@ -54,15 +54,15 @@ function Sidebar() {
   return (
     <ul className="flex h-full w-full flex-col gap-2 border-r border-border px-2">
       {links.map((menu) => (
-        <li key={menu.title}>
+        <li
+          key={menu.title}
+          className={"divider" in menu ? "mt-auto" : undefined}
+        >
           {menu.children ? (
             <Collapsible defaultOpen={menu.isActive}>
               <CollapsibleTrigger asChild>
                 <Button
-                  className={cn(
-                    "flex w-full items-center justify-start gap-2",
-                    menu.isActive && "pointer-events-none",
-                  )}
+                  className={cn("flex w-full items-center justify-start gap-2")}
                   variant={menu.isActive ? "secondary" : "link"}
                 >
                   {menu.icon && <menu.icon size="15" />}

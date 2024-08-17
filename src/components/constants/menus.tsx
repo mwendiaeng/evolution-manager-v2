@@ -1,13 +1,12 @@
 import {
   CircleHelp,
   Cog,
-  // Contact,
   FileQuestion,
+  IterationCcw,
   LayoutDashboard,
   LifeBuoy,
   MessageCircle,
-  // MessageCircleCode,
-  // Users,
+  Zap,
 } from "lucide-react";
 
 const Menus = [
@@ -17,30 +16,6 @@ const Menus = [
     icon: LayoutDashboard,
     path: "dashboard",
   },
-  // {
-  //   id: "contacts",
-  //   title: "Contatos",
-  //   icon: Contact,
-  //   path: "contact",
-  // },
-  // {
-  //   id: "groups",
-  //   title: "Grupos",
-  //   icon: Users,
-  //   path: "groups",
-  // },
-  // {
-  //   id: "chats",
-  //   title: "Conversas",
-  //   icon: MessageCircleCode,
-  //   path: "chats",
-  // },
-  // {
-  //   id: "messages",
-  //   title: "Mensagens",
-  //   icon: MessageCircle,
-  //   path: "messages",
-  // },
   {
     navLabel: true,
     title: "Configurações",
@@ -52,15 +27,16 @@ const Menus = [
         path: "settings",
       },
       {
-        id: "openai",
-        title: "OpenAI",
-        path: "openai",
+        id: "proxy",
+        title: "Proxy",
+        path: "proxy",
       },
-      {
-        id: "dify",
-        title: "Dify",
-        path: "dify",
-      },
+    ],
+  },
+  {
+    title: "Callbacks",
+    icon: IterationCcw,
+    children: [
       {
         id: "webhook",
         title: "Webhook",
@@ -81,6 +57,12 @@ const Menus = [
         title: "Amazon SQS",
         path: "sqs",
       },
+    ],
+  },
+  {
+    title: "Integrações",
+    icon: Zap,
+    children: [
       {
         id: "chatwoot",
         title: "Chatwoot",
@@ -92,18 +74,23 @@ const Menus = [
         path: "typebot",
       },
       {
-        id: "proxy",
-        title: "Proxy",
-        path: "proxy",
+        id: "openai",
+        title: "OpenAI",
+        path: "openai",
+      },
+      {
+        id: "dify",
+        title: "Dify",
+        path: "dify",
       },
     ],
   },
-
   {
     id: "documentation",
     title: "Documentação",
     icon: FileQuestion,
     link: "https://doc.evolution-api.com",
+    divider: true,
   },
   {
     id: "postman",

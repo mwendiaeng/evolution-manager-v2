@@ -9,11 +9,13 @@ import {
   FormProvider,
   useFormContext,
 } from "react-hook-form";
+import { WithContext as ReactTags, SEPARATORS } from "react-tag-input";
 
 import { Label } from "@/components/ui/label";
 
 import { cn } from "@/lib/utils";
 
+import { defaultInputClassNames } from "./input";
 import {
   Select,
   SelectContent,
@@ -330,6 +332,82 @@ const FormSelect = <
   );
 };
 
+const FormTags = <
+  TFieldValues extends FieldValues = FieldValues,
+  TName extends FieldPath<TFieldValues> = FieldPath<TFieldValues>,
+>({
+  name,
+  label,
+  helper,
+  required,
+  placeholder,
+  ...props
+}: Omit<ControllerProps<TFieldValues, TName>, "render"> & {
+  label?: string;
+  required?: boolean;
+  helper?: string;
+  placeholder?: string;
+}) => {
+  return (
+    <FormField
+      {...props}
+      name={name}
+      render={({ field }) => {
+        let tags: string[] = [];
+        if (Array.isArray(field.value)) tags = field.value;
+
+        return (
+          <FormItem>
+            {label && (
+              <FormLabel>
+                {label}
+                {required && <span className="ml-2 text-rose-600">*</span>}
+              </FormLabel>
+            )}
+            <FormControl>
+              <ReactTags
+                tags={tags.map((tag) => ({
+                  id: tag,
+                  text: tag,
+                  className: "",
+                }))}
+                handleDelete={(tagIndex) =>
+                  field.onChange(tags.filter((_t, idx) => idx !== tagIndex))
+                }
+                handleAddition={(tag) => field.onChange([...tags, tag.id])}
+                inputFieldPosition="bottom"
+                placeholder={placeholder}
+                autoFocus={false}
+                allowDragDrop={false}
+                separators={[
+                  SEPARATORS.ENTER,
+                  SEPARATORS.TAB,
+                  SEPARATORS.COMMA,
+                ]}
+                classNames={{
+                  tags: "tagsClass",
+                  tagInput: "tagInputClass",
+                  tagInputField: defaultInputClassNames,
+                  selected: "my-2 flex flex-wrap gap-2",
+                  tag: "flex items-center gap-2 px-2 py-1 bg-primary/30 rounded-md text-xs",
+                  remove: "[&>svg]:fill-rose-600 hover:[&>svg]:fill-rose-700",
+                  suggestions: "suggestionsClass",
+                  activeSuggestion: "activeSuggestionClass",
+                  editTagInput: "editTagInputClass",
+                  editTagInputField: "editTagInputFieldClass",
+                  clearAll: "clearAllClass",
+                }}
+              />
+            </FormControl>
+            {helper && <FormDescription>{helper}</FormDescription>}
+            <FormMessage />
+          </FormItem>
+        );
+      }}
+    />
+  );
+};
+
 export {
   useFormField,
   Form,
@@ -342,4 +420,5 @@ export {
   FormInput,
   FormSelect,
   FormSwitch,
+  FormTags,
 };

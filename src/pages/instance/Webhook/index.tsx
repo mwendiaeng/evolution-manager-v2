@@ -69,11 +69,8 @@ function Webhook() {
     loadWebhookData();
   }, [instance, form]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;
-
-    const data = form.getValues();
-
     setLoading(true);
     try {
       const webhookData: WebhookType = {

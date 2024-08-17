@@ -3,15 +3,13 @@ import "./style.css";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { Tag } from "node_modules/react-tag-input/types/components/SingleTag";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { WithContext as ReactTags } from "react-tag-input";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormField, FormInput, FormSwitch } from "@/components/ui/form";
+import { Form, FormInput, FormSwitch, FormTags } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -20,7 +18,7 @@ import { createChatwoot, fetchChatwoot } from "@/services/chatwoot.service";
 
 import { Chatwoot as ChatwootType } from "@/types/evolution.types";
 
-const FormSchema = z.object({
+const formSchema = z.object({
   enabled: z.boolean(),
   accountId: z.string(),
   token: z.string(),
@@ -35,26 +33,18 @@ const FormSchema = z.object({
   mergeBrazilContacts: z.boolean(),
   importContacts: z.boolean(),
   importMessages: z.boolean(),
-  daysLimitImportMessages: z.string(),
+  daysLimitImportMessages: z.coerce.number(),
   autoCreate: z.boolean(),
   ignoreJids: z.array(z.string()).optional(),
 });
+type FormSchema = z.infer<typeof formSchema>;
 
 function Chatwoot() {
   const { instance } = useInstance();
   const [, setLoading] = useState(false);
-  const [tags, setTags] = useState<Tag[]>([]);
 
-  const handleDeleteTag = (i: number) => {
-    setTags(tags.filter((_tag, index) => index !== i));
-  };
-
-  const handleAdditionTag = (tag: Tag) => {
-    setTags([...tags, tag]);
-  };
-
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       enabled: true,
       accountId: "",
@@ -70,7 +60,7 @@ function Chatwoot() {
       mergeBrazilContacts: true,
       importContacts: false,
       importMessages: false,
-      daysLimitImportMessages: "7",
+      daysLimitImportMessages: 7,
       autoCreate: true,
       ignoreJids: [],
     },
@@ -82,13 +72,7 @@ function Chatwoot() {
       setLoading(true);
       try {
         const data = await fetchChatwoot(instance.name, instance.token);
-        setTags(
-          data.ignoreJids?.map((jid: any) => ({
-            id: jid,
-            text: jid,
-            className: "",
-          })) || [],
-        );
+        form.setValue("ignoreJids", data.ignoreJids || []);
         form.reset(data);
       } catch (error) {
         console.error("Erro ao buscar dados do chatwoot:", error);
@@ -100,10 +84,8 @@ function Chatwoot() {
     loadChatwootData();
   }, [instance, form]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: FormSchema) => {
     if (!instance) return;
-
-    const data = form.getValues();
 
     setLoading(true);
     try {
@@ -122,7 +104,7 @@ function Chatwoot() {
         mergeBrazilContacts: data.mergeBrazilContacts,
         importContacts: data.importContacts,
         importMessages: data.importMessages,
-        daysLimitImportMessages: parseInt(data.daysLimitImportMessages, 10),
+        daysLimitImportMessages: data.daysLimitImportMessages,
         autoCreate: data.autoCreate,
         ignoreJids: data.ignoreJids,
       };
@@ -214,42 +196,10 @@ function Chatwoot() {
               >
                 <Input type="number" />
               </FormInput>
-              <FormField
-                control={form.control}
+              <FormTags
                 name="ignoreJids"
-                render={({ field }) => (
-                  <div className="pb-4">
-                    <label className="block text-sm font-medium">
-                      Ignorar JIDs
-                    </label>
-                    <ReactTags
-                      tags={tags}
-                      handleDelete={handleDeleteTag}
-                      handleAddition={handleAdditionTag}
-                      inputFieldPosition="bottom"
-                      placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
-                      autoFocus={false}
-                      classNames={{
-                        tags: "tagsClass",
-                        tagInput: "tagInputClass",
-                        tagInputField: "tagInputFieldClass",
-                        selected: "selectedClass",
-                        tag: "tagClass",
-                        remove: "removeClass",
-                        suggestions: "suggestionsClass",
-                        activeSuggestion: "activeSuggestionClass",
-                        editTagInput: "editTagInputClass",
-                        editTagInputField: "editTagInputFieldClass",
-                        clearAll: "clearAllClass",
-                      }}
-                    />
-                    <input
-                      type="hidden"
-                      {...field}
-                      value={tags.map((tag) => tag.text).join(",")}
-                    />
-                  </div>
-                )}
+                label="Ignorar JIDs"
+                placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
               />
               <FormSwitch
                 name="autoCreate"

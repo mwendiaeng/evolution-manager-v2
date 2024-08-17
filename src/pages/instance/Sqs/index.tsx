@@ -61,11 +61,8 @@ function Sqs() {
     loadSqsData();
   }, [instance, form]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;
-
-    const data = form.getValues();
-
     setLoading(true);
     try {
       const sqsData: SqsType = {

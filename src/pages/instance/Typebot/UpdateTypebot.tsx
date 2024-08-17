@@ -30,7 +30,7 @@ import { Instance, Typebot } from "@/types/evolution.types";
 
 import { SessionsTypebot } from "./SessionsTypebot";
 
-const FormSchema = z.object({
+const formSchema = z.object({
   enabled: z.boolean(),
   description: z.string(),
   url: z.string().url(),
@@ -38,16 +38,17 @@ const FormSchema = z.object({
   triggerType: z.string(),
   triggerOperator: z.string().optional(),
   triggerValue: z.string().optional(),
-  expire: z.string(),
+  expire: z.coerce.number(),
   keywordFinish: z.string(),
-  delayMessage: z.string(),
+  delayMessage: z.coerce.number(),
   unknownMessage: z.string(),
   listeningFromMe: z.boolean(),
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
-  debounceTime: z.string(),
+  debounceTime: z.coerce.number(),
   ignoreJids: z.array(z.string()),
 });
+type FormSchema = z.infer<typeof formSchema>;
 
 type UpdateTypebotProps = {
   typebotId: string;
@@ -66,8 +67,8 @@ function UpdateTypebot({
 
   const navigate = useNavigate();
 
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       enabled: true,
       description: "",
@@ -76,14 +77,14 @@ function UpdateTypebot({
       triggerType: "keyword",
       triggerOperator: "contains",
       triggerValue: "",
-      expire: "0",
+      expire: 0,
       keywordFinish: "",
-      delayMessage: "0",
+      delayMessage: 0,
       unknownMessage: "",
       listeningFromMe: false,
       stopBotFromMe: false,
       keepOpen: false,
-      debounceTime: "0",
+      debounceTime: 0,
       ignoreJids: [],
     },
   });
@@ -110,14 +111,14 @@ function UpdateTypebot({
             triggerType: data.triggerType,
             triggerOperator: data.triggerOperator,
             triggerValue: data.triggerValue,
-            expire: data.expire.toString(),
+            expire: data.expire,
             keywordFinish: data.keywordFinish,
-            delayMessage: data.delayMessage.toString(),
+            delayMessage: data.delayMessage,
             unknownMessage: data.unknownMessage,
             listeningFromMe: data.listeningFromMe,
             stopBotFromMe: data.stopBotFromMe,
             keepOpen: data.keepOpen,
-            debounceTime: data.debounceTime.toString(),
+            debounceTime: data.debounceTime,
           });
         } else {
           console.error("Token ou nome da instância não encontrados.");
@@ -132,10 +133,8 @@ function UpdateTypebot({
     fetchData();
   }, [form, instance, typebotId]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: FormSchema) => {
     try {
-      const data: z.infer<typeof FormSchema> = form.getValues();
-
       const storedToken = localStorage.getItem("token");
 
       if (storedToken && instance && instance.name && typebotId) {
@@ -147,14 +146,14 @@ function UpdateTypebot({
           triggerType: data.triggerType,
           triggerOperator: data.triggerOperator || "",
           triggerValue: data.triggerValue || "",
-          expire: parseInt(data.expire, 10),
+          expire: data.expire,
           keywordFinish: data.keywordFinish,
-          delayMessage: parseInt(data.delayMessage, 10),
+          delayMessage: data.delayMessage,
           unknownMessage: data.unknownMessage,
           listeningFromMe: data.listeningFromMe,
           stopBotFromMe: data.stopBotFromMe,
           keepOpen: data.keepOpen,
-          debounceTime: parseInt(data.debounceTime, 10),
+          debounceTime: data.debounceTime,
         };
 
         await updateTypebot(instance.name, storedToken, typebotId, typebotData);

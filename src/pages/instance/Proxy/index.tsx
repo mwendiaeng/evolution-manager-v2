@@ -16,7 +16,7 @@ import { createProxy, fetchProxy } from "@/services/proxy.service";
 
 import { Proxy as ProxyType } from "@/types/evolution.types";
 
-const FormSchema = z.object({
+const formSchema = z.object({
   enabled: z.boolean(),
   host: z.string(),
   port: z.string(),
@@ -25,14 +25,14 @@ const FormSchema = z.object({
   password: z.string(),
 });
 
-type FormSchemaType = z.infer<typeof FormSchema>;
+type FormSchemaType = z.infer<typeof formSchema>;
 
 function Proxy() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
   const form = useForm<FormSchemaType>({
-    resolver: zodResolver(FormSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
       enabled: false,
       host: "",
@@ -60,10 +60,8 @@ function Proxy() {
     loadProxyData();
   }, [instance, form]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;
-
-    const data = form.getValues();
 
     setLoading(true);
     try {

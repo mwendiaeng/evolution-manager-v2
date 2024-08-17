@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Cog } from "lucide-react";
-import { Tag } from "node_modules/react-tag-input/types/components/SingleTag";
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { WithContext as ReactTags } from "react-tag-input";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -18,10 +16,10 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  FormField,
   FormInput,
   FormSelect,
   FormSwitch,
+  FormTags,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -35,18 +33,19 @@ import {
 
 import { Instance, Typebot, TypebotSettings } from "@/types/evolution.types";
 
-const FormSchema = z.object({
-  expire: z.string(),
+const formSchema = z.object({
+  expire: z.coerce.number(),
   keywordFinish: z.string(),
-  delayMessage: z.string(),
+  delayMessage: z.coerce.number(),
   unknownMessage: z.string(),
   listeningFromMe: z.boolean(),
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
-  debounceTime: z.string(),
+  debounceTime: z.coerce.number(),
   ignoreJids: z.array(z.string()),
   typebotIdFallback: z.string().optional(),
 });
+type FormSchema = z.infer<typeof formSchema>;
 
 const fetchData = async (
   instance: Instance | null,
@@ -81,30 +80,21 @@ const fetchData = async (
 function DefaultSettingsTypebot() {
   const { instance } = useInstance();
 
-  const [tags, setTags] = useState<Tag[]>([]);
   const [settings, setSettings] = useState<TypebotSettings>();
   const [typebots, setTypebots] = useState<Typebot[]>([]);
   const [open, setOpen] = useState(false);
 
-  const handleDeleteTag = (i: number) => {
-    setTags(tags.filter((_tag, index) => index !== i));
-  };
-
-  const handleAdditionTag = (tag: Tag) => {
-    setTags([...tags, tag]);
-  };
-
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      expire: "0",
+      expire: 0,
       keywordFinish: "#SAIR",
-      delayMessage: "1000",
+      delayMessage: 1000,
       unknownMessage: "Mensagem não reconhecida",
       listeningFromMe: false,
       stopBotFromMe: false,
       keepOpen: false,
-      debounceTime: "0",
+      debounceTime: 0,
       ignoreJids: [],
       typebotIdFallback: undefined,
     },
@@ -117,51 +107,38 @@ function DefaultSettingsTypebot() {
   useEffect(() => {
     if (settings) {
       form.reset({
-        expire: settings?.expire ? settings.expire.toString() : "0",
+        expire: settings?.expire ?? 0,
         keywordFinish: settings.keywordFinish,
-        delayMessage: settings.delayMessage
-          ? settings.delayMessage.toString()
-          : "0",
+        delayMessage: settings.delayMessage ?? 0,
         unknownMessage: settings.unknownMessage,
         listeningFromMe: settings.listeningFromMe,
         stopBotFromMe: settings.stopBotFromMe,
         keepOpen: settings.keepOpen,
-        debounceTime: settings.debounceTime
-          ? settings.debounceTime.toString()
-          : "0",
+        debounceTime: settings.debounceTime ?? 0,
         ignoreJids: settings.ignoreJids,
         typebotIdFallback: settings.typebotIdFallback,
       });
-      setTags(
-        settings.ignoreJids?.map((jid) => ({
-          id: jid,
-          text: jid,
-          className: "",
-        })) || [],
-      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings]);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (data: FormSchema) => {
     try {
-      const data: z.infer<typeof FormSchema> = form.getValues();
-
       if (!instance || !instance.name) {
         throw new Error("Nome da instância não encontrado.");
       }
 
       const settingsData: TypebotSettings = {
-        expire: parseInt(data.expire),
+        expire: data.expire,
         keywordFinish: data.keywordFinish,
-        delayMessage: parseInt(data.delayMessage),
+        delayMessage: data.delayMessage,
         unknownMessage: data.unknownMessage,
         listeningFromMe: data.listeningFromMe,
         stopBotFromMe: data.stopBotFromMe,
         keepOpen: data.keepOpen,
-        debounceTime: parseInt(data.debounceTime),
+        debounceTime: data.debounceTime,
         typebotIdFallback: data.typebotIdFallback || undefined,
-        ignoreJids: tags.map((tag) => tag.text),
+        ignoreJids: data.ignoreJids,
       };
 
       await setDefaultSettingsTypebot(
@@ -253,42 +230,10 @@ function DefaultSettingsTypebot() {
                   <Input type="number" />
                 </FormInput>
 
-                <FormField
-                  control={form.control}
+                <FormTags
                   name="ignoreJids"
-                  render={({ field }) => (
-                    <div className="pb-4">
-                      <label className="block text-sm font-medium">
-                        Ignorar JIDs
-                      </label>
-                      <ReactTags
-                        tags={tags}
-                        handleDelete={handleDeleteTag}
-                        handleAddition={handleAdditionTag}
-                        inputFieldPosition="bottom"
-                        placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
-                        autoFocus={false}
-                        classNames={{
-                          tags: "tagsClass",
-                          tagInput: "tagInputClass",
-                          tagInputField: "tagInputFieldClass",
-                          selected: "selectedClass",
-                          tag: "tagClass",
-                          remove: "removeClass",
-                          suggestions: "suggestionsClass",
-                          activeSuggestion: "activeSuggestionClass",
-                          editTagInput: "editTagInputClass",
-                          editTagInputField: "editTagInputFieldClass",
-                          clearAll: "clearAllClass",
-                        }}
-                      />
-                      <input
-                        type="hidden"
-                        {...field}
-                        value={tags.map((tag) => tag.text).join(",")}
-                      />
-                    </div>
-                  )}
+                  label="Ignorar JIDs"
+                  placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
                 />
               </div>
             </div>

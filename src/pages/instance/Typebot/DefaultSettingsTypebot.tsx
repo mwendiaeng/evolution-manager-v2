@@ -1,10 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Cog } from "lucide-react";
-import { Tag } from "node_modules/react-tag-input/types/components/SingleTag";
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
-import { WithContext as ReactTags } from "react-tag-input";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -18,20 +16,12 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
+  FormInput,
+  FormSelect,
+  FormSwitch,
+  FormTags,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
@@ -43,18 +33,19 @@ import {
 
 import { Instance, Typebot, TypebotSettings } from "@/types/evolution.types";
 
-const FormSchema = z.object({
-  expire: z.string(),
+const formSchema = z.object({
+  expire: z.coerce.number(),
   keywordFinish: z.string(),
-  delayMessage: z.string(),
+  delayMessage: z.coerce.number(),
   unknownMessage: z.string(),
   listeningFromMe: z.boolean(),
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
-  debounceTime: z.string(),
-  ignoreJids: z.array(z.string()),
-  typebotIdFallback: z.string().optional(),
+  debounceTime: z.coerce.number(),
+  ignoreJids: z.array(z.string()).default([]),
+  typebotIdFallback: z.union([z.null(), z.string()]).optional(),
 });
+type FormSchema = z.infer<typeof formSchema>;
 
 const fetchData = async (
   instance: Instance | null,
@@ -89,30 +80,21 @@ const fetchData = async (
 function DefaultSettingsTypebot() {
   const { instance } = useInstance();
 
-  const [tags, setTags] = useState<Tag[]>([]);
   const [settings, setSettings] = useState<TypebotSettings>();
   const [typebots, setTypebots] = useState<Typebot[]>([]);
   const [open, setOpen] = useState(false);
 
-  const handleDeleteTag = (i: number) => {
-    setTags(tags.filter((_tag, index) => index !== i));
-  };
-
-  const handleAdditionTag = (tag: Tag) => {
-    setTags([...tags, tag]);
-  };
-
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
+  const form = useForm<FormSchema>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      expire: "0",
+      expire: 0,
       keywordFinish: "#SAIR",
-      delayMessage: "1000",
+      delayMessage: 1000,
       unknownMessage: "Mensagem não reconhecida",
       listeningFromMe: false,
       stopBotFromMe: false,
       keepOpen: false,
-      debounceTime: "0",
+      debounceTime: 0,
       ignoreJids: [],
       typebotIdFallback: undefined,
     },
@@ -125,51 +107,38 @@ function DefaultSettingsTypebot() {
   useEffect(() => {
     if (settings) {
       form.reset({
-        expire: settings?.expire ? settings.expire.toString() : "0",
+        expire: settings?.expire ?? 0,
         keywordFinish: settings.keywordFinish,
-        delayMessage: settings.delayMessage
-          ? settings.delayMessage.toString()
-          : "0",
+        delayMessage: settings.delayMessage ?? 0,
         unknownMessage: settings.unknownMessage,
         listeningFromMe: settings.listeningFromMe,
         stopBotFromMe: settings.stopBotFromMe,
         keepOpen: settings.keepOpen,
-        debounceTime: settings.debounceTime
-          ? settings.debounceTime.toString()
-          : "0",
+        debounceTime: settings.debounceTime ?? 0,
         ignoreJids: settings.ignoreJids,
         typebotIdFallback: settings.typebotIdFallback,
       });
-      setTags(
-        settings.ignoreJids?.map((jid) => ({
-          id: jid,
-          text: jid,
-          className: "",
-        })) || [],
-      );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings]);
 
-  const onSubmit = async () => {
+  const handleSubmit = async (data: FormSchema) => {
     try {
-      const data: z.infer<typeof FormSchema> = form.getValues();
-
       if (!instance || !instance.name) {
         throw new Error("Nome da instância não encontrado.");
       }
 
       const settingsData: TypebotSettings = {
-        expire: parseInt(data.expire),
+        expire: data.expire,
         keywordFinish: data.keywordFinish,
-        delayMessage: parseInt(data.delayMessage),
+        delayMessage: data.delayMessage,
         unknownMessage: data.unknownMessage,
         listeningFromMe: data.listeningFromMe,
         stopBotFromMe: data.stopBotFromMe,
         keepOpen: data.keepOpen,
-        debounceTime: parseInt(data.debounceTime),
+        debounceTime: data.debounceTime,
         typebotIdFallback: data.typebotIdFallback || undefined,
-        ignoreJids: tags.map((tag) => tag.text),
+        ignoreJids: data.ignoreJids,
       };
 
       await setDefaultSettingsTypebot(
@@ -194,8 +163,9 @@ function DefaultSettingsTypebot() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="mr-5 text-white">
-          <Cog /> Configurações Padrão
+        <Button variant="secondary" size="sm">
+          <Cog size={16} className="mr-1" />
+          <span className="hidden sm:inline">Configurações Padrão</span>
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -206,216 +176,70 @@ function DefaultSettingsTypebot() {
           <DialogTitle>Configurações Padrão</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form className="w-full space-y-6">
+          <form
+            className="w-full space-y-6"
+            onSubmit={form.handleSubmit(handleSubmit)}
+          >
             <div>
               <div className="space-y-4">
-                <FormField
-                  control={form.control}
+                <FormSelect
                   name="typebotIdFallback"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Typebot Fallback</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value}
-                      >
-                        <FormControl className="border border-gray-600">
-                          <SelectTrigger>
-                            <SelectValue placeholder="Selecione um typebot" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent className="border border-gray-600">
-                          {typebots &&
-                            typebots.length > 0 &&
-                            Array.isArray(typebots) &&
-                            typebots.map((typebot) => (
-                              <SelectItem
-                                key={typebot.id}
-                                value={`${typebot.id}`}
-                              >
-                                {typebot.typebot}
-                              </SelectItem>
-                            ))}
-                        </SelectContent>
-                      </Select>
-                    </FormItem>
-                  )}
+                  label="Typebot Fallback"
+                  options={
+                    typebots
+                      ?.filter((typebot) => !!typebot.id)
+                      .map((typebot) => ({
+                        label: typebot.typebot!,
+                        value: typebot.id!,
+                      })) ?? []
+                  }
                 />
-                <FormField
-                  control={form.control}
-                  name="expire"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Expira em (minutos)</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Expira em (minutos)"
-                        type="number"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                <FormInput name="expire" label="Expira em (minutos)">
+                  <Input type="number" />
+                </FormInput>
+                <FormInput
                   name="keywordFinish"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Palavra Chave de Finalização</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Palavra Chave de Finalização"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="delayMessage"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Delay padrão da mensagem</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Delay padrão da mensagem"
-                        type="number"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                  label="Palavra Chave de Finalização"
+                >
+                  <Input />
+                </FormInput>
+                <FormInput name="delayMessage" label="Delay padrão da mensagem">
+                  <Input type="number" />
+                </FormInput>
+                <FormInput
                   name="unknownMessage"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>
-                        Mensagem para tipo de mensagem desconhecida
-                      </FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Mensagem para tipo de mensagem desconhecida"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                  label="Mensagem para tipo de mensagem desconhecida"
+                >
+                  <Input />
+                </FormInput>
+                <FormSwitch
                   name="listeningFromMe"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Escuta mensagens enviadas por mim
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
+                  label="Escuta mensagens enviadas por mim"
+                  reverse
                 />
-                <FormField
-                  control={form.control}
+                <FormSwitch
                   name="stopBotFromMe"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Pausa o bot quando eu enviar uma mensagem
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
+                  label="Pausa o bot quando eu enviar uma mensagem"
+                  reverse
                 />
-                <FormField
-                  control={form.control}
+                <FormSwitch
                   name="keepOpen"
-                  render={({ field }) => (
-                    <FormItem className="flex flex-row items-center justify-start py-4">
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                      <div className="ml-4 space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Mantem a sessão do bot aberta
-                        </FormLabel>
-                      </div>
-                    </FormItem>
-                  )}
+                  label="Mantem a sessão do bot aberta"
+                  reverse
                 />
-                <FormField
-                  control={form.control}
-                  name="debounceTime"
-                  render={({ field }) => (
-                    <FormItem className="pb-4">
-                      <FormLabel>Tempo de espera</FormLabel>
-                      <Input
-                        {...field}
-                        className="w-full border border-gray-600"
-                        placeholder="Tempo de espera"
-                        type="number"
-                      />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
+                <FormInput name="debounceTime" label="Tempo de espera">
+                  <Input type="number" />
+                </FormInput>
+
+                <FormTags
                   name="ignoreJids"
-                  render={({ field }) => (
-                    <div className="pb-4">
-                      <label className="block text-sm font-medium">
-                        Ignorar JIDs
-                      </label>
-                      <ReactTags
-                        tags={tags}
-                        handleDelete={handleDeleteTag}
-                        handleAddition={handleAdditionTag}
-                        inputFieldPosition="bottom"
-                        placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
-                        autoFocus={false}
-                        classNames={{
-                          tags: "tagsClass",
-                          tagInput: "tagInputClass",
-                          tagInputField: "tagInputFieldClass",
-                          selected: "selectedClass",
-                          tag: "tagClass",
-                          remove: "removeClass",
-                          suggestions: "suggestionsClass",
-                          activeSuggestion: "activeSuggestionClass",
-                          editTagInput: "editTagInputClass",
-                          editTagInputField: "editTagInputFieldClass",
-                          clearAll: "clearAllClass",
-                        }}
-                      />
-                      <input
-                        type="hidden"
-                        {...field}
-                        value={tags.map((tag) => tag.text).join(",")}
-                      />
-                    </div>
-                  )}
+                  label="Ignorar JIDs"
+                  placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button variant="default" type="button" onClick={onSubmit}>
-                Salvar
-              </Button>
+              <Button type="submit">Salvar</Button>
             </DialogFooter>
           </form>
         </FormProvider>

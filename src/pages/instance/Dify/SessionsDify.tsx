@@ -195,8 +195,9 @@ function SessionsDify({ difyId }: { difyId?: string }) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="default" className="mr-5 text-white">
-          <ListCollapse /> Sessões
+        <Button variant="secondary" size="sm">
+          <ListCollapse size={16} className="mr-1" />
+          <span className="hidden sm:inline">Sessões</span>
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -207,22 +208,17 @@ function SessionsDify({ difyId }: { difyId?: string }) {
           <DialogTitle>Sessões</DialogTitle>
         </DialogHeader>
         <div>
-          <div className="flex items-center justify-between p-5">
+          <div className="flex items-center justify-between gap-6 p-5">
             <Input
-              placeholder="Search by remoteJid..."
+              placeholder="Pesquise pelo remoteJid..."
               value={
                 (table.getColumn("remoteJid")?.getFilterValue() as string) ?? ""
               }
               onChange={(event) =>
                 table.getColumn("remoteJid")?.setFilterValue(event.target.value)
               }
-              className="max-w-sm rounded-md border border-gray-300"
             />
-            <Button
-              variant="outline"
-              onClick={onReset}
-              className="ml-2 text-white"
-            >
+            <Button variant="outline" onClick={onReset} size="icon">
               <RotateCcw />
             </Button>
           </div>
@@ -268,7 +264,7 @@ function SessionsDify({ difyId }: { difyId?: string }) {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    No results.
+                    Nenhuma sessão encontrada
                   </TableCell>
                 </TableRow>
               )}

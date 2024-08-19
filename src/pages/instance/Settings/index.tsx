@@ -1,21 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormInput, FormSwitch } from "@/components/ui/form";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { Switch } from "@/components/ui/switch";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -112,12 +104,43 @@ function Settings() {
     }
   };
 
+  const fields = [
+    {
+      name: "groupsIgnore",
+      label: "Ignorar Grupos",
+      description: "Ignora eventos de grupos no Whatsapp",
+    },
+    {
+      name: "alwaysOnline",
+      label: "Sempre Online",
+      description: "Mantém o Whatsapp sempre online",
+    },
+    {
+      name: "readMessages",
+      label: "Visualizar Mensagens",
+      description: "Visualiza mensagens automaticamente",
+    },
+    {
+      name: "syncFullHistory",
+      label: "Sincronizar Histórico Completo",
+      description:
+        "Sincroniza o histórico completo de mensagens ao ler o qrcode",
+    },
+    {
+      name: "readStatus",
+      label: "Visualizar Status",
+      description: "Recebe eventos dos broadcasts e visualiza todos os status",
+    },
+  ];
+
+  const isRejectCall = form.watch("rejectCall");
+
   if (loading) {
     return <LoadingSpinner />;
   }
 
   return (
-    <main className="main-content">
+    <>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
@@ -125,165 +148,43 @@ function Settings() {
         >
           <div>
             <h3 className="mb-1 text-lg font-medium">Comportamento</h3>
-            <Separator className="my-4 border-t border-gray-600" />
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="rejectCall"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col items-start rounded-lg border border-gray-600 p-4">
-                    <div className="flex w-full flex-row items-center justify-between">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Rejeitar Chamadas
-                        </FormLabel>
-                        <FormDescription>
-                          Rejeitas chamadas de voz e vídeo no Whatsapp
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </div>
-                    {field.value && (
-                      <div className="mt-4 w-full">
-                        <FormField
-                          control={form.control}
-                          name="msgCall"
-                          render={({ field }) => (
-                            <FormControl>
-                              <Textarea
-                                {...field}
-                                placeholder="Mensagem ao rejeitar chamada"
-                                className="w-full border border-gray-600"
-                              />
-                            </FormControl>
-                          )}
-                        />
-                      </div>
-                    )}
-                  </FormItem>
+            <Separator className="my-4" />
+            <div className="mx-4 space-y-2 divide-y">
+              <div className="flex flex-col p-4">
+                <FormSwitch
+                  name="rejectCall"
+                  label="Rejeitar Chamadas"
+                  className="w-full justify-between"
+                  helper="Rejeitas chamadas de voz e vídeo no Whatsapp"
+                />
+                {isRejectCall && (
+                  <div className="mr-16 mt-2">
+                    <FormInput name="msgCall">
+                      <Textarea placeholder="Mensagem ao rejeitar chamada" />
+                    </FormInput>
+                  </div>
                 )}
-              />
-              <FormField
-                control={form.control}
-                name="groupsIgnore"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">Ignorar Grupos</FormLabel>
-                      <FormDescription>
-                        Ignora eventos de grupos no Whatsapp
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="alwaysOnline"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">Sempre Online</FormLabel>
-                      <FormDescription>
-                        Mantém o Whatsapp sempre online
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="readMessages"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">
-                        Visualizar Mensagens
-                      </FormLabel>
-                      <FormDescription>
-                        Visualiza mensagens automaticamente
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="syncFullHistory"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">
-                        Sincronizar Histórico Completo
-                      </FormLabel>
-                      <FormDescription>
-                        Sincroniza o histórico completo de mensagens ao ler o
-                        qrcode
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="readStatus"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">
-                        Visualizar Status
-                      </FormLabel>
-                      <FormDescription>
-                        Recebe eventos dos broadcasts e visualiza todos os
-                        status
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              </div>
+              {fields.map((field) => (
+                <div className="flex p-4" key={field.name}>
+                  <FormSwitch
+                    name={field.name}
+                    label={field.label}
+                    className="w-full justify-between"
+                    helper={field.description}
+                  />
+                </div>
+              ))}
+              <div className="flex justify-end pt-6">
+                <Button type="submit" disabled={updating}>
+                  {updating ? "Salvando..." : "Salvar"}
+                </Button>
+              </div>
             </div>
           </div>
-          <Button type="submit" disabled={updating}>
-            {updating ? "Salvando..." : "Salvar"}
-          </Button>
         </form>
       </Form>
-    </main>
+    </>
   );
 }
 

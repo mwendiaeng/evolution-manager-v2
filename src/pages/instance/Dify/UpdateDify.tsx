@@ -237,6 +237,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                   options={[
                     { label: "Palavra Chave", value: "keyword" },
                     { label: "Todos", value: "all" },
+                    { label: "Avançado", value: "advanced" },
                     { label: "Nenhum", value: "none" },
                   ]}
                   required
@@ -259,6 +260,11 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                       <Input />
                     </FormInput>
                   </>
+                )}
+                {triggerType === "advanced" && (
+                  <FormInput name="triggerValue" label="Condições" required>
+                    <Input />
+                  </FormInput>
                 )}
                 <div className="flex flex-col">
                   <h3 className="my-4 text-lg font-medium">Options Settings</h3>

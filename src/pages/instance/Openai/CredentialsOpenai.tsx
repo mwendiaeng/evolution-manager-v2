@@ -13,6 +13,7 @@ import {
 import { ArrowUpDown, Lock, MoreHorizontal } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -72,14 +73,15 @@ const fetchData = async (instance: Instance | null, setCreds: any) => {
 
       setCreds(getCreds);
     } else {
-      console.error("Token ou nome da instância não encontrados.");
+      console.error("Token not found.");
     }
   } catch (error) {
-    console.error("Erro ao carregar configurações:", error);
+    console.error("Error:", error);
   }
 };
 
 function CredentialsOpenai() {
+  const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [open, setOpen] = useState(false);
@@ -101,7 +103,7 @@ function CredentialsOpenai() {
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       if (!instance || !instance.name) {
-        throw new Error("Nome da instância não encontrado.");
+        throw new Error("instance not found.");
       }
 
       const credsData: OpenaiCreds = {
@@ -110,14 +112,12 @@ function CredentialsOpenai() {
       };
 
       await createOpenaiCreds(instance.name, instance.token, credsData);
-      toast.success("Credencial criada com sucesso!");
+      toast.success(t("openai.toast.success.credentialsCreate"));
       onReset();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Erro ao criar bot:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error("Error:", error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     }
   };
 
@@ -129,13 +129,11 @@ function CredentialsOpenai() {
   const handleDelete = async (id: string) => {
     try {
       await deleteOpenaiCreds(id, instance?.name as string);
-      toast.success("Credencial excluída com sucesso!");
+      toast.success(t("openai.toast.success.credentialsDelete"));
       fetchData(instance, setCreds);
     } catch (error: any) {
-      console.error("Erro ao excluir credencial:", error);
-      toast.error(
-        `Erro ao excluir credencial: ${error?.response?.data?.response?.message}`,
-      );
+      console.error("Error:", error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     }
   };
 
@@ -148,7 +146,7 @@ function CredentialsOpenai() {
             variant="ghost"
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
           >
-            Nome
+            {t("openai.credentials.table.name")}
             <ArrowUpDown className="ml-2 h-4 w-4" />
           </Button>
         );
@@ -157,7 +155,9 @@ function CredentialsOpenai() {
     },
     {
       accessorKey: "apiKey",
-      header: () => <div className="text-right">Api Key</div>,
+      header: () => (
+        <div className="text-right">{t("openai.credentials.table.apiKey")}</div>
+      ),
       cell: ({ row }) => (
         <div>{`${row.getValue("apiKey")}`.slice(0, 20)}...</div>
       ),
@@ -172,17 +172,21 @@ function CredentialsOpenai() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">
+                  {t("openai.credentials.table.actions.title")}
+                </span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                {t("openai.credentials.table.actions.title")}
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() => handleDelete(creds.id as string)}
               >
-                Excluir
+                {t("openai.credentials.table.actions.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -209,7 +213,9 @@ function CredentialsOpenai() {
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <Lock size={16} className="mr-1" />
-          <span className="hidden md:inline">Credenciais</span>
+          <span className="hidden md:inline">
+            {t("openai.credentials.title")}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -217,7 +223,7 @@ function CredentialsOpenai() {
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
-          <DialogTitle>Credenciais</DialogTitle>
+          <DialogTitle>{t("openai.credentials.title")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form
@@ -226,16 +232,22 @@ function CredentialsOpenai() {
           >
             <div>
               <div className="grid gap-3 md:grid-cols-2">
-                <FormInput name="name" label="Nome">
+                <FormInput
+                  name="name"
+                  label={t("openai.credentials.table.name")}
+                >
                   <Input />
                 </FormInput>
-                <FormInput name="apiKey" label="API Key">
+                <FormInput
+                  name="apiKey"
+                  label={t("openai.credentials.table.apiKey")}
+                >
                   <Input type="password" />
                 </FormInput>
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit">{t("openai.button.save")}</Button>
             </DialogFooter>
           </form>
         </FormProvider>
@@ -283,7 +295,7 @@ function CredentialsOpenai() {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    Nenhuma credencial cadastrada
+                    {t("openai.credentials.table.none")}
                   </TableCell>
                 </TableRow>
               )}

@@ -3,17 +3,23 @@ import "react-toastify/dist/ReactToastify.css";
 
 import React from "react";
 import ReactDOM from "react-dom/client";
+import { I18nextProvider } from "react-i18next";
 import { RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import { ThemeProvider } from "./components/theme-provider.tsx";
 import router from "./routes/index.tsx";
+import i18n from "./translate/i18n";
+
+localStorage.setItem("i18nextLng", "en-US");
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <RouterProvider router={router} />
-    </ThemeProvider>
+    <I18nextProvider i18n={i18n}>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        <RouterProvider router={router} />
+      </ThemeProvider>
+    </I18nextProvider>
     <ToastContainer theme="colored" />
   </React.StrictMode>,
 );

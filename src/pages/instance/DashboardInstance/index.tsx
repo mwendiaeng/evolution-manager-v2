@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CircleUser, MessageCircle, RefreshCw, UsersRound } from "lucide-react";
 import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
 
 import { InstanceStatus } from "@/components/instance-status";
@@ -32,6 +33,7 @@ import { logout, connect, restart } from "@/services/instances.service";
 const numberFormatter = new Intl.NumberFormat("pt-BR");
 
 function DashboardInstance() {
+  const { t } = useTranslation();
   const [qrCode, setQRCode] = useState<string | null>(null);
   const [pairingCode, setPairingCode] = useState("");
   const token = localStorage.getItem("token");
@@ -48,7 +50,7 @@ function DashboardInstance() {
       await restart(instanceName);
       window.location.reload();
     } catch (error) {
-      console.error("Erro ao reiniciar:", error);
+      console.error("Error:", error);
     }
   };
 
@@ -57,7 +59,7 @@ function DashboardInstance() {
       await logout(instanceName);
       window.location.reload();
     } catch (error) {
-      console.error("Erro ao desconectar:", error);
+      console.error("Error:", error);
     }
   };
 
@@ -66,7 +68,7 @@ function DashboardInstance() {
       setQRCode(null);
 
       if (!token) {
-        console.error("Token não encontrado.");
+        console.error("Token not found.");
         return;
       }
 
@@ -80,7 +82,7 @@ function DashboardInstance() {
         setQRCode(data.code);
       }
     } catch (error) {
-      console.error("Erro ao conectar:", error);
+      console.error("Error:", error);
     }
   };
 
@@ -156,7 +158,7 @@ function DashboardInstance() {
                 className="flex flex-wrap items-center justify-between gap-3"
               >
                 <AlertTitle className="text-lg font-bold tracking-wide">
-                  Telefone não conectado
+                  {t("instance.dashboard.alert")}
                 </AlertTitle>
 
                 <Dialog>
@@ -164,10 +166,14 @@ function DashboardInstance() {
                     onClick={() => handleConnect(instance.name, false)}
                     asChild
                   >
-                    <Button variant="warning">Gerar QRCODE</Button>
+                    <Button variant="warning">
+                      {t("instance.dashboard.button.qrcode.label")}
+                    </Button>
                   </DialogTrigger>
                   <DialogContent onCloseAutoFocus={closeQRCodePopup}>
-                    <DialogHeader>Leia o QR Code para conectar</DialogHeader>
+                    <DialogHeader>
+                      {t("instance.dashboard.button.qrcode.title")}
+                    </DialogHeader>
                     <div className="flex items-center justify-center">
                       {qrCode && (
                         <QRCode
@@ -188,7 +194,7 @@ function DashboardInstance() {
                       className="connect-code-button"
                       onClick={() => handleConnect(instance.name, true)}
                     >
-                      Solicitar Código
+                      {t("instance.dashboard.button.pairingCode.label")}
                     </DialogTrigger>
                     <DialogContent onCloseAutoFocus={closeQRCodePopup}>
                       <DialogHeader>
@@ -196,7 +202,11 @@ function DashboardInstance() {
                           {pairingCode ? (
                             <div className="py-3">
                               <p className="text-center">
-                                <strong>Código de emparelhamento:</strong>
+                                <strong>
+                                  {t(
+                                    "instance.dashboard.button.pairingCode.title",
+                                  )}
+                                </strong>
                               </p>
                               <p className="pairing-code text-center">
                                 {pairingCode.substring(0, 4)}-
@@ -228,14 +238,14 @@ function DashboardInstance() {
               variant="secondary"
               onClick={() => handleRestart(instance.name)}
             >
-              REINICIAR
+              {t("instance.dashboard.button.restart").toUpperCase()}
             </Button>
             <Button
               variant="destructive"
               onClick={() => handleLogout(instance.name)}
               disabled={instance.connectionStatus !== "open"}
             >
-              DESCONECTAR
+              {t("instance.dashboard.button.disconnect").toUpperCase()}
             </Button>
           </CardFooter>
         </Card>
@@ -244,7 +254,8 @@ function DashboardInstance() {
         <Card className="instance-card">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CircleUser size="20" /> Contatos
+              <CircleUser size="20" />
+              {t("instance.dashboard.contacts")}
             </CardTitle>
           </CardHeader>
           <CardContent>{numberFormatter.format(stats.contacts)}</CardContent>
@@ -253,7 +264,7 @@ function DashboardInstance() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <UsersRound size="20" />
-              Chats
+              {t("instance.dashboard.chats")}
             </CardTitle>
           </CardHeader>
           <CardContent>{numberFormatter.format(stats.chats)}</CardContent>
@@ -262,7 +273,7 @@ function DashboardInstance() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <MessageCircle size="20" />
-              Mensagens
+              {t("instance.dashboard.messages")}
             </CardTitle>
           </CardHeader>
           <CardContent>{numberFormatter.format(stats.messages)}</CardContent>

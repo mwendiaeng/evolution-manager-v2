@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -28,6 +29,7 @@ const formSchema = z.object({
 type FormSchemaType = z.infer<typeof formSchema>;
 
 function Proxy() {
+  const { t } = useTranslation();
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
@@ -51,7 +53,7 @@ function Proxy() {
         const data = await fetchProxy(instance.name, instance.token);
         form.reset(data);
       } catch (error) {
-        console.error("Erro ao buscar dados do proxy:", error);
+        console.error("Error:", error);
       } finally {
         setLoading(false);
       }
@@ -75,12 +77,10 @@ function Proxy() {
       };
 
       await createProxy(instance.name, instance.token, proxyData);
-      toast.success("Proxy criado com sucesso");
+      toast.success(t("proxy.toast.success"));
     } catch (error: any) {
-      console.error("Erro ao criar proxy:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error(t("proxy.toast.error"), error);
+      toast.error(`Error : ${error?.response?.data?.response?.message}`);
     } finally {
       setLoading(false);
     }
@@ -94,37 +94,46 @@ function Proxy() {
           className="w-full space-y-6"
         >
           <div>
-            <h3 className="mb-1 text-lg font-medium">Proxy</h3>
+            <h3 className="mb-1 text-lg font-medium">{t("proxy.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
               <FormSwitch
                 name="enabled"
-                label="Ativo"
+                label={t("proxy.form.enabled.label")}
                 className="w-full justify-between"
-                helper="Ativa ou desativa o proxy"
+                helper={t("proxy.form.enabled.description")}
               />
               <div className="grid gap-4 sm:grid-cols-[10rem_1fr_10rem] md:gap-8">
-                <FormInput name="protocol" label="Protocolo">
+                <FormInput
+                  name="protocol"
+                  label={t("proxy.form.protocol.label")}
+                >
                   <Input />
                 </FormInput>
-                <FormInput name="host" label="Host">
+                <FormInput name="host" label={t("proxy.form.host.label")}>
                   <Input />
                 </FormInput>
-                <FormInput name="port" label="Porta">
+                <FormInput name="port" label={t("proxy.form.port.label")}>
                   <Input type="number" />
                 </FormInput>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 md:gap-8">
-                <FormInput name="username" label="Usuário">
+                <FormInput
+                  name="username"
+                  label={t("proxy.form.username.label")}
+                >
                   <Input />
                 </FormInput>
-                <FormInput name="password" label="Senha">
+                <FormInput
+                  name="password"
+                  label={t("proxy.form.password.label")}
+                >
                   <Input type="password" />
                 </FormInput>
               </div>
               <div className="flex justify-end px-4 pt-6">
                 <Button type="submit" disabled={loading}>
-                  {loading ? "Salvando..." : "Salvar"}
+                  {loading ? t("proxy.button.saving") : t("proxy.button.save")}
                 </Button>
               </div>
             </div>

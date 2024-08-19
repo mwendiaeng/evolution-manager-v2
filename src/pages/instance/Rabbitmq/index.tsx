@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -33,6 +34,7 @@ const formSchema = z.object({
 type FormSchemaType = z.infer<typeof formSchema>;
 
 function Rabbitmq() {
+  const { t } = useTranslation();
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
@@ -52,7 +54,7 @@ function Rabbitmq() {
         const data = await fetchRabbitmq(instance.name, instance.token);
         form.reset(data);
       } catch (error) {
-        console.error("Erro ao buscar dados do rabbitmq:", error);
+        console.error("Error:", error);
       } finally {
         setLoading(false);
       }
@@ -72,12 +74,10 @@ function Rabbitmq() {
       };
 
       await createRabbitmq(instance.name, instance.token, rabbitmqData);
-      toast.success("Rabbitmq criado com sucesso");
+      toast.success(t("rabbitmq.toast.success"));
     } catch (error: any) {
-      console.error("Erro ao criar rabbitmq:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error(t("rabbitmq.toast.error"), error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     } finally {
       setLoading(false);
     }
@@ -118,21 +118,23 @@ function Rabbitmq() {
           className="w-full space-y-6"
         >
           <div>
-            <h3 className="mb-1 text-lg font-medium">Rabbitmq</h3>
+            <h3 className="mb-1 text-lg font-medium">{t("rabbitmq.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
               <FormSwitch
                 name="enabled"
-                label="Ativo"
+                label={t("rabbitmq.form.enabled.label")}
                 className="w-full justify-between"
-                helper="Ativa ou desativa o rabbitmq"
+                helper={t("rabbitmq.form.enabled.description")}
               />
               <FormField
                 control={form.control}
                 name="events"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="my-2 text-lg">Eventos</FormLabel>
+                    <FormLabel className="my-2 text-lg">
+                      {t("rabbitmq.form.events.label")}
+                    </FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-2 space-y-1 divide-y">
                         {events
@@ -174,7 +176,9 @@ function Rabbitmq() {
             </div>
             <div className="mx-4 flex justify-end pt-6">
               <Button type="submit" disabled={loading}>
-                {loading ? "Salvando..." : "Salvar"}
+                {loading
+                  ? t("rabbitmq.button.saving")
+                  : t("rabbitmq.button.save")}
               </Button>
             </div>
           </div>

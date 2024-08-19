@@ -6,6 +6,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -49,11 +50,13 @@ const fetchData = async (callback: (data: Instance[]) => void) => {
     const data = await fetchInstances();
     callback(data);
   } catch (error) {
-    console.error("Erro ao buscar dados:", error);
+    console.error("Error fetchData:", error);
   }
 };
 
 function Dashboard() {
+  const { t } = useTranslation();
+
   const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(
     null,
   );
@@ -84,17 +87,15 @@ function Dashboard() {
       try {
         await logout(instanceName);
       } catch (error) {
-        console.error("Erro ao fazer logout:", error);
+        console.error("Error logout:", error);
       }
       await deleteInstance(instanceName);
       await new Promise((resolve) => setTimeout(resolve, 1000));
       resetTable();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Erro ao deletar instância:", error);
-      toast.error(
-        `Erro ao deletar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error("Error instance delete:", error);
+      toast.error(`Error : ${error?.response?.data?.response?.message}`);
     } finally {
       setDeleting(deleting.filter((item) => item !== instanceName));
     }
@@ -128,16 +129,16 @@ function Dashboard() {
   };
 
   const instanceStatus = [
-    { value: "all", label: "Todos" },
-    { value: "close", label: "Desconectado" },
-    { value: "connecting", label: "Conectando" },
-    { value: "open", label: "Conectado" },
+    { value: "all", label: t("status.all") },
+    { value: "close", label: t("status.closed") },
+    { value: "connecting", label: t("status.connecting") },
+    { value: "open", label: t("status.open") },
   ];
 
   return (
     <div className="my-4 px-4">
       <div className="flex w-full items-center justify-between">
-        <h2 className="text-lg">Instâncias</h2>
+        <h2 className="text-lg">{t("dashboard.title")}</h2>
         <div className="flex gap-2">
           <Button variant="outline" size="icon">
             <RefreshCw onClick={resetTable} size="20" />
@@ -148,14 +149,14 @@ function Dashboard() {
       <div className="my-4 flex items-center justify-between gap-3 px-4">
         <div className="flex-1">
           <Input
-            placeholder="Pesquisar"
+            placeholder={t("dashboard.search")}
             onChange={(e) => searchByName(e.target.value)}
           />
         </div>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="secondary">
-              Status <ChevronsUpDown size="15" />
+              {t("dashboard.status")} <ChevronsUpDown size="15" />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent>
@@ -244,9 +245,9 @@ function Dashboard() {
                   disabled={deleting.includes(instance.name)}
                 >
                   {deleting.includes(instance.name) ? (
-                    <span>Deletando...</span>
+                    <span>{t("button.deleting")}</span>
                   ) : (
-                    <span>Deletar</span>
+                    <span>{t("button.delete")}</span>
                   )}
                 </Button>
               </CardFooter>
@@ -258,11 +259,9 @@ function Dashboard() {
         <Dialog onOpenChange={() => setDeleteConfirmation(null)} open>
           <DialogContent>
             <DialogClose />
-            <DialogHeader>Deseja realmente deletar?</DialogHeader>
+            <DialogHeader>{t("modal.delete.title")}</DialogHeader>
             <p>
-              Você está prestes a desconectar a instância{" "}
-              <strong>{deleteConfirmation}</strong>. Tem certeza que deseja
-              continuar?
+              {t("modal.delete.message", { instanceName: deleteConfirmation })}
             </p>
             <DialogFooter>
               <div className="flex items-center gap-4">
@@ -271,13 +270,13 @@ function Dashboard() {
                   size="sm"
                   variant="outline"
                 >
-                  Cancelar
+                  {t("button.cancel")}
                 </Button>
                 <Button
                   onClick={() => handleDelete(deleteConfirmation)}
                   variant="destructive"
                 >
-                  Desconectar
+                  {t("button.delete")}
                 </Button>
               </div>
             </DialogFooter>

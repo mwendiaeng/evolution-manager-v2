@@ -1,5 +1,7 @@
+/* eslint-disable camelcase */
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 
@@ -29,6 +31,7 @@ function LoginWhatsappButton({
   setBusiness,
   setToken,
 }: LoginWhatsappButtonProps) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -172,7 +175,9 @@ function LoginWhatsappButton({
       type="button"
       disabled={loading}
     >
-      {loading ? "Conectando..." : "Conectar Whatsapp"}
+      {loading
+        ? t("instance.button.connecting")
+        : t("instance.button.whatsapp")}
     </Button>
   );
 }

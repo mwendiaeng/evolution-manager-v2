@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -38,6 +39,7 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 function Webhook() {
+  const { t } = useTranslation();
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
@@ -60,7 +62,7 @@ function Webhook() {
         const data = await fetchWebhook(instance.name, instance.token);
         form.reset(data);
       } catch (error) {
-        console.error("Erro ao buscar dados do webhook:", error);
+        console.error("Error:", error);
       } finally {
         setLoading(false);
       }
@@ -82,12 +84,10 @@ function Webhook() {
       };
 
       await createWebhook(instance.name, instance.token, webhookData);
-      toast.success("Webhook criado com sucesso");
+      toast.success(t("webhook.toast.success"));
     } catch (error: any) {
-      console.error("Erro ao criar webhook:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error(t("webhook.toast.error"), error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     } finally {
       setLoading(false);
     }
@@ -128,36 +128,38 @@ function Webhook() {
           className="w-full space-y-6"
         >
           <div>
-            <h3 className="mb-1 text-lg font-medium">Webhook</h3>
+            <h3 className="mb-1 text-lg font-medium">{t("webhook.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
               <FormSwitch
                 name="enabled"
-                label="Ativo"
+                label={t("webhook.form.enabled.label")}
                 className="w-full justify-between"
-                helper="Ativa ou desativa o webhook"
+                helper={t("webhook.form.enabled.description")}
               />
               <FormInput name="url" label="URL">
                 <Input />
               </FormInput>
               <FormSwitch
                 name="webhookByEvents"
-                label="Webhook por Eventos"
+                label={t("webhook.form.webhookByEvents.label")}
                 className="w-full justify-between"
-                helper="Cria uma rota para cada evento adicionando o nome do evento no final da URL"
+                helper={t("webhook.form.webhookByEvents.description")}
               />
               <FormSwitch
                 name="webhookBase64"
-                label="Base64 no Webhook"
+                label={t("webhook.form.webhookBase64.label")}
                 className="w-full justify-between"
-                helper="Envie os dados do base64 das mídias no webhook"
+                helper={t("webhook.form.webhookBase64.description")}
               />
               <FormField
                 control={form.control}
                 name="events"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="my-2 text-lg">Eventos</FormLabel>
+                    <FormLabel className="my-2 text-lg">
+                      {t("webhook.form.events.label")}
+                    </FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-2 space-y-1 divide-y">
                         {events
@@ -200,7 +202,9 @@ function Webhook() {
 
             <div className="mx-4 flex justify-end pt-6">
               <Button type="submit" disabled={loading}>
-                {loading ? "Salvando..." : "Salvar"}
+                {loading
+                  ? t("webhook.button.saving")
+                  : t("webhook.button.save")}
               </Button>
             </div>
           </div>

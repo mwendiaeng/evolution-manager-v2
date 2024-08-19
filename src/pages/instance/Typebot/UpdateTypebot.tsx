@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -61,6 +62,7 @@ function UpdateTypebot({
   instance,
   resetTable,
 }: UpdateTypebotProps) {
+  const { t } = useTranslation();
   const [, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
@@ -121,11 +123,11 @@ function UpdateTypebot({
             debounceTime: data.debounceTime,
           });
         } else {
-          console.error("Token ou nome da instância não encontrados.");
+          console.error("Token not found");
         }
         setLoading(false);
       } catch (error) {
-        console.error("Erro ao carregar configurações:", error);
+        console.error("Error:", error);
         setLoading(false);
       }
     };
@@ -157,16 +159,14 @@ function UpdateTypebot({
         };
 
         await updateTypebot(instance.name, storedToken, typebotId, typebotData);
-        toast.success("Typebot atualizado com sucesso.");
+        toast.success(t("typebot.toast.success.update"));
       } else {
-        console.error("Token ou nome da instância não encontrados.");
+        console.error("Token not found");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Erro ao atualizar typebot:", error);
-      toast.error(
-        `Erro ao atualizar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error("Error:", error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     }
   };
 
@@ -176,16 +176,16 @@ function UpdateTypebot({
 
       if (storedToken && instance && instance.name && typebotId) {
         await deleteTypebot(instance.name, storedToken, typebotId);
-        toast.success("Typebot excluído com sucesso.");
+        toast.success(t("typebot.toast.success.delete"));
 
         setOpenDeletionDialog(false);
         resetTable();
         navigate(`/manager/instance/${instance.id}/typebot`);
       } else {
-        console.error("Token ou nome da instância não encontrados.");
+        console.error("Token not found");
       }
     } catch (error) {
-      console.error("Erro ao excluir typebot:", error);
+      console.error("Error:", error);
     }
   };
 
@@ -212,99 +212,155 @@ function UpdateTypebot({
                 />
               </div>
               <div className="space-y-4">
-                <FormInput name="description" label="Descrição" required>
+                <FormInput
+                  name="description"
+                  label={t("typebot.form.description.label")}
+                  required
+                >
                   <Input />
                 </FormInput>
                 <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">Typebot Settings</h3>
+                  <h3 className="my-4 text-lg font-medium">
+                    {t("typebot.form.typebotSettings.label")}
+                  </h3>
                   <Separator />
                 </div>
-                <FormInput name="url" label="URL da API do Typebot" required>
+                <FormInput
+                  name="url"
+                  label={t("typebot.form.url.label")}
+                  required
+                >
                   <Input />
                 </FormInput>
-                <FormInput name="typebot" label="Nome do Typebot" required>
+                <FormInput
+                  name="typebot"
+                  label={t("typebot.form.typebot.label")}
+                  required
+                >
                   <Input />
                 </FormInput>
 
                 <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">Trigger Settings</h3>
+                  <h3 className="my-4 text-lg font-medium">
+                    {t("typebot.form.triggerSettings.label")}
+                  </h3>
                   <Separator />
                 </div>
                 <FormSelect
                   name="triggerType"
-                  label="Tipo de Gatilho"
+                  label={t("typebot.form.triggerType.label")}
                   required
                   options={[
-                    { label: "Palavra Chave", value: "keyword" },
-                    { label: "Todos", value: "all" },
-                    { label: "Avançado", value: "advanced" },
-                    { label: "Nenhum", value: "none" },
+                    {
+                      label: t("typebot.form.triggerType.keyword"),
+                      value: "keyword",
+                    },
+                    { label: t("typebot.form.triggerType.all"), value: "all" },
+                    {
+                      label: t("typebot.form.triggerType.advanced"),
+                      value: "advanced",
+                    },
+                    {
+                      label: t("typebot.form.triggerType.none"),
+                      value: "none",
+                    },
                   ]}
                 />
                 {triggerType === "keyword" && (
                   <>
                     <FormSelect
                       name="triggerOperator"
-                      label="Operador do Gatilho"
+                      label={t("typebot.form.triggerOperator.label")}
                       required
                       options={[
-                        { label: "Contém", value: "contains" },
-                        { label: "Igual à", value: "equals" },
-                        { label: "Começa com", value: "startsWith" },
-                        { label: "Termina com", value: "endsWith" },
-                        { label: "Regex", value: "regex" },
+                        {
+                          label: t("typebot.form.triggerOperator.contains"),
+                          value: "contains",
+                        },
+                        {
+                          label: t("typebot.form.triggerOperator.equals"),
+                          value: "equals",
+                        },
+                        {
+                          label: t("typebot.form.triggerOperator.startsWith"),
+                          value: "startsWith",
+                        },
+                        {
+                          label: t("typebot.form.triggerOperator.endsWith"),
+                          value: "endsWith",
+                        },
+                        {
+                          label: t("typebot.form.triggerOperator.regex"),
+                          value: "regex",
+                        },
                       ]}
                     />
-                    <FormInput name="triggerValue" label="Gatilho" required>
+                    <FormInput
+                      name="triggerValue"
+                      label={t("typebot.form.triggerValue.label")}
+                      required
+                    >
                       <Input />
                     </FormInput>
                   </>
                 )}
                 {triggerType === "advanced" && (
-                  <FormInput name="triggerValue" label="Condições" required>
+                  <FormInput
+                    name="triggerValue"
+                    label={t("typebot.form.triggerConditions.label")}
+                    required
+                  >
                     <Input />
                   </FormInput>
                 )}
                 <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">Options Settings</h3>
+                  <h3 className="my-4 text-lg font-medium">
+                    {t("typebot.form.generalSettings.label")}
+                  </h3>
                   <Separator />
                 </div>
-                <FormInput name="expire" label="Expira em (minutos)">
+                <FormInput name="expire" label={t("typebot.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="keywordFinish"
-                  label="Palavra Chave de Finalização"
+                  label={t("typebot.form.keywordFinish.label")}
                 >
                   <Input />
                 </FormInput>
 
-                <FormInput name="delayMessage" label="Delay padrão da mensagem">
+                <FormInput
+                  name="delayMessage"
+                  label={t("typebot.form.delay.label")}
+                >
                   <Input type="number" />
                 </FormInput>
 
                 <FormInput
                   name="unknownMessage"
-                  label="Mensagem para tipo de mensagem desconhecida"
+                  label={t("typebot.form.unknownMessage.label")}
                 >
                   <Input />
                 </FormInput>
                 <FormSwitch
                   name="listeningFromMe"
-                  label="Escuta mensagens enviadas por mim"
+                  label={t("typebot.form.listeningFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="stopBotFromMe"
-                  label="Pausa o bot quando eu enviar uma mensagem"
+                  label={t("typebot.form.stopBotFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="keepOpen"
-                  label="Mantem a sessão do bot aberta"
+                  label={t("typebot.form.keepOpen.label")}
                   reverse
                 />
-                <FormInput name="debounceTime" label="Tempo de espera">
+                <FormInput
+                  name="debounceTime"
+                  label={t("typebot.form.debounceTime.label")}
+                >
                   <Input type="number" />
                 </FormInput>
               </div>
@@ -319,14 +375,14 @@ function UpdateTypebot({
                 >
                   <DialogTrigger asChild>
                     <Button variant="destructive" size="sm">
-                      Excluir
+                      {t("typebot.button.delete")}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Tem certeza que deseja excluir?</DialogTitle>
+                      <DialogTitle>{t("modal.delete.title")}</DialogTitle>
                       <DialogDescription>
-                        Esta ação não pode ser desfeita.
+                        {t("modal.delete.messageSingle")}
                       </DialogDescription>
                       <DialogFooter>
                         <Button
@@ -334,16 +390,16 @@ function UpdateTypebot({
                           variant="outline"
                           onClick={() => setOpenDeletionDialog(false)}
                         >
-                          Cancelar
+                          {t("button.cancel")}
                         </Button>
                         <Button variant="destructive" onClick={handleDelete}>
-                          Exluir
+                          {t("button.delete")}
                         </Button>
                       </DialogFooter>
                     </DialogHeader>
                   </DialogContent>
                 </Dialog>
-                <Button type="submit">Atualizar</Button>
+                <Button type="submit">{t("typebot.button.update")}</Button>
               </div>
             </div>
           </form>

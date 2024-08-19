@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -27,6 +28,7 @@ const FormSchema = z.object({
 });
 
 function Settings() {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [token, setToken] = useState("");
@@ -66,11 +68,11 @@ function Settings() {
             readStatus: data.readStatus,
           });
         } else {
-          console.error("Token ou nome da instância não encontrados.");
+          console.error("token not found");
         }
         setLoading(false);
       } catch (error) {
-        console.error("Erro ao carregar configurações:", error);
+        console.error("Error:", error);
         setLoading(false);
       }
     };
@@ -81,7 +83,7 @@ function Settings() {
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       if (!instance || !instance.name) {
-        throw new Error("Nome da instância não encontrado.");
+        throw new Error("instance not found");
       }
 
       setUpdating(true);
@@ -95,10 +97,10 @@ function Settings() {
         readStatus: data.readStatus,
       };
       await updateSettings(instance.name, token, settingData);
-      toast.success("Configurações atualizadas com sucesso!");
+      toast.success(t("settings.toast.success"));
     } catch (error) {
-      console.error("Erro ao atualizar configurações:", error);
-      toast.error("Erro ao atualizar configurações.");
+      console.error(t("settings.toast.success"), error);
+      toast.error(t("settings.toast.error"));
     } finally {
       setUpdating(false);
     }
@@ -107,29 +109,28 @@ function Settings() {
   const fields = [
     {
       name: "groupsIgnore",
-      label: "Ignorar Grupos",
-      description: "Ignora eventos de grupos no Whatsapp",
+      label: t("settings.form.groupsIgnore.label"),
+      description: t("settings.form.groupsIgnore.description"),
     },
     {
       name: "alwaysOnline",
-      label: "Sempre Online",
-      description: "Mantém o Whatsapp sempre online",
+      label: t("settings.form.alwaysOnline.label"),
+      description: t("settings.form.alwaysOnline.description"),
     },
     {
       name: "readMessages",
-      label: "Visualizar Mensagens",
-      description: "Visualiza mensagens automaticamente",
+      label: t("settings.form.readMessages.label"),
+      description: t("settings.form.readMessages.description"),
     },
     {
       name: "syncFullHistory",
-      label: "Sincronizar Histórico Completo",
-      description:
-        "Sincroniza o histórico completo de mensagens ao ler o qrcode",
+      label: t("settings.form.syncFullHistory.label"),
+      description: t("settings.form.syncFullHistory.description"),
     },
     {
       name: "readStatus",
-      label: "Visualizar Status",
-      description: "Recebe eventos dos broadcasts e visualiza todos os status",
+      label: t("settings.form.readStatus.label"),
+      description: t("settings.form.readStatus.description"),
     },
   ];
 
@@ -147,20 +148,22 @@ function Settings() {
           className="w-full space-y-6"
         >
           <div>
-            <h3 className="mb-1 text-lg font-medium">Comportamento</h3>
+            <h3 className="mb-1 text-lg font-medium">{t("settings.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y">
               <div className="flex flex-col p-4">
                 <FormSwitch
                   name="rejectCall"
-                  label="Rejeitar Chamadas"
+                  label={t("settings.form.rejectCall.label")}
                   className="w-full justify-between"
-                  helper="Rejeitas chamadas de voz e vídeo no Whatsapp"
+                  helper={t("settings.form.rejectCall.description")}
                 />
                 {isRejectCall && (
                   <div className="mr-16 mt-2">
                     <FormInput name="msgCall">
-                      <Textarea placeholder="Mensagem ao rejeitar chamada" />
+                      <Textarea
+                        placeholder={t("settings.form.msgCall.description")}
+                      />
                     </FormInput>
                   </div>
                 )}
@@ -177,7 +180,9 @@ function Settings() {
               ))}
               <div className="flex justify-end pt-6">
                 <Button type="submit" disabled={updating}>
-                  {updating ? "Salvando..." : "Salvar"}
+                  {updating
+                    ? t("settings.button.saving")
+                    : t("settings.button.save")}
                 </Button>
               </div>
             </div>

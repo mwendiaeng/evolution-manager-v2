@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -53,6 +54,7 @@ type UpdateDifyProps = {
 };
 
 function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
+  const { t } = useTranslation();
   const [, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
@@ -110,11 +112,11 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
             debounceTime: data.debounceTime,
           });
         } else {
-          console.error("Token ou nome da instância não encontrados.");
+          console.error("Token not found.");
         }
         setLoading(false);
       } catch (error) {
-        console.error("Erro ao carregar configurações:", error);
+        console.error("Error:", error);
         setLoading(false);
       }
     };
@@ -147,16 +149,14 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
         };
 
         await updateDify(instance.name, storedToken, difyId, difyData);
-        toast.success("Dify atualizado com sucesso.");
+        toast.success(t("dify.toast.success.update"));
       } else {
-        console.error("Token ou nome da instância não encontrados.");
+        console.error("Token not found");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Erro ao atualizar bot:", error);
-      toast.error(
-        `Erro ao atualizar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error("Error:", error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     }
   };
 
@@ -166,13 +166,13 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
 
       if (storedToken && instance && instance.name && difyId) {
         await deleteDify(instance.name, storedToken, difyId);
-        toast.success("Dify excluído com sucesso.");
+        toast.success(t("dify.toast.success.delete"));
 
         setOpenDeletionDialog(false);
         resetTable();
         navigate(`/manager/instance/${instance.id}/dify`);
       } else {
-        console.error("Token ou nome da instância não encontrados.");
+        console.error("instance not found");
       }
     } catch (error) {
       console.error("Erro ao excluir dify:", error);
@@ -202,43 +202,71 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                 />
               </div>
               <div className="space-y-4">
-                <FormInput name="description" label="Descrição" required>
+                <FormInput
+                  name="description"
+                  label={t("dify.form.description.label")}
+                  required
+                >
                   <Input />
                 </FormInput>
 
                 <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">Dify Settings</h3>
+                  <h3 className="my-4 text-lg font-medium">
+                    {t("dify.form.difySettings.label")}
+                  </h3>
                   <Separator />
                 </div>
                 <FormSelect
                   name="botType"
-                  label="Tipo de Bot"
+                  label={t("dify.form.botType.label")}
                   required
                   options={[
-                    { label: "Chat Bot", value: "chatBot" },
-                    { label: "Gerador de texto", value: "textGenerator" },
-                    { label: "Agente", value: "agent" },
-                    { label: "Workflow", value: "workflow" },
+                    { label: t("dify.form.botType.chatBot"), value: "chatBot" },
+                    {
+                      label: t("dify.form.botType.textGenerator"),
+                      value: "textGenerator",
+                    },
+                    { label: t("dify.form.botType.agent"), value: "agent" },
+                    {
+                      label: t("dify.form.botType.workflow"),
+                      value: "workflow",
+                    },
                   ]}
                 />
-                <FormInput name="apiUrl" label="URL da API">
+                <FormInput
+                  name="apiUrl"
+                  label={t("dify.form.apiUrl.label")}
+                  required
+                >
                   <Input />
                 </FormInput>
-                <FormInput name="apiKey" label="Chave da API">
+                <FormInput
+                  name="apiKey"
+                  label={t("dify.form.apiKey.label")}
+                  required
+                >
                   <Input type="password" />
                 </FormInput>
                 <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">Trigger Settings</h3>
+                  <h3 className="my-4 text-lg font-medium">
+                    {t("dify.form.triggerSettings.label")}
+                  </h3>
                   <Separator />
                 </div>
                 <FormSelect
                   name="triggerType"
-                  label="Tipo de Gatilho"
+                  label={t("dify.form.triggerType.label")}
                   options={[
-                    { label: "Palavra Chave", value: "keyword" },
-                    { label: "Todos", value: "all" },
-                    { label: "Avançado", value: "advanced" },
-                    { label: "Nenhum", value: "none" },
+                    {
+                      label: t("dify.form.triggerType.keyword"),
+                      value: "keyword",
+                    },
+                    { label: t("dify.form.triggerType.all"), value: "all" },
+                    {
+                      label: t("dify.form.triggerType.advanced"),
+                      value: "advanced",
+                    },
+                    { label: t("dify.form.triggerType.none"), value: "none" },
                   ]}
                   required
                 />
@@ -246,65 +274,96 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                   <>
                     <FormSelect
                       name="triggerOperator"
-                      label="Operador do Gatilho"
+                      label={t("dify.form.triggerOperator.label")}
                       options={[
-                        { label: "Contém", value: "contains" },
-                        { label: "Igual à", value: "equals" },
-                        { label: "Começa com", value: "startsWith" },
-                        { label: "Termina com", value: "endsWith" },
-                        { label: "Regex", value: "regex" },
+                        {
+                          label: t("dify.form.triggerOperator.contains"),
+                          value: "contains",
+                        },
+                        {
+                          label: t("dify.form.triggerOperator.equals"),
+                          value: "equals",
+                        },
+                        {
+                          label: t("dify.form.triggerOperator.startsWith"),
+                          value: "startsWith",
+                        },
+                        {
+                          label: t("dify.form.triggerOperator.endsWith"),
+                          value: "endsWith",
+                        },
+                        {
+                          label: t("dify.form.triggerOperator.regex"),
+                          value: "regex",
+                        },
                       ]}
                       required
                     />
-                    <FormInput name="triggerValue" label="Gatilho" required>
+                    <FormInput
+                      name="triggerValue"
+                      label={t("dify.form.triggerValue.label")}
+                      required
+                    >
                       <Input />
                     </FormInput>
                   </>
                 )}
                 {triggerType === "advanced" && (
-                  <FormInput name="triggerValue" label="Condições" required>
+                  <FormInput
+                    name="triggerValue"
+                    label={t("dify.form.triggerConditions.label")}
+                    required
+                  >
                     <Input />
                   </FormInput>
                 )}
                 <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">Options Settings</h3>
+                  <h3 className="my-4 text-lg font-medium">
+                    {t("dify.form.generalSettings.label")}
+                  </h3>
                   <Separator />
                 </div>
-                <FormInput name="expire" label="Expira em (minutos)" required>
+                <FormInput name="expire" label={t("dify.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="keywordFinish"
-                  label="Palavra Chave de Finalização"
+                  label={t("dify.form.keywordFinish.label")}
                   required
                 >
                   <Input />
                 </FormInput>
-                <FormInput name="delayMessage" label="Delay padrão da mensagem">
+                <FormInput
+                  name="delayMessage"
+                  label={t("dify.form.delayMessage.label")}
+                >
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="unknownMessage"
-                  label="Mensagem para tipo de mensagem desconhecida"
+                  label={t("dify.form.unknownMessage.label")}
                 >
                   <Input />
                 </FormInput>
                 <FormSwitch
                   name="listeningFromMe"
-                  label="Escuta mensagens enviadas por mim"
+                  label={t("dify.form.listeningFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="stopBotFromMe"
-                  label="Pausa o bot quando eu enviar uma mensagem"
+                  label={t("dify.form.stopBotFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="keepOpen"
-                  label="Mantem a sessão do bot aberta"
+                  label={t("dify.form.keepOpen.label")}
                   reverse
                 />
-                <FormInput name="debounceTime" label="Tempo de espera" required>
+                <FormInput
+                  name="debounceTime"
+                  label={t("dify.form.debounceTime.label")}
+                >
                   <Input type="number" />
                 </FormInput>
               </div>
@@ -319,14 +378,14 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                 >
                   <DialogTrigger asChild>
                     <Button variant="destructive" size="sm">
-                      Excluir
+                      {t("dify.button.delete")}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Tem certeza que deseja excluir?</DialogTitle>
+                      <DialogTitle>{t("modal.delete.title")}</DialogTitle>
                       <DialogDescription>
-                        Esta ação não pode ser desfeita.
+                        {t("modal.delete.messageSingle")}
                       </DialogDescription>
                       <DialogFooter>
                         <Button
@@ -334,16 +393,16 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                           variant="outline"
                           onClick={() => setOpenDeletionDialog(false)}
                         >
-                          Cancelar
+                          {t("button.cancel")}
                         </Button>
                         <Button variant="destructive" onClick={handleDelete}>
-                          Excluir
+                          {t("button.delete")}
                         </Button>
                       </DialogFooter>
                     </DialogHeader>
                   </DialogContent>
                 </Dialog>
-                <Button type="submit">Atualizar</Button>
+                <Button type="submit">{t("dify.button.update")}</Button>
               </div>
             </div>
           </form>

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -37,16 +38,17 @@ const fetchData = async (
 
       setBots(data);
     } else {
-      console.error("Token ou nome da instância não encontrados.");
+      console.error("Token not found");
     }
     setLoading(false);
   } catch (error) {
-    console.error("Erro ao carregar configurações:", error);
+    console.error("Error:", error);
     setLoading(false);
   }
 };
 
 function Dify() {
+  const { t } = useTranslation();
   const isMD = useMediaQuery("(min-width: 768px)");
   const { instance } = useInstance();
 
@@ -75,7 +77,7 @@ function Dify() {
   return (
     <main className="pt-5">
       <div className="mb-1 flex items-center justify-between">
-        <h3 className="text-lg font-medium">Dify Bots</h3>
+        <h3 className="text-lg font-medium">{t("dify.title")}</h3>
         <div className="flex items-center justify-end gap-2">
           <SessionsDify />
           <DefaultSettingsDify />
@@ -105,7 +107,7 @@ function Dify() {
                     </Button>
                   ))
                 ) : (
-                  <Button variant="link">Nenhum bot encontrado.</Button>
+                  <Button variant="link">{t("dify.table.none")}</Button>
                 )}
               </>
             )}

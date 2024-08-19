@@ -1,6 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -76,6 +77,7 @@ function UpdateOpenai({
   instance,
   resetTable,
 }: UpdateOpenaiProps) {
+  const { t } = useTranslation();
   const [, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
@@ -151,11 +153,11 @@ function UpdateOpenai({
             debounceTime: data.debounceTime,
           });
         } else {
-          console.error("Token ou nome da instância não encontrados.");
+          console.error("Token not found.");
         }
         setLoading(false);
       } catch (error) {
-        console.error("Erro ao carregar configurações:", error);
+        console.error("Error:", error);
         setLoading(false);
       }
     };
@@ -174,7 +176,7 @@ function UpdateOpenai({
 
         setCreds(getCreds);
       } catch (error) {
-        console.error("Erro ao buscar modelos:", error);
+        console.error("Error:", error);
       }
     };
 
@@ -218,16 +220,14 @@ function UpdateOpenai({
           openaiBotId,
           openaiBotData,
         );
-        toast.success("Bot atualizado com sucesso.");
+        toast.success(t("openai.toast.success.update"));
       } else {
-        console.error("Token ou nome da instância não encontrados.");
+        console.error("Instance not found");
       }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Erro ao atualizar bot:", error);
-      toast.error(
-        `Erro ao atualizar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error("Error:", error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     }
   };
 
@@ -237,16 +237,16 @@ function UpdateOpenai({
 
       if (storedToken && instance && instance.name && openaiBotId) {
         await deleteOpenai(instance.name, storedToken, openaiBotId);
-        toast.success("Bot excluído com sucesso.");
+        toast.success(t("openai.toast.success.delete"));
 
         setOpenDeletionDialog(false);
         resetTable();
         navigate(`/manager/instance/${instance.id}/openai`);
       } else {
-        console.error("Token ou nome da instância não encontrados.");
+        console.error("Instance not found.");
       }
     } catch (error) {
-      console.error("Erro ao excluir bot:", error);
+      console.error("Error:", error);
     }
   };
 
@@ -274,12 +274,16 @@ function UpdateOpenai({
                 />
               </div>
               <div className="space-y-4">
-                <FormInput name="description" label="Descrição" required>
+                <FormInput
+                  name="description"
+                  label={t("openai.form.description.label")}
+                  required
+                >
                   <Input />
                 </FormInput>
                 <FormSelect
                   name="openaiCredsId"
-                  label="Credencial"
+                  label={t("openai.form.openaiCredsId.label")}
                   required
                   options={creds
                     .filter((cred) => !!cred.id)
@@ -292,30 +296,38 @@ function UpdateOpenai({
                 />
 
                 <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">Openai Settings</h3>
+                  <h3 className="my-4 text-lg font-medium">
+                    {t("openai.form.openaiSettings.label")}
+                  </h3>
                   <Separator />
                 </div>
                 <FormSelect
                   name="botType"
-                  label="Tipo de Bot"
+                  label={t("openai.form.botType.label")}
                   required
                   options={[
-                    { label: "Assistente", value: "assistant" },
-                    { label: "Chat Completion", value: "chatCompletion" },
+                    {
+                      label: t("openai.form.botType.assistant"),
+                      value: "assistant",
+                    },
+                    {
+                      label: t("openai.form.botType.chatCompletion"),
+                      value: "chatCompletion",
+                    },
                   ]}
                 />
                 {botType === "assistant" && (
                   <>
                     <FormInput
                       name="assistantId"
-                      label="ID do Assistente"
+                      label={t("openai.form.assistantId.label")}
                       required
                     >
                       <Input />
                     </FormInput>
                     <FormInput
                       name="functionUrl"
-                      label="URL das Funções"
+                      label={t("openai.form.functionUrl.label")}
                       required
                     >
                       <Input />
@@ -326,7 +338,7 @@ function UpdateOpenai({
                   <>
                     <FormSelect
                       name="model"
-                      label="Modelo de Linguagem"
+                      label={t("openai.form.model.label")}
                       required
                       options={models.map((model) => ({
                         label: model.id,
@@ -335,109 +347,154 @@ function UpdateOpenai({
                     />
                     <FormInput
                       name="systemMessages"
-                      label="Mensagem do Sistema"
+                      label={t("openai.form.systemMessages.label")}
                     >
                       <Textarea />
                     </FormInput>
                     <FormInput
                       name="assistantMessages"
-                      label="Mensagem do Assistente"
+                      label={t("openai.form.assistantMessages.label")}
                     >
                       <Textarea />
                     </FormInput>
-                    <FormInput name="userMessages" label="Mensagem do Usuário">
+                    <FormInput
+                      name="userMessages"
+                      label={t("openai.form.userMessages.label")}
+                    >
                       <Textarea />
                     </FormInput>
 
-                    <FormInput name="maxTokens" label="Máximo de Tokens">
+                    <FormInput
+                      name="maxTokens"
+                      label={t("openai.form.maxTokens")}
+                    >
                       <Input type="number" />
                     </FormInput>
                   </>
                 )}
 
                 <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">Trigger Settings</h3>
+                  <h3 className="my-4 text-lg font-medium">
+                    {t("openai.form.triggerSettings.label")}
+                  </h3>
                   <Separator />
                 </div>
                 <FormSelect
                   name="triggerType"
-                  label="Tipo de Gatilho"
+                  label={t("openai.form.triggerType.label")}
                   required
                   options={[
-                    { label: "Palavra Chave", value: "keyword" },
-                    { label: "Todos", value: "all" },
-                    { label: "Avançado", value: "advanced" },
-                    { label: "Nenhum", value: "none" },
+                    {
+                      label: t("openai.form.triggerType.keyword"),
+                      value: "keyword",
+                    },
+                    { label: t("openai.form.triggerType.all"), value: "all" },
+                    {
+                      label: t("openai.form.triggerType.advanced"),
+                      value: "advanced",
+                    },
+                    { label: t("openai.form.triggerType.none"), value: "none" },
                   ]}
                 />
                 {triggerType === "keyword" && (
                   <>
                     <FormSelect
                       name="triggerOperator"
-                      label="Operador do Gatilho"
+                      label={t("openai.form.triggerOperator.label")}
                       required
                       options={[
-                        { label: "Contém", value: "contains" },
-                        { label: "Igual à", value: "equals" },
-                        { label: "Começa com", value: "startsWith" },
-                        { label: "Termina com", value: "endsWith" },
-                        { label: "Regex", value: "regex" },
+                        {
+                          label: t("openai.form.triggerOperator.contains"),
+                          value: "contains",
+                        },
+                        {
+                          label: t("openai.form.triggerOperator.equals"),
+                          value: "equals",
+                        },
+                        {
+                          label: t("openai.form.triggerOperator.startsWith"),
+                          value: "startsWith",
+                        },
+                        {
+                          label: t("openai.form.triggerOperator.endsWith"),
+                          value: "endsWith",
+                        },
+                        {
+                          label: t("openai.form.triggerOperator.regex"),
+                          value: "regex",
+                        },
                       ]}
                     />
-                    <FormInput name="triggerValue" label="Gatilho" required>
+                    <FormInput
+                      name="triggerValue"
+                      label={t("openai.form.triggerValue.label")}
+                      required
+                    >
                       <Input />
                     </FormInput>
                   </>
                 )}
                 {triggerType === "advanced" && (
-                  <FormInput name="triggerValue" label="Condições" required>
+                  <FormInput
+                    name="triggerValue"
+                    label={t("openai.form.triggerConditions.label")}
+                    required
+                  >
                     <Input />
                   </FormInput>
                 )}
 
                 <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">Options Settings</h3>
+                  <h3 className="my-4 text-lg font-medium">
+                    {t("openai.form.generalSettings.label")}
+                  </h3>
                   <Separator />
                 </div>
 
-                <FormInput name="expire" label="Expira em (minutos)">
+                <FormInput name="expire" label={t("openai.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
 
                 <FormInput
                   name="keywordFinish"
-                  label="Palavra Chave de Finalização"
+                  label={t("openai.form.keywordFinish.label")}
                 >
                   <Input />
                 </FormInput>
 
-                <FormInput name="delayMessage" label="Delay padrão da mensagem">
+                <FormInput
+                  name="delayMessage"
+                  label={t("openai.form.delayMessage.label")}
+                >
                   <Input type="number" />
                 </FormInput>
 
                 <FormInput
                   name="unknownMessage"
-                  label="Mensagem para tipo de mensagem desconhecida"
+                  label={t("openai.form.unknownMessage.label")}
                 >
                   <Input />
                 </FormInput>
 
                 <FormSwitch
                   name="listeningFromMe"
-                  label="Escuta mensagens enviadas por mim"
+                  label={t("openai.form.listeningFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="stopBotFromMe"
-                  label="Pausa o bot quando eu enviar uma mensagem"
+                  label={t("openai.form.stopBotFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="keepOpen"
-                  label="Mantem a sessão do bot aberta"
+                  label={t("openai.form.keepOpen.label")}
                   reverse
                 />
-                <FormInput name="debounceTime" label="Tempo de espera">
+                <FormInput
+                  name="debounceTime"
+                  label={t("openai.form.debounceTime.label")}
+                >
                   <Input type="number" />
                 </FormInput>
               </div>
@@ -452,14 +509,14 @@ function UpdateOpenai({
                 >
                   <DialogTrigger asChild>
                     <Button variant="destructive" size="sm">
-                      Excluir
+                      {t("openai.button.delete")}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
                     <DialogHeader>
-                      <DialogTitle>Tem certeza que deseja excluir?</DialogTitle>
+                      <DialogTitle>{t("modal.delete.title")}</DialogTitle>
                       <DialogDescription>
-                        Esta ação não pode ser desfeita.
+                        {t("modal.delete.messageSingle")}
                       </DialogDescription>
                       <DialogFooter>
                         <Button
@@ -467,16 +524,16 @@ function UpdateOpenai({
                           variant="outline"
                           onClick={() => setOpenDeletionDialog(false)}
                         >
-                          Cancelar
+                          {t("button.cancel")}
                         </Button>
                         <Button variant="destructive" onClick={handleDelete}>
-                          Exluir
+                          {t("button.delete")}
                         </Button>
                       </DialogFooter>
                     </DialogHeader>
                   </DialogContent>
                 </Dialog>
-                <Button type="submit">Atualizar</Button>
+                <Button type="submit">{t("openai.button.update")}</Button>
               </div>
             </div>
           </form>

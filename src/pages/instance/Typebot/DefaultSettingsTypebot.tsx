@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Cog } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -70,14 +71,15 @@ const fetchData = async (
 
       setTypebots(getTypebots);
     } else {
-      console.error("Token ou nome da instância não encontrados.");
+      console.error("token not found.");
     }
   } catch (error) {
-    console.error("Erro ao carregar configurações:", error);
+    console.error("Error:", error);
   }
 };
 
 function DefaultSettingsTypebot() {
+  const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [settings, setSettings] = useState<TypebotSettings>();
@@ -88,9 +90,9 @@ function DefaultSettingsTypebot() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       expire: 0,
-      keywordFinish: "#SAIR",
+      keywordFinish: t("typebot.form.examples.keywordFinish"),
       delayMessage: 1000,
-      unknownMessage: "Mensagem não reconhecida",
+      unknownMessage: t("typebot.form.examples.unknownMessage"),
       listeningFromMe: false,
       stopBotFromMe: false,
       keepOpen: false,
@@ -125,7 +127,7 @@ function DefaultSettingsTypebot() {
   const handleSubmit = async (data: FormSchema) => {
     try {
       if (!instance || !instance.name) {
-        throw new Error("Nome da instância não encontrado.");
+        throw new Error("instance not found.");
       }
 
       const settingsData: TypebotSettings = {
@@ -146,13 +148,11 @@ function DefaultSettingsTypebot() {
         instance.token,
         settingsData,
       );
-      toast.success("Configuração salva com sucesso!");
+      toast.success(t("typebot.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Erro ao criar bot:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error(t("typebot.toast.defaultSettings.error"), error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     }
   };
 
@@ -165,7 +165,9 @@ function DefaultSettingsTypebot() {
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <Cog size={16} className="mr-1" />
-          <span className="hidden sm:inline">Configurações Padrão</span>
+          <span className="hidden sm:inline">
+            {t("typebot.button.defaultSettings")}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -173,7 +175,7 @@ function DefaultSettingsTypebot() {
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
-          <DialogTitle>Configurações Padrão</DialogTitle>
+          <DialogTitle>{t("typebot.modal.defaultSettings.title")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form
@@ -184,62 +186,68 @@ function DefaultSettingsTypebot() {
               <div className="space-y-4">
                 <FormSelect
                   name="typebotIdFallback"
-                  label="Typebot Fallback"
+                  label={t("typebot.form.typebotIdFallback.label")}
                   options={
                     typebots
                       ?.filter((typebot) => !!typebot.id)
                       .map((typebot) => ({
                         label: typebot.typebot!,
-                        value: typebot.id!,
+                        value: typebot.description!,
                       })) ?? []
                   }
                 />
-                <FormInput name="expire" label="Expira em (minutos)">
+                <FormInput name="expire" label={t("typebot.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="keywordFinish"
-                  label="Palavra Chave de Finalização"
+                  label={t("typebot.form.keywordFinish.label")}
                 >
                   <Input />
                 </FormInput>
-                <FormInput name="delayMessage" label="Delay padrão da mensagem">
+                <FormInput
+                  name="delayMessage"
+                  label={t("typebot.form.delayMessage.label")}
+                >
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="unknownMessage"
-                  label="Mensagem para tipo de mensagem desconhecida"
+                  label={t("typebot.form.unknownMessage.label")}
                 >
                   <Input />
                 </FormInput>
                 <FormSwitch
                   name="listeningFromMe"
-                  label="Escuta mensagens enviadas por mim"
+                  label={t("typebot.form.listeningFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="stopBotFromMe"
-                  label="Pausa o bot quando eu enviar uma mensagem"
+                  label={t("typebot.form.stopBotFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="keepOpen"
-                  label="Mantem a sessão do bot aberta"
+                  label={t("typebot.form.keepOpen.label")}
                   reverse
                 />
-                <FormInput name="debounceTime" label="Tempo de espera">
+                <FormInput
+                  name="debounceTime"
+                  label={t("typebot.form.debounceTime.label")}
+                >
                   <Input type="number" />
                 </FormInput>
 
                 <FormTags
                   name="ignoreJids"
-                  label="Ignorar JIDs"
-                  placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
+                  label={t("typebot.form.ignoreJids.label")}
+                  placeholder={t("typebot.form.ignoreJids.placeholder")}
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit">{t("typebot.button.save")}</Button>
             </DialogFooter>
           </form>
         </FormProvider>

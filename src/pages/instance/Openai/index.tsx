@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -48,6 +49,7 @@ const fetchData = async (
 };
 
 function Openai() {
+  const { t } = useTranslation();
   const isMD = useMediaQuery("(min-width: 768px)");
   const { instance } = useInstance();
 
@@ -76,7 +78,7 @@ function Openai() {
   return (
     <main className="pt-5">
       <div className="mb-1 flex items-center justify-between">
-        <h3 className="text-lg font-medium">Openai Bots</h3>
+        <h3 className="text-lg font-medium">{t("openai.title")}</h3>
         <div className="flex items-center justify-end gap-2">
           <SessionsOpenai />
           <DefaultSettingsOpenai />
@@ -107,7 +109,7 @@ function Openai() {
                     </Button>
                   ))
                 ) : (
-                  <Button variant="link">Nenhum bot encontrado.</Button>
+                  <Button variant="link">{t("openai.table.none")}</Button>
                 )}
               </>
             )}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 
@@ -22,6 +23,7 @@ function LoginFacebookButton({
   setUserID,
   setToken,
 }: LoginFacebookButtonProps) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -76,7 +78,6 @@ function LoginFacebookButton({
 
         setUserID(userID);
         setToken(accessToken);
-        // Lógica adicional para interagir com a API do Messenger
       } catch (error) {
         console.log(error);
       } finally {
@@ -96,7 +97,9 @@ function LoginFacebookButton({
       type="button"
       disabled={loading}
     >
-      {loading ? "Conectando..." : "Conectar Facebook"}
+      {loading
+        ? t("instance.button.connecting")
+        : t("instance.button.facebook")}
     </Button>
   );
 }

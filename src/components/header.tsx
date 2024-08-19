@@ -17,6 +17,7 @@ import {
   DialogFooter,
   DialogHeader,
 } from "./ui/dialog";
+import { LanguageToggle } from "./language-toggle";
 
 function Header({ instanceId }: { instanceId?: string }) {
   const [logoutConfirmation, setLogoutConfirmation] = useState(false);
@@ -73,6 +74,7 @@ function Header({ instanceId }: { instanceId?: string }) {
             />
           </Avatar>
         )}
+        <LanguageToggle />
         <ModeToggle />
         <Button
           onClick={() => setLogoutConfirmation(true)}
@@ -87,7 +89,7 @@ function Header({ instanceId }: { instanceId?: string }) {
         <Dialog onOpenChange={setLogoutConfirmation} open={logoutConfirmation}>
           <DialogContent>
             <DialogClose />
-            <DialogHeader>Deseja realmente desconectar?</DialogHeader>
+            <DialogHeader>Deseja realmente sair?</DialogHeader>
             <DialogFooter>
               <div className="flex items-center gap-4">
                 <Button
@@ -98,7 +100,7 @@ function Header({ instanceId }: { instanceId?: string }) {
                   Cancelar
                 </Button>
                 <Button onClick={handleClose} variant="destructive">
-                  Desconectar
+                  Sair
                 </Button>
               </div>
             </DialogFooter>

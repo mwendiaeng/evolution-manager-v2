@@ -19,6 +19,7 @@ import {
   StopCircle,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
@@ -77,14 +78,15 @@ const fetchData = async (
 
       setSessions(getSessions);
     } else {
-      console.error("Token ou nome da instância não encontrados.");
+      console.error("Token not found");
     }
   } catch (error) {
-    console.error("Erro ao carregar sessões:", error);
+    console.error("Error:", error);
   }
 };
 
 function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
+  const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
@@ -110,25 +112,34 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
         status,
       );
 
-      toast.success("Status alterado com sucesso.");
+      toast.success(t("openai.toast.success.status"));
       onReset();
     } catch (error: any) {
-      console.error("Erro ao atualizar:", error);
-      toast.error(
-        `Erro ao atualizar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error("Error:", error);
+      toast.error(`Error : ${error?.response?.data?.response?.message}`);
     }
   };
 
   const columns: ColumnDef<OpenaiSession>[] = [
     {
       accessorKey: "remoteJid",
-      header: () => <div className="text-center">Remote Jid</div>,
+      header: () => (
+        <div className="text-center">
+          {t("openai.sessions.table.remoteJid")}
+        </div>
+      ),
       cell: ({ row }) => <div>{row.getValue("remoteJid")}</div>,
     },
     {
+      accessorKey: "pushName",
+      header: () => (
+        <div className="text-center">{t("openai.sessions.table.pushName")}</div>
+      ),
+      cell: ({ row }) => <div>{row.getValue("pushName")}</div>,
+    },
+    {
       accessorKey: "bot",
-      header: () => <div className="text-center">Bot</div>,
+      header: () => <div className="text-center">{t("openai.title")}</div>,
       cell: ({ row }) => {
         const session = row.original;
         return <div>{session.OpenaiBot?.description}</div>;
@@ -136,12 +147,18 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
     },
     {
       accessorKey: "sessionId",
-      header: () => <div className="text-center">Session ID</div>,
+      header: () => (
+        <div className="text-center">
+          {t("openai.sessions.table.sessionId")}
+        </div>
+      ),
       cell: ({ row }) => <div>{row.getValue("sessionId")}</div>,
     },
     {
       accessorKey: "status",
-      header: () => <div className="text-center">Status</div>,
+      header: () => (
+        <div className="text-center">{t("openai.sessions.table.status")}</div>
+      ),
       cell: ({ row }) => <div>{row.getValue("status")}</div>,
     },
     {
@@ -154,19 +171,23 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" size="icon">
-                <span className="sr-only">Open menu</span>
+                <span className="sr-only">
+                  {t("openai.sessions.table.actions.title")}
+                </span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuLabel>Actions</DropdownMenuLabel>
+              <DropdownMenuLabel>
+                {t("openai.sessions.table.actions.title")}
+              </DropdownMenuLabel>
               <DropdownMenuSeparator />
               {session.status !== "opened" && (
                 <DropdownMenuItem
                   onClick={() => changeStatus(session.remoteJid, "opened")}
                 >
                   <Play className="mr-2 h-4 w-4" />
-                  Abrir
+                  {t("openai.sessions.table.actions.open")}
                 </DropdownMenuItem>
               )}
               {session.status !== "paused" && session.status !== "closed" && (
@@ -174,7 +195,7 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
                   onClick={() => changeStatus(session.remoteJid, "paused")}
                 >
                   <Pause className="mr-2 h-4 w-4" />
-                  Pausar
+                  {t("openai.sessions.table.actions.pause")}
                 </DropdownMenuItem>
               )}
               {session.status !== "closed" && (
@@ -182,7 +203,7 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
                   onClick={() => changeStatus(session.remoteJid, "closed")}
                 >
                   <StopCircle className="mr-2 h-4 w-4" />
-                  Fechar
+                  {t("openai.sessions.table.actions.close")}
                 </DropdownMenuItem>
               )}
 
@@ -190,7 +211,7 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
                 onClick={() => changeStatus(session.remoteJid, "delete")}
               >
                 <Delete className="mr-2 h-4 w-4" />
-                Excluir
+                {t("openai.sessions.table.actions.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -217,7 +238,7 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <ListCollapse size={16} className="mr-1" />
-          <span className="hidden md:inline">Sessões</span>
+          <span className="hidden md:inline">{t("openai.sessions.label")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -225,12 +246,12 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
-          <DialogTitle>Sessões</DialogTitle>
+          <DialogTitle>{t("openai.sessions.label")}</DialogTitle>
         </DialogHeader>
         <div>
           <div className="flex items-center justify-between gap-6 p-5">
             <Input
-              placeholder="Pesquise pelo remoteJid..."
+              placeholder={t("openai.sessions.search")}
               value={
                 (table.getColumn("remoteJid")?.getFilterValue() as string) ?? ""
               }
@@ -284,7 +305,7 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    Nenhuma sessão encontrada
+                    {t("openai.sessions.table.none")}
                   </TableCell>
                 </TableRow>
               )}

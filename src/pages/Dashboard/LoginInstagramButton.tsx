@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 
@@ -22,6 +23,7 @@ function LoginInstagramButton({
   setUserID,
   setToken,
 }: LoginInstagramButtonProps) {
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -96,7 +98,9 @@ function LoginInstagramButton({
       type="button"
       disabled={loading}
     >
-      {loading ? "Conectando..." : "Conectar Instagram"}
+      {loading
+        ? t("instance.button.connecting")
+        : t("instance.button.instagram")}
     </Button>
   );
 }

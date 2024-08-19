@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -40,6 +41,7 @@ const formSchema = z.object({
 type FormSchema = z.infer<typeof formSchema>;
 
 function Chatwoot() {
+  const { t } = useTranslation();
   const { instance } = useInstance();
   const [, setLoading] = useState(false);
 
@@ -75,7 +77,7 @@ function Chatwoot() {
         form.setValue("ignoreJids", data.ignoreJids || []);
         form.reset(data);
       } catch (error) {
-        console.error("Erro ao buscar dados do chatwoot:", error);
+        console.error("Error:", error);
       } finally {
         setLoading(false);
       }
@@ -110,12 +112,10 @@ function Chatwoot() {
       };
 
       await createChatwoot(instance.name, instance.token, chatwootData);
-      toast.success("Chatwoot criado com sucesso");
+      toast.success(t("chatwoot.toast.success"));
     } catch (error: any) {
-      console.error("Erro ao criar chatwoot:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error(t("chatwoot.toast.error"), error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     } finally {
       setLoading(false);
     }
@@ -129,88 +129,100 @@ function Chatwoot() {
           className="w-full space-y-6"
         >
           <div>
-            <h3 className="mb-1 text-lg font-medium">Chatwoot</h3>
+            <h3 className="mb-1 text-lg font-medium">{t("chatwoot.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:px-4 [&>*]:py-2">
               <FormSwitch
                 name="enabled"
-                label="Ativo"
+                label={t("chatwoot.form.enabled.label")}
                 className="w-full justify-between"
-                helper="Ativa ou desativa o chatwoot"
+                helper={t("chatwoot.form.enabled.description")}
               />
-              <FormInput name="url" label="URL do chatwoot">
+              <FormInput name="url" label={t("chatwoot.form.url.label")}>
                 <Input />
               </FormInput>
-              <FormInput name="accountId" label="ID da Conta">
+              <FormInput
+                name="accountId"
+                label={t("chatwoot.form.accountId.label")}
+              >
                 <Input />
               </FormInput>
-              <FormInput name="token" label="Token da Conta">
+              <FormInput name="token" label={t("chatwoot.form.token.label")}>
                 <Input type="password" />
               </FormInput>
 
               <FormSwitch
                 name="signMsg"
-                label="Assinar Mensagem"
+                label={t("chatwoot.form.signMsg.label")}
                 className="w-full justify-between"
-                helper="Assina mensagem com o nome do usuário do chatwoot"
+                helper={t("chatwoot.form.signMsg.description")}
               />
-              <FormInput name="signDelimiter" label="Delimitador de Assinatura">
+              <FormInput
+                name="signDelimiter"
+                label={t("chatwoot.form.signDelimiter.label")}
+              >
                 <Input />
               </FormInput>
-              <FormInput name="nameInbox" label="Nome da Caixa de Entrada">
+              <FormInput
+                name="nameInbox"
+                label={t("chatwoot.form.nameInbox.label")}
+              >
                 <Input />
               </FormInput>
-              <FormInput name="organization" label="Nome da organização">
+              <FormInput
+                name="organization"
+                label={t("chatwoot.form.organization.label")}
+              >
                 <Input />
               </FormInput>
-              <FormInput name="logo" label="URL do logo">
+              <FormInput name="logo" label={t("chatwoot.form.logo.label")}>
                 <Input />
               </FormInput>
               <FormSwitch
                 name="conversationPending"
-                label="Conversas Pendentes"
+                label={t("chatwoot.form.conversationPending.label")}
                 className="w-full justify-between"
-                helper="Conversas iniciam como pendentes"
+                helper={t("chatwoot.form.conversationPending.description")}
               />
               <FormSwitch
                 name="reopenConversation"
-                label="Reabrir Conversa"
+                label={t("chatwoot.form.reopenConversation.label")}
                 className="w-full justify-between"
-                helper="Reabre conversa ao receber mensagem"
+                helper={t("chatwoot.form.reopenConversation.description")}
               />
               <FormSwitch
                 name="importContacts"
-                label="Importar Contatos"
+                label={t("chatwoot.form.importContacts.label")}
                 className="w-full justify-between"
-                helper="Importa contatos da agenda do whatsapp ao conectar o QR Code"
+                helper={t("chatwoot.form.importContacts.description")}
               />
               <FormSwitch
                 name="importMessages"
-                label="Importar Mensagens"
+                label={t("chatwoot.form.importMessages.label")}
                 className="w-full justify-between"
-                helper="Importa conversas e mensagens do whatsapp ao conectar o QR Code"
+                helper={t("chatwoot.form.importMessages.description")}
               />
               <FormInput
                 name="daysLimitImportMessages"
-                label="Limite de Dias para Importar Mensagens"
+                label={t("chatwoot.form.daysLimitImportMessages.label")}
               >
                 <Input type="number" />
               </FormInput>
               <FormTags
                 name="ignoreJids"
-                label="Ignorar JIDs"
-                placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
+                label={t("chatwoot.form.ignoreJids.label")}
+                placeholder={t("chatwoot.form.ignoreJids.placeholder")}
               />
               <FormSwitch
                 name="autoCreate"
-                label="Criar Automaticamente"
+                label={t("chatwoot.form.autoCreate.label")}
                 className="w-full justify-between"
-                helper="Cria automaticamente integração com chatwoot ao Salvar"
+                helper={t("chatwoot.form.autoCreate.description")}
               />
             </div>
           </div>
           <div className="mx-4 flex justify-end">
-            <Button type="submit">Salvar</Button>
+            <Button type="submit">{t("chatwoot.button.save")}</Button>
           </div>
         </form>
       </Form>

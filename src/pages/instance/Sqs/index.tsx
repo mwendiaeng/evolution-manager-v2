@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -33,6 +34,7 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 function Sqs() {
+  const { t } = useTranslation();
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
@@ -52,7 +54,7 @@ function Sqs() {
         const data = await fetchSqs(instance.name, instance.token);
         form.reset(data);
       } catch (error) {
-        console.error("Erro ao buscar dados do sqs:", error);
+        console.error("Error", error);
       } finally {
         setLoading(false);
       }
@@ -71,12 +73,10 @@ function Sqs() {
       };
 
       await createSqs(instance.name, instance.token, sqsData);
-      toast.success("Sqs criado com sucesso");
+      toast.success(t("sqs.toast.success"));
     } catch (error: any) {
-      console.error("Erro ao criar sqs:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error(t("sqs.toast.error"), error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     } finally {
       setLoading(false);
     }
@@ -117,21 +117,23 @@ function Sqs() {
           className="w-full space-y-6"
         >
           <div>
-            <h3 className="mb-1 text-lg font-medium">SQS</h3>
+            <h3 className="mb-1 text-lg font-medium">{t("sqs.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
               <FormSwitch
                 name="enabled"
-                label="Ativo"
+                label={t("sqs.form.enabled.label")}
                 className="w-full justify-between"
-                helper="Ativa ou desativa o sqs"
+                helper={t("sqs.form.enabled.description")}
               />
               <FormField
                 control={form.control}
                 name="events"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="my-2 text-lg">Eventos</FormLabel>
+                    <FormLabel className="my-2 text-lg">
+                      {t("sqs.form.events.label")}
+                    </FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-2 space-y-1 divide-y">
                         {events
@@ -173,7 +175,7 @@ function Sqs() {
             </div>
             <div className="mx-4 flex justify-end pt-6">
               <Button type="submit" disabled={loading}>
-                {loading ? "Salvando..." : "Salvar"}
+                {loading ? t("sqs.button.saving") : t("sqs.button.save")}
               </Button>
             </div>
           </div>

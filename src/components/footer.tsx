@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 import { verifyServer } from "@/services/auth.service";
 
 import { Button } from "./ui/button";
 
 function Footer() {
+  const { t } = useTranslation();
+
   const [version, setVersion] = useState<string | null>(null);
   const clientName = localStorage.getItem("clientName");
 
@@ -40,12 +43,12 @@ function Footer() {
       <div className="flex items-center space-x-3 divide-x">
         {clientName && clientName !== "" && (
           <span>
-            Client Name: <strong>{clientName}</strong>
+            {t("footer.clientName")}: <strong>{clientName}</strong>
           </span>
         )}
         {version && version !== "" && (
           <span className="pl-3">
-            Version: <strong>{version}</strong>
+            {t("footer.version")}: <strong>{version}</strong>
           </span>
         )}
       </div>

@@ -2,6 +2,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
 import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
@@ -45,6 +46,7 @@ const FormSchema = z.object({
 });
 
 function NewInstance({ resetTable }: { resetTable: () => void }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -71,16 +73,14 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
 
       await createInstance(instanceData);
 
-      toast.success("Instância criada com sucesso");
+      toast.success(t("toast.instance.created"));
       setOpen(false);
       onReset();
       resetTable();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Erro ao criar instância:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error("Error:", error);
+      toast.error(`Error : ${error?.response?.data?.response?.message}`);
     }
   };
 
@@ -98,39 +98,55 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="default" size="sm">
-          Instância <PlusIcon size="18" />
+          {t("instance.button.create")} <PlusIcon size="18" />
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[650px]" onCloseAutoFocus={onReset}>
         <DialogHeader>
-          <DialogTitle>Nova Instância</DialogTitle>
+          <DialogTitle>{t("instance.modal.title")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
             className="grid gap-4 py-4"
           >
-            <FormInput required name="name" label="Nome">
+            <FormInput required name="name" label={t("instance.form.name")}>
               <Input />
             </FormInput>
             <FormSelect
               name="integration"
-              label="Integração"
+              label={t("instance.form.integration.label")}
               options={[
-                { value: "WHATSAPP-BAILEYS", label: "Baileys" },
-                { value: "WHATSAPP-BUSINESS", label: "Whatsapp Cloud API" },
-                { value: "META-FACEBOOK", label: "Facebook" },
-                { value: "META-INSTAGRAM", label: "Instagram" },
+                {
+                  value: "WHATSAPP-BAILEYS",
+                  label: t("instance.form.integration.baileys"),
+                },
+                {
+                  value: "WHATSAPP-BUSINESS",
+                  label: t("instance.form.integration.whatsapp"),
+                },
+                {
+                  value: "META-FACEBOOK",
+                  label: t("instance.form.integration.facebook"),
+                },
+                {
+                  value: "META-INSTAGRAM",
+                  label: t("instance.form.integration.instagram"),
+                },
               ]}
             />
-            <FormInput required name="token" label="Token">
+            <FormInput required name="token" label={t("instance.form.token")}>
               <Input />
             </FormInput>
-            <FormInput name="number" label="Número">
+            <FormInput name="number" label={t("instance.form.number")}>
               <Input type="tel" />
             </FormInput>
             {integrationSelected === "WHATSAPP-BUSINESS" && (
-              <FormInput required name="businessId" label="Business ID">
+              <FormInput
+                required
+                name="businessId"
+                label={t("instance.form.businessId")}
+              >
                 <Input />
               </FormInput>
             )}
@@ -156,7 +172,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
                   setToken={(token) => form.setValue("token", token)}
                 />
               )}
-              <Button type="submit">Salvar</Button>
+              <Button type="submit">{t("instance.button.save")}</Button>
             </DialogFooter>
           </form>
         </FormProvider>

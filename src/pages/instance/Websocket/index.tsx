@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -33,6 +34,7 @@ const FormSchema = z.object({
 type FormSchemaType = z.infer<typeof FormSchema>;
 
 function Websocket() {
+  const { t } = useTranslation();
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
@@ -72,12 +74,10 @@ function Websocket() {
       };
 
       await createWebsocket(instance.name, instance.token, websocketData);
-      toast.success("Websocket criado com sucesso");
+      toast.success(t("websocket.toast.success"));
     } catch (error: any) {
-      console.error("Erro ao criar websocket:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error(t("websocket.toast.error"), error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     } finally {
       setLoading(false);
     }
@@ -118,14 +118,14 @@ function Websocket() {
           className="w-full space-y-6"
         >
           <div>
-            <h3 className="mb-1 text-lg font-medium">Websocket</h3>
+            <h3 className="mb-1 text-lg font-medium">{t("websocket.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
               <FormSwitch
                 name="enabled"
-                label="Ativo"
+                label={t("websocket.form.enabled.label")}
                 className="w-full justify-between"
-                helper="Ativa ou desativa o websocket"
+                helper={t("websocket.form.enabled.description")}
               />
 
               <FormField
@@ -133,7 +133,9 @@ function Websocket() {
                 name="events"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="my-2 text-lg">Eventos</FormLabel>
+                    <FormLabel className="my-2 text-lg">
+                      {t("websocket.form.events.label")}
+                    </FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-2 space-y-1 divide-y">
                         {events
@@ -175,7 +177,9 @@ function Websocket() {
             </div>
             <div className="mx-4 flex justify-end pt-6">
               <Button type="submit" disabled={loading}>
-                {loading ? "Salvando..." : "Salvar"}
+                {loading
+                  ? t("websocket.button.saving")
+                  : t("websocket.button.save")}
               </Button>
             </div>
           </div>

@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Cog } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -82,14 +83,15 @@ const fetchData = async (
 
       setCreds(getCreds);
     } else {
-      console.error("Token ou nome da instância não encontrados.");
+      console.error("Token not found");
     }
   } catch (error) {
-    console.error("Erro ao carregar configurações:", error);
+    console.error("Error:", error);
   }
 };
 
 function DefaultSettingsOpenai() {
+  const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [open, setOpen] = useState(false);
@@ -102,9 +104,9 @@ function DefaultSettingsOpenai() {
     defaultValues: {
       openaiCredsId: "",
       expire: 0,
-      keywordFinish: "#SAIR",
+      keywordFinish: t("openai.form.examples.keywordFinish"),
       delayMessage: 1000,
-      unknownMessage: "Mensagem não reconhecida",
+      unknownMessage: t("openai.form.examples.unknownMessage"),
       listeningFromMe: false,
       stopBotFromMe: false,
       keepOpen: false,
@@ -142,7 +144,7 @@ function DefaultSettingsOpenai() {
   const handleSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       if (!instance || !instance.name) {
-        throw new Error("Nome da instância não encontrado.");
+        throw new Error("instance not found.");
       }
 
       const settingsData: OpenaiSettings = {
@@ -165,13 +167,11 @@ function DefaultSettingsOpenai() {
         instance.token,
         settingsData,
       );
-      toast.success("Configuração salva com sucesso!");
+      toast.success(t("openai.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Erro ao criar bot:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error("Error:", error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     }
   };
 
@@ -184,7 +184,9 @@ function DefaultSettingsOpenai() {
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <Cog size={16} className="mr-1" />
-          <span className="hidden md:inline">Configurações Padrão</span>
+          <span className="hidden md:inline">
+            {t("openai.defaultSettings")}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -192,7 +194,7 @@ function DefaultSettingsOpenai() {
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
-          <DialogTitle>Configurações Padrão</DialogTitle>
+          <DialogTitle>{t("openai.defaultSettings")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form
@@ -203,7 +205,7 @@ function DefaultSettingsOpenai() {
               <div className="space-y-4">
                 <FormSelect
                   name="openaiCredsId"
-                  label="Credencial"
+                  label={t("openai.form.openaiCredsId.label")}
                   options={
                     creds
                       ?.filter((cred) => !!cred.id)
@@ -217,68 +219,74 @@ function DefaultSettingsOpenai() {
                 />
                 <FormSelect
                   name="openaiIdFallback"
-                  label="Bot Fallback"
+                  label={t("openai.form.openaiIdFallback.label")}
                   options={
                     bots
                       ?.filter((bot) => !!bot.id)
                       .map((bot) => ({
-                        label: bot.id ?? "Nome não encontrado",
+                        label: bot.description,
                         value: bot.id!,
                       })) ?? []
                   }
                 />
-                <FormInput name="expire" label="Expira em (minutos)">
+                <FormInput name="expire" label={t("openai.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="keywordFinish"
-                  label="Palavra Chave de Finalização"
+                  label={t("openai.form.keywordFinish.label")}
                 >
                   <Input />
                 </FormInput>
-                <FormInput name="delayMessage" label="Delay padrão da mensagem">
+                <FormInput
+                  name="delayMessage"
+                  label={t("openai.form.delayMessage.label")}
+                >
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="unknownMessage"
-                  label="Mensagem para tipo de mensagem desconhecida"
+                  label={t("openai.form.unknownMessage.label")}
                 >
                   <Input />
                 </FormInput>
                 <FormSwitch
                   name="listeningFromMe"
-                  label="Escuta mensagens enviadas por mim"
+                  label={t("openai.form.listeningFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="stopBotFromMe"
-                  label="Pausa o bot quando eu enviar uma mensagem"
+                  label={t("openai.form.stopBotFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="keepOpen"
-                  label="Mantem a sessão do bot aberta"
+                  label={t("openai.form.keepOpen.label")}
                   reverse
                 />
                 <FormSwitch
                   name="speechToText"
-                  label="Converter áudio em texto"
+                  label={t("openai.form.speechToText.label")}
                   reverse
                 />
 
-                <FormInput name="debounceTime" label="Tempo de espera">
+                <FormInput
+                  name="debounceTime"
+                  label={t("openai.form.debounceTime.label")}
+                >
                   <Input type="number" />
                 </FormInput>
 
                 <FormTags
                   name="ignoreJids"
-                  label="Ignorar JIDs"
-                  placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
+                  label={t("openai.form.ignoreJids.label")}
+                  placeholder={t("openai.form.ignoreJids.placeholder")}
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit">{t("openai.button.save")}</Button>
             </DialogFooter>
           </form>
         </FormProvider>

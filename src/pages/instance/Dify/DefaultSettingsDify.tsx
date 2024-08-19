@@ -3,6 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Cog } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 import { z } from "zod";
 
@@ -66,14 +67,15 @@ const fetchData = async (
 
       setBots(getBots);
     } else {
-      console.error("Token ou nome da instância não encontrados.");
+      console.error("Token not found.");
     }
   } catch (error) {
-    console.error("Erro ao carregar configurações:", error);
+    console.error("Error:", error);
   }
 };
 
 function DefaultSettingsDify() {
+  const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [open, setOpen] = useState(false);
@@ -84,9 +86,9 @@ function DefaultSettingsDify() {
     resolver: zodResolver(FormSchema),
     defaultValues: {
       expire: "0",
-      keywordFinish: "#SAIR",
+      keywordFinish: t("dify.form.examples.keywordFinish"),
       delayMessage: "1000",
-      unknownMessage: "Mensagem não reconhecida",
+      unknownMessage: t("dify.form.examples.unknownMessage"),
       listeningFromMe: false,
       stopBotFromMe: false,
       keepOpen: false,
@@ -125,7 +127,7 @@ function DefaultSettingsDify() {
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       if (!instance || !instance.name) {
-        throw new Error("Nome da instância não encontrado.");
+        throw new Error("instance not found.");
       }
 
       const settingsData: DifySettings = {
@@ -142,13 +144,11 @@ function DefaultSettingsDify() {
       };
 
       await setDefaultSettingsDify(instance.name, instance.token, settingsData);
-      toast.success("Configuração salva com sucesso!");
+      toast.success(t("dify.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
-      console.error("Erro ao criar bot:", error);
-      toast.error(
-        `Erro ao criar : ${error?.response?.data?.response?.message}`,
-      );
+      console.error("Error:", error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
     }
   };
 
@@ -161,7 +161,7 @@ function DefaultSettingsDify() {
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <Cog size={16} className="mr-1" />
-          <span className="hidden sm:inline">Configurações Padrão</span>
+          <span className="hidden sm:inline">{t("dify.defaultSettings")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -169,7 +169,7 @@ function DefaultSettingsDify() {
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
-          <DialogTitle>Configurações Padrão</DialogTitle>
+          <DialogTitle>{t("dify.defaultSettings")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form
@@ -180,62 +180,68 @@ function DefaultSettingsDify() {
               <div className="space-y-4">
                 <FormSelect
                   name="difyIdFallback"
-                  label="Bot Fallback"
+                  label={t("dify.form.difyIdFallback.label")}
                   options={
                     bots
                       ?.filter((bot) => !!bot.id)
                       .map((bot) => ({
-                        label: bot.id!,
+                        label: bot.description!,
                         value: bot.id!,
                       })) ?? []
                   }
                 />
-                <FormInput name="expire" label="Expira em (minutos)">
+                <FormInput name="expire" label={t("dify.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="keywordFinish"
-                  label="Palavra Chave de Finalização"
+                  label={t("dify.form.keywordFinish.label")}
                 >
                   <Input />
                 </FormInput>
-                <FormInput name="delayMessage" label="Delay padrão da mensagem">
+                <FormInput
+                  name="delayMessage"
+                  label={t("dify.form.delayMessage.label")}
+                >
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="unknownMessage"
-                  label="Mensagem para tipo de mensagem desconhecida"
+                  label={t("dify.form.unknownMessage.label")}
                 >
                   <Input />
                 </FormInput>
                 <FormSwitch
                   name="listeningFromMe"
-                  label="Escuta mensagens enviadas por mim"
+                  label={t("dify.form.listeningFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="stopBotFromMe"
-                  label="Pausa o bot quando eu enviar uma mensagem"
+                  label={t("dify.form.stopBotFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="keepOpen"
-                  label="Mantem a sessão do bot aberta"
+                  label={t("dify.form.keepOpen.label")}
                   reverse
                 />
-                <FormInput name="debounceTime" label="Tempo de espera">
+                <FormInput
+                  name="debounceTime"
+                  label={t("dify.form.debounceTime.label")}
+                >
                   <Input type="number" />
                 </FormInput>
 
                 <FormTags
                   name="ignoreJids"
-                  label="Ignorar JIDs"
-                  placeholder="Adicionar JIDs ex: 1234567890@s.whatsapp.net"
+                  label={t("dify.form.ignoreJids.label")}
+                  placeholder={t("dify.form.ignoreJids.placeholder")}
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">Salvar</Button>
+              <Button type="submit">{t("dify.button.save")}</Button>
             </DialogFooter>
           </form>
         </FormProvider>

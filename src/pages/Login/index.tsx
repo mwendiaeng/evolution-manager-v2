@@ -1,5 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { z } from "zod";
@@ -26,13 +27,14 @@ import {
 
 const loginSchema = z.object({
   serverUrl: z
-    .string({ required_error: "URL do servidor é obrigatória" })
+    .string({ required_error: "serverUrl is required" })
     .url("URL inválida"),
-  apiKey: z.string({ required_error: "ApiKey é obrigatória" }),
+  apiKey: z.string({ required_error: "ApiKey is required" }),
 });
 type LoginSchema = z.infer<typeof loginSchema>;
 
 function Login() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const loginForm = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
@@ -49,7 +51,7 @@ function Login() {
       logout();
       loginForm.setError("serverUrl", {
         type: "manual",
-        message: "Servidor inválido",
+        message: t("login.message.invalidServer"),
       });
       return;
     }
@@ -59,7 +61,7 @@ function Login() {
     if (!verify) {
       loginForm.setError("apiKey", {
         type: "manual",
-        message: "Credenciais inválidas",
+        message: t("login.message.invalidCredentials"),
       });
       return;
     }
@@ -67,7 +69,7 @@ function Login() {
     const saveCreds = await saveCredentials(data.serverUrl, data.apiKey);
 
     if (!saveCreds) {
-      toast.error("Credenciais inválidas");
+      toast.error(t("login.message.invalidCredentials"));
       return;
     }
 
@@ -89,26 +91,34 @@ function Login() {
       <div className="flex flex-1 items-center justify-center p-8">
         <Card className="b-none w-[350px] shadow-none">
           <CardHeader>
-            <CardTitle className="text-center">Evolution Manager</CardTitle>
+            <CardTitle className="text-center">{t("login.title")}</CardTitle>
             <CardDescription className="text-center">
-              Conecte no servidor de sua API Evolution
+              {t("login.description")}
             </CardDescription>
           </CardHeader>
           <Form {...loginForm}>
             <form onSubmit={loginForm.handleSubmit(handleLogin)}>
               <CardContent>
                 <div className="grid w-full items-center gap-4">
-                  <FormInput required name="serverUrl" label="Server URL">
+                  <FormInput
+                    required
+                    name="serverUrl"
+                    label={t("login.form.serverUrl")}
+                  >
                     <Input />
                   </FormInput>
-                  <FormInput required name="apiKey" label="Global ApiKey">
+                  <FormInput
+                    required
+                    name="apiKey"
+                    label={t("login.form.apiKey")}
+                  >
                     <Input type="password" />
                   </FormInput>
                 </div>
               </CardContent>
               <CardFooter className="flex justify-center">
                 <Button className="w-full" type="submit">
-                  Conectar
+                  {t("login.button.login")}
                 </Button>
               </CardFooter>
             </form>

@@ -1,13 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ChevronDown } from "lucide-react";
+import {
+  CircleHelp,
+  Cog,
+  FileQuestion,
+  IterationCcw,
+  LayoutDashboard,
+  LifeBuoy,
+  MessageCircle,
+  Zap,
+  ChevronDown,
+} from "lucide-react";
 import { useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { cn } from "@/lib/utils";
 
-import Menus from "./constants/menus";
 import { Button } from "./ui/button";
 import {
   Collapsible,
@@ -16,6 +26,111 @@ import {
 } from "./ui/collapsible";
 
 function Sidebar() {
+  const { t } = useTranslation();
+
+  const Menus = [
+    {
+      id: "dashboard",
+      title: t("sidebar.dashboard"),
+      icon: LayoutDashboard,
+      path: "dashboard",
+    },
+    {
+      navLabel: true,
+      title: t("sidebar.configurations"),
+      icon: Cog,
+      children: [
+        {
+          id: "settings",
+          title: t("sidebar.settings"),
+          path: "settings",
+        },
+        {
+          id: "proxy",
+          title: t("sidebar.proxy"),
+          path: "proxy",
+        },
+      ],
+    },
+    {
+      title: t("sidebar.callbacks"),
+      icon: IterationCcw,
+      children: [
+        {
+          id: "webhook",
+          title: t("sidebar.webhook"),
+          path: "webhook",
+        },
+        {
+          id: "websocket",
+          title: t("sidebar.websocket"),
+          path: "websocket",
+        },
+        {
+          id: "rabbitmq",
+          title: t("sidebar.rabbitmq"),
+          path: "rabbitmq",
+        },
+        {
+          id: "sqs",
+          title: t("sidebar.sqs"),
+          path: "sqs",
+        },
+      ],
+    },
+    {
+      title: t("sidebar.integrations"),
+      icon: Zap,
+      children: [
+        {
+          id: "chatwoot",
+          title: t("sidebar.chatwoot"),
+          path: "chatwoot",
+        },
+        {
+          id: "typebot",
+          title: t("sidebar.typebot"),
+          path: "typebot",
+        },
+        {
+          id: "openai",
+          title: t("sidebar.openai"),
+          path: "openai",
+        },
+        {
+          id: "dify",
+          title: t("sidebar.dify"),
+          path: "dify",
+        },
+      ],
+    },
+    {
+      id: "documentation",
+      title: t("sidebar.documentation"),
+      icon: FileQuestion,
+      link: "https://doc.evolution-api.com",
+      divider: true,
+    },
+    {
+      id: "postman",
+      title: t("sidebar.postman"),
+      icon: CircleHelp,
+      link: "https://evolution-api.com/postman",
+    },
+    {
+      id: "discord",
+      title: t("sidebar.discord"),
+      icon: MessageCircle,
+      link: "https://evolution-api.com/discord",
+    },
+    {
+      id: "support-premium",
+      title: t("sidebar.supportPremium"),
+      icon: LifeBuoy,
+      link: "https://evolution-api.com/suporte-pro",
+    },
+  ] as const;
+
   const navigate = useNavigate();
   const { pathname } = useLocation();
 

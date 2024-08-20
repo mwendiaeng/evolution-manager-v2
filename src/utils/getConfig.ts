@@ -1,11 +1,11 @@
 export function getFacebookAppID() {
-  return import.meta.env.VITE_FACEBOOK_APP_ID || "";
+  return localStorage.getItem("facebookAppId") || "";
 }
 
 export function getFacebookConfigID() {
-  return import.meta.env.VITE_FACEBOOK_CONFIG_ID || "";
+  return localStorage.getItem("facebookConfigId") || "";
 }
 
 export function getFacebookUserToken() {
-  return import.meta.env.VITE_FB_USER_TOKEN || "";
+  return localStorage.getItem("facebookUserToken") || "";
 }

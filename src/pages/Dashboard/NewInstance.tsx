@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -48,6 +48,16 @@ const FormSchema = z.object({
 function NewInstance({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
+  const [options, setOptions] = useState([
+    {
+      value: "WHATSAPP-BAILEYS",
+      label: t("instance.form.integration.baileys"),
+    },
+    {
+      value: "WHATSAPP-BUSINESS",
+      label: t("instance.form.integration.whatsapp"),
+    },
+  ]);
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -58,6 +68,27 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
       businessId: "",
     },
   });
+
+  const facebookLogin =
+    localStorage.getItem("facebookUserToken") &&
+    localStorage.getItem("facebookConfigId") &&
+    localStorage.getItem("facebookAppId");
+
+  useEffect(() => {
+    if (facebookLogin) {
+      setOptions([
+        ...options,
+        {
+          value: "META-FACEBOOK",
+          label: t("instance.form.integration.facebook"),
+        },
+        {
+          value: "META-INSTAGRAM",
+          label: t("instance.form.integration.instagram"),
+        },
+      ]);
+    }
+  }, [facebookLogin]);
 
   const integrationSelected = form.watch("integration");
 
@@ -116,24 +147,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
             <FormSelect
               name="integration"
               label={t("instance.form.integration.label")}
-              options={[
-                {
-                  value: "WHATSAPP-BAILEYS",
-                  label: t("instance.form.integration.baileys"),
-                },
-                {
-                  value: "WHATSAPP-BUSINESS",
-                  label: t("instance.form.integration.whatsapp"),
-                },
-                {
-                  value: "META-FACEBOOK",
-                  label: t("instance.form.integration.facebook"),
-                },
-                {
-                  value: "META-INSTAGRAM",
-                  label: t("instance.form.integration.instagram"),
-                },
-              ]}
+              options={options}
             />
             <FormInput required name="token" label={t("instance.form.token")}>
               <Input />
@@ -151,27 +165,32 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
               </FormInput>
             )}
             <DialogFooter>
-              {integrationSelected === "WHATSAPP-BUSINESS" && (
-                <LoginWhatsappButton
-                  setNumber={(number) => form.setValue("number", number)}
-                  setBusiness={(businessId) =>
-                    form.setValue("businessId", businessId)
-                  }
-                  setToken={(token) => form.setValue("token", token)}
-                />
+              {facebookLogin && (
+                <>
+                  {integrationSelected === "WHATSAPP-BUSINESS" && (
+                    <LoginWhatsappButton
+                      setNumber={(number) => form.setValue("number", number)}
+                      setBusiness={(businessId) =>
+                        form.setValue("businessId", businessId)
+                      }
+                      setToken={(token) => form.setValue("token", token)}
+                    />
+                  )}
+                  {integrationSelected === "META-FACEBOOK" && (
+                    <LoginFacebookButton
+                      setUserID={(userID) => form.setValue("number", userID)}
+                      setToken={(token) => form.setValue("token", token)}
+                    />
+                  )}
+                  {integrationSelected === "META-INSTAGRAM" && (
+                    <LoginInstagramButton
+                      setUserID={(userID) => form.setValue("number", userID)}
+                      setToken={(token) => form.setValue("token", token)}
+                    />
+                  )}
+                </>
               )}
-              {integrationSelected === "META-FACEBOOK" && (
-                <LoginFacebookButton
-                  setUserID={(userID) => form.setValue("number", userID)}
-                  setToken={(token) => form.setValue("token", token)}
-                />
-              )}
-              {integrationSelected === "META-INSTAGRAM" && (
-                <LoginInstagramButton
-                  setUserID={(userID) => form.setValue("number", userID)}
-                  setToken={(token) => form.setValue("token", token)}
-                />
-              )}
+
               <Button type="submit">{t("instance.button.save")}</Button>
             </DialogFooter>
           </form>

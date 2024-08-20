@@ -22,6 +22,9 @@ export const logout = () => {
   localStorage.removeItem("apiUrl");
   localStorage.removeItem("token");
   localStorage.removeItem("version");
+  localStorage.removeItem("facebookAppId");
+  localStorage.removeItem("facebookConfigId");
+  localStorage.removeItem("facebookUserToken");
 };
 
 export const verifyCreds = async (url: string, token: string) => {
@@ -36,7 +39,20 @@ export const verifyCreds = async (url: string, token: string) => {
       },
     );
 
-    return response.data;
+    const { data } = response;
+
+    console.log(data);
+
+    if (data?.facebookAppId)
+      localStorage.setItem("facebookAppId", data.facebookAppId);
+
+    if (data?.facebookConfigId)
+      localStorage.setItem("facebookConfigId", data.facebookConfigId);
+
+    if (data?.facebookUserToken)
+      localStorage.setItem("facebookUserToken", data.facebookUserToken);
+
+    return data;
   } catch (error) {
     return null;
   }

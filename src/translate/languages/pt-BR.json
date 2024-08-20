@@ -12,7 +12,7 @@
   "modal": {
     "delete": {
       "title": "Excluir Registro",
-      "message": "Você está exluindo a instância {{instanceName}}, Tem certeza que deseja continuar?",
+      "message": "Você está excluindo a instância {{instanceName}}. Tem certeza que deseja continuar?",
       "messageSingle": "Esta ação não pode ser desfeita."
     }
   },
@@ -36,7 +36,9 @@
     "language": {
       "label": "Idioma",
       "english": "Inglês",
-      "portuguese": "Português"
+      "portuguese": "Português",
+      "spanish": "Espanhol",
+      "french": "Francês"
     }
   },
   "sidebar": {
@@ -57,7 +59,7 @@
     "documentation": "Documentação",
     "postman": "Postman",
     "discord": "Discord",
-    "supportPremium": "Support Premium"
+    "supportPremium": "Suporte Premium"
   },
   "toast": {
     "instance": {
@@ -117,7 +119,7 @@
           "title": "Faça o pareamento com o WhatsApp"
         },
         "restart": "Reiniciar",
-        "disconnect": "Disconectar"
+        "disconnect": "Desconectar"
       },
       "alert": "Para conectar, escaneie o QR Code com o WhatsApp",
       "contacts": "Contatos",
@@ -128,7 +130,7 @@
   "settings": {
     "title": "Comportamento",
     "toast": {
-      "success": "Compotamento aplicado com sucesso",
+      "success": "Comportamento aplicado com sucesso",
       "error": "Ocorreu um erro ao aplicar o comportamento"
     },
     "form": {
@@ -158,7 +160,7 @@
       },
       "readStatus": {
         "label": "Visualizar Status",
-        "description": "Marcas todos os status como visualizados"
+        "description": "Marcar todos os status como visualizados"
       }
     },
     "button": {
@@ -201,610 +203,610 @@
   "webhook": {
     "title": "Webhook",
     "toast": {
-      "success": "Webhook applied successfully",
-      "error": "An error occurred while applying the webhook"
+      "success": "Webhook aplicado com sucesso",
+      "error": "Ocorreu um erro ao aplicar o webhook"
     },
     "form": {
       "enabled": {
-        "label": "Enabled",
-        "description": "Enable or disable the webhook"
+        "label": "Ativo",
+        "description": "Ativar ou desativar o webhook"
       },
       "url": {
         "label": "URL"
       },
       "webhookByEvents": {
-        "label": "Webhook by Events",
-        "description": "Create a route for each event by adding the event name to the end of the URL"
+        "label": "Webhook por Eventos",
+        "description": "Criar uma rota para cada evento adicionando o nome do evento ao final da URL"
       },
       "webhookBase64": {
         "label": "Webhook Base64",
-        "description": "Send media base64 data in webhook"
+        "description": "Enviar dados de mídia em base64 no webhook"
       },
       "events": {
-        "label": "Events"
+        "label": "Eventos"
       }
     },
     "button": {
-      "save": "Save",
-      "saving": "Saving..."
+      "save": "Salvar",
+      "saving": "Salvando..."
     }
   },
   "websocket": {
-    "title": "Websocket",
+    "title": "WebSocket",
     "toast": {
-      "success": "Websocket applied successfully",
-      "error": "An error occurred while applying the websocket"
+      "success": "WebSocket aplicado com sucesso",
+      "error": "Ocorreu um erro ao aplicar o WebSocket"
     },
     "form": {
       "enabled": {
-        "label": "Enabled",
-        "description": "Enable or disable the websocket"
+        "label": "Ativo",
+        "description": "Ativar ou desativar o WebSocket"
       },
       "events": {
-        "label": "Events"
+        "label": "Eventos"
       }
     },
     "button": {
-      "save": "Save",
-      "saving": "Saving..."
+      "save": "Salvar",
+      "saving": "Salvando..."
     }
   },
   "rabbitmq": {
     "title": "RabbitMQ",
     "toast": {
-      "success": "RabbitMQ applied successfully",
-      "error": "An error occurred while applying the rabbitmq"
+      "success": "RabbitMQ aplicado com sucesso",
+      "error": "Ocorreu um erro ao aplicar o RabbitMQ"
     },
     "form": {
       "enabled": {
-        "label": "Enabled",
-        "description": "Enable or disable the rabbitmq"
+        "label": "Ativo",
+        "description": "Ativar ou desativar o RabbitMQ"
       },
       "events": {
-        "label": "Events"
+        "label": "Eventos"
       }
     },
     "button": {
-      "save": "Save",
-      "saving": "Saving..."
+      "save": "Salvar",
+      "saving": "Salvando..."
     }
   },
   "sqs": {
     "title": "SQS",
     "toast": {
-      "success": "SQS applied successfully",
-      "error": "An error occurred while applying the sqs"
+      "success": "SQS aplicado com sucesso",
+      "error": "Ocorreu um erro ao aplicar o SQS"
     },
     "form": {
       "enabled": {
-        "label": "Enabled",
-        "description": "Enable or disable the sqs"
+        "label": "Ativo",
+        "description": "Ativar ou desativar o SQS"
       },
       "events": {
-        "label": "Events"
+        "label": "Eventos"
       }
     },
     "button": {
-      "save": "Save",
-      "saving": "Saving..."
+      "save": "Salvar",
+      "saving": "Salvando..."
     }
   },
   "chatwoot": {
     "title": "Chatwoot",
     "toast": {
-      "success": "Chatwoot applied successfully",
-      "error": "An error occurred while applying the Chatwoot"
+      "success": "Chatwoot aplicado com sucesso",
+      "error": "Ocorreu um erro ao aplicar o Chatwoot"
     },
     "form": {
       "enabled": {
-        "label": "Enabled",
-        "description": "Enable or disable the sqs"
+        "label": "Ativo",
+        "description": "Ativar ou desativar o Chatwoot"
       },
       "url": {
-        "label": "Chatwoot URL"
+        "label": "URL do Chatwoot"
       },
       "accountId": {
-        "label": "Account ID"
+        "label": "ID da Conta"
       },
       "token": {
         "label": "Token"
       },
       "signMsg": {
-        "label": "Sign Messages",
-        "description": "Sign message with chatwoot username"
+        "label": "Assinar Mensagens",
+        "description": "Assinar mensagem com o nome de usuário do Chatwoot"
       },
       "signDelimiter": {
-        "label": "Sign Delimiter"
+        "label": "Delimitador de Assinatura"
       },
       "nameInbox": {
-        "label": "Name Inbox"
+        "label": "Nome da Caixa de Entrada"
       },
       "organization": {
-        "label": "Organization"
+        "label": "Organização"
       },
       "logo": {
         "label": "Logo"
       },
       "conversationPending": {
-        "label": "Conversation Pending",
-        "description": "Conversations start as pending"
+        "label": "Conversação Pendente",
+        "description": "Conversas começam como pendentes"
       },
       "reopenConversation": {
-        "label": "Reopen Conversation",
-        "description": "Reopen conversation when receiving message"
+        "label": "Reabrir Conversa",
+        "description": "Reabrir a conversa ao receber uma mensagem"
       },
       "importContacts": {
-        "label": "Import Contacts",
-        "description": "Import contacts from WhatsApp address book by connecting QR Code"
+        "label": "Importar Contatos",
+        "description": "Importar contatos da agenda do WhatsApp ao conectar o QR Code"
       },
       "importMessages": {
-        "label": "Import Messages",
-        "description": "Import messages from WhatsApp by connecting QR Code"
+        "label": "Importar Mensagens",
+        "description": "Importar mensagens do WhatsApp ao conectar o QR Code"
       },
       "daysLimitImportMessages": {
-        "label": "Days Limit Import Messages"
+        "label": "Limite de Dias para Importação de Mensagens"
       },
       "ignoreJids": {
-        "label": "Ignore Jids",
-        "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
+        "label": "Ignorar JIDs",
+        "placeholder": "Adicione JIDs ex: 1234567890@s.whatsapp.net e pressione enter"
       },
       "autoCreate": {
-        "label": "Auto Create",
-        "description": "Automatically create chatwoot integration on save"
+        "label": "Criação Automática",
+        "description": "Criar automaticamente a integração com o Chatwoot ao salvar"
       }
     },
     "button": {
-      "save": "Save",
-      "saving": "Saving..."
+      "save": "Salvar",
+      "saving": "Salvando..."
     }
   },
   "typebot": {
     "title": "Typebots",
     "sessions": {
-      "label": "Sessions",
-      "search": "Search for remoteJid...",
+      "label": "Sessões",
+      "search": "Pesquisar por remoteJid...",
       "table": {
         "remoteJid": "RemoteJid",
-        "pushName": "Push Name",
-        "sessionId": "Session ID",
+        "pushName": "Nome de Exibição",
+        "sessionId": "ID da Sessão",
         "status": "Status",
         "actions": {
-          "title": "Actions",
-          "open": "Open",
-          "pause": "Pause",
-          "close": "Close",
-          "delete": "Delete"
+          "title": "Ações",
+          "open": "Abrir",
+          "pause": "Pausar",
+          "close": "Fechar",
+          "delete": "Excluir"
         },
-        "none": "Nothing to show"
+        "none": "Nada para mostrar"
       }
     },
-    "defaultSettings": "Default Settings",
+    "defaultSettings": "Configurações Padrão",
     "toast": {
       "defaultSettings": {
-        "success": "Default settings applied successfully",
-        "error": "An error occurred while applying the default settings"
+        "success": "Configurações padrão aplicadas com sucesso",
+        "error": "Ocorreu um erro ao aplicar as configurações padrão"
       },
       "success": {
-        "update": "Typebot updated successfully",
-        "create": "Typebot created successfully",
-        "delete": "Typebot deleted successfully",
-        "status": "Typebot status updated successfully"
+        "update": "Typebot atualizado com sucesso",
+        "create": "Typebot criado com sucesso",
+        "delete": "Typebot excluído com sucesso",
+        "status": "Status do Typebot atualizado com sucesso"
       },
-      "error": "An error occurred while creating the Typebot"
+      "error": "Ocorreu um erro ao criar o Typebot"
     },
     "table": {
-      "none": "Nothing to show"
+      "none": "Nada para mostrar"
     },
     "form": {
-      "title": "New Typebot",
+      "title": "Novo Typebot",
       "examples": {
         "keywordFinish": "#FINISH",
-        "unknownMessage": "I'm sorry, I didn't understand. Can you try again?"
+        "unknownMessage": "Desculpe, não entendi. Pode tentar novamente?"
       },
       "enabled": {
-        "label": "Enabled"
+        "label": "Ativo"
       },
       "description": {
-        "label": "Description"
+        "label": "Descrição"
       },
       "typebotSettings": {
-        "label": "Typebot Settings"
+        "label": "Configurações do Typebot"
       },
       "url": {
-        "label": "Typebot API URL"
+        "label": "URL da API do Typebot"
       },
       "typebot": {
-        "label": "Typebot Public Name"
+        "label": "Nome Público do Typebot"
       },
       "triggerSettings": {
-        "label": "Trigger Settings"
+        "label": "Configurações de Gatilho"
       },
       "triggerType": {
-        "label": "Trigger Type",
-        "keyword": "Keyword",
-        "all": "All",
-        "advanced": "Advanced",
-        "none": "None"
+        "label": "Tipo de Gatilho",
+        "keyword": "Palavra-chave",
+        "all": "Todos",
+        "advanced": "Avançado",
+        "none": "Nenhum"
       },
       "triggerOperator": {
-        "label": "Trigger Operator",
-        "contains": "Contains",
-        "equals": "Equals",
-        "startsWith": "Starts With",
-        "endsWith": "Ends With",
+        "label": "Operador do Gatilho",
+        "contains": "Contém",
+        "equals": "Igual",
+        "startsWith": "Começa Com",
+        "endsWith": "Termina Com",
         "regex": "Regex"
       },
       "triggerValue": {
-        "label": "Trigger"
+        "label": "Gatilho"
       },
       "triggerConditions": {
-        "label": "Conditions"
+        "label": "Condições"
       },
       "typebotIdFallback": {
-        "label": "Typebot Fallback"
+        "label": "Fallback do Typebot"
       },
       "generalSettings": {
-        "label": "General Settings"
+        "label": "Configurações Gerais"
       },
       "expire": {
-        "label": "Expire in minutes"
+        "label": "Expirar em minutos"
       },
       "keywordFinish": {
-        "label": "Keyword Finish"
+        "label": "Palavra-chave de Finalização"
       },
       "delayMessage": {
-        "label": "Default Delay Message"
+        "label": "Mensagem de Atraso Padrão"
       },
       "unknownMessage": {
-        "label": "Unknown Message"
+        "label": "Mensagem Desconhecida"
       },
       "listeningFromMe": {
-        "label": "Listening from me",
-        "description": "Listen to messages sent by me on the bot"
+        "label": "Ouvindo de mim",
+        "description": "Ouvir as mensagens enviadas por mim no bot"
       },
       "stopBotFromMe": {
-        "label": "Stop bot from me",
-        "description": "Pause the bot when I send a message"
+        "label": "Parar bot por mim",
+        "description": "Pausar o bot quando eu enviar uma mensagem"
       },
       "keepOpen": {
-        "label": "Keep open",
-        "description": "Keep the bot open after the conversation ends"
+        "label": "Manter aberto",
+        "description": "Manter o bot aberto após o término da conversa"
       },
       "debounceTime": {
-        "label": "Debounce Time"
+        "label": "Tempo de Debounce"
       },
       "ignoreJids": {
-        "label": "Ignore Jids",
-        "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
+        "label": "Ignorar JIDs",
+        "placeholder": "Adicione JIDs ex: 1234567890@s.whatsapp.net e pressione enter"
       }
     },
     "button": {
       "create": "Typebot",
-      "save": "Save",
-      "update": "Update",
-      "defaultSettings": "Default Settings",
-      "delete": "Delete"
+      "save": "Salvar",
+      "update": "Atualizar",
+      "defaultSettings": "Configurações Padrão",
+      "delete": "Excluir"
     },
     "modal": {
       "defaultSettings": {
-        "title": "Default Settings"
+        "title": "Configurações Padrão"
       }
     }
   },
   "openai": {
     "title": "OpenAI",
     "sessions": {
-      "label": "Sessions",
-      "search": "Search for remoteJid...",
+      "label": "Sessões",
+      "search": "Pesquisar por remoteJid...",
       "table": {
         "remoteJid": "RemoteJid",
-        "pushName": "Push Name",
-        "sessionId": "Session ID",
+        "pushName": "Nome de Exibição",
+        "sessionId": "ID da Sessão",
         "status": "Status",
         "actions": {
-          "title": "Actions",
-          "open": "Open",
-          "pause": "Pause",
-          "close": "Close",
-          "delete": "Delete"
+          "title": "Ações",
+          "open": "Abrir",
+          "pause": "Pausar",
+          "close": "Fechar",
+          "delete": "Excluir"
         },
-        "none": "Nothing to show"
+        "none": "Nada para mostrar"
       }
     },
     "credentials": {
-      "title": "Credentials",
+      "title": "Credenciais",
       "table": {
-        "name": "Name",
-        "apiKey": "API Key",
+        "name": "Nome",
+        "apiKey": "Chave de API",
         "actions": {
-          "title": "Actions",
-          "delete": "Delete"
+          "title": "Ações",
+          "delete": "Excluir"
         },
-        "none": "Nothing to show"
+        "none": "Nada para mostrar"
       }
     },
-    "defaultSettings": "Default Settings",
+    "defaultSettings": "Configurações Padrão",
     "toast": {
       "defaultSettings": {
-        "success": "Default settings applied successfully",
-        "error": "An error occurred while applying the default settings"
+        "success": "Configurações padrão aplicadas com sucesso",
+        "error": "Ocorreu um erro ao aplicar as configurações padrão"
       },
       "success": {
-        "update": "OpenAI updated successfully",
-        "create": "OpenAI created successfully",
-        "delete": "OpenAI deleted successfully",
-        "status": "OpenAI status updated successfully",
-        "credentialsCreate": "OpenAI credentials created successfully",
-        "credentialsDelete": "OpenAI credentials deleted successfully"
+        "update": "OpenAI atualizado com sucesso",
+        "create": "OpenAI criado com sucesso",
+        "delete": "OpenAI excluído com sucesso",
+        "status": "Status do OpenAI atualizado com sucesso",
+        "credentialsCreate": "Credenciais do OpenAI criadas com sucesso",
+        "credentialsDelete": "Credenciais do OpenAI excluídas com sucesso"
       },
-      "error": "An error occurred while creating the OpenAI"
+      "error": "Ocorreu um erro ao criar o OpenAI"
     },
     "table": {
-      "none": "Nothing to show"
+      "none": "Nada para mostrar"
     },
     "form": {
-      "title": "New OpenAI",
+      "title": "Novo OpenAI",
       "examples": {
         "keywordFinish": "#FINISH",
-        "unknownMessage": "I'm sorry, I didn't understand. Can you try again?"
+        "unknownMessage": "Desculpe, não entendi. Pode tentar novamente?"
       },
       "openaiCredsId": {
-        "label": "OpenAI Credentials"
+        "label": "Credenciais do OpenAI"
       },
       "enabled": {
-        "label": "Enabled"
+        "label": "Ativo"
       },
       "description": {
-        "label": "Description"
+        "label": "Descrição"
       },
       "openaiSettings": {
-        "label": "OpenAI Settings"
+        "label": "Configurações do OpenAI"
       },
       "botType": {
-        "label": "Bot Type",
-        "assistant": "Assistant",
+        "label": "Tipo de Bot",
+        "assistant": "Assistente",
         "chatCompletion": "Chat Completion"
       },
       "assistantId": {
-        "label": "Assistant ID"
+        "label": "ID do Assistente"
       },
       "functionUrl": {
-        "label": "Function URL"
+        "label": "URL da Função"
       },
       "model": {
-        "label": "Language Model"
+        "label": "Modelo de Linguagem"
       },
       "systemMessages": {
-        "label": "System Messages",
-        "description": "Send system messages to OpenAI"
+        "label": "Mensagens do Sistema",
+        "description": "Enviar mensagens do sistema para o OpenAI"
       },
       "assystantMessages": {
-        "label": "Assistant Messages",
-        "description": "Send assistant messages to OpenAI"
+        "label": "Mensagens do Assistente",
+        "description": "Enviar mensagens do assistente para o OpenAI"
       },
       "userMessages": {
-        "label": "User Messages",
-        "description": "Send user messages to OpenAI"
+        "label": "Mensagens do Usuário",
+        "description": "Enviar mensagens do usuário para o OpenAI"
       },
       "maxTokens": {
-        "label": "Max Tokens"
+        "label": "Máximo de Tokens"
       },
       "triggerSettings": {
-        "label": "Trigger Settings"
+        "label": "Configurações de Gatilho"
       },
       "triggerType": {
-        "label": "Trigger Type",
-        "keyword": "Keyword",
-        "all": "All",
-        "advanced": "Advanced",
-        "none": "None"
+        "label": "Tipo de Gatilho",
+        "keyword": "Palavra-chave",
+        "all": "Todos",
+        "advanced": "Avançado",
+        "none": "Nenhum"
       },
       "triggerOperator": {
-        "label": "Trigger Operator",
-        "contains": "Contains",
-        "equals": "Equals",
-        "startsWith": "Starts With",
-        "endsWith": "Ends With",
+        "label": "Operador do Gatilho",
+        "contains": "Contém",
+        "equals": "Igual",
+        "startsWith": "Começa Com",
+        "endsWith": "Termina Com",
         "regex": "Regex"
       },
       "triggerValue": {
-        "label": "Trigger"
+        "label": "Gatilho"
       },
       "triggerConditions": {
-        "label": "Conditions"
+        "label": "Condições"
       },
       "openaiIdFallback": {
-        "label": "OpenAI Fallback"
+        "label": "Fallback do OpenAI"
       },
       "generalSettings": {
-        "label": "General Settings"
+        "label": "Configurações Gerais"
       },
       "expire": {
-        "label": "Expire in minutes"
+        "label": "Expirar em minutos"
       },
       "keywordFinish": {
-        "label": "Keyword Finish"
+        "label": "Palavra-chave de Finalização"
       },
       "delayMessage": {
-        "label": "Default Delay Message"
+        "label": "Mensagem de Atraso Padrão"
       },
       "unknownMessage": {
-        "label": "Unknown Message"
+        "label": "Mensagem Desconhecida"
       },
       "listeningFromMe": {
-        "label": "Listening from me",
-        "description": "Listen to messages sent by me on the bot"
+        "label": "Ouvindo de mim",
+        "description": "Ouvir as mensagens enviadas por mim no bot"
       },
       "stopBotFromMe": {
-        "label": "Stop bot from me",
-        "description": "Pause the bot when I send a message"
+        "label": "Parar bot por mim",
+        "description": "Pausar o bot quando eu enviar uma mensagem"
       },
       "keepOpen": {
-        "label": "Keep open",
-        "description": "Keep the bot open after the conversation ends"
+        "label": "Manter aberto",
+        "description": "Manter o bot aberto após o término da conversa"
       },
       "speechToText": {
-        "label": "Speech to Text",
-        "description": "Convert voice messages to text"
+        "label": "Fala para Texto",
+        "description": "Converter mensagens de voz em texto"
       },
       "debounceTime": {
-        "label": "Debounce Time"
+        "label": "Tempo de Debounce"
       },
       "ignoreJids": {
-        "label": "Ignore Jids",
-        "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
+        "label": "Ignorar JIDs",
+        "placeholder": "Adicione JIDs ex: 1234567890@s.whatsapp.net e pressione enter"
       }
     },
     "button": {
       "create": "OpenAI",
-      "save": "Save",
-      "update": "Update",
-      "defaultSettings": "Default Settings",
-      "delete": "Delete"
+      "save": "Salvar",
+      "update": "Atualizar",
+      "defaultSettings": "Configurações Padrão",
+      "delete": "Excluir"
     },
     "modal": {
       "defaultSettings": {
-        "title": "Default Settings"
+        "title": "Configurações Padrão"
       }
     }
   },
   "dify": {
     "title": "Dify",
     "sessions": {
-      "label": "Sessions",
-      "search": "Search for remoteJid...",
+      "label": "Sessões",
+      "search": "Pesquisar por remoteJid...",
       "table": {
         "remoteJid": "RemoteJid",
-        "pushName": "Push Name",
-        "sessionId": "Session ID",
+        "pushName": "Nome de Exibição",
+        "sessionId": "ID da Sessão",
         "status": "Status",
         "actions": {
-          "title": "Actions",
-          "open": "Open",
-          "pause": "Pause",
-          "close": "Close",
-          "delete": "Delete"
+          "title": "Ações",
+          "open": "Abrir",
+          "pause": "Pausar",
+          "close": "Fechar",
+          "delete": "Excluir"
         },
-        "none": "Nothing to show"
+        "none": "Nada para mostrar"
       }
     },
-    "defaultSettings": "Default Settings",
+    "defaultSettings": "Configurações Padrão",
     "toast": {
       "defaultSettings": {
-        "success": "Default settings applied successfully",
-        "error": "An error occurred while applying the default settings"
+        "success": "Configurações padrão aplicadas com sucesso",
+        "error": "Ocorreu um erro ao aplicar as configurações padrão"
       },
       "success": {
-        "update": "Dify updated successfully",
-        "create": "Dify created successfully",
-        "delete": "Dify deleted successfully",
-        "status": "Dify status updated successfully"
+        "update": "Dify atualizado com sucesso",
+        "create": "Dify criado com sucesso",
+        "delete": "Dify excluído com sucesso",
+        "status": "Status do Dify atualizado com sucesso"
       },
-      "error": "An error occurred while creating the Dify"
+      "error": "Ocorreu um erro ao criar o Dify"
     },
     "table": {
-      "none": "Nothing to show"
+      "none": "Nada para mostrar"
     },
     "form": {
-      "title": "New Dify",
+      "title": "Novo Dify",
       "examples": {
         "keywordFinish": "#FINISH",
-        "unknownMessage": "I'm sorry, I didn't understand. Can you try again?"
+        "unknownMessage": "Desculpe, não entendi. Pode tentar novamente?"
       },
       "enabled": {
-        "label": "Enabled"
+        "label": "Ativo"
       },
       "description": {
-        "label": "Description"
+        "label": "Descrição"
       },
       "difySettings": {
-        "label": "Dify Settings"
+        "label": "Configurações do Dify"
       },
       "botType": {
-        "label": "Bot Type",
-        "chatBot": "Chat Bot",
-        "textGenerator": "Text Generator",
-        "agent": "Agent",
-        "workflow": "Workflow"
+        "label": "Tipo de Bot",
+        "chatBot": "Bot de Chat",
+        "textGenerator": "Gerador de Texto",
+        "agent": "Agente",
+        "workflow": "Fluxo de Trabalho"
       },
       "apiUrl": {
-        "label": "API URL"
+        "label": "URL da API"
       },
       "apiKey": {
-        "label": "API Key"
+        "label": "Chave de API"
       },
       "triggerSettings": {
-        "label": "Trigger Settings"
+        "label": "Configurações de Gatilho"
       },
       "triggerType": {
-        "label": "Trigger Type",
-        "keyword": "Keyword",
-        "all": "All",
-        "advanced": "Advanced",
-        "none": "None"
+        "label": "Tipo de Gatilho",
+        "keyword": "Palavra-chave",
+        "all": "Todos",
+        "advanced": "Avançado",
+        "none": "Nenhum"
       },
       "triggerOperator": {
-        "label": "Trigger Operator",
-        "contains": "Contains",
-        "equals": "Equals",
-        "startsWith": "Starts With",
-        "endsWith": "Ends With",
+        "label": "Operador do Gatilho",
+        "contains": "Contém",
+        "equals": "Igual",
+        "startsWith": "Começa Com",
+        "endsWith": "Termina Com",
         "regex": "Regex"
       },
       "triggerValue": {
-        "label": "Trigger"
+        "label": "Gatilho"
       },
       "triggerConditions": {
-        "label": "Conditions"
+        "label": "Condições"
       },
       "difyIdFallback": {
-        "label": "Dify Fallback"
+        "label": "Fallback do Dify"
       },
       "generalSettings": {
-        "label": "General Settings"
+        "label": "Configurações Gerais"
       },
       "expire": {
-        "label": "Expire in minutes"
+        "label": "Expirar em minutos"
       },
       "keywordFinish": {
-        "label": "Keyword Finish"
+        "label": "Palavra-chave de Finalização"
       },
       "delayMessage": {
-        "label": "Default Delay Message"
+        "label": "Mensagem de Atraso Padrão"
       },
       "unknownMessage": {
-        "label": "Unknown Message"
+        "label": "Mensagem Desconhecida"
       },
       "listeningFromMe": {
-        "label": "Listening from me",
-        "description": "Listen to messages sent by me on the bot"
+        "label": "Ouvindo de mim",
+        "description": "Ouvir as mensagens enviadas por mim no bot"
       },
       "stopBotFromMe": {
-        "label": "Stop bot from me",
-        "description": "Pause the bot when I send a message"
+        "label": "Parar bot por mim",
+        "description": "Pausar o bot quando eu enviar uma mensagem"
       },
       "keepOpen": {
-        "label": "Keep open",
-        "description": "Keep the bot open after the conversation ends"
+        "label": "Manter aberto",
+        "description": "Manter o bot aberto após o término da conversa"
       },
       "debounceTime": {
-        "label": "Debounce Time"
+        "label": "Tempo de Debounce"
       },
       "ignoreJids": {
-        "label": "Ignore Jids",
-        "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
+        "label": "Ignorar JIDs",
+        "placeholder": "Adicione JIDs ex: 1234567890@s.whatsapp.net e pressione enter"
       }
     },
     "button": {
       "create": "Dify",
-      "save": "Save",
-      "update": "Update",
-      "defaultSettings": "Default Settings",
-      "delete": "Delete"
+      "save": "Salvar",
+      "update": "Atualizar",
+      "defaultSettings": "Configurações Padrão",
+      "delete": "Excluir"
     },
     "modal": {
       "defaultSettings": {
-        "title": "Default Settings"
+        "title": "Configurações Padrão"
       }
     }
   }

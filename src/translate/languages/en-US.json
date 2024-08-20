@@ -36,7 +36,9 @@
     "language": {
       "label": "Language",
       "english": "English",
-      "portuguese": "Portuguese"
+      "portuguese": "Portuguese",
+      "spanish": "Spanish",
+      "french": "French"
     }
   },
   "sidebar": {

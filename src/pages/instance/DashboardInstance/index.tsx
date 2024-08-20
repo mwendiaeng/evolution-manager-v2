@@ -243,7 +243,7 @@ function DashboardInstance() {
             <Button
               variant="destructive"
               onClick={() => handleLogout(instance.name)}
-              disabled={instance.connectionStatus !== "open"}
+              disabled={instance.connectionStatus === "close"}
             >
               {t("instance.dashboard.button.disconnect").toUpperCase()}
             </Button>

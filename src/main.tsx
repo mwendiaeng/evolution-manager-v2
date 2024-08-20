@@ -11,8 +11,6 @@ import { ThemeProvider } from "./components/theme-provider.tsx";
 import router from "./routes/index.tsx";
 import i18n from "./translate/i18n";
 
-localStorage.setItem("i18nextLng", "en-US");
-
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <I18nextProvider i18n={i18n}>

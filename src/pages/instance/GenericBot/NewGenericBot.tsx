@@ -169,7 +169,6 @@ function NewGenericBot({ resetTable }: { resetTable: () => void }) {
                 <FormInput
                   name="apiKey"
                   label={t("genericBot.form.apiKey.label")}
-                  required
                 >
                   <Input type="password" />
                 </FormInput>

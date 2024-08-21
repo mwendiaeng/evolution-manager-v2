@@ -22,14 +22,14 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Separator } from "@/components/ui/separator";
 
 import {
-  deleteGenericBot,
-  getGenericBot,
-  updateGenericBot,
-} from "@/services/genericBot.service";
+  deleteFlowise,
+  getFlowise,
+  updateFlowise,
+} from "@/services/flowise.service";
 
-import { GenericBot, Instance } from "@/types/evolution.types";
+import { Flowise, Instance } from "@/types/evolution.types";
 
-import { SessionsGenericBot } from "./SessionsGenericBot";
+import { SessionsFlowise } from "./SessionsFlowise";
 
 const formSchema = z.object({
   enabled: z.boolean(),
@@ -51,17 +51,17 @@ const formSchema = z.object({
 });
 type FormSchema = z.infer<typeof formSchema>;
 
-type UpdateGenericBotProps = {
-  genericBotId: string;
+type UpdateFlowiseProps = {
+  flowiseId: string;
   instance: Instance | null;
   resetTable: () => void;
 };
 
-function UpdateGenericBot({
-  genericBotId,
+function UpdateFlowise({
+  flowiseId,
   instance,
   resetTable,
-}: UpdateGenericBotProps) {
+}: UpdateFlowiseProps) {
   const { t } = useTranslation();
   const [, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -95,13 +95,13 @@ function UpdateGenericBot({
       try {
         const storedToken = localStorage.getItem("token");
 
-        if (storedToken && instance && instance.name && genericBotId) {
+        if (storedToken && instance && instance.name && flowiseId) {
           setToken(storedToken);
 
-          const data: GenericBot = await getGenericBot(
+          const data: Flowise = await getFlowise(
             instance.name,
             storedToken,
-            genericBotId,
+            flowiseId,
           );
 
           form.reset({
@@ -132,14 +132,14 @@ function UpdateGenericBot({
     };
 
     fetchData();
-  }, [form, instance, genericBotId]);
+  }, [form, instance, flowiseId]);
 
   const onSubmit = async (data: FormSchema) => {
     try {
       const storedToken = localStorage.getItem("token");
 
-      if (storedToken && instance && instance.name && genericBotId) {
-        const genericBotData: GenericBot = {
+      if (storedToken && instance && instance.name && flowiseId) {
+        const flowiseData: Flowise = {
           enabled: data.enabled,
           description: data.description,
           apiUrl: data.apiUrl,
@@ -157,13 +157,8 @@ function UpdateGenericBot({
           debounceTime: data.debounceTime,
         };
 
-        await updateGenericBot(
-          instance.name,
-          storedToken,
-          genericBotId,
-          genericBotData,
-        );
-        toast.success(t("genericBot.toast.success.update"));
+        await updateFlowise(instance.name, storedToken, flowiseId, flowiseData);
+        toast.success(t("flowise.toast.success.update"));
       } else {
         console.error("Token not found");
       }
@@ -178,18 +173,18 @@ function UpdateGenericBot({
     try {
       const storedToken = localStorage.getItem("token");
 
-      if (storedToken && instance && instance.name && genericBotId) {
-        await deleteGenericBot(instance.name, storedToken, genericBotId);
-        toast.success(t("genericBot.toast.success.delete"));
+      if (storedToken && instance && instance.name && flowiseId) {
+        await deleteFlowise(instance.name, storedToken, flowiseId);
+        toast.success(t("flowise.toast.success.delete"));
 
         setOpenDeletionDialog(false);
         resetTable();
-        navigate(`/manager/instance/${instance.id}/generic`);
+        navigate(`/manager/instance/${instance.id}/flowise`);
       } else {
         console.error("instance not found");
       }
     } catch (error) {
-      console.error("Erro ao excluir genericBot:", error);
+      console.error("Erro ao excluir flowise:", error);
     }
   };
 
@@ -208,7 +203,7 @@ function UpdateGenericBot({
             <div className="space-y-6">
               <div className="flex flex-wrap items-center justify-between gap-4">
                 <h3 className="mb-4 text-lg font-medium">
-                  GenericBot: {botDescription}
+                  Flowise: {botDescription}
                 </h3>
                 <FormSwitch
                   name="enabled"
@@ -218,54 +213,51 @@ function UpdateGenericBot({
               <div className="space-y-4">
                 <FormInput
                   name="description"
-                  label={t("genericBot.form.description.label")}
+                  label={t("flowise.form.description.label")}
                 >
                   <Input />
                 </FormInput>
 
                 <div className="flex flex-col">
                   <h3 className="my-4 text-lg font-medium">
-                    {t("genericBot.form.genericBotSettings.label")}
+                    {t("flowise.form.flowiseSettings.label")}
                   </h3>
                   <Separator />
                 </div>
                 <FormInput
                   name="apiUrl"
-                  label={t("genericBot.form.apiUrl.label")}
+                  label={t("flowise.form.apiUrl.label")}
                   required
                 >
                   <Input />
                 </FormInput>
-                <FormInput
-                  name="apiKey"
-                  label={t("genericBot.form.apiKey.label")}
-                >
+                <FormInput name="apiKey" label={t("flowise.form.apiKey.label")}>
                   <Input type="password" />
                 </FormInput>
                 <div className="flex flex-col">
                   <h3 className="my-4 text-lg font-medium">
-                    {t("genericBot.form.triggerSettings.label")}
+                    {t("flowise.form.triggerSettings.label")}
                   </h3>
                   <Separator />
                 </div>
                 <FormSelect
                   name="triggerType"
-                  label={t("genericBot.form.triggerType.label")}
+                  label={t("flowise.form.triggerType.label")}
                   options={[
                     {
-                      label: t("genericBot.form.triggerType.keyword"),
+                      label: t("flowise.form.triggerType.keyword"),
                       value: "keyword",
                     },
                     {
-                      label: t("genericBot.form.triggerType.all"),
+                      label: t("flowise.form.triggerType.all"),
                       value: "all",
                     },
                     {
-                      label: t("genericBot.form.triggerType.advanced"),
+                      label: t("flowise.form.triggerType.advanced"),
                       value: "advanced",
                     },
                     {
-                      label: t("genericBot.form.triggerType.none"),
+                      label: t("flowise.form.triggerType.none"),
                       value: "none",
                     },
                   ]}
@@ -274,35 +266,33 @@ function UpdateGenericBot({
                   <>
                     <FormSelect
                       name="triggerOperator"
-                      label={t("genericBot.form.triggerOperator.label")}
+                      label={t("flowise.form.triggerOperator.label")}
                       options={[
                         {
-                          label: t("genericBot.form.triggerOperator.contains"),
+                          label: t("flowise.form.triggerOperator.contains"),
                           value: "contains",
                         },
                         {
-                          label: t("genericBot.form.triggerOperator.equals"),
+                          label: t("flowise.form.triggerOperator.equals"),
                           value: "equals",
                         },
                         {
-                          label: t(
-                            "genericBot.form.triggerOperator.startsWith",
-                          ),
+                          label: t("flowise.form.triggerOperator.startsWith"),
                           value: "startsWith",
                         },
                         {
-                          label: t("genericBot.form.triggerOperator.endsWith"),
+                          label: t("flowise.form.triggerOperator.endsWith"),
                           value: "endsWith",
                         },
                         {
-                          label: t("genericBot.form.triggerOperator.regex"),
+                          label: t("flowise.form.triggerOperator.regex"),
                           value: "regex",
                         },
                       ]}
                     />
                     <FormInput
                       name="triggerValue"
-                      label={t("genericBot.form.triggerValue.label")}
+                      label={t("flowise.form.triggerValue.label")}
                     >
                       <Input />
                     </FormInput>
@@ -311,59 +301,56 @@ function UpdateGenericBot({
                 {triggerType === "advanced" && (
                   <FormInput
                     name="triggerValue"
-                    label={t("genericBot.form.triggerConditions.label")}
+                    label={t("flowise.form.triggerConditions.label")}
                   >
                     <Input />
                   </FormInput>
                 )}
                 <div className="flex flex-col">
                   <h3 className="my-4 text-lg font-medium">
-                    {t("genericBot.form.generalSettings.label")}
+                    {t("flowise.form.generalSettings.label")}
                   </h3>
                   <Separator />
                 </div>
-                <FormInput
-                  name="expire"
-                  label={t("genericBot.form.expire.label")}
-                >
+                <FormInput name="expire" label={t("flowise.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="keywordFinish"
-                  label={t("genericBot.form.keywordFinish.label")}
+                  label={t("flowise.form.keywordFinish.label")}
                 >
                   <Input />
                 </FormInput>
                 <FormInput
                   name="delayMessage"
-                  label={t("genericBot.form.delayMessage.label")}
+                  label={t("flowise.form.delayMessage.label")}
                 >
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="unknownMessage"
-                  label={t("genericBot.form.unknownMessage.label")}
+                  label={t("flowise.form.unknownMessage.label")}
                 >
                   <Input />
                 </FormInput>
                 <FormSwitch
                   name="listeningFromMe"
-                  label={t("genericBot.form.listeningFromMe.label")}
+                  label={t("flowise.form.listeningFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="stopBotFromMe"
-                  label={t("genericBot.form.stopBotFromMe.label")}
+                  label={t("flowise.form.stopBotFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="keepOpen"
-                  label={t("genericBot.form.keepOpen.label")}
+                  label={t("flowise.form.keepOpen.label")}
                   reverse
                 />
                 <FormInput
                   name="debounceTime"
-                  label={t("genericBot.form.debounceTime.label")}
+                  label={t("flowise.form.debounceTime.label")}
                 >
                   <Input type="number" />
                 </FormInput>
@@ -371,7 +358,7 @@ function UpdateGenericBot({
             </div>
 
             <div className="flex items-center justify-between">
-              <SessionsGenericBot genericBotId={genericBotId} />
+              <SessionsFlowise flowiseId={flowiseId} />
               <div className="flex items-center gap-3">
                 <Dialog
                   open={openDeletionDialog}
@@ -379,7 +366,7 @@ function UpdateGenericBot({
                 >
                   <DialogTrigger asChild>
                     <Button variant="destructive" size="sm">
-                      {t("genericBot.button.delete")}
+                      {t("flowise.button.delete")}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
@@ -403,7 +390,7 @@ function UpdateGenericBot({
                     </DialogHeader>
                   </DialogContent>
                 </Dialog>
-                <Button type="submit">{t("genericBot.button.update")}</Button>
+                <Button type="submit">{t("flowise.button.update")}</Button>
               </div>
             </div>
           </form>
@@ -413,4 +400,4 @@ function UpdateGenericBot({
   );
 }
 
-export { UpdateGenericBot };
+export { UpdateFlowise };

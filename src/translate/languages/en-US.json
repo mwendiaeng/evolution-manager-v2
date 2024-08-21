@@ -57,6 +57,7 @@
     "openai": "OpenAI",
     "dify": "Dify",
     "genericBot": "Generic Bot",
+    "flowise": "Flowise",
     "documentation": "Documentation",
     "postman": "Postman",
     "discord": "Discord",
@@ -933,6 +934,139 @@
     },
     "button": {
       "create": "Generic Bot",
+      "save": "Save",
+      "update": "Update",
+      "defaultSettings": "Default Settings",
+      "delete": "Delete"
+    },
+    "modal": {
+      "defaultSettings": {
+        "title": "Default Settings"
+      }
+    }
+  },
+  "flowise": {
+    "title": "Flowise",
+    "sessions": {
+      "label": "Sessions",
+      "search": "Search for remoteJid...",
+      "table": {
+        "remoteJid": "RemoteJid",
+        "pushName": "Push Name",
+        "sessionId": "Session ID",
+        "status": "Status",
+        "actions": {
+          "title": "Actions",
+          "open": "Open",
+          "pause": "Pause",
+          "close": "Close",
+          "delete": "Delete"
+        },
+        "none": "Nothing to show"
+      }
+    },
+    "defaultSettings": "Default Settings",
+    "toast": {
+      "defaultSettings": {
+        "success": "Default settings applied successfully",
+        "error": "An error occurred while applying the default settings"
+      },
+      "success": {
+        "update": "Flowise updated successfully",
+        "create": "Flowise created successfully",
+        "delete": "Flowise deleted successfully",
+        "status": "Flowise status updated successfully"
+      },
+      "error": "An error occurred while creating the Flowise"
+    },
+    "table": {
+      "none": "Nothing to show"
+    },
+    "form": {
+      "title": "New Flowise",
+      "examples": {
+        "keywordFinish": "#FINISH",
+        "unknownMessage": "I'm sorry, I didn't understand. Can you try again?"
+      },
+      "enabled": {
+        "label": "Enabled"
+      },
+      "description": {
+        "label": "Description"
+      },
+      "flowiseSettings": {
+        "label": "Flowise Settings"
+      },
+      "apiUrl": {
+        "label": "API URL"
+      },
+      "apiKey": {
+        "label": "API Key"
+      },
+      "triggerSettings": {
+        "label": "Trigger Settings"
+      },
+      "triggerType": {
+        "label": "Trigger Type",
+        "keyword": "Keyword",
+        "all": "All",
+        "advanced": "Advanced",
+        "none": "None"
+      },
+      "triggerOperator": {
+        "label": "Trigger Operator",
+        "contains": "Contains",
+        "equals": "Equals",
+        "startsWith": "Starts With",
+        "endsWith": "Ends With",
+        "regex": "Regex"
+      },
+      "triggerValue": {
+        "label": "Trigger"
+      },
+      "triggerConditions": {
+        "label": "Conditions"
+      },
+      "botIdFallback": {
+        "label": "Flowise Fallback"
+      },
+      "generalSettings": {
+        "label": "General Settings"
+      },
+      "expire": {
+        "label": "Expire in minutes"
+      },
+      "keywordFinish": {
+        "label": "Keyword Finish"
+      },
+      "delayMessage": {
+        "label": "Default Delay Message"
+      },
+      "unknownMessage": {
+        "label": "Unknown Message"
+      },
+      "listeningFromMe": {
+        "label": "Listening from me",
+        "description": "Listen to messages sent by me on the bot"
+      },
+      "stopBotFromMe": {
+        "label": "Stop bot from me",
+        "description": "Pause the bot when I send a message"
+      },
+      "keepOpen": {
+        "label": "Keep open",
+        "description": "Keep the bot open after the conversation ends"
+      },
+      "debounceTime": {
+        "label": "Debounce Time"
+      },
+      "ignoreJids": {
+        "label": "Ignore Jids",
+        "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
+      }
+    },
+    "button": {
+      "create": "Flowise",
       "save": "Save",
       "update": "Update",
       "defaultSettings": "Default Settings",

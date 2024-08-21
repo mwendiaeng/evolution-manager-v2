@@ -305,3 +305,36 @@ export type GenericBotSettings = {
   botIdFallback?: string;
   ignoreJids?: string[];
 };
+
+export type Flowise = {
+  id?: string;
+  enabled: boolean;
+  description: string;
+  apiUrl: string;
+  apiKey?: string;
+  triggerType: string;
+  triggerOperator: string;
+  triggerValue: string;
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  ignoreJids?: string[];
+};
+
+export type FlowiseSettings = {
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  flowiseIdFallback?: string;
+  ignoreJids?: string[];
+};

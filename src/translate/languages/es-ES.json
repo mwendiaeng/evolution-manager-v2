@@ -57,6 +57,7 @@
     "openai": "OpenAI",
     "dify": "Dify",
     "genericBot": "Bot Genérico",
+    "flowise": "Flowise",
     "documentation": "Documentación",
     "postman": "Postman",
     "discord": "Discord",
@@ -933,6 +934,139 @@
     },
     "button": {
       "create": "Bot Genérico",
+      "save": "Guardar",
+      "update": "Actualizar",
+      "defaultSettings": "Configuraciones Predeterminadas",
+      "delete": "Eliminar"
+    },
+    "modal": {
+      "defaultSettings": {
+        "title": "Configuraciones Predeterminadas"
+      }
+    }
+  },
+  "flowise": {
+    "title": "Flowise",
+    "sessions": {
+      "label": "Sesiones",
+      "search": "Buscar por remoteJid...",
+      "table": {
+        "remoteJid": "RemoteJid",
+        "pushName": "Nombre Visible",
+        "sessionId": "ID de Sesión",
+        "status": "Estado",
+        "actions": {
+          "title": "Acciones",
+          "open": "Abrir",
+          "pause": "Pausar",
+          "close": "Cerrar",
+          "delete": "Eliminar"
+        },
+        "none": "Nada que mostrar"
+      }
+    },
+    "defaultSettings": "Configuraciones Predeterminadas",
+    "toast": {
+      "defaultSettings": {
+        "success": "Configuraciones predeterminadas aplicadas con éxito",
+        "error": "Ocurrió un error al aplicar las configuraciones predeterminadas"
+      },
+      "success": {
+        "update": "Flowise actualizado con éxito",
+        "create": "Flowise creado con éxito",
+        "delete": "Flowise eliminado con éxito",
+        "status": "Estado de Flowise actualizado con éxito"
+      },
+      "error": "Ocurrió un error al crear el Flowise"
+    },
+    "table": {
+      "none": "Nada que mostrar"
+    },
+    "form": {
+      "title": "Nuevo Flowise",
+      "examples": {
+        "keywordFinish": "#FINISH",
+        "unknownMessage": "Lo siento, no entendí. ¿Puedes intentar de nuevo?"
+      },
+      "enabled": {
+        "label": "Activo"
+      },
+      "description": {
+        "label": "Descripción"
+      },
+      "flowiseSettings": {
+        "label": "Configuraciones de Flowise"
+      },
+      "apiUrl": {
+        "label": "URL de la API"
+      },
+      "apiKey": {
+        "label": "Clave API"
+      },
+      "triggerSettings": {
+        "label": "Configuraciones de Disparador"
+      },
+      "triggerType": {
+        "label": "Tipo de Disparador",
+        "keyword": "Palabra clave",
+        "all": "Todos",
+        "advanced": "Avanzado",
+        "none": "Ninguno"
+      },
+      "triggerOperator": {
+        "label": "Operador de Disparador",
+        "contains": "Contiene",
+        "equals": "Igual",
+        "startsWith": "Comienza Con",
+        "endsWith": "Termina Con",
+        "regex": "Regex"
+      },
+      "triggerValue": {
+        "label": "Disparador"
+      },
+      "triggerConditions": {
+        "label": "Condiciones"
+      },
+      "botIdFallback": {
+        "label": "Fallback de Flowise"
+      },
+      "generalSettings": {
+        "label": "Configuraciones Generales"
+      },
+      "expire": {
+        "label": "Expirar en minutos"
+      },
+      "keywordFinish": {
+        "label": "Palabra clave de Finalización"
+      },
+      "delayMessage": {
+        "label": "Mensaje de Retraso Predeterminado"
+      },
+      "unknownMessage": {
+        "label": "Mensaje Desconocido"
+      },
+      "listeningFromMe": {
+        "label": "Escuchando de mí",
+        "description": "Escuchar los mensajes enviados por mí en el bot"
+      },
+      "stopBotFromMe": {
+        "label": "Detener bot por mí",
+        "description": "Pausar el bot cuando yo envíe un mensaje"
+      },
+      "keepOpen": {
+        "label": "Mantener abierto",
+        "description": "Mantener el bot abierto después de que termine la conversación"
+      },
+      "debounceTime": {
+        "label": "Tiempo de Debounce"
+      },
+      "ignoreJids": {
+        "label": "Ignorar JIDs",
+        "placeholder": "Agregar JIDs ej: 1234567890@s.whatsapp.net y presiona enter"
+      }
+    },
+    "button": {
+      "create": "Flowise",
       "save": "Guardar",
       "update": "Actualizar",
       "defaultSettings": "Configuraciones Predeterminadas",

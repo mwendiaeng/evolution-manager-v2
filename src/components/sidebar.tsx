@@ -107,6 +107,11 @@ function Sidebar() {
           title: t("sidebar.dify"),
           path: "dify",
         },
+        {
+          id: "flowise",
+          title: t("sidebar.flowise"),
+          path: "flowise",
+        },
       ],
     },
     {

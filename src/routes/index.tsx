@@ -21,6 +21,7 @@ import { Webhook } from "@/pages/instance/Webhook";
 import { Websocket } from "@/pages/instance/Websocket";
 import Login from "@/pages/Login";
 import { GenericBot } from "@/pages/instance/GenericBot";
+import { Flowise } from "@/pages/instance/Flowise";
 
 const router = createBrowserRouter([
   {
@@ -207,6 +208,26 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <InstanceLayout>
           <GenericBot />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/flowise",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Flowise />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/flowise/:flowiseId",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Flowise />
         </InstanceLayout>
       </ProtectedRoute>
     ),

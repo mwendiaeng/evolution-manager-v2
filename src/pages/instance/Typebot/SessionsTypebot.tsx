@@ -55,7 +55,7 @@ import {
   fetchSessionsTypebot,
 } from "@/services/typebot.service";
 
-import { Instance, TypebotSession } from "@/types/evolution.types";
+import { Instance, IntegrationSession } from "@/types/evolution.types";
 
 const fetchData = async (
   instance: Instance | null,
@@ -66,7 +66,7 @@ const fetchData = async (
     const storedToken = localStorage.getItem("token");
 
     if (storedToken && instance && instance.name) {
-      const getSessions: TypebotSession[] = await fetchSessionsTypebot(
+      const getSessions: IntegrationSession[] = await fetchSessionsTypebot(
         instance.name,
         storedToken,
         typebotId,
@@ -86,7 +86,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [sessions, setSessions] = useState<TypebotSession[] | []>([]);
+  const [sessions, setSessions] = useState<IntegrationSession[] | []>([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
@@ -116,7 +116,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
     }
   };
 
-  const columns: ColumnDef<TypebotSession>[] = [
+  const columns: ColumnDef<IntegrationSession>[] = [
     {
       accessorKey: "remoteJid",
       header: () => (

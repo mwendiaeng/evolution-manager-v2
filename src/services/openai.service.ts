@@ -58,11 +58,11 @@ export const findOpenai = async (instanceName: string, token: string) => {
 export const getOpenai = async (
   instanceName: string,
   token: string,
-  openaiBotId: string,
+  botId: string,
 ) => {
   const response = await apiService
     .getInstance()
-    .get(`/openai/fetch/${openaiBotId}/${instanceName}`, {
+    .get(`/openai/fetch/${botId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
@@ -88,12 +88,12 @@ export const createOpenai = async (
 export const updateOpenai = async (
   instanceName: string,
   token: string,
-  openaiBotId: string,
+  botId: string,
   data: OpenaiBot,
 ) => {
   const response = await apiService
     .getInstance()
-    .put(`/openai/update/${openaiBotId}/${instanceName}`, data, {
+    .put(`/openai/update/${botId}/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
@@ -104,11 +104,11 @@ export const updateOpenai = async (
 export const deleteOpenai = async (
   instanceName: string,
   token: string,
-  openaiBotId: string,
+  botId: string,
 ) => {
   const response = await apiService
     .getInstance()
-    .delete(`/openai/delete/${openaiBotId}/${instanceName}`, {
+    .delete(`/openai/delete/${botId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
@@ -148,11 +148,11 @@ export const setDefaultSettingsOpenai = async (
 export const fetchSessionsOpenai = async (
   instanceName: string,
   token: string,
-  openaiBotId?: string,
+  botId?: string,
 ) => {
   const response = await apiService
     .getInstance()
-    .get(`/openai/fetchSessions/${openaiBotId}/${instanceName}`, {
+    .get(`/openai/fetchSessions/${botId}/${instanceName}`, {
       headers: {
         apikey: token,
       },

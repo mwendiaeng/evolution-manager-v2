@@ -56,6 +56,7 @@
     "typebot": "Typebot",
     "openai": "OpenAI",
     "dify": "Dify",
+    "genericBot": "Bot Genérico",
     "documentation": "Documentação",
     "postman": "Postman",
     "discord": "Discord",
@@ -799,6 +800,139 @@
     },
     "button": {
       "create": "Dify",
+      "save": "Salvar",
+      "update": "Atualizar",
+      "defaultSettings": "Configurações Padrão",
+      "delete": "Excluir"
+    },
+    "modal": {
+      "defaultSettings": {
+        "title": "Configurações Padrão"
+      }
+    }
+  },
+  "genericBot": {
+    "title": "Bot Genérico",
+    "sessions": {
+      "label": "Sessões",
+      "search": "Pesquisar por remoteJid...",
+      "table": {
+        "remoteJid": "RemoteJid",
+        "pushName": "Nome de Exibição",
+        "sessionId": "ID da Sessão",
+        "status": "Status",
+        "actions": {
+          "title": "Ações",
+          "open": "Abrir",
+          "pause": "Pausar",
+          "close": "Fechar",
+          "delete": "Excluir"
+        },
+        "none": "Nada para mostrar"
+      }
+    },
+    "defaultSettings": "Configurações Padrão",
+    "toast": {
+      "defaultSettings": {
+        "success": "Configurações padrão aplicadas com sucesso",
+        "error": "Ocorreu um erro ao aplicar as configurações padrão"
+      },
+      "success": {
+        "update": "Bot Genérico atualizado com sucesso",
+        "create": "Bot Genérico criado com sucesso",
+        "delete": "Bot Genérico excluído com sucesso",
+        "status": "Status do Bot Genérico atualizado com sucesso"
+      },
+      "error": "Ocorreu um erro ao criar o Bot Genérico"
+    },
+    "table": {
+      "none": "Nada para mostrar"
+    },
+    "form": {
+      "title": "Novo Bot Genérico",
+      "examples": {
+        "keywordFinish": "#FINISH",
+        "unknownMessage": "Desculpe, não entendi. Pode tentar novamente?"
+      },
+      "enabled": {
+        "label": "Ativo"
+      },
+      "description": {
+        "label": "Descrição"
+      },
+      "genericBotSettings": {
+        "label": "Configurações do Bot Genérico"
+      },
+      "apiUrl": {
+        "label": "URL da API"
+      },
+      "apiKey": {
+        "label": "Chave de API"
+      },
+      "triggerSettings": {
+        "label": "Configurações de Gatilho"
+      },
+      "triggerType": {
+        "label": "Tipo de Gatilho",
+        "keyword": "Palavra-chave",
+        "all": "Todos",
+        "advanced": "Avançado",
+        "none": "Nenhum"
+      },
+      "triggerOperator": {
+        "label": "Operador do Gatilho",
+        "contains": "Contém",
+        "equals": "Igual",
+        "startsWith": "Começa Com",
+        "endsWith": "Termina Com",
+        "regex": "Regex"
+      },
+      "triggerValue": {
+        "label": "Gatilho"
+      },
+      "triggerConditions": {
+        "label": "Condições"
+      },
+      "botIdFallback": {
+        "label": "Fallback do Bot Genérico"
+      },
+      "generalSettings": {
+        "label": "Configurações Gerais"
+      },
+      "expire": {
+        "label": "Expirar em minutos"
+      },
+      "keywordFinish": {
+        "label": "Palavra-chave de Finalização"
+      },
+      "delayMessage": {
+        "label": "Mensagem de Atraso Padrão"
+      },
+      "unknownMessage": {
+        "label": "Mensagem Desconhecida"
+      },
+      "listeningFromMe": {
+        "label": "Ouvindo de mim",
+        "description": "Ouvir as mensagens enviadas por mim no bot"
+      },
+      "stopBotFromMe": {
+        "label": "Parar bot por mim",
+        "description": "Pausar o bot quando eu enviar uma mensagem"
+      },
+      "keepOpen": {
+        "label": "Manter aberto",
+        "description": "Manter o bot aberto após o término da conversa"
+      },
+      "debounceTime": {
+        "label": "Tempo de Debounce"
+      },
+      "ignoreJids": {
+        "label": "Ignorar JIDs",
+        "placeholder": "Adicione JIDs ex: 1234567890@s.whatsapp.net e pressione enter"
+      }
+    },
+    "button": {
+      "create": "Bot Genérico",
       "save": "Salvar",
       "update": "Atualizar",
       "defaultSettings": "Configurações Padrão",

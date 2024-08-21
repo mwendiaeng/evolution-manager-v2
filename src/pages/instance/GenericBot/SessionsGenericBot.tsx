@@ -50,23 +50,26 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { changeStatusDify, fetchSessionsDify } from "@/services/dify.service";
+import {
+  changeStatusGenericBot,
+  fetchSessionsGenericBot,
+} from "@/services/genericBot.service";
 
 import { IntegrationSession, Instance } from "@/types/evolution.types";
 
 const fetchData = async (
   instance: Instance | null,
   setSessions: any,
-  difyId?: string,
+  genericBotId?: string,
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
 
     if (storedToken && instance && instance.name) {
-      const getSessions: IntegrationSession[] = await fetchSessionsDify(
+      const getSessions: IntegrationSession[] = await fetchSessionsGenericBot(
         instance.name,
         storedToken,
-        difyId,
+        genericBotId,
       );
 
       setSessions(getSessions);
@@ -78,7 +81,7 @@ const fetchData = async (
   }
 };
 
-function SessionsDify({ difyId }: { difyId?: string }) {
+function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
@@ -87,20 +90,25 @@ function SessionsDify({ difyId }: { difyId?: string }) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (open) fetchData(instance, setSessions, difyId);
-  }, [instance, difyId, open]);
+    if (open) fetchData(instance, setSessions, genericBotId);
+  }, [instance, genericBotId, open]);
 
   function onReset() {
-    fetchData(instance, setSessions, difyId);
+    fetchData(instance, setSessions, genericBotId);
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {
     try {
       if (!instance) return;
 
-      await changeStatusDify(instance.name, instance.token, remoteJid, status);
+      await changeStatusGenericBot(
+        instance.name,
+        instance.token,
+        remoteJid,
+        status,
+      );
 
-      toast.success(t("dify.toast.success.status"));
+      toast.success(t("genericBot.toast.success.status"));
       onReset();
     } catch (error: any) {
       console.error("Error:", error);
@@ -112,28 +120,36 @@ function SessionsDify({ difyId }: { difyId?: string }) {
     {
       accessorKey: "remoteJid",
       header: () => (
-        <div className="text-center">{t("dify.sessions.table.remoteJid")}</div>
+        <div className="text-center">
+          {t("genericBot.sessions.table.remoteJid")}
+        </div>
       ),
       cell: ({ row }) => <div>{row.getValue("remoteJid")}</div>,
     },
     {
       accessorKey: "pushName",
       header: () => (
-        <div className="text-center">{t("dify.sessions.table.pushName")}</div>
+        <div className="text-center">
+          {t("genericBot.sessions.table.pushName")}
+        </div>
       ),
       cell: ({ row }) => <div>{row.getValue("pushName")}</div>,
     },
     {
       accessorKey: "sessionId",
       header: () => (
-        <div className="text-center">{t("dify.sessions.table.sessionId")}</div>
+        <div className="text-center">
+          {t("genericBot.sessions.table.sessionId")}
+        </div>
       ),
       cell: ({ row }) => <div>{row.getValue("sessionId")}</div>,
     },
     {
       accessorKey: "status",
       header: () => (
-        <div className="text-center">{t("dify.sessions.table.status")}</div>
+        <div className="text-center">
+          {t("genericBot.sessions.table.status")}
+        </div>
       ),
       cell: ({ row }) => <div>{row.getValue("status")}</div>,
     },
@@ -148,14 +164,14 @@ function SessionsDify({ difyId }: { difyId?: string }) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">
-                  {t("dify.sessions.table.actions.title")}
+                  {t("genericBot.sessions.table.actions.title")}
                 </span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>
-                {t("dify.sessions.table.actions.title")}
+                {t("genericBot.sessions.table.actions.title")}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               {session.status !== "opened" && (
@@ -163,7 +179,7 @@ function SessionsDify({ difyId }: { difyId?: string }) {
                   onClick={() => changeStatus(session.remoteJid, "opened")}
                 >
                   <Play className="mr-2 h-4 w-4" />
-                  {t("dify.sessions.table.actions.open")}
+                  {t("genericBot.sessions.table.actions.open")}
                 </DropdownMenuItem>
               )}
               {session.status !== "paused" && session.status !== "closed" && (
@@ -171,7 +187,7 @@ function SessionsDify({ difyId }: { difyId?: string }) {
                   onClick={() => changeStatus(session.remoteJid, "paused")}
                 >
                   <Pause className="mr-2 h-4 w-4" />
-                  {t("dify.sessions.table.actions.pause")}
+                  {t("genericBot.sessions.table.actions.pause")}
                 </DropdownMenuItem>
               )}
               {session.status !== "closed" && (
@@ -179,7 +195,7 @@ function SessionsDify({ difyId }: { difyId?: string }) {
                   onClick={() => changeStatus(session.remoteJid, "closed")}
                 >
                   <StopCircle className="mr-2 h-4 w-4" />
-                  {t("dify.sessions.table.actions.close")}
+                  {t("genericBot.sessions.table.actions.close")}
                 </DropdownMenuItem>
               )}
 
@@ -187,7 +203,7 @@ function SessionsDify({ difyId }: { difyId?: string }) {
                 onClick={() => changeStatus(session.remoteJid, "delete")}
               >
                 <Delete className="mr-2 h-4 w-4" />
-                {t("dify.sessions.table.actions.delete")}
+                {t("genericBot.sessions.table.actions.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -214,7 +230,9 @@ function SessionsDify({ difyId }: { difyId?: string }) {
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <ListCollapse size={16} className="mr-1" />
-          <span className="hidden sm:inline">{t("dify.sessions.label")}</span>
+          <span className="hidden sm:inline">
+            {t("genericBot.sessions.label")}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent
@@ -222,12 +240,12 @@ function SessionsDify({ difyId }: { difyId?: string }) {
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
-          <DialogTitle>{t("dify.sessions.label")}</DialogTitle>
+          <DialogTitle>{t("genericBot.sessions.label")}</DialogTitle>
         </DialogHeader>
         <div>
           <div className="flex items-center justify-between gap-6 p-5">
             <Input
-              placeholder={t("dify.sessions.search")}
+              placeholder={t("genericBot.sessions.search")}
               value={
                 (table.getColumn("remoteJid")?.getFilterValue() as string) ?? ""
               }
@@ -281,7 +299,7 @@ function SessionsDify({ difyId }: { difyId?: string }) {
                     colSpan={columns.length}
                     className="h-24 text-center"
                   >
-                    {t("dify.sessions.table.none")}
+                    {t("genericBot.sessions.table.none")}
                   </TableCell>
                 </TableRow>
               )}
@@ -293,4 +311,4 @@ function SessionsDify({ difyId }: { difyId?: string }) {
   );
 }
 
-export { SessionsDify };
+export { SessionsGenericBot };

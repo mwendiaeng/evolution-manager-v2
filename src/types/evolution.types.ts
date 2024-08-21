@@ -82,6 +82,18 @@ export type Message = {
   source: string;
 };
 
+export type IntegrationSession = {
+  id?: string;
+  remoteJid: string;
+  pushName: string;
+  sessionId: string;
+  status: string;
+  awaitUser: boolean;
+  createdAt: string;
+  updatedAt: string;
+  botId: string;
+};
+
 export type OpenaiCreds = {
   id?: string;
   name: string;
@@ -130,18 +142,6 @@ export type OpenaiSettings = {
   ignoreJids?: string[];
 };
 
-export type OpenaiSession = {
-  id?: string;
-  remoteJid: string;
-  sessionId: string;
-  status: string;
-  awaitUser: boolean;
-  createdAt: string;
-  updatedAt: string;
-  openaiBotId: string;
-  OpenaiBot?: OpenaiBot;
-};
-
 export type Dify = {
   id?: string;
   enabled: boolean;
@@ -176,18 +176,6 @@ export type DifySettings = {
   ignoreJids?: string[];
 };
 
-export type DifySession = {
-  id?: string;
-  remoteJid: string;
-  sessionId: string;
-  status: string;
-  awaitUser: boolean;
-  createdAt: string;
-  updatedAt: string;
-  difyId: string;
-  Dify?: Dify;
-};
-
 export type Typebot = {
   id?: string;
   enabled: boolean;
@@ -218,19 +206,6 @@ export type TypebotSettings = {
   debounceTime: number;
   typebotIdFallback?: string;
   ignoreJids?: string[];
-};
-
-export type TypebotSession = {
-  id?: string;
-  remoteJid: string;
-  pushName: string;
-  sessionId: string;
-  status: string;
-  awaitUser: boolean;
-  createdAt: string;
-  updatedAt: string;
-  typebotId: string;
-  Typebot?: Typebot;
 };
 
 export type Webhook = {
@@ -296,4 +271,37 @@ export type ModelOpenai = {
   object: string;
   created: number;
   owned_by: string;
+};
+
+export type GenericBot = {
+  id?: string;
+  enabled: boolean;
+  description: string;
+  apiUrl: string;
+  apiKey?: string;
+  triggerType: string;
+  triggerOperator: string;
+  triggerValue: string;
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  ignoreJids?: string[];
+};
+
+export type GenericBotSettings = {
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  botIdFallback?: string;
+  ignoreJids?: string[];
 };

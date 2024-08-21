@@ -20,6 +20,7 @@ import { Typebot } from "@/pages/instance/Typebot";
 import { Webhook } from "@/pages/instance/Webhook";
 import { Websocket } from "@/pages/instance/Websocket";
 import Login from "@/pages/Login";
+import { GenericBot } from "@/pages/instance/GenericBot";
 
 const router = createBrowserRouter([
   {
@@ -91,7 +92,7 @@ const router = createBrowserRouter([
     ),
   },
   {
-    path: "/manager/instance/:instanceId/openai/:openaiBotId",
+    path: "/manager/instance/:instanceId/openai/:botId",
     element: (
       <ProtectedRoute>
         <InstanceLayout>
@@ -186,6 +187,26 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <InstanceLayout>
           <Dify />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/generic",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <GenericBot />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/generic/:genericBotId",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <GenericBot />
         </InstanceLayout>
       </ProtectedRoute>
     ),

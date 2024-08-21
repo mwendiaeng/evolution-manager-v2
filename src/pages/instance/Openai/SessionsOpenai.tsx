@@ -55,25 +55,21 @@ import {
   fetchSessionsOpenai,
 } from "@/services/openai.service";
 
-import {
-  Instance,
-  OpenaiSession,
-  TypebotSession,
-} from "@/types/evolution.types";
+import { Instance, IntegrationSession } from "@/types/evolution.types";
 
 const fetchData = async (
   instance: Instance | null,
   setSessions: any,
-  openaiBotId?: string,
+  botId?: string,
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
 
     if (storedToken && instance && instance.name) {
-      const getSessions: OpenaiSession[] = await fetchSessionsOpenai(
+      const getSessions: IntegrationSession[] = await fetchSessionsOpenai(
         instance.name,
         storedToken,
-        openaiBotId,
+        botId,
       );
 
       setSessions(getSessions);
@@ -85,20 +81,20 @@ const fetchData = async (
   }
 };
 
-function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
+function SessionsOpenai({ botId }: { botId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [sessions, setSessions] = useState<TypebotSession[] | []>([]);
+  const [sessions, setSessions] = useState<IntegrationSession[] | []>([]);
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (open) fetchData(instance, setSessions, openaiBotId);
-  }, [instance, openaiBotId, open]);
+    if (open) fetchData(instance, setSessions, botId);
+  }, [instance, botId, open]);
 
   function onReset() {
-    fetchData(instance, setSessions, openaiBotId);
+    fetchData(instance, setSessions, botId);
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {
@@ -120,7 +116,7 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
     }
   };
 
-  const columns: ColumnDef<OpenaiSession>[] = [
+  const columns: ColumnDef<IntegrationSession>[] = [
     {
       accessorKey: "remoteJid",
       header: () => (
@@ -136,14 +132,6 @@ function SessionsOpenai({ openaiBotId }: { openaiBotId?: string }) {
         <div className="text-center">{t("openai.sessions.table.pushName")}</div>
       ),
       cell: ({ row }) => <div>{row.getValue("pushName")}</div>,
-    },
-    {
-      accessorKey: "bot",
-      header: () => <div className="text-center">{t("openai.title")}</div>,
-      cell: ({ row }) => {
-        const session = row.original;
-        return <div>{session.OpenaiBot?.description}</div>;
-      },
     },
     {
       accessorKey: "sessionId",

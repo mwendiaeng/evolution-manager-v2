@@ -1,23 +1,19 @@
 import axios from "axios";
 
-import { saveToken } from "@/lib/queries/token";
+import { saveToken } from "../token";
 
-export const verifyServer = async (url: string) => {
-  const response = await axios.get(`${url}/`);
-  return response.data;
-};
+interface VerifyCredsParams {
+  url: string;
+  token: string;
+}
 
-export const verifyCreds = async (url: string, token: string) => {
+export const verifyCreds = async ({ url, token }: VerifyCredsParams) => {
   try {
-    const response = await axios.post(
+    const { data } = await axios.post(
       `${url}/verify-creds`,
       {},
       { headers: { apikey: token } },
     );
-
-    const { data } = response;
-
-    console.log(data);
 
     saveToken({
       facebookAppId: data.facebookAppId,

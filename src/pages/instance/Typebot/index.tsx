@@ -14,6 +14,8 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import { findTypebot } from "@/services/typebot.service";
 
 import { Instance, Typebot as TypebotType } from "@/types/evolution.types";
@@ -31,7 +33,7 @@ const fetchData = async (
   setLoading: any,
 ) => {
   try {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = getToken(TOKEN_ID.TOKEN);
 
     if (storedToken && instance && instance.name) {
       const data: TypebotType[] = await findTypebot(instance.name, storedToken);

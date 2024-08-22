@@ -21,6 +21,8 @@ import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Separator } from "@/components/ui/separator";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import {
   deleteGenericBot,
   getGenericBot,
@@ -93,7 +95,7 @@ function UpdateGenericBot({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedToken = localStorage.getItem("token");
+        const storedToken = getToken(TOKEN_ID.TOKEN);
 
         if (storedToken && instance && instance.name && genericBotId) {
           setToken(storedToken);
@@ -136,7 +138,7 @@ function UpdateGenericBot({
 
   const onSubmit = async (data: FormSchema) => {
     try {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = getToken(TOKEN_ID.TOKEN);
 
       if (storedToken && instance && instance.name && genericBotId) {
         const genericBotData: GenericBot = {
@@ -176,7 +178,7 @@ function UpdateGenericBot({
 
   const handleDelete = async () => {
     try {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = getToken(TOKEN_ID.TOKEN);
 
       if (storedToken && instance && instance.name && genericBotId) {
         await deleteGenericBot(instance.name, storedToken, genericBotId);

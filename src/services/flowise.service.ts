@@ -1,17 +1,13 @@
+import { api } from "@/lib/queries/api";
+
 import { Flowise, FlowiseSettings } from "@/types/evolution.types";
 
-import ApiService from "@/utils/instance";
-
-const apiService = new ApiService();
-
 export const findFlowise = async (instanceName: string, token: string) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/flowise/find/${instanceName}`, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.get(`/flowise/find/${instanceName}`, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };
 
@@ -20,13 +16,14 @@ export const getFlowise = async (
   token: string,
   FlowiseId: string,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/flowise/fetch/${FlowiseId}/${instanceName}`, {
+  const response = await api.get(
+    `/flowise/fetch/${FlowiseId}/${instanceName}`,
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };
 
@@ -35,13 +32,11 @@ export const createFlowise = async (
   token: string,
   data: Flowise,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/flowise/create/${instanceName}`, data, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.post(`/flowise/create/${instanceName}`, data, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };
 
@@ -51,13 +46,15 @@ export const updateFlowise = async (
   FlowiseId: string,
   data: Flowise,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .put(`/flowise/update/${FlowiseId}/${instanceName}`, data, {
+  const response = await api.put(
+    `/flowise/update/${FlowiseId}/${instanceName}`,
+    data,
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };
 
@@ -66,13 +63,14 @@ export const deleteFlowise = async (
   token: string,
   FlowiseId: string,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .delete(`/flowise/delete/${FlowiseId}/${instanceName}`, {
+  const response = await api.delete(
+    `/flowise/delete/${FlowiseId}/${instanceName}`,
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };
 
@@ -80,13 +78,11 @@ export const findDefaultSettingsFlowise = async (
   instanceName: string,
   token: string,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/flowise/fetchSettings/${instanceName}`, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.get(`/flowise/fetchSettings/${instanceName}`, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };
 
@@ -95,13 +91,11 @@ export const setDefaultSettingsFlowise = async (
   token: string,
   data: FlowiseSettings,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/flowise/settings/${instanceName}`, data, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.post(`/flowise/settings/${instanceName}`, data, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };
 
@@ -110,13 +104,14 @@ export const fetchSessionsFlowise = async (
   token: string,
   FlowiseId?: string,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/flowise/fetchSessions/${FlowiseId}/${instanceName}`, {
+  const response = await api.get(
+    `/flowise/fetchSessions/${FlowiseId}/${instanceName}`,
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };
 
@@ -126,7 +121,7 @@ export const changeStatusFlowise = async (
   remoteJid: string,
   status: string,
 ) => {
-  const response = await apiService.getInstance().post(
+  const response = await api.post(
     `/flowise/changeStatus/${instanceName}`,
     {
       remoteJid,

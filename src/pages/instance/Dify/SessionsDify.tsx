@@ -50,6 +50,8 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import { changeStatusDify, fetchSessionsDify } from "@/services/dify.service";
 
 import { IntegrationSession, Instance } from "@/types/evolution.types";
@@ -60,7 +62,7 @@ const fetchData = async (
   difyId?: string,
 ) => {
   try {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = getToken(TOKEN_ID.TOKEN);
 
     if (storedToken && instance && instance.name) {
       const getSessions: IntegrationSession[] = await fetchSessionsDify(

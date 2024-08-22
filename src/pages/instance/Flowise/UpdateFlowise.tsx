@@ -21,6 +21,8 @@ import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Separator } from "@/components/ui/separator";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import {
   deleteFlowise,
   getFlowise,
@@ -93,7 +95,7 @@ function UpdateFlowise({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedToken = localStorage.getItem("token");
+        const storedToken = getToken(TOKEN_ID.TOKEN);
 
         if (storedToken && instance && instance.name && flowiseId) {
           setToken(storedToken);
@@ -136,7 +138,7 @@ function UpdateFlowise({
 
   const onSubmit = async (data: FormSchema) => {
     try {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = getToken(TOKEN_ID.TOKEN);
 
       if (storedToken && instance && instance.name && flowiseId) {
         const flowiseData: Flowise = {
@@ -171,7 +173,7 @@ function UpdateFlowise({
 
   const handleDelete = async () => {
     try {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = getToken(TOKEN_ID.TOKEN);
 
       if (storedToken && instance && instance.name && flowiseId) {
         await deleteFlowise(instance.name, storedToken, flowiseId);

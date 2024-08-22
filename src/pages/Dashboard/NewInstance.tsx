@@ -19,6 +19,8 @@ import {
 import { FormInput, FormSelect } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import { createInstance } from "@/services/instances.service";
 
 import { NewInstance as NewInstanceType } from "@/types/evolution.types";
@@ -70,9 +72,9 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
   });
 
   const facebookLogin =
-    localStorage.getItem("facebookUserToken") &&
-    localStorage.getItem("facebookConfigId") &&
-    localStorage.getItem("facebookAppId");
+    getToken(TOKEN_ID.FACEBOOK_USER_TOKEN) &&
+    getToken(TOKEN_ID.FACEBOOK_CONFIG_ID) &&
+    getToken(TOKEN_ID.FACEBOOK_APP_ID);
 
   useEffect(() => {
     if (facebookLogin) {

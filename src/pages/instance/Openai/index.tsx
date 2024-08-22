@@ -14,6 +14,8 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import { findOpenai } from "@/services/openai.service";
 
 import { Instance, OpenaiBot } from "@/types/evolution.types";
@@ -32,7 +34,7 @@ const fetchData = async (
   setLoading: any,
 ) => {
   try {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = getToken(TOKEN_ID.TOKEN);
 
     if (storedToken && instance && instance.name) {
       const data: OpenaiBot[] = await findOpenai(instance.name, storedToken);

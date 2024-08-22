@@ -21,6 +21,8 @@ import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Separator } from "@/components/ui/separator";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import { deleteDify, getDify, updateDify } from "@/services/dify.service";
 
 import { Dify, Instance } from "@/types/evolution.types";
@@ -86,7 +88,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedToken = localStorage.getItem("token");
+        const storedToken = getToken(TOKEN_ID.TOKEN);
 
         if (storedToken && instance && instance.name && difyId) {
           setToken(storedToken);
@@ -126,7 +128,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
 
   const onSubmit = async (data: FormSchema) => {
     try {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = getToken(TOKEN_ID.TOKEN);
 
       if (storedToken && instance && instance.name && difyId) {
         const difyData: Dify = {
@@ -162,7 +164,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
 
   const handleDelete = async () => {
     try {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = getToken(TOKEN_ID.TOKEN);
 
       if (storedToken && instance && instance.name && difyId) {
         await deleteDify(instance.name, storedToken, difyId);

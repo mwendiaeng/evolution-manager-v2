@@ -22,6 +22,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import {
   deleteOpenai,
   findOpenaiCreds,
@@ -72,11 +74,7 @@ type UpdateOpenaiProps = {
   resetTable: () => void;
 };
 
-function UpdateOpenai({
-  botId,
-  instance,
-  resetTable,
-}: UpdateOpenaiProps) {
+function UpdateOpenai({ botId, instance, resetTable }: UpdateOpenaiProps) {
   const { t } = useTranslation();
   const [, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -117,7 +115,7 @@ function UpdateOpenai({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedToken = localStorage.getItem("token");
+        const storedToken = getToken(TOKEN_ID.TOKEN);
 
         if (storedToken && instance && instance.name && botId) {
           setToken(storedToken);
@@ -186,7 +184,7 @@ function UpdateOpenai({
 
   const onSubmit = async (data: FormSchema) => {
     try {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = getToken(TOKEN_ID.TOKEN);
 
       if (storedToken && instance && instance.name && botId) {
         const openaiBotData: OpenaiBot = {
@@ -214,12 +212,7 @@ function UpdateOpenai({
           debounceTime: data.debounceTime,
         };
 
-        await updateOpenai(
-          instance.name,
-          storedToken,
-          botId,
-          openaiBotData,
-        );
+        await updateOpenai(instance.name, storedToken, botId, openaiBotData);
         toast.success(t("openai.toast.success.update"));
       } else {
         console.error("Instance not found");
@@ -233,7 +226,7 @@ function UpdateOpenai({
 
   const handleDelete = async () => {
     try {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = getToken(TOKEN_ID.TOKEN);
 
       if (storedToken && instance && instance.name && botId) {
         await deleteOpenai(instance.name, storedToken, botId);

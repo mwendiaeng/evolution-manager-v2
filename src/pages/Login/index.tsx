@@ -2,7 +2,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Footer } from "@/components/footer";
@@ -18,12 +17,9 @@ import {
 import { Form, FormInput } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import {
-  logout,
-  saveCredentials,
-  verifyCreds,
-  verifyServer,
-} from "@/services/auth.service";
+import { logout, saveToken } from "@/lib/queries/token";
+
+import { verifyCreds, verifyServer } from "@/services/auth.service";
 
 const loginSchema = z.object({
   serverUrl: z
@@ -66,15 +62,12 @@ function Login() {
       return;
     }
 
-    const saveCreds = await saveCredentials(data.serverUrl, data.apiKey);
-
-    if (!saveCreds) {
-      toast.error(t("login.message.invalidCredentials"));
-      return;
-    }
-
-    localStorage.setItem("version", server.version);
-    localStorage.setItem("clientName", server.clientName);
+    saveToken({
+      version: server.version,
+      clientName: server.clientName,
+      url: data.serverUrl,
+      token: data.apiKey,
+    });
 
     navigate("/manager/");
   };

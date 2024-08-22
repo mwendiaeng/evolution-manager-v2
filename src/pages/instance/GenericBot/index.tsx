@@ -14,6 +14,8 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import { findGenericBot } from "@/services/genericBot.service";
 
 import {
@@ -34,7 +36,7 @@ const fetchData = async (
   setLoading: any,
 ) => {
   try {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = getToken(TOKEN_ID.TOKEN);
 
     if (storedToken && instance && instance.name) {
       const data: GenericBotType[] = await findGenericBot(

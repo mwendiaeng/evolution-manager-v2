@@ -21,6 +21,8 @@ import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { Separator } from "@/components/ui/separator";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import {
   deleteTypebot,
   getTypebot,
@@ -94,7 +96,7 @@ function UpdateTypebot({
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedToken = localStorage.getItem("token");
+        const storedToken = getToken(TOKEN_ID.TOKEN);
 
         if (storedToken && instance && instance.name && typebotId) {
           setToken(storedToken);
@@ -137,7 +139,7 @@ function UpdateTypebot({
 
   const onSubmit = async (data: FormSchema) => {
     try {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = getToken(TOKEN_ID.TOKEN);
 
       if (storedToken && instance && instance.name && typebotId) {
         const typebotData: Typebot = {
@@ -172,7 +174,7 @@ function UpdateTypebot({
 
   const handleDelete = async () => {
     try {
-      const storedToken = localStorage.getItem("token");
+      const storedToken = getToken(TOKEN_ID.TOKEN);
 
       if (storedToken && instance && instance.name && typebotId) {
         await deleteTypebot(instance.name, storedToken, typebotId);

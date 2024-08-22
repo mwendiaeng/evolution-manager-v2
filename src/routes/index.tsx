@@ -11,6 +11,8 @@ import { Chat } from "@/pages/instance/Chat";
 import { Chatwoot } from "@/pages/instance/Chatwoot";
 import { DashboardInstance } from "@/pages/instance/DashboardInstance";
 import { Dify } from "@/pages/instance/Dify";
+import { Flowise } from "@/pages/instance/Flowise";
+import { GenericBot } from "@/pages/instance/GenericBot";
 import { Openai } from "@/pages/instance/Openai";
 import { Proxy } from "@/pages/instance/Proxy";
 import { Rabbitmq } from "@/pages/instance/Rabbitmq";
@@ -20,8 +22,6 @@ import { Typebot } from "@/pages/instance/Typebot";
 import { Webhook } from "@/pages/instance/Webhook";
 import { Websocket } from "@/pages/instance/Websocket";
 import Login from "@/pages/Login";
-import { GenericBot } from "@/pages/instance/GenericBot";
-import { Flowise } from "@/pages/instance/Flowise";
 
 const router = createBrowserRouter([
   {

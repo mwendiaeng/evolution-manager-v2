@@ -1,18 +1,14 @@
-import ApiService from "@/utils/instance";
-
-const apiService = new ApiService();
+import { api } from "@/lib/queries/api";
 
 export const findChats = async (instanceName: string) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/chat/findChats/${instanceName}`, {
-      where: {},
-    });
+  const response = await api.post(`/chat/findChats/${instanceName}`, {
+    where: {},
+  });
   return response.data;
 };
 
 export const findChat = async (instanceName: string, remoteJid: string) => {
-  const response = await apiService.getInstance().post(
+  const response = await api.post(
     `/chat/findChats/${instanceName}`,
     {
       where: {
@@ -29,14 +25,12 @@ export const findChat = async (instanceName: string, remoteJid: string) => {
 };
 
 export const findMessages = async (instanceName: string, remoteJid: string) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/chat/findMessages/${instanceName}`, {
-      where: {
-        key: {
-          remoteJid,
-        },
+  const response = await api.post(`/chat/findMessages/${instanceName}`, {
+    where: {
+      key: {
+        remoteJid,
       },
-    });
+    },
+  });
   return response.data;
 };

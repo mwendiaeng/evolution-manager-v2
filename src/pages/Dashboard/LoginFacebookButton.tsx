@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 
-import { getFacebookAppID } from "@/utils/getConfig";
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type LoginFacebookButtonProps = {
@@ -37,7 +37,7 @@ function LoginFacebookButton({
 
     window.fbAsyncInit = () => {
       window.FB.init({
-        appId: getFacebookAppID(),
+        appId: getToken(TOKEN_ID.FACEBOOK_APP_ID),
         cookie: true,
         xfbml: true,
         version: "v20.0",

@@ -28,118 +28,122 @@ import {
 function Sidebar() {
   const { t } = useTranslation();
 
-  const Menus = [
-    {
-      id: "dashboard",
-      title: t("sidebar.dashboard"),
-      icon: LayoutDashboard,
-      path: "dashboard",
-    },
-    {
-      navLabel: true,
-      title: t("sidebar.configurations"),
-      icon: Cog,
-      children: [
+  const Menus = useMemo(
+    () =>
+      [
         {
-          id: "settings",
-          title: t("sidebar.settings"),
-          path: "settings",
+          id: "dashboard",
+          title: t("sidebar.dashboard"),
+          icon: LayoutDashboard,
+          path: "dashboard",
         },
         {
-          id: "proxy",
-          title: t("sidebar.proxy"),
-          path: "proxy",
-        },
-      ],
-    },
-    {
-      title: t("sidebar.callbacks"),
-      icon: IterationCcw,
-      children: [
-        {
-          id: "webhook",
-          title: t("sidebar.webhook"),
-          path: "webhook",
-        },
-        {
-          id: "websocket",
-          title: t("sidebar.websocket"),
-          path: "websocket",
+          navLabel: true,
+          title: t("sidebar.configurations"),
+          icon: Cog,
+          children: [
+            {
+              id: "settings",
+              title: t("sidebar.settings"),
+              path: "settings",
+            },
+            {
+              id: "proxy",
+              title: t("sidebar.proxy"),
+              path: "proxy",
+            },
+          ],
         },
         {
-          id: "rabbitmq",
-          title: t("sidebar.rabbitmq"),
-          path: "rabbitmq",
+          title: t("sidebar.callbacks"),
+          icon: IterationCcw,
+          children: [
+            {
+              id: "webhook",
+              title: t("sidebar.webhook"),
+              path: "webhook",
+            },
+            {
+              id: "websocket",
+              title: t("sidebar.websocket"),
+              path: "websocket",
+            },
+            {
+              id: "rabbitmq",
+              title: t("sidebar.rabbitmq"),
+              path: "rabbitmq",
+            },
+            {
+              id: "sqs",
+              title: t("sidebar.sqs"),
+              path: "sqs",
+            },
+          ],
         },
         {
-          id: "sqs",
-          title: t("sidebar.sqs"),
-          path: "sqs",
+          title: t("sidebar.integrations"),
+          icon: Zap,
+          children: [
+            {
+              id: "genericBot",
+              title: t("sidebar.genericBot"),
+              path: "generic",
+            },
+            {
+              id: "chatwoot",
+              title: t("sidebar.chatwoot"),
+              path: "chatwoot",
+            },
+            {
+              id: "typebot",
+              title: t("sidebar.typebot"),
+              path: "typebot",
+            },
+            {
+              id: "openai",
+              title: t("sidebar.openai"),
+              path: "openai",
+            },
+            {
+              id: "dify",
+              title: t("sidebar.dify"),
+              path: "dify",
+            },
+            {
+              id: "flowise",
+              title: t("sidebar.flowise"),
+              path: "flowise",
+            },
+          ],
         },
-      ],
-    },
-    {
-      title: t("sidebar.integrations"),
-      icon: Zap,
-      children: [
         {
-          id: "genericBot",
-          title: t("sidebar.genericBot"),
-          path: "generic",
+          id: "documentation",
+          title: t("sidebar.documentation"),
+          icon: FileQuestion,
+          link: "https://doc.evolution-api.com",
+          divider: true,
         },
         {
-          id: "chatwoot",
-          title: t("sidebar.chatwoot"),
-          path: "chatwoot",
+          id: "postman",
+          title: t("sidebar.postman"),
+          icon: CircleHelp,
+          link: "https://evolution-api.com/postman",
         },
         {
-          id: "typebot",
-          title: t("sidebar.typebot"),
-          path: "typebot",
+          id: "discord",
+          title: t("sidebar.discord"),
+          icon: MessageCircle,
+          link: "https://evolution-api.com/discord",
         },
         {
-          id: "openai",
-          title: t("sidebar.openai"),
-          path: "openai",
+          id: "support-premium",
+          title: t("sidebar.supportPremium"),
+          icon: LifeBuoy,
+          link: "https://evolution-api.com/suporte-pro",
         },
-        {
-          id: "dify",
-          title: t("sidebar.dify"),
-          path: "dify",
-        },
-        {
-          id: "flowise",
-          title: t("sidebar.flowise"),
-          path: "flowise",
-        },
-      ],
-    },
-    {
-      id: "documentation",
-      title: t("sidebar.documentation"),
-      icon: FileQuestion,
-      link: "https://doc.evolution-api.com",
-      divider: true,
-    },
-    {
-      id: "postman",
-      title: t("sidebar.postman"),
-      icon: CircleHelp,
-      link: "https://evolution-api.com/postman",
-    },
-    {
-      id: "discord",
-      title: t("sidebar.discord"),
-      icon: MessageCircle,
-      link: "https://evolution-api.com/discord",
-    },
-    {
-      id: "support-premium",
-      title: t("sidebar.supportPremium"),
-      icon: LifeBuoy,
-      link: "https://evolution-api.com/suporte-pro",
-    },
-  ] as const;
+      ] as const,
+    [t],
+  );
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
@@ -173,7 +177,7 @@ function Sidebar() {
           ("children" in menu &&
             menu.children?.some((child) => child.isActive)),
       })),
-    [pathname],
+    [Menus, pathname],
   );
 
   return (

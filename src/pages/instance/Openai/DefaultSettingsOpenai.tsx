@@ -26,6 +26,8 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import {
   findDefaultSettingsOpenai,
   findOpenai,
@@ -62,7 +64,7 @@ const fetchData = async (
   setCreds: any,
 ) => {
   try {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = getToken(TOKEN_ID.TOKEN);
 
     if (storedToken && instance && instance.name) {
       const getSettings: OpenaiSettings[] = await findDefaultSettingsOpenai(

@@ -1,20 +1,14 @@
+import { api } from "@/lib/queries/api";
+
 import { NewInstance, Settings } from "@/types/evolution.types";
 
-import ApiService from "@/utils/instance";
-
-const apiService = new ApiService();
-
 export const createInstance = async (instance: NewInstance) => {
-  const response = await apiService
-    .getInstance()
-    .post("/instance/create", instance);
+  const response = await api.post("/instance/create", instance);
   return response.data;
 };
 
 export const fetchInstances = async () => {
-  const response = await apiService
-    .getInstance()
-    .get("/instance/fetchInstances");
+  const response = await api.get("/instance/fetchInstances");
   return response.data;
 };
 
@@ -22,32 +16,27 @@ export const fetchInstance = async (
   instanceId: string,
   abortSignal?: AbortSignal,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/instance/fetchInstances?instanceId=${instanceId}`, {
+  const response = await api.get(
+    `/instance/fetchInstances?instanceId=${instanceId}`,
+    {
       signal: abortSignal,
-    });
+    },
+  );
   return response.data;
 };
 
 export const restart = async (instanceName: string) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/instance/restart/${instanceName}`);
+  const response = await api.post(`/instance/restart/${instanceName}`);
   return response.data;
 };
 
 export const logout = async (instanceName: string) => {
-  const response = await apiService
-    .getInstance()
-    .delete(`/instance/logout/${instanceName}`);
+  const response = await api.delete(`/instance/logout/${instanceName}`);
   return response.data;
 };
 
 export const deleteInstance = async (instanceName: string) => {
-  const response = await apiService
-    .getInstance()
-    .delete(`/instance/delete/${instanceName}`);
+  const response = await api.delete(`/instance/delete/${instanceName}`);
   return response.data;
 };
 
@@ -59,7 +48,7 @@ export const connect = async (
   let url = `/instance/connect/${instanceName}`;
   if (number) url += `?number=${number}`;
 
-  const response = await apiService.getInstance().get(url, {
+  const response = await api.get(url, {
     headers: {
       apikey: token,
     },
@@ -68,24 +57,20 @@ export const connect = async (
 };
 
 export const checkStatus = async (instanceName: string, token: string) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/instance/connectionState/${instanceName}`, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.get(`/instance/connectionState/${instanceName}`, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };
 
 export const settingsfind = async (instanceName: string, token: string) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/settings/find/${instanceName}`, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.get(`/settings/find/${instanceName}`, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };
 
@@ -94,12 +79,10 @@ export const updateSettings = async (
   token: string,
   settings: Settings,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/settings/set/${instanceName}`, settings, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.post(`/settings/set/${instanceName}`, settings, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };

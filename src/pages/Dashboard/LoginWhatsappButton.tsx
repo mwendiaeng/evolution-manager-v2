@@ -5,11 +5,7 @@ import { useTranslation } from "react-i18next";
 
 import { Button } from "@/components/ui/button";
 
-import {
-  getFacebookAppID,
-  getFacebookConfigID,
-  getFacebookUserToken,
-} from "@/utils/getConfig";
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 type LoginWhatsappButtonProps = {
@@ -45,7 +41,7 @@ function LoginWhatsappButton({
 
     window.fbAsyncInit = () => {
       window.FB.init({
-        appId: getFacebookAppID(),
+        appId: getToken(TOKEN_ID.FACEBOOK_APP_ID),
         cookie: true,
         xfbml: true,
         version: "v20.0",
@@ -102,6 +98,8 @@ function LoginWhatsappButton({
   async function registerWaba(number: string, businessId: string) {
     if (!number || !businessId) return;
 
+    const userToken = getToken(TOKEN_ID.FACEBOOK_USER_TOKEN) ?? "";
+
     try {
       await axios.post(
         `https://graph.facebook.com/v20.0/${number}/register`,
@@ -111,7 +109,7 @@ function LoginWhatsappButton({
         },
         {
           headers: {
-            Authorization: `Bearer ${getFacebookUserToken()}`,
+            Authorization: `Bearer ${userToken}`,
           },
         },
       );
@@ -121,14 +119,14 @@ function LoginWhatsappButton({
         {},
         {
           headers: {
-            Authorization: `Bearer ${getFacebookUserToken()}`,
+            Authorization: `Bearer ${userToken}`,
           },
         },
       );
 
       setNumber(number);
       setBusiness(businessId);
-      setToken(getFacebookUserToken());
+      setToken(userToken);
     } catch (error) {
       console.log(error);
     } finally {
@@ -141,7 +139,7 @@ function LoginWhatsappButton({
     // Conversion tracking code
     if (window.fbq) {
       window.fbq("trackCustom", "WhatsAppOnboardingStart", {
-        appId: getFacebookAppID(),
+        appId: getToken(TOKEN_ID.FACEBOOK_APP_ID),
         feature: "whatsapp_embedded_signup",
       });
     }
@@ -156,7 +154,7 @@ function LoginWhatsappButton({
         }
       },
       {
-        config_id: getFacebookConfigID(),
+        config_id: getToken(TOKEN_ID.FACEBOOK_CONFIG_ID),
         response_type: "code",
         override_default_response_type: true,
         extras: {

@@ -1,17 +1,13 @@
+import { api } from "@/lib/queries/api";
+
 import { GenericBot, GenericBotSettings } from "@/types/evolution.types";
 
-import ApiService from "@/utils/instance";
-
-const apiService = new ApiService();
-
 export const findGenericBot = async (instanceName: string, token: string) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/generic/find/${instanceName}`, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.get(`/generic/find/${instanceName}`, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };
 
@@ -20,13 +16,14 @@ export const getGenericBot = async (
   token: string,
   genericBotId: string,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/generic/fetch/${genericBotId}/${instanceName}`, {
+  const response = await api.get(
+    `/generic/fetch/${genericBotId}/${instanceName}`,
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };
 
@@ -35,13 +32,11 @@ export const createGenericBot = async (
   token: string,
   data: GenericBot,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/generic/create/${instanceName}`, data, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.post(`/generic/create/${instanceName}`, data, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };
 
@@ -51,13 +46,15 @@ export const updateGenericBot = async (
   genericBotId: string,
   data: GenericBot,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .put(`/generic/update/${genericBotId}/${instanceName}`, data, {
+  const response = await api.put(
+    `/generic/update/${genericBotId}/${instanceName}`,
+    data,
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };
 
@@ -66,13 +63,14 @@ export const deleteGenericBot = async (
   token: string,
   genericBotId: string,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .delete(`/generic/delete/${genericBotId}/${instanceName}`, {
+  const response = await api.delete(
+    `/generic/delete/${genericBotId}/${instanceName}`,
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };
 
@@ -80,13 +78,11 @@ export const findDefaultSettingsGenericBot = async (
   instanceName: string,
   token: string,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/generic/fetchSettings/${instanceName}`, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.get(`/generic/fetchSettings/${instanceName}`, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };
 
@@ -95,13 +91,11 @@ export const setDefaultSettingsGenericBot = async (
   token: string,
   data: GenericBotSettings,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/generic/settings/${instanceName}`, data, {
-      headers: {
-        apikey: token,
-      },
-    });
+  const response = await api.post(`/generic/settings/${instanceName}`, data, {
+    headers: {
+      apikey: token,
+    },
+  });
   return response.data;
 };
 
@@ -110,13 +104,14 @@ export const fetchSessionsGenericBot = async (
   token: string,
   genericBotId?: string,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .get(`/generic/fetchSessions/${genericBotId}/${instanceName}`, {
+  const response = await api.get(
+    `/generic/fetchSessions/${genericBotId}/${instanceName}`,
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };
 
@@ -126,7 +121,7 @@ export const changeStatusGenericBot = async (
   remoteJid: string,
   status: string,
 ) => {
-  const response = await apiService.getInstance().post(
+  const response = await api.post(
     `/generic/changeStatus/${instanceName}`,
     {
       remoteJid,

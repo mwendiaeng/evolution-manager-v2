@@ -2,11 +2,13 @@ import { DoorOpen } from "lucide-react";
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { logout } from "@/services/auth.service";
+import { logout } from "@/lib/queries/token";
+
 import { fetchInstance } from "@/services/instances.service";
 
 import { Instance } from "@/types/evolution.types";
 
+import { LanguageToggle } from "./language-toggle";
 import { ModeToggle } from "./mode-toggle";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
@@ -17,7 +19,6 @@ import {
   DialogFooter,
   DialogHeader,
 } from "./ui/dialog";
-import { LanguageToggle } from "./language-toggle";
 
 function Header({ instanceId }: { instanceId?: string }) {
   const [logoutConfirmation, setLogoutConfirmation] = useState(false);

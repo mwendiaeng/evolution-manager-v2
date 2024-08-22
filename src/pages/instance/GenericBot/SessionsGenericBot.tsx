@@ -50,6 +50,8 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
+
 import {
   changeStatusGenericBot,
   fetchSessionsGenericBot,
@@ -63,7 +65,7 @@ const fetchData = async (
   genericBotId?: string,
 ) => {
   try {
-    const storedToken = localStorage.getItem("token");
+    const storedToken = getToken(TOKEN_ID.TOKEN);
 
     if (storedToken && instance && instance.name) {
       const getSessions: IntegrationSession[] = await fetchSessionsGenericBot(

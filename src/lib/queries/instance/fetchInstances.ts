@@ -1,0 +1,22 @@
+import { useQuery } from "@tanstack/react-query";
+
+import { api } from "../api";
+import { UseQueryParams } from "../types";
+import { FetchInstancesResponse } from "./types";
+
+const queryKey = ["chats", "fetchInstances"];
+
+export const fetchInstances = async () => {
+  const response = await api.get(`/instance/fetchInstances`);
+  return response.data;
+};
+
+export const useFetchInstances = (
+  props?: UseQueryParams<FetchInstancesResponse>,
+) => {
+  return useQuery<FetchInstancesResponse>({
+    ...props,
+    queryKey,
+    queryFn: () => fetchInstances(),
+  });
+};

@@ -28,14 +28,16 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import {
+  connect,
+  logout,
+  restart,
+} from "@/lib/queries/instance/manageInstance";
 import { getToken, TOKEN_ID } from "@/lib/queries/token";
 
-import { logout, connect, restart } from "@/services/instances.service";
-
-const numberFormatter = new Intl.NumberFormat("pt-BR");
-
 function DashboardInstance() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const numberFormatter = new Intl.NumberFormat(i18n.language);
   const [qrCode, setQRCode] = useState<string | null>(null);
   const [pairingCode, setPairingCode] = useState("");
   const token = getToken(TOKEN_ID.TOKEN);

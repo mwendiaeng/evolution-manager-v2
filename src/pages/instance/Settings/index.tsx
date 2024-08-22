@@ -13,7 +13,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { settingsfind, updateSettings } from "@/services/instances.service";
+import { updateSettings } from "@/lib/queries/instance/manageInstance";
+import { useFetchSettings } from "@/lib/queries/instance/settingsFind";
 
 import { Settings as SettingsType } from "@/types/evolution.types";
 
@@ -29,11 +30,13 @@ const FormSchema = z.object({
 
 function Settings() {
   const { t } = useTranslation();
-  const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [token, setToken] = useState("");
 
   const { instance } = useInstance();
+  const { data: settings, isLoading: loading } = useFetchSettings({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -49,36 +52,18 @@ function Settings() {
   });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        if (instance && instance.name && instance.token) {
-          setToken(instance.token);
-
-          const data: SettingsType = await settingsfind(
-            instance.name,
-            instance.token,
-          );
-          form.reset({
-            rejectCall: data.rejectCall,
-            msgCall: data.msgCall || "",
-            groupsIgnore: data.groupsIgnore,
-            alwaysOnline: data.alwaysOnline,
-            readMessages: data.readMessages,
-            syncFullHistory: data.syncFullHistory,
-            readStatus: data.readStatus,
-          });
-        } else {
-          console.error("token not found");
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [form, instance]);
+    if (settings) {
+      form.reset({
+        rejectCall: settings.rejectCall,
+        msgCall: settings.msgCall || "",
+        groupsIgnore: settings.groupsIgnore,
+        alwaysOnline: settings.alwaysOnline,
+        readMessages: settings.readMessages,
+        syncFullHistory: settings.syncFullHistory,
+        readStatus: settings.readStatus,
+      });
+    }
+  }, [form, settings]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
@@ -96,7 +81,7 @@ function Settings() {
         syncFullHistory: data.syncFullHistory,
         readStatus: data.readStatus,
       };
-      await updateSettings(instance.name, token, settingData);
+      await updateSettings(instance.name, instance.token, settingData);
       toast.success(t("settings.toast.success"));
     } catch (error) {
       console.error(t("settings.toast.success"), error);

@@ -1,25 +1,19 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 
+import { useVerifyServer } from "@/lib/queries/auth/verifyServer";
 import { getToken, TOKEN_ID } from "@/lib/queries/token";
-
-import { verifyServer } from "@/services/auth.service";
 
 import { Button } from "./ui/button";
 
 function Footer() {
   const { t } = useTranslation();
 
-  const [version, setVersion] = useState<string | null>(null);
   const clientName = getToken(TOKEN_ID.CLIENT_NAME);
+  const url = getToken(TOKEN_ID.API_URL);
+  const { data: serverInfo } = useVerifyServer({ url });
 
-  useEffect(() => {
-    const url = getToken(TOKEN_ID.API_URL);
-
-    if (!url) return;
-
-    verifyServer(url).then((data) => setVersion(data.version));
-  }, []);
+  const version = useMemo(() => serverInfo?.version, [serverInfo]);
 
   const links = [
     {

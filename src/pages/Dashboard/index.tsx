@@ -5,7 +5,7 @@ import {
   MessageCircle,
   RefreshCw,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -35,24 +35,12 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 
-import {
-  deleteInstance,
-  fetchInstances,
-  logout,
-} from "@/services/instances.service";
+import { useFetchInstances } from "@/lib/queries/instance/fetchInstances";
+import { deleteInstance, logout } from "@/lib/queries/instance/manageInstance";
 
 import { Instance } from "@/types/evolution.types";
 
 import { NewInstance } from "./NewInstance";
-
-const fetchData = async (callback: (data: Instance[]) => void) => {
-  try {
-    const data = await fetchInstances();
-    callback(data);
-  } catch (error) {
-    console.error("Error fetchData:", error);
-  }
-};
 
 function Dashboard() {
   const { t } = useTranslation();
@@ -60,24 +48,13 @@ function Dashboard() {
   const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(
     null,
   );
-  const [instances, setInstances] = useState<Instance[]>([]);
+  const { data: instances, refetch } = useFetchInstances();
   const [deleting, setDeleting] = useState<string[]>([]);
-  const [searchStatus, setSearchStatus] = useState<string>("all");
-
-  useEffect(() => {
-    const getData = async () => {
-      await fetchData((result) => {
-        setInstances(result);
-      });
-    };
-
-    getData();
-  }, []);
+  const [searchStatus, setSearchStatus] = useState("all");
+  const [nameSearch, setNameSearch] = useState("");
 
   const resetTable = async () => {
-    await fetchData((result) => {
-      setInstances(result);
-    });
+    await refetch();
   };
 
   const handleDelete = async (instanceName: string) => {
@@ -101,32 +78,22 @@ function Dashboard() {
     }
   };
 
-  const searchByName = async (name: string) => {
-    if (name === "") {
-      await resetTable();
-      return;
+  const filteredInstances = useMemo(() => {
+    let instancesList = instances ? [...instances] : [];
+    if (searchStatus !== "all") {
+      instancesList = instancesList.filter(
+        (instance) => instance.connectionStatus === searchStatus,
+      );
     }
 
-    const data = instances.filter((instance) => {
-      return instance.name.toLowerCase().includes(name.toLowerCase());
-    });
-    setInstances(data);
-  };
-
-  const searchByStatus = async (status: string) => {
-    setSearchStatus(status);
-    if (status === "all") {
-      await resetTable();
-      return;
+    if (nameSearch !== "") {
+      instancesList = instancesList.filter((instance) =>
+        instance.name.toLowerCase().includes(nameSearch.toLowerCase()),
+      );
     }
 
-    await fetchData((result) => {
-      const data = result.filter((instance) => {
-        return instance.connectionStatus === status;
-      });
-      setInstances(data);
-    });
-  };
+    return instancesList;
+  }, [instances, nameSearch, searchStatus]);
 
   const instanceStatus = [
     { value: "all", label: t("status.all") },
@@ -150,7 +117,8 @@ function Dashboard() {
         <div className="flex-1">
           <Input
             placeholder={t("dashboard.search")}
-            onChange={(e) => searchByName(e.target.value)}
+            value={nameSearch}
+            onChange={(e) => setNameSearch(e.target.value)}
           />
         </div>
         <DropdownMenu>
@@ -166,7 +134,7 @@ function Dashboard() {
                 checked={searchStatus === status.value}
                 onCheckedChange={(checked) => {
                   if (checked) {
-                    searchByStatus(status.value);
+                    setSearchStatus(status.value);
                   }
                 }}
               >
@@ -177,8 +145,7 @@ function Dashboard() {
         </DropdownMenu>
       </div>
       <main className="grid gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {instances &&
-          instances.length > 0 &&
+        {filteredInstances.length > 0 &&
           Array.isArray(instances) &&
           instances.map((instance: Instance) => (
             <Card key={instance.id}>

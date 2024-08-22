@@ -13,9 +13,11 @@ api.interceptors.request.use(
       config.baseURL = apiUrl.toString();
     }
 
-    const token = getToken(TOKEN_ID.TOKEN);
-    if (token) {
-      config.headers.apikey = `${token}`;
+    if (!config.headers.apiKey || config.headers.apiKey === "") {
+      const token = getToken(TOKEN_ID.TOKEN);
+      if (token) {
+        config.headers.apikey = `${token}`;
+      }
     }
 
     return config;

@@ -1,27 +1,9 @@
-import { api } from "@/lib/queries/api";
-
 import { NewInstance, Settings } from "@/types/evolution.types";
+
+import { api } from "../api";
 
 export const createInstance = async (instance: NewInstance) => {
   const response = await api.post("/instance/create", instance);
-  return response.data;
-};
-
-export const fetchInstances = async () => {
-  const response = await api.get("/instance/fetchInstances");
-  return response.data;
-};
-
-export const fetchInstance = async (
-  instanceId: string,
-  abortSignal?: AbortSignal,
-) => {
-  const response = await api.get(
-    `/instance/fetchInstances?instanceId=${instanceId}`,
-    {
-      signal: abortSignal,
-    },
-  );
   return response.data;
 };
 
@@ -45,31 +27,9 @@ export const connect = async (
   token: string,
   number?: string,
 ) => {
-  let url = `/instance/connect/${instanceName}`;
-  if (number) url += `?number=${number}`;
-
-  const response = await api.get(url, {
-    headers: {
-      apikey: token,
-    },
-  });
-  return response.data;
-};
-
-export const checkStatus = async (instanceName: string, token: string) => {
-  const response = await api.get(`/instance/connectionState/${instanceName}`, {
-    headers: {
-      apikey: token,
-    },
-  });
-  return response.data;
-};
-
-export const settingsfind = async (instanceName: string, token: string) => {
-  const response = await api.get(`/settings/find/${instanceName}`, {
-    headers: {
-      apikey: token,
-    },
+  const response = await api.get(`/instance/connect/${instanceName}`, {
+    headers: { apikey: token },
+    params: { number },
   });
   return response.data;
 };

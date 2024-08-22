@@ -17,9 +17,10 @@ import {
 import { Form, FormInput } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
+import { verifyServer } from "@/lib/queries/auth/verifyServer";
 import { logout, saveToken } from "@/lib/queries/token";
 
-import { verifyCreds, verifyServer } from "@/services/auth.service";
+import { verifyCreds } from "@/services/auth.service";
 
 const loginSchema = z.object({
   serverUrl: z
@@ -41,7 +42,7 @@ function Login() {
   });
 
   const handleLogin: SubmitHandler<LoginSchema> = async (data) => {
-    const server = await verifyServer(data.serverUrl);
+    const server = await verifyServer({ url: data.serverUrl });
 
     if (!server || !server.version) {
       logout();

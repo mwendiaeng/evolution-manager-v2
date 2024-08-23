@@ -59,7 +59,6 @@ const fetchData = async (
   instance: Instance | null,
   setSettings: any,
   setBots: any,
-  setCreds: any,
 ) => {
   try {
     const storedToken = localStorage.getItem("token");
@@ -72,14 +71,29 @@ const fetchData = async (
 
       setSettings(getSettings);
 
-      const getBots: OpenaiBot[] = await findOpenai(instance.name, storedToken);
+      const getBots: OpenaiBot[] = await findOpenai(
+        instance.name,
+        storedToken,
+      ).catch();
 
       setBots(getBots);
+    } else {
+      console.error("Token not found");
+    }
+  } catch (error) {
+    console.error("Error:", error);
+  }
+};
 
+const fetchCreds = async (instance: Instance | null, setCreds: any) => {
+  try {
+    const storedToken = localStorage.getItem("token");
+
+    if (storedToken && instance && instance.name) {
       const getCreds: OpenaiCreds[] = await findOpenaiCreds(
         instance.name,
         storedToken,
-      );
+      ).catch();
 
       setCreds(getCreds);
     } else {
@@ -118,7 +132,10 @@ function DefaultSettingsOpenai() {
   });
 
   useEffect(() => {
-    if (open) fetchData(instance, setSettings, setBots, setCreds);
+    if (open) {
+      fetchData(instance, setSettings, setBots);
+      fetchCreds(instance, setCreds);
+    }
   }, [instance, open]);
 
   useEffect(() => {
@@ -176,7 +193,8 @@ function DefaultSettingsOpenai() {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setBots, setCreds);
+    fetchData(instance, setSettings, setBots);
+    fetchCreds(instance, setCreds);
   }
 
   return (

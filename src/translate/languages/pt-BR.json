@@ -117,7 +117,7 @@
           "label": "Gerar QR Code",
           "title": "Scaneie o QR Code com o WhatsApp"
         },
-        "paitingCode": {
+        "pairingCode": {
           "label": "Gerar Código de Pareamento",
           "title": "Faça o pareamento com o WhatsApp"
         },

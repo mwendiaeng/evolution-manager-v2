@@ -117,7 +117,7 @@
           "label": "Get QR Code",
           "title": "Scan the QR code with your WhatsApp Web"
         },
-        "paitingCode": {
+        "pairingCode": {
           "label": "Get Pairing Code",
           "title": "Get the pairing code to connect with WhatsApp"
         },

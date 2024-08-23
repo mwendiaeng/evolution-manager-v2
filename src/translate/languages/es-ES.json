@@ -117,7 +117,7 @@
           "label": "Generar Código QR",
           "title": "Escanea el Código QR con WhatsApp"
         },
-        "paitingCode": {
+        "pairingCode": {
           "label": "Generar Código de Emparejamiento",
           "title": "Emparejar con WhatsApp"
         },

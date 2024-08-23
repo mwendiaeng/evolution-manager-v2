@@ -86,8 +86,10 @@ function Chatwoot() {
     loadChatwootData();
   }, [instance, form]);
 
-  const onSubmit = async (data: FormSchema) => {
+  const onSubmit = async () => {
     if (!instance) return;
+
+    const data = form.getValues();
 
     setLoading(true);
     try {
@@ -124,10 +126,7 @@ function Chatwoot() {
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-6"
-        >
+        <form className="w-full space-y-6">
           <div>
             <h3 className="mb-1 text-lg font-medium">{t("chatwoot.title")}</h3>
             <Separator className="my-4" />
@@ -222,7 +221,9 @@ function Chatwoot() {
             </div>
           </div>
           <div className="mx-4 flex justify-end">
-            <Button type="submit">{t("chatwoot.button.save")}</Button>
+            <Button type="submit" onClick={onSubmit}>
+              {t("chatwoot.button.save")}
+            </Button>
           </div>
         </form>
       </Form>

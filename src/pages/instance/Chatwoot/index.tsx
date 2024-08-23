@@ -15,7 +15,8 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createChatwoot, fetchChatwoot } from "@/services/chatwoot.service";
+import { useFetchChatwoot } from "@/lib/queries/chatwoot/fetchChatwoot";
+import { createChatwoot } from "@/lib/queries/chatwoot/manageChatwoot";
 
 import { Chatwoot as ChatwootType } from "@/types/evolution.types";
 
@@ -44,6 +45,10 @@ function Chatwoot() {
   const { t } = useTranslation();
   const { instance } = useInstance();
   const [, setLoading] = useState(false);
+  const { data: chatwoot } = useFetchChatwoot({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -69,22 +74,11 @@ function Chatwoot() {
   });
 
   useEffect(() => {
-    const loadChatwootData = async () => {
-      if (!instance) return;
-      setLoading(true);
-      try {
-        const data = await fetchChatwoot(instance.name, instance.token);
-        form.setValue("ignoreJids", data.ignoreJids || []);
-        form.reset(data);
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadChatwootData();
-  }, [instance, form]);
+    if (chatwoot) {
+      form.setValue("ignoreJids", chatwoot.ignoreJids || []);
+      form.reset(chatwoot);
+    }
+  });
 
   const onSubmit = async (data: FormSchema) => {
     if (!instance) return;
@@ -111,7 +105,11 @@ function Chatwoot() {
         ignoreJids: data.ignoreJids,
       };
 
-      await createChatwoot(instance.name, instance.token, chatwootData);
+      await createChatwoot({
+        instanceName: instance.name,
+        token: instance.token,
+        data: chatwootData,
+      });
       toast.success(t("chatwoot.toast.success"));
     } catch (error: any) {
       console.error(t("chatwoot.toast.error"), error);

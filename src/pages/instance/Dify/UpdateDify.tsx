@@ -205,7 +205,6 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                 <FormInput
                   name="description"
                   label={t("dify.form.description.label")}
-                  required
                 >
                   <Input />
                 </FormInput>
@@ -219,7 +218,6 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                 <FormSelect
                   name="botType"
                   label={t("dify.form.botType.label")}
-                  required
                   options={[
                     { label: t("dify.form.botType.chatBot"), value: "chatBot" },
                     {
@@ -268,7 +266,6 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                     },
                     { label: t("dify.form.triggerType.none"), value: "none" },
                   ]}
-                  required
                 />
                 {triggerType === "keyword" && (
                   <>
@@ -297,12 +294,10 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                           value: "regex",
                         },
                       ]}
-                      required
                     />
                     <FormInput
                       name="triggerValue"
                       label={t("dify.form.triggerValue.label")}
-                      required
                     >
                       <Input />
                     </FormInput>
@@ -312,7 +307,6 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                   <FormInput
                     name="triggerValue"
                     label={t("dify.form.triggerConditions.label")}
-                    required
                   >
                     <Input />
                   </FormInput>
@@ -329,7 +323,6 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
                 <FormInput
                   name="keywordFinish"
                   label={t("dify.form.keywordFinish.label")}
-                  required
                 >
                   <Input />
                 </FormInput>

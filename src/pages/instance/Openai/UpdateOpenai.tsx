@@ -72,11 +72,7 @@ type UpdateOpenaiProps = {
   resetTable: () => void;
 };
 
-function UpdateOpenai({
-  botId,
-  instance,
-  resetTable,
-}: UpdateOpenaiProps) {
+function UpdateOpenai({ botId, instance, resetTable }: UpdateOpenaiProps) {
   const { t } = useTranslation();
   const [, setToken] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
@@ -214,12 +210,7 @@ function UpdateOpenai({
           debounceTime: data.debounceTime,
         };
 
-        await updateOpenai(
-          instance.name,
-          storedToken,
-          botId,
-          openaiBotData,
-        );
+        await updateOpenai(instance.name, storedToken, botId, openaiBotData);
         toast.success(t("openai.toast.success.update"));
       } else {
         console.error("Instance not found");
@@ -304,7 +295,6 @@ function UpdateOpenai({
                 <FormSelect
                   name="botType"
                   label={t("openai.form.botType.label")}
-                  required
                   options={[
                     {
                       label: t("openai.form.botType.assistant"),
@@ -321,14 +311,12 @@ function UpdateOpenai({
                     <FormInput
                       name="assistantId"
                       label={t("openai.form.assistantId.label")}
-                      required
                     >
                       <Input />
                     </FormInput>
                     <FormInput
                       name="functionUrl"
                       label={t("openai.form.functionUrl.label")}
-                      required
                     >
                       <Input />
                     </FormInput>
@@ -339,7 +327,6 @@ function UpdateOpenai({
                     <FormSelect
                       name="model"
                       label={t("openai.form.model.label")}
-                      required
                       options={models.map((model) => ({
                         label: model.id,
                         value: model.id,
@@ -382,7 +369,6 @@ function UpdateOpenai({
                 <FormSelect
                   name="triggerType"
                   label={t("openai.form.triggerType.label")}
-                  required
                   options={[
                     {
                       label: t("openai.form.triggerType.keyword"),
@@ -401,7 +387,6 @@ function UpdateOpenai({
                     <FormSelect
                       name="triggerOperator"
                       label={t("openai.form.triggerOperator.label")}
-                      required
                       options={[
                         {
                           label: t("openai.form.triggerOperator.contains"),
@@ -428,7 +413,6 @@ function UpdateOpenai({
                     <FormInput
                       name="triggerValue"
                       label={t("openai.form.triggerValue.label")}
-                      required
                     >
                       <Input />
                     </FormInput>
@@ -438,7 +422,6 @@ function UpdateOpenai({
                   <FormInput
                     name="triggerValue"
                     label={t("openai.form.triggerConditions.label")}
-                    required
                   >
                     <Input />
                   </FormInput>

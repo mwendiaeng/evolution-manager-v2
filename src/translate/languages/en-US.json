@@ -31,7 +31,7 @@
       "label": "Toggle theme",
       "light": "Light",
       "dark": "Dark",
-      "System": "System"
+      "system": "System"
     },
     "language": {
       "label": "Language",
@@ -1028,7 +1028,7 @@
       "triggerConditions": {
         "label": "Conditions"
       },
-      "botIdFallback": {
+      "flowiseIdFallback": {
         "label": "Flowise Fallback"
       },
       "generalSettings": {

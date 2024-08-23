@@ -31,7 +31,7 @@
       "label": "Mudar Tema",
       "light": "Claro",
       "dark": "Escuro",
-      "System": "Sistema"
+      "system": "Sistema"
     },
     "language": {
       "label": "Idioma",
@@ -1028,7 +1028,7 @@
       "triggerConditions": {
         "label": "Condições"
       },
-      "botIdFallback": {
+      "flowiseIdFallback": {
         "label": "Fallback do Flowise"
       },
       "generalSettings": {

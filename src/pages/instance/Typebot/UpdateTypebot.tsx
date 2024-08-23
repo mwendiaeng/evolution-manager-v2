@@ -249,7 +249,6 @@ function UpdateTypebot({
                 <FormSelect
                   name="triggerType"
                   label={t("typebot.form.triggerType.label")}
-                  required
                   options={[
                     {
                       label: t("typebot.form.triggerType.keyword"),
@@ -271,7 +270,6 @@ function UpdateTypebot({
                     <FormSelect
                       name="triggerOperator"
                       label={t("typebot.form.triggerOperator.label")}
-                      required
                       options={[
                         {
                           label: t("typebot.form.triggerOperator.contains"),
@@ -298,7 +296,6 @@ function UpdateTypebot({
                     <FormInput
                       name="triggerValue"
                       label={t("typebot.form.triggerValue.label")}
-                      required
                     >
                       <Input />
                     </FormInput>
@@ -308,7 +305,6 @@ function UpdateTypebot({
                   <FormInput
                     name="triggerValue"
                     label={t("typebot.form.triggerConditions.label")}
-                    required
                   >
                     <Input />
                   </FormInput>

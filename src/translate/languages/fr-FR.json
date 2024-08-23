@@ -31,7 +31,7 @@
       "label": "Changer de Thème",
       "light": "Clair",
       "dark": "Sombre",
-      "System": "Système"
+      "system": "Système"
     },
     "language": {
       "label": "Langue",
@@ -1027,7 +1027,7 @@
       "triggerConditions": {
         "label": "Conditions"
       },
-      "botIdFallback": {
+      "flowiseIdFallback": {
         "label": "Fallback de Flowise"
       },
       "generalSettings": {

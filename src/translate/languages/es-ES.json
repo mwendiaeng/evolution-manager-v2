@@ -217,11 +217,11 @@
       "url": {
         "label": "URL"
       },
-      "webhookByEvents": {
+      "byEvents": {
         "label": "Webhook por Eventos",
         "description": "Crear una ruta para cada evento agregando el nombre del evento al final de la URL"
       },
-      "webhookBase64": {
+      "base64": {
         "label": "Webhook Base64",
         "description": "Enviar datos de medios en base64 en el webhook"
       },

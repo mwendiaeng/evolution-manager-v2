@@ -20,12 +20,16 @@ export const createWebsocket = async (
   token: string,
   data: Websocket,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/websocket/set/${instanceName}`, data, {
+  const response = await apiService.getInstance().post(
+    `/websocket/set/${instanceName}`,
+    {
+      websocket: data,
+    },
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };

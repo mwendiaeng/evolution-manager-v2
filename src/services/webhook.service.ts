@@ -20,12 +20,16 @@ export const createWebhook = async (
   token: string,
   data: Webhook,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/webhook/set/${instanceName}`, data, {
+  const response = await apiService.getInstance().post(
+    `/webhook/set/${instanceName}`,
+    {
+      webhook: data,
+    },
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };

@@ -20,12 +20,16 @@ export const createRabbitmq = async (
   token: string,
   data: Rabbitmq,
 ) => {
-  const response = await apiService
-    .getInstance()
-    .post(`/rabbitmq/set/${instanceName}`, data, {
+  const response = await apiService.getInstance().post(
+    `/rabbitmq/set/${instanceName}`,
+    {
+      rabbitmq: data,
+    },
+    {
       headers: {
         apikey: token,
       },
-    });
+    },
+  );
   return response.data;
 };

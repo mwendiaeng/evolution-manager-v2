@@ -213,8 +213,8 @@ export type Webhook = {
   enabled: boolean;
   url: string;
   events: string[];
-  webhookBase64: boolean;
-  webhookByEvents: boolean;
+  base64: boolean;
+  byEvents: boolean;
 };
 
 export type Websocket = {

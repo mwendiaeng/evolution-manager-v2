@@ -21,7 +21,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createDify } from "@/services/dify.service";
+import { createDify } from "@/lib/queries/dify/manageDify";
 
 import { Dify } from "@/types/evolution.types";
 
@@ -99,7 +99,11 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
         debounceTime: parseInt(data.debounceTime, 10),
       };
 
-      await createDify(instance.name, instance.token, difyData);
+      await createDify({
+        instanceName: instance.name,
+        token: instance.token,
+        data: difyData,
+      });
       toast.success(t("dify.toast.success.create"));
       setOpen(false);
       onReset();

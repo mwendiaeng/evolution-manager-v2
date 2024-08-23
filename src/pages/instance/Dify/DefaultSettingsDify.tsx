@@ -26,15 +26,11 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { useFetchDify } from "@/lib/queries/dify/fetchDify";
+import { setDefaultSettingsDify } from "@/lib/queries/dify/manageDify";
+import { useFetchDefaultSettings } from "@/lib/queries/dify/settingsFind";
 
-import {
-  findDefaultSettingsDify,
-  findDify,
-  setDefaultSettingsDify,
-} from "@/services/dify.service";
-
-import { Dify, DifySettings, Instance } from "@/types/evolution.types";
+import { DifySettings } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   expire: z.string(),
@@ -49,40 +45,21 @@ const FormSchema = z.object({
   difyIdFallback: z.union([z.null(), z.string()]).optional(),
 });
 
-const fetchData = async (
-  instance: Instance | null,
-  setSettings: any,
-  setBots: any,
-) => {
-  try {
-    const storedToken = getToken(TOKEN_ID.TOKEN);
-
-    if (storedToken && instance && instance.name) {
-      const getSettings: DifySettings[] = await findDefaultSettingsDify(
-        instance.name,
-        storedToken,
-      );
-
-      setSettings(getSettings);
-
-      const getBots: Dify[] = await findDify(instance.name, storedToken);
-
-      setBots(getBots);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-
 function DefaultSettingsDify() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<DifySettings>();
-  const [bots, setBots] = useState<Dify[]>([]);
+  const { data: bots, refetch: refetchDify } = useFetchDify({
+    instanceName: instance?.name,
+    token: instance?.token,
+    enabled: open,
+  });
+  const { data: settings, refetch: refetchDefaultSettings } =
+    useFetchDefaultSettings({
+      instanceName: instance?.name,
+      token: instance?.token,
+    });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -99,10 +76,6 @@ function DefaultSettingsDify() {
       difyIdFallback: undefined,
     },
   });
-
-  useEffect(() => {
-    if (open) fetchData(instance, setSettings, setBots);
-  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -123,8 +96,7 @@ function DefaultSettingsDify() {
         difyIdFallback: settings.difyIdFallback,
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings]);
+  }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
@@ -145,7 +117,11 @@ function DefaultSettingsDify() {
         ignoreJids: data.ignoreJids,
       };
 
-      await setDefaultSettingsDify(instance.name, instance.token, settingsData);
+      await setDefaultSettingsDify({
+        instanceName: instance.name,
+        token: instance.token,
+        data: settingsData,
+      });
       toast.success(t("dify.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -155,7 +131,8 @@ function DefaultSettingsDify() {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setBots);
+    refetchDefaultSettings();
+    refetchDify();
   }
 
   return (

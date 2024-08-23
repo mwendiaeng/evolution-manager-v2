@@ -18,7 +18,7 @@ import {
   RotateCcw,
   StopCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
@@ -50,57 +50,36 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { useFetchSessionsDify } from "@/lib/queries/dify/fetchSessionsDify";
+import { changeStatusDify } from "@/lib/queries/dify/manageDify";
 
-import { changeStatusDify, fetchSessionsDify } from "@/services/dify.service";
-
-import { IntegrationSession, Instance } from "@/types/evolution.types";
-
-const fetchData = async (
-  instance: Instance | null,
-  setSessions: any,
-  difyId?: string,
-) => {
-  try {
-    const storedToken = getToken(TOKEN_ID.TOKEN);
-
-    if (storedToken && instance && instance.name) {
-      const getSessions: IntegrationSession[] = await fetchSessionsDify(
-        instance.name,
-        storedToken,
-        difyId,
-      );
-
-      setSessions(getSessions);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Errors:", error);
-  }
-};
+import { IntegrationSession } from "@/types/evolution.types";
 
 function SessionsDify({ difyId }: { difyId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [sessions, setSessions] = useState<IntegrationSession[] | []>([]);
+  const { data: sessions, refetch } = useFetchSessionsDify({
+    difyId,
+    instanceName: instance?.name,
+  });
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    if (open) fetchData(instance, setSessions, difyId);
-  }, [instance, difyId, open]);
-
   function onReset() {
-    fetchData(instance, setSessions, difyId);
+    refetch();
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {
     try {
       if (!instance) return;
 
-      await changeStatusDify(instance.name, instance.token, remoteJid, status);
+      await changeStatusDify({
+        instanceName: instance.name,
+        token: instance.token,
+        remoteJid,
+        status,
+      });
 
       toast.success(t("dify.toast.success.status"));
       onReset();
@@ -199,7 +178,7 @@ function SessionsDify({ difyId }: { difyId?: string }) {
   ];
 
   const table = useReactTable({
-    data: sessions,
+    data: sessions ?? [],
     columns: columns as ColumnDef<unknown, any>[],
     onSortingChange: setSorting,
     getCoreRowModel: getCoreRowModel(),

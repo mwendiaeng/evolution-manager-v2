@@ -7,7 +7,9 @@
   "button": {
     "delete": "Supprimer",
     "deleting": "Suppression...",
-    "cancel": "Annuler"
+    "cancel": "Annuler",
+    "markAll": "Marquer Tous",
+    "unMarkAll": "Démarquer Tous"
   },
   "modal": {
     "delete": {

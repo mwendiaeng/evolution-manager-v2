@@ -124,7 +124,6 @@ function GenericBot() {
             <ResizablePanel className="">
               <UpdateGenericBot
                 genericBotId={genericBotId}
-                instance={instance}
                 resetTable={resetTable}
               />
             </ResizablePanel>

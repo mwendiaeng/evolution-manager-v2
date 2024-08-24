@@ -7,7 +7,9 @@
   "button": {
     "delete": "Delete",
     "deleting": "Deleting...",
-    "cancel": "Cancel"
+    "cancel": "Cancel",
+    "markAll": "Mark All",
+    "unMarkAll": "Unmark All"
   },
   "modal": {
     "delete": {

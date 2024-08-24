@@ -1,5 +1,5 @@
 import {
-  OpenaiBot,
+  Openai as OpenaiBot,
   OpenaiCreds,
   OpenaiSettings,
 } from "@/types/evolution.types";

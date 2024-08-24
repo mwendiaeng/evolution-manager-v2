@@ -17,13 +17,14 @@ import { FormInput, FormSelect, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
-import { SessionsGenericBot } from "./SessionsGenericBot";
+import { SessionsDify } from "./SessionsDify";
 
 export const FormSchema = z.object({
   enabled: z.boolean(),
   description: z.string(),
+  botType: z.string(),
   apiUrl: z.string(),
-  apiKey: z.string().optional(),
+  apiKey: z.string(),
   triggerType: z.string(),
   triggerOperator: z.string().optional(),
   triggerValue: z.string().optional(),
@@ -39,33 +40,34 @@ export const FormSchema = z.object({
 
 export type FormSchemaType = z.infer<typeof FormSchema>;
 
-type GenericBotFormProps = {
+type DifyFormProps = {
   initialData?: FormSchemaType;
   onSubmit: (data: FormSchemaType) => Promise<void>;
   handleDelete?: () => void;
-  genericBotId?: string;
+  difyId?: string;
   isModal?: boolean;
   isLoading?: boolean;
   openDeletionDialog?: boolean;
   setOpenDeletionDialog?: (value: boolean) => void;
 };
 
-function GenericBotForm({
+function DifyForm({
   initialData,
   onSubmit,
   handleDelete,
-  genericBotId,
+  difyId,
   isModal = false,
   isLoading = false,
   openDeletionDialog = false,
   setOpenDeletionDialog = () => {},
-}: GenericBotFormProps) {
+}: DifyFormProps) {
   const { t } = useTranslation();
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: initialData || {
       enabled: true,
       description: "",
+      botType: "chatBot",
       apiUrl: "",
       apiKey: "",
       triggerType: "keyword",
@@ -90,12 +92,12 @@ function GenericBotForm({
         <div className="space-y-4">
           <FormSwitch
             name="enabled"
-            label={t("genericBot.form.enabled.label")}
+            label={t("dify.form.enabled.label")}
             reverse
           />
           <FormInput
             name="description"
-            label={t("genericBot.form.description.label")}
+            label={t("dify.form.description.label")}
             required
           >
             <Input />
@@ -103,47 +105,53 @@ function GenericBotForm({
 
           <div className="flex flex-col">
             <h3 className="my-4 text-lg font-medium">
-              {t("genericBot.form.genericBotSettings.label")}
+              {t("dify.form.difySettings.label")}
             </h3>
             <Separator />
           </div>
-          <FormInput
-            name="apiUrl"
-            label={t("genericBot.form.apiUrl.label")}
-            required
-          >
+          <FormSelect
+            name="botType"
+            label={t("dify.form.botType.label")}
+            options={[
+              { label: t("dify.form.botType.chatBot"), value: "chatBot" },
+              {
+                label: t("dify.form.botType.textGenerator"),
+                value: "textGenerator",
+              },
+              { label: t("dify.form.botType.agent"), value: "agent" },
+              {
+                label: t("dify.form.botType.workflow"),
+                value: "workflow",
+              },
+            ]}
+          />
+          <FormInput name="apiUrl" label={t("dify.form.apiUrl.label")} required>
             <Input />
           </FormInput>
-          <FormInput name="apiKey" label={t("genericBot.form.apiKey.label")}>
+          <FormInput name="apiKey" label={t("dify.form.apiKey.label")} required>
             <Input type="password" />
           </FormInput>
 
           <div className="flex flex-col">
             <h3 className="my-4 text-lg font-medium">
-              {t("genericBot.form.triggerSettings.label")}
+              {t("dify.form.triggerSettings.label")}
             </h3>
             <Separator />
           </div>
           <FormSelect
             name="triggerType"
-            label={t("genericBot.form.triggerType.label")}
+            label={t("dify.form.triggerType.label")}
             options={[
               {
-                label: t("genericBot.form.triggerType.keyword"),
+                label: t("dify.form.triggerType.keyword"),
                 value: "keyword",
               },
+              { label: t("dify.form.triggerType.all"), value: "all" },
               {
-                label: t("genericBot.form.triggerType.all"),
-                value: "all",
-              },
-              {
-                label: t("genericBot.form.triggerType.advanced"),
+                label: t("dify.form.triggerType.advanced"),
                 value: "advanced",
               },
-              {
-                label: t("genericBot.form.triggerType.none"),
-                value: "none",
-              },
+              { label: t("dify.form.triggerType.none"), value: "none" },
             ]}
           />
 
@@ -151,33 +159,33 @@ function GenericBotForm({
             <>
               <FormSelect
                 name="triggerOperator"
-                label={t("genericBot.form.triggerOperator.label")}
+                label={t("dify.form.triggerOperator.label")}
                 options={[
                   {
-                    label: t("genericBot.form.triggerOperator.contains"),
+                    label: t("dify.form.triggerOperator.contains"),
                     value: "contains",
                   },
                   {
-                    label: t("genericBot.form.triggerOperator.equals"),
+                    label: t("dify.form.triggerOperator.equals"),
                     value: "equals",
                   },
                   {
-                    label: t("genericBot.form.triggerOperator.startsWith"),
+                    label: t("dify.form.triggerOperator.startsWith"),
                     value: "startsWith",
                   },
                   {
-                    label: t("genericBot.form.triggerOperator.endsWith"),
+                    label: t("dify.form.triggerOperator.endsWith"),
                     value: "endsWith",
                   },
                   {
-                    label: t("genericBot.form.triggerOperator.regex"),
+                    label: t("dify.form.triggerOperator.regex"),
                     value: "regex",
                   },
                 ]}
               />
               <FormInput
                 name="triggerValue"
-                label={t("genericBot.form.triggerValue.label")}
+                label={t("dify.form.triggerValue.label")}
               >
                 <Input />
               </FormInput>
@@ -186,56 +194,56 @@ function GenericBotForm({
           {triggerType === "advanced" && (
             <FormInput
               name="triggerValue"
-              label={t("genericBot.form.triggerConditions.label")}
+              label={t("dify.form.triggerConditions.label")}
             >
               <Input />
             </FormInput>
           )}
           <div className="flex flex-col">
             <h3 className="my-4 text-lg font-medium">
-              {t("genericBot.form.generalSettings.label")}
+              {t("dify.form.generalSettings.label")}
             </h3>
             <Separator />
           </div>
-          <FormInput name="expire" label={t("genericBot.form.expire.label")}>
+          <FormInput name="expire" label={t("dify.form.expire.label")}>
             <Input type="number" />
           </FormInput>
           <FormInput
             name="keywordFinish"
-            label={t("genericBot.form.keywordFinish.label")}
+            label={t("dify.form.keywordFinish.label")}
           >
             <Input />
           </FormInput>
           <FormInput
             name="delayMessage"
-            label={t("genericBot.form.delayMessage.label")}
+            label={t("dify.form.delayMessage.label")}
           >
             <Input type="number" />
           </FormInput>
           <FormInput
             name="unknownMessage"
-            label={t("genericBot.form.unknownMessage.label")}
+            label={t("dify.form.unknownMessage.label")}
           >
             <Input />
           </FormInput>
           <FormSwitch
             name="listeningFromMe"
-            label={t("genericBot.form.listeningFromMe.label")}
+            label={t("dify.form.listeningFromMe.label")}
             reverse
           />
           <FormSwitch
             name="stopBotFromMe"
-            label={t("genericBot.form.stopBotFromMe.label")}
+            label={t("dify.form.stopBotFromMe.label")}
             reverse
           />
           <FormSwitch
             name="keepOpen"
-            label={t("genericBot.form.keepOpen.label")}
+            label={t("dify.form.keepOpen.label")}
             reverse
           />
           <FormInput
             name="debounceTime"
-            label={t("genericBot.form.debounceTime.label")}
+            label={t("dify.form.debounceTime.label")}
           >
             <Input type="number" />
           </FormInput>
@@ -244,16 +252,14 @@ function GenericBotForm({
         {isModal && (
           <DialogFooter>
             <Button disabled={isLoading} type="submit">
-              {isLoading
-                ? t("genericBot.button.saving")
-                : t("genericBot.button.save")}
+              {isLoading ? t("dify.button.saving") : t("dify.button.save")}
             </Button>
           </DialogFooter>
         )}
 
         {!isModal && (
           <div>
-            <SessionsGenericBot genericBotId={genericBotId} />
+            <SessionsDify difyId={difyId} />
             <div className="mt-5 flex items-center gap-3">
               <Dialog
                 open={openDeletionDialog}
@@ -286,9 +292,7 @@ function GenericBotForm({
                 </DialogContent>
               </Dialog>
               <Button disabled={isLoading} type="submit">
-                {isLoading
-                  ? t("genericBot.button.saving")
-                  : t("genericBot.button.update")}
+                {isLoading ? t("dify.button.saving") : t("dify.button.update")}
               </Button>
             </div>
           </div>
@@ -298,4 +302,4 @@ function GenericBotForm({
   );
 }
 
-export { GenericBotForm };
+export { DifyForm };

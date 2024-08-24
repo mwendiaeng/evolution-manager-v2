@@ -117,11 +117,7 @@ function Dify() {
           <>
             <ResizableHandle withHandle className="border border-border" />
             <ResizablePanel className="">
-              <UpdateDify
-                difyId={difyId}
-                instance={instance}
-                resetTable={resetTable}
-              />
+              <UpdateDify difyId={difyId} resetTable={resetTable} />
             </ResizablePanel>
           </>
         )}

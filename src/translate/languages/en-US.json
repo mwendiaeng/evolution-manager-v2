@@ -46,7 +46,7 @@
     "configurations": "Configurations",
     "settings": "Settings",
     "proxy": "Proxy",
-    "callbacks": "Callbacks",
+    "events": "Events",
     "webhook": "Webhook",
     "websocket": "WebSocket",
     "rabbitmq": "RabbitMQ",

@@ -53,7 +53,7 @@ function Sidebar() {
       ],
     },
     {
-      title: t("sidebar.callbacks"),
+      title: t("sidebar.events"),
       icon: IterationCcw,
       children: [
         {

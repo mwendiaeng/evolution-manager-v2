@@ -100,7 +100,7 @@ export type OpenaiCreds = {
   apiKey: string;
 };
 
-export type OpenaiBot = {
+export type Openai = {
   id?: string;
   openaiCredsId: string;
   enabled: boolean;

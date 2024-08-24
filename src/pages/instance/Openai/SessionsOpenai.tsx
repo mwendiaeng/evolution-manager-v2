@@ -65,7 +65,7 @@ const fetchData = async (
   }
 };
 
-function SessionsOpenai({ botId }: { botId?: string }) {
+function SessionsOpenai({ openaiId }: { openaiId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
@@ -75,11 +75,11 @@ function SessionsOpenai({ botId }: { botId?: string }) {
   const [globalFilter, setGlobalFilter] = useState("");
 
   useEffect(() => {
-    if (open) fetchData(instance, setSessions, botId);
-  }, [instance, botId, open]);
+    if (open) fetchData(instance, setSessions, openaiId);
+  }, [instance, openaiId, open]);
 
   function onReset() {
-    fetchData(instance, setSessions, botId);
+    fetchData(instance, setSessions, openaiId);
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {

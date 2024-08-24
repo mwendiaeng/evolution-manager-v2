@@ -16,7 +16,7 @@ import { useInstance } from "@/contexts/InstanceContext";
 
 import { findOpenai } from "@/services/openai.service";
 
-import { Instance, OpenaiBot } from "@/types/evolution.types";
+import { Instance, Openai as OpenaiBot } from "@/types/evolution.types";
 
 import { useMediaQuery } from "@/utils/useMediaQuery";
 
@@ -119,11 +119,7 @@ function Openai() {
           <>
             <ResizableHandle withHandle className="border border-border" />
             <ResizablePanel className="">
-              <UpdateOpenai
-                botId={botId}
-                instance={instance}
-                resetTable={resetTable}
-              />
+              <UpdateOpenai openaiId={botId} resetTable={resetTable} />
             </ResizablePanel>
           </>
         )}

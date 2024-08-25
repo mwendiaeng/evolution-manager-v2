@@ -26,8 +26,7 @@ export const getEvolutionBot = async (
       headers: {
         apikey: token,
       },
-    },
-  );
+    });
   return response.data;
 };
 
@@ -58,8 +57,7 @@ export const updateEvolutionBot = async (
       headers: {
         apikey: token,
       },
-    },
-  );
+    });
   return response.data;
 };
 
@@ -74,8 +72,7 @@ export const deleteEvolutionBot = async (
       headers: {
         apikey: token,
       },
-    },
-  );
+    });
   return response.data;
 };
 
@@ -119,8 +116,7 @@ export const fetchSessionsEvolutionBot = async (
       headers: {
         apikey: token,
       },
-    },
-  );
+    });
   return response.data;
 };
 

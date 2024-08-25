@@ -51,10 +51,6 @@ function SessionsDify({ difyId }: { difyId?: string }) {
   const [open, setOpen] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  useEffect(() => {
-    if (open) fetchData(instance, setSessions, difyId);
-  }, [instance, difyId, open]);
-
   function onReset() {
     refetch();
   }
@@ -194,7 +190,7 @@ function SessionsDify({ difyId }: { difyId?: string }) {
           </div>
           <DataTable
             columns={columns}
-            data={sessions}
+            data={sessions ?? []}
             onSortingChange={setSorting}
             state={{ sorting, globalFilter }}
             onGlobalFilterChange={setGlobalFilter}

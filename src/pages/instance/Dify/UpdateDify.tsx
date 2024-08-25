@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -11,29 +11,9 @@ import { useInstance } from "@/contexts/InstanceContext";
 import { useGetDify } from "@/lib/queries/dify/getDify";
 import { deleteDify, updateDify } from "@/lib/queries/dify/manageDify";
 
-import { Dify, Instance } from "@/types/evolution.types";
+import { Dify } from "@/types/evolution.types";
 
-import { SessionsDify } from "./SessionsDify";
-
-const formSchema = z.object({
-  enabled: z.boolean(),
-  description: z.string(),
-  botType: z.string(),
-  apiUrl: z.string(),
-  apiKey: z.string(),
-  triggerType: z.string(),
-  triggerOperator: z.string().optional(),
-  triggerValue: z.string().optional(),
-  expire: z.coerce.number(),
-  keywordFinish: z.string(),
-  delayMessage: z.coerce.number(),
-  unknownMessage: z.string(),
-  listeningFromMe: z.boolean(),
-  stopBotFromMe: z.boolean(),
-  keepOpen: z.boolean(),
-  debounceTime: z.coerce.number(),
-});
-type FormSchema = z.infer<typeof formSchema>;
+import { DifyForm, FormSchemaType } from "./DifyForm";
 
 type UpdateDifyProps = {
   difyId: string;
@@ -50,52 +30,45 @@ function UpdateDify({ difyId, resetTable }: UpdateDifyProps) {
     difyId,
     instanceName: instance?.name,
   });
-  const navigate = useNavigate();
 
-  const form = useForm<FormSchema>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      enabled: true,
-      description: "",
-      botType: "chatBot",
-      apiUrl: "",
-      apiKey: "",
-      triggerType: "keyword",
-      triggerOperator: "contains",
-      triggerValue: "",
-      expire: 0,
-      keywordFinish: "",
-      delayMessage: 0,
-      unknownMessage: "",
-      listeningFromMe: false,
-      stopBotFromMe: false,
-      keepOpen: false,
-      debounceTime: 0,
-    },
-  });
-
-  useEffect(() => {
-    if (dify) {
-      form.reset({
-        enabled: dify.enabled,
-        description: dify.description,
-        botType: dify.botType,
-        apiUrl: dify.apiUrl,
-        apiKey: dify.apiKey,
-        triggerType: dify.triggerType,
-        triggerOperator: dify.triggerOperator,
-        triggerValue: dify.triggerValue,
-        expire: dify.expire,
-        keywordFinish: dify.keywordFinish,
-        delayMessage: dify.delayMessage,
-        unknownMessage: dify.unknownMessage,
-        listeningFromMe: dify.listeningFromMe,
-        stopBotFromMe: dify.stopBotFromMe,
-        keepOpen: dify.keepOpen,
-        debounceTime: dify.debounceTime,
-      });
-    }
-  });
+  const initialData = useMemo(
+    () => ({
+      enabled: !!dify?.enabled,
+      description: dify?.description ?? "",
+      botType: dify?.botType ?? "",
+      apiUrl: dify?.apiUrl ?? "",
+      apiKey: dify?.apiKey ?? "",
+      triggerType: dify?.triggerType ?? "",
+      triggerOperator: dify?.triggerOperator ?? "",
+      triggerValue: dify?.triggerValue ?? "",
+      expire: dify?.expire ?? 0,
+      keywordFinish: dify?.keywordFinish ?? "",
+      delayMessage: dify?.delayMessage ?? 0,
+      unknownMessage: dify?.unknownMessage ?? "",
+      listeningFromMe: !!dify?.listeningFromMe,
+      stopBotFromMe: !!dify?.stopBotFromMe,
+      keepOpen: !!dify?.keepOpen,
+      debounceTime: dify?.debounceTime ?? 0,
+    }),
+    [
+      dify?.apiKey,
+      dify?.apiUrl,
+      dify?.botType,
+      dify?.debounceTime,
+      dify?.delayMessage,
+      dify?.description,
+      dify?.enabled,
+      dify?.expire,
+      dify?.keepOpen,
+      dify?.keywordFinish,
+      dify?.listeningFromMe,
+      dify?.stopBotFromMe,
+      dify?.triggerOperator,
+      dify?.triggerType,
+      dify?.triggerValue,
+      dify?.unknownMessage,
+    ],
+  );
 
   const onSubmit = async (data: FormSchemaType) => {
     try {

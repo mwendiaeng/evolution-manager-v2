@@ -57,7 +57,7 @@
     "typebot": "Typebot",
     "openai": "OpenAI",
     "dify": "Dify",
-    "genericBot": "Bot Générique",
+    "evolutionBot": "Bot Evolution",
     "flowise": "Flowise",
     "documentation": "Documentation",
     "postman": "Postman",
@@ -106,6 +106,7 @@
     },
     "button": {
       "save": "Enregistrer",
+      "saving": "Enregistrement...",
       "create": "Instance",
       "connecting": "Connexion...",
       "facebook": "Se connecter avec Facebook",
@@ -487,6 +488,7 @@
     "button": {
       "create": "Typebot",
       "save": "Enregistrer",
+      "saving": "Enregistrement...",
       "update": "Mettre à jour",
       "defaultSettings": "Paramètres par Défaut",
       "delete": "Supprimer"
@@ -664,6 +666,7 @@
     "button": {
       "create": "OpenAI",
       "save": "Enregistrer",
+      "saving": "Enregistrement...",
       "update": "Mettre à jour",
       "defaultSettings": "Paramètres par Défaut",
       "delete": "Supprimer"
@@ -804,6 +807,7 @@
     "button": {
       "create": "Dify",
       "save": "Enregistrer",
+      "saving": "Enregistrement...",
       "update": "Mettre à jour",
       "defaultSettings": "Paramètres par Défaut",
       "delete": "Supprimer"
@@ -814,8 +818,8 @@
       }
     }
   },
-  "genericBot": {
-    "title": "Bots Génériques",
+  "evolutionBot": {
+    "title": "Bots Evolution",
     "sessions": {
       "label": "Sessions",
       "search": "Rechercher par remoteJid...",
@@ -841,18 +845,18 @@
         "error": "Une erreur est survenue lors de l'application des paramètres par défaut"
       },
       "success": {
-        "update": "Bots Génériques mis à jour avec succès",
-        "create": "Bots Génériques créé avec succès",
-        "delete": "Bots Génériques supprimé avec succès",
-        "status": "Statut de Bots Génériques mis à jour avec succès"
+        "update": "Bots Evolution mis à jour avec succès",
+        "create": "Bots Evolution créé avec succès",
+        "delete": "Bots Evolution supprimé avec succès",
+        "status": "Statut de Bots Evolution mis à jour avec succès"
       },
-      "error": "Une erreur est survenue lors de la création de Bots Génériques"
+      "error": "Une erreur est survenue lors de la création de Bots Evolution"
     },
     "table": {
       "none": "Rien à afficher"
     },
     "form": {
-      "title": "Nouveau Bots Génériques",
+      "title": "Nouveau Bots Evolution",
       "examples": {
         "keywordFinish": "#FINISH",
         "unknownMessage": "Désolé, je n'ai pas compris. Pouvez-vous réessayer ?"
@@ -863,8 +867,8 @@
       "description": {
         "label": "Description"
       },
-      "genericBotSettings": {
-        "label": "Paramètres de Bots Génériques"
+      "evolutionBotSettings": {
+        "label": "Paramètres de Bots Evolution"
       },
       "apiUrl": {
         "label": "URL de l'API"
@@ -897,7 +901,7 @@
         "label": "Conditions"
       },
       "botIdFallback": {
-        "label": "Fallback de Bots Génériques"
+        "label": "Fallback de Bots Evolution"
       },
       "generalSettings": {
         "label": "Paramètres Généraux"
@@ -935,8 +939,9 @@
       }
     },
     "button": {
-      "create": "Bots Génériques",
+      "create": "Bots Evolution",
       "save": "Enregistrer",
+      "saving": "Enregistrement...",
       "update": "Mettre à jour",
       "defaultSettings": "Paramètres par Défaut",
       "delete": "Supprimer"
@@ -1070,6 +1075,7 @@
     "button": {
       "create": "Flowise",
       "save": "Enregistrer",
+      "saving": "Enregistrement...",
       "update": "Mettre à jour",
       "defaultSettings": "Paramètres par Défaut",
       "delete": "Supprimer"

@@ -17,7 +17,7 @@ import { FormInput, FormSelect, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
-import { SessionsGenericBot } from "./SessionsGenericBot";
+import { SessionsEvolutionBot } from "./SessionsEvolutionBot";
 
 export const FormSchema = z.object({
   enabled: z.boolean(),
@@ -39,27 +39,27 @@ export const FormSchema = z.object({
 
 export type FormSchemaType = z.infer<typeof FormSchema>;
 
-type GenericBotFormProps = {
+type EvolutionBotFormProps = {
   initialData?: FormSchemaType;
   onSubmit: (data: FormSchemaType) => Promise<void>;
   handleDelete?: () => void;
-  genericBotId?: string;
+  evolutionBotId?: string;
   isModal?: boolean;
   isLoading?: boolean;
   openDeletionDialog?: boolean;
   setOpenDeletionDialog?: (value: boolean) => void;
 };
 
-function GenericBotForm({
+function EvolutionBotForm({
   initialData,
   onSubmit,
   handleDelete,
-  genericBotId,
+  evolutionBotId,
   isModal = false,
   isLoading = false,
   openDeletionDialog = false,
   setOpenDeletionDialog = () => {},
-}: GenericBotFormProps) {
+}: EvolutionBotFormProps) {
   const { t } = useTranslation();
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -90,12 +90,12 @@ function GenericBotForm({
         <div className="space-y-4">
           <FormSwitch
             name="enabled"
-            label={t("genericBot.form.enabled.label")}
+            label={t("evolutionBot.form.enabled.label")}
             reverse
           />
           <FormInput
             name="description"
-            label={t("genericBot.form.description.label")}
+            label={t("evolutionBot.form.description.label")}
             required
           >
             <Input />
@@ -103,45 +103,45 @@ function GenericBotForm({
 
           <div className="flex flex-col">
             <h3 className="my-4 text-lg font-medium">
-              {t("genericBot.form.genericBotSettings.label")}
+              {t("evolutionBot.form.evolutionBotSettings.label")}
             </h3>
             <Separator />
           </div>
           <FormInput
             name="apiUrl"
-            label={t("genericBot.form.apiUrl.label")}
+            label={t("evolutionBot.form.apiUrl.label")}
             required
           >
             <Input />
           </FormInput>
-          <FormInput name="apiKey" label={t("genericBot.form.apiKey.label")}>
+          <FormInput name="apiKey" label={t("evolutionBot.form.apiKey.label")}>
             <Input type="password" />
           </FormInput>
 
           <div className="flex flex-col">
             <h3 className="my-4 text-lg font-medium">
-              {t("genericBot.form.triggerSettings.label")}
+              {t("evolutionBot.form.triggerSettings.label")}
             </h3>
             <Separator />
           </div>
           <FormSelect
             name="triggerType"
-            label={t("genericBot.form.triggerType.label")}
+            label={t("evolutionBot.form.triggerType.label")}
             options={[
               {
-                label: t("genericBot.form.triggerType.keyword"),
+                label: t("evolutionBot.form.triggerType.keyword"),
                 value: "keyword",
               },
               {
-                label: t("genericBot.form.triggerType.all"),
+                label: t("evolutionBot.form.triggerType.all"),
                 value: "all",
               },
               {
-                label: t("genericBot.form.triggerType.advanced"),
+                label: t("evolutionBot.form.triggerType.advanced"),
                 value: "advanced",
               },
               {
-                label: t("genericBot.form.triggerType.none"),
+                label: t("evolutionBot.form.triggerType.none"),
                 value: "none",
               },
             ]}
@@ -151,33 +151,33 @@ function GenericBotForm({
             <>
               <FormSelect
                 name="triggerOperator"
-                label={t("genericBot.form.triggerOperator.label")}
+                label={t("evolutionBot.form.triggerOperator.label")}
                 options={[
                   {
-                    label: t("genericBot.form.triggerOperator.contains"),
+                    label: t("evolutionBot.form.triggerOperator.contains"),
                     value: "contains",
                   },
                   {
-                    label: t("genericBot.form.triggerOperator.equals"),
+                    label: t("evolutionBot.form.triggerOperator.equals"),
                     value: "equals",
                   },
                   {
-                    label: t("genericBot.form.triggerOperator.startsWith"),
+                    label: t("evolutionBot.form.triggerOperator.startsWith"),
                     value: "startsWith",
                   },
                   {
-                    label: t("genericBot.form.triggerOperator.endsWith"),
+                    label: t("evolutionBot.form.triggerOperator.endsWith"),
                     value: "endsWith",
                   },
                   {
-                    label: t("genericBot.form.triggerOperator.regex"),
+                    label: t("evolutionBot.form.triggerOperator.regex"),
                     value: "regex",
                   },
                 ]}
               />
               <FormInput
                 name="triggerValue"
-                label={t("genericBot.form.triggerValue.label")}
+                label={t("evolutionBot.form.triggerValue.label")}
               >
                 <Input />
               </FormInput>
@@ -186,56 +186,56 @@ function GenericBotForm({
           {triggerType === "advanced" && (
             <FormInput
               name="triggerValue"
-              label={t("genericBot.form.triggerConditions.label")}
+              label={t("evolutionBot.form.triggerConditions.label")}
             >
               <Input />
             </FormInput>
           )}
           <div className="flex flex-col">
             <h3 className="my-4 text-lg font-medium">
-              {t("genericBot.form.generalSettings.label")}
+              {t("evolutionBot.form.generalSettings.label")}
             </h3>
             <Separator />
           </div>
-          <FormInput name="expire" label={t("genericBot.form.expire.label")}>
+          <FormInput name="expire" label={t("evolutionBot.form.expire.label")}>
             <Input type="number" />
           </FormInput>
           <FormInput
             name="keywordFinish"
-            label={t("genericBot.form.keywordFinish.label")}
+            label={t("evolutionBot.form.keywordFinish.label")}
           >
             <Input />
           </FormInput>
           <FormInput
             name="delayMessage"
-            label={t("genericBot.form.delayMessage.label")}
+            label={t("evolutionBot.form.delayMessage.label")}
           >
             <Input type="number" />
           </FormInput>
           <FormInput
             name="unknownMessage"
-            label={t("genericBot.form.unknownMessage.label")}
+            label={t("evolutionBot.form.unknownMessage.label")}
           >
             <Input />
           </FormInput>
           <FormSwitch
             name="listeningFromMe"
-            label={t("genericBot.form.listeningFromMe.label")}
+            label={t("evolutionBot.form.listeningFromMe.label")}
             reverse
           />
           <FormSwitch
             name="stopBotFromMe"
-            label={t("genericBot.form.stopBotFromMe.label")}
+            label={t("evolutionBot.form.stopBotFromMe.label")}
             reverse
           />
           <FormSwitch
             name="keepOpen"
-            label={t("genericBot.form.keepOpen.label")}
+            label={t("evolutionBot.form.keepOpen.label")}
             reverse
           />
           <FormInput
             name="debounceTime"
-            label={t("genericBot.form.debounceTime.label")}
+            label={t("evolutionBot.form.debounceTime.label")}
           >
             <Input type="number" />
           </FormInput>
@@ -245,15 +245,15 @@ function GenericBotForm({
           <DialogFooter>
             <Button disabled={isLoading} type="submit">
               {isLoading
-                ? t("genericBot.button.saving")
-                : t("genericBot.button.save")}
+                ? t("evolutionBot.button.saving")
+                : t("evolutionBot.button.save")}
             </Button>
           </DialogFooter>
         )}
 
         {!isModal && (
           <div>
-            <SessionsGenericBot genericBotId={genericBotId} />
+            <SessionsEvolutionBot evolutionBotId={evolutionBotId} />
             <div className="mt-5 flex items-center gap-3">
               <Dialog
                 open={openDeletionDialog}
@@ -287,8 +287,8 @@ function GenericBotForm({
               </Dialog>
               <Button disabled={isLoading} type="submit">
                 {isLoading
-                  ? t("genericBot.button.saving")
-                  : t("genericBot.button.update")}
+                  ? t("evolutionBot.button.saving")
+                  : t("evolutionBot.button.update")}
               </Button>
             </div>
           </div>
@@ -298,4 +298,4 @@ function GenericBotForm({
   );
 }
 
-export { GenericBotForm };
+export { EvolutionBotForm };

@@ -15,13 +15,13 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createGenericBot } from "@/services/genericBot.service";
+import { createEvolutionBot } from "@/services/evolutionBot.service";
 
-import { GenericBot } from "@/types/evolution.types";
+import { EvolutionBot } from "@/types/evolution.types";
 
-import { FormSchemaType, GenericBotForm } from "./GenericBotForm";
+import { FormSchemaType, EvolutionBotForm } from "./EvolutionBotForm";
 
-function NewGenericBot({ resetTable }: { resetTable: () => void }) {
+function NewEvolutionBot({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
@@ -35,7 +35,7 @@ function NewGenericBot({ resetTable }: { resetTable: () => void }) {
       }
 
       setUpdating(true);
-      const genericBotData: GenericBot = {
+      const evolutionBotData: EvolutionBot = {
         enabled: data.enabled,
         description: data.description,
         apiUrl: data.apiUrl,
@@ -53,8 +53,8 @@ function NewGenericBot({ resetTable }: { resetTable: () => void }) {
         debounceTime: data.debounceTime || 0,
       };
 
-      await createGenericBot(instance.name, instance.token, genericBotData);
-      toast.success(t("genericBot.toast.success.create"));
+      await createEvolutionBot(instance.name, instance.token, evolutionBotData);
+      toast.success(t("evolutionBot.toast.success.create"));
       setOpen(false);
       resetTable();
     } catch (error: any) {
@@ -71,15 +71,15 @@ function NewGenericBot({ resetTable }: { resetTable: () => void }) {
         <Button size="sm">
           <PlusIcon size={16} className="mr-1" />
           <span className="hidden sm:inline">
-            {t("genericBot.button.create")}
+            {t("evolutionBot.button.create")}
           </span>
         </Button>
       </DialogTrigger>
       <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]">
         <DialogHeader>
-          <DialogTitle>{t("genericBot.form.title")}</DialogTitle>
+          <DialogTitle>{t("evolutionBot.form.title")}</DialogTitle>
         </DialogHeader>
-        <GenericBotForm
+        <EvolutionBotForm
           onSubmit={onSubmit}
           isModal={true}
           isLoading={updating}
@@ -89,4 +89,4 @@ function NewGenericBot({ resetTable }: { resetTable: () => void }) {
   );
 }
 
-export { NewGenericBot };
+export { NewEvolutionBot };

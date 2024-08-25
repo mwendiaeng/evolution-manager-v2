@@ -58,7 +58,7 @@
     "typebot": "Typebot",
     "openai": "OpenAI",
     "dify": "Dify",
-    "genericBot": "Bot Genérico",
+    "evolutionBot": "Bot Evolution",
     "flowise": "Flowise",
     "documentation": "Documentação",
     "postman": "Postman",
@@ -107,6 +107,7 @@
     },
     "button": {
       "save": "Salvar",
+      "saving": "Salvando...",
       "create": "Instância",
       "connecting": "Conectando...",
       "facebook": "Conectar com Facebook",
@@ -488,6 +489,7 @@
     "button": {
       "create": "Typebot",
       "save": "Salvar",
+      "saving": "Salvando...",
       "update": "Atualizar",
       "defaultSettings": "Configurações Padrão",
       "delete": "Excluir"
@@ -665,6 +667,7 @@
     "button": {
       "create": "OpenAI",
       "save": "Salvar",
+      "saving": "Salvando...",
       "update": "Atualizar",
       "defaultSettings": "Configurações Padrão",
       "delete": "Excluir"
@@ -805,6 +808,7 @@
     "button": {
       "create": "Dify",
       "save": "Salvar",
+      "saving": "Salvando...",
       "update": "Atualizar",
       "defaultSettings": "Configurações Padrão",
       "delete": "Excluir"
@@ -815,8 +819,8 @@
       }
     }
   },
-  "genericBot": {
-    "title": "Bot Genérico",
+  "evolutionBot": {
+    "title": "Bot Evolution",
     "sessions": {
       "label": "Sessões",
       "search": "Pesquisar por remoteJid...",
@@ -842,18 +846,18 @@
         "error": "Ocorreu um erro ao aplicar as configurações padrão"
       },
       "success": {
-        "update": "Bot Genérico atualizado com sucesso",
-        "create": "Bot Genérico criado com sucesso",
-        "delete": "Bot Genérico excluído com sucesso",
-        "status": "Status do Bot Genérico atualizado com sucesso"
+        "update": "Bot Evolution atualizado com sucesso",
+        "create": "Bot Evolution criado com sucesso",
+        "delete": "Bot Evolution excluído com sucesso",
+        "status": "Status do Bot Evolution atualizado com sucesso"
       },
-      "error": "Ocorreu um erro ao criar o Bot Genérico"
+      "error": "Ocorreu um erro ao criar o Bot Evolution"
     },
     "table": {
       "none": "Nada para mostrar"
     },
     "form": {
-      "title": "Novo Bot Genérico",
+      "title": "Novo Bot Evolution",
       "examples": {
         "keywordFinish": "#FINISH",
         "unknownMessage": "Desculpe, não entendi. Pode tentar novamente?"
@@ -864,8 +868,8 @@
       "description": {
         "label": "Descrição"
       },
-      "genericBotSettings": {
-        "label": "Configurações do Bot Genérico"
+      "evolutionBotSettings": {
+        "label": "Configurações do Bot Evolution"
       },
       "apiUrl": {
         "label": "URL da API"
@@ -898,7 +902,7 @@
         "label": "Condições"
       },
       "botIdFallback": {
-        "label": "Fallback do Bot Genérico"
+        "label": "Fallback do Bot Evolution"
       },
       "generalSettings": {
         "label": "Configurações Gerais"
@@ -936,8 +940,9 @@
       }
     },
     "button": {
-      "create": "Bot Genérico",
+      "create": "Bot Evolution",
       "save": "Salvar",
+      "saving": "Salvando...",
       "update": "Atualizar",
       "defaultSettings": "Configurações Padrão",
       "delete": "Excluir"
@@ -1071,6 +1076,7 @@
     "button": {
       "create": "Flowise",
       "save": "Salvar",
+      "saving": "Salvando...",
       "update": "Atualizar",
       "defaultSettings": "Configurações Padrão",
       "delete": "Excluir"

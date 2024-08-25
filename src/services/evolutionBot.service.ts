@@ -1,13 +1,13 @@
-import { GenericBot, GenericBotSettings } from "@/types/evolution.types";
+import { EvolutionBot, EvolutionBotSettings } from "@/types/evolution.types";
 
 import ApiService from "@/utils/instance";
 
 const apiService = new ApiService();
 
-export const findGenericBot = async (instanceName: string, token: string) => {
+export const findEvolutionBot = async (instanceName: string, token: string) => {
   const response = await apiService
     .getInstance()
-    .get(`/generic/find/${instanceName}`, {
+    .get(`/evolutionBot/find/${instanceName}`, {
       headers: {
         apikey: token,
       },
@@ -15,14 +15,14 @@ export const findGenericBot = async (instanceName: string, token: string) => {
   return response.data;
 };
 
-export const getGenericBot = async (
+export const getEvolutionBot = async (
   instanceName: string,
   token: string,
-  genericBotId: string,
+  evolutionBotId: string,
 ) => {
   const response = await apiService
     .getInstance()
-    .get(`/generic/fetch/${genericBotId}/${instanceName}`, {
+    .get(`/evolutionBot/fetch/${evolutionBotId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
@@ -30,14 +30,14 @@ export const getGenericBot = async (
   return response.data;
 };
 
-export const createGenericBot = async (
+export const createEvolutionBot = async (
   instanceName: string,
   token: string,
-  data: GenericBot,
+  data: EvolutionBot,
 ) => {
   const response = await apiService
     .getInstance()
-    .post(`/generic/create/${instanceName}`, data, {
+    .post(`/evolutionBot/create/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
@@ -45,15 +45,15 @@ export const createGenericBot = async (
   return response.data;
 };
 
-export const updateGenericBot = async (
+export const updateEvolutionBot = async (
   instanceName: string,
   token: string,
-  genericBotId: string,
-  data: GenericBot,
+  evolutionBotId: string,
+  data: EvolutionBot,
 ) => {
   const response = await apiService
     .getInstance()
-    .put(`/generic/update/${genericBotId}/${instanceName}`, data, {
+    .put(`/evolutionBot/update/${evolutionBotId}/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
@@ -61,14 +61,14 @@ export const updateGenericBot = async (
   return response.data;
 };
 
-export const deleteGenericBot = async (
+export const deleteEvolutionBot = async (
   instanceName: string,
   token: string,
-  genericBotId: string,
+  evolutionBotId: string,
 ) => {
   const response = await apiService
     .getInstance()
-    .delete(`/generic/delete/${genericBotId}/${instanceName}`, {
+    .delete(`/evolutionBot/delete/${evolutionBotId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
@@ -76,13 +76,13 @@ export const deleteGenericBot = async (
   return response.data;
 };
 
-export const findDefaultSettingsGenericBot = async (
+export const findDefaultSettingsEvolutionBot = async (
   instanceName: string,
   token: string,
 ) => {
   const response = await apiService
     .getInstance()
-    .get(`/generic/fetchSettings/${instanceName}`, {
+    .get(`/evolutionBot/fetchSettings/${instanceName}`, {
       headers: {
         apikey: token,
       },
@@ -90,14 +90,14 @@ export const findDefaultSettingsGenericBot = async (
   return response.data;
 };
 
-export const setDefaultSettingsGenericBot = async (
+export const setDefaultSettingsEvolutionBot = async (
   instanceName: string,
   token: string,
-  data: GenericBotSettings,
+  data: EvolutionBotSettings,
 ) => {
   const response = await apiService
     .getInstance()
-    .post(`/generic/settings/${instanceName}`, data, {
+    .post(`/evolutionBot/settings/${instanceName}`, data, {
       headers: {
         apikey: token,
       },
@@ -105,14 +105,14 @@ export const setDefaultSettingsGenericBot = async (
   return response.data;
 };
 
-export const fetchSessionsGenericBot = async (
+export const fetchSessionsEvolutionBot = async (
   instanceName: string,
   token: string,
-  genericBotId?: string,
+  evolutionBotId?: string,
 ) => {
   const response = await apiService
     .getInstance()
-    .get(`/generic/fetchSessions/${genericBotId}/${instanceName}`, {
+    .get(`/evolutionBot/fetchSessions/${evolutionBotId}/${instanceName}`, {
       headers: {
         apikey: token,
       },
@@ -120,14 +120,14 @@ export const fetchSessionsGenericBot = async (
   return response.data;
 };
 
-export const changeStatusGenericBot = async (
+export const changeStatusEvolutionBot = async (
   instanceName: string,
   token: string,
   remoteJid: string,
   status: string,
 ) => {
   const response = await apiService.getInstance().post(
-    `/generic/changeStatus/${instanceName}`,
+    `/evolutionBot/changeStatus/${instanceName}`,
     {
       remoteJid,
       status,

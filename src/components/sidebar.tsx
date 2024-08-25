@@ -83,9 +83,9 @@ function Sidebar() {
       icon: Zap,
       children: [
         {
-          id: "genericBot",
-          title: t("sidebar.genericBot"),
-          path: "generic",
+          id: "evolutionBot",
+          title: t("sidebar.evolutionBot"),
+          path: "evolutionBot",
         },
         {
           id: "chatwoot",

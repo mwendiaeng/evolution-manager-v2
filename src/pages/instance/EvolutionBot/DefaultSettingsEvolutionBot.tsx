@@ -27,14 +27,14 @@ import { Input } from "@/components/ui/input";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import {
-  findDefaultSettingsGenericBot,
-  findGenericBot,
-  setDefaultSettingsGenericBot,
-} from "@/services/genericBot.service";
+  findDefaultSettingsEvolutionBot,
+  findEvolutionBot,
+  setDefaultSettingsEvolutionBot,
+} from "@/services/evolutionBot.service";
 
 import {
-  GenericBot,
-  GenericBotSettings,
+  EvolutionBot,
+  EvolutionBotSettings,
   Instance,
 } from "@/types/evolution.types";
 
@@ -60,12 +60,12 @@ const fetchData = async (
     const storedToken = localStorage.getItem("token");
 
     if (storedToken && instance && instance.name) {
-      const getSettings: GenericBotSettings[] =
-        await findDefaultSettingsGenericBot(instance.name, storedToken);
+      const getSettings: EvolutionBotSettings[] =
+        await findDefaultSettingsEvolutionBot(instance.name, storedToken);
 
       setSettings(getSettings);
 
-      const getBots: GenericBot[] = await findGenericBot(
+      const getBots: EvolutionBot[] = await findEvolutionBot(
         instance.name,
         storedToken,
       );
@@ -79,21 +79,21 @@ const fetchData = async (
   }
 };
 
-function DefaultSettingsGenericBot() {
+function DefaultSettingsEvolutionBot() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<GenericBotSettings>();
-  const [bots, setBots] = useState<GenericBot[]>([]);
+  const [settings, setSettings] = useState<EvolutionBotSettings>();
+  const [bots, setBots] = useState<EvolutionBot[]>([]);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       expire: "0",
-      keywordFinish: t("genericBot.form.examples.keywordFinish"),
+      keywordFinish: t("evolutionBot.form.examples.keywordFinish"),
       delayMessage: "1000",
-      unknownMessage: t("genericBot.form.examples.unknownMessage"),
+      unknownMessage: t("evolutionBot.form.examples.unknownMessage"),
       listeningFromMe: false,
       stopBotFromMe: false,
       keepOpen: false,
@@ -135,7 +135,7 @@ function DefaultSettingsGenericBot() {
         throw new Error("instance not found.");
       }
 
-      const settingsData: GenericBotSettings = {
+      const settingsData: EvolutionBotSettings = {
         expire: parseInt(data.expire),
         keywordFinish: data.keywordFinish,
         delayMessage: parseInt(data.delayMessage),
@@ -148,12 +148,12 @@ function DefaultSettingsGenericBot() {
         ignoreJids: data.ignoreJids,
       };
 
-      await setDefaultSettingsGenericBot(
+      await setDefaultSettingsEvolutionBot(
         instance.name,
         instance.token,
         settingsData,
       );
-      toast.success(t("genericBot.toast.defaultSettings.success"));
+      toast.success(t("evolutionBot.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error:", error);
@@ -171,7 +171,7 @@ function DefaultSettingsGenericBot() {
         <Button variant="secondary" size="sm">
           <Cog size={16} className="mr-1" />
           <span className="hidden sm:inline">
-            {t("genericBot.defaultSettings")}
+            {t("evolutionBot.defaultSettings")}
           </span>
         </Button>
       </DialogTrigger>
@@ -180,7 +180,7 @@ function DefaultSettingsGenericBot() {
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
-          <DialogTitle>{t("genericBot.defaultSettings")}</DialogTitle>
+          <DialogTitle>{t("evolutionBot.defaultSettings")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
           <form
@@ -191,7 +191,7 @@ function DefaultSettingsGenericBot() {
               <div className="space-y-4">
                 <FormSelect
                   name="botIdFallback"
-                  label={t("genericBot.form.botIdFallback.label")}
+                  label={t("evolutionBot.form.botIdFallback.label")}
                   options={
                     bots
                       ?.filter((bot) => !!bot.id)
@@ -203,59 +203,59 @@ function DefaultSettingsGenericBot() {
                 />
                 <FormInput
                   name="expire"
-                  label={t("genericBot.form.expire.label")}
+                  label={t("evolutionBot.form.expire.label")}
                 >
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="keywordFinish"
-                  label={t("genericBot.form.keywordFinish.label")}
+                  label={t("evolutionBot.form.keywordFinish.label")}
                 >
                   <Input />
                 </FormInput>
                 <FormInput
                   name="delayMessage"
-                  label={t("genericBot.form.delayMessage.label")}
+                  label={t("evolutionBot.form.delayMessage.label")}
                 >
                   <Input type="number" />
                 </FormInput>
                 <FormInput
                   name="unknownMessage"
-                  label={t("genericBot.form.unknownMessage.label")}
+                  label={t("evolutionBot.form.unknownMessage.label")}
                 >
                   <Input />
                 </FormInput>
                 <FormSwitch
                   name="listeningFromMe"
-                  label={t("genericBot.form.listeningFromMe.label")}
+                  label={t("evolutionBot.form.listeningFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="stopBotFromMe"
-                  label={t("genericBot.form.stopBotFromMe.label")}
+                  label={t("evolutionBot.form.stopBotFromMe.label")}
                   reverse
                 />
                 <FormSwitch
                   name="keepOpen"
-                  label={t("genericBot.form.keepOpen.label")}
+                  label={t("evolutionBot.form.keepOpen.label")}
                   reverse
                 />
                 <FormInput
                   name="debounceTime"
-                  label={t("genericBot.form.debounceTime.label")}
+                  label={t("evolutionBot.form.debounceTime.label")}
                 >
                   <Input type="number" />
                 </FormInput>
 
                 <FormTags
                   name="ignoreJids"
-                  label={t("genericBot.form.ignoreJids.label")}
-                  placeholder={t("genericBot.form.ignoreJids.placeholder")}
+                  label={t("evolutionBot.form.ignoreJids.label")}
+                  placeholder={t("evolutionBot.form.ignoreJids.placeholder")}
                 />
               </div>
             </div>
             <DialogFooter>
-              <Button type="submit">{t("genericBot.button.save")}</Button>
+              <Button type="submit">{t("evolutionBot.button.save")}</Button>
             </DialogFooter>
           </form>
         </FormProvider>
@@ -264,4 +264,4 @@ function DefaultSettingsGenericBot() {
   );
 }
 
-export { DefaultSettingsGenericBot };
+export { DefaultSettingsEvolutionBot };

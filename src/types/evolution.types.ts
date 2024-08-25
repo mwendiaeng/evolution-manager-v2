@@ -273,7 +273,7 @@ export type ModelOpenai = {
   owned_by: string;
 };
 
-export type GenericBot = {
+export type EvolutionBot = {
   id?: string;
   enabled: boolean;
   description: string;
@@ -293,7 +293,7 @@ export type GenericBot = {
   ignoreJids?: string[];
 };
 
-export type GenericBotSettings = {
+export type EvolutionBotSettings = {
   expire: number;
   keywordFinish: string;
   delayMessage: number;

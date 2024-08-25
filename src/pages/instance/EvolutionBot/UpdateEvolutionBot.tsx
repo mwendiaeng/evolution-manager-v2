@@ -9,21 +9,24 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import {
-  deleteGenericBot,
-  getGenericBot,
-  updateGenericBot,
-} from "@/services/genericBot.service";
+  deleteEvolutionBot,
+  getEvolutionBot,
+  updateEvolutionBot,
+} from "@/services/evolutionBot.service";
 
-import { GenericBot } from "@/types/evolution.types";
+import { EvolutionBot } from "@/types/evolution.types";
 
-import { GenericBotForm, FormSchemaType } from "./GenericBotForm";
+import { EvolutionBotForm, FormSchemaType } from "./EvolutionBotForm";
 
-type UpdateGenericBotProps = {
-  genericBotId: string;
+type UpdateEvolutionBotProps = {
+  evolutionBotId: string;
   resetTable: () => void;
 };
 
-function UpdateGenericBot({ genericBotId, resetTable }: UpdateGenericBotProps) {
+function UpdateEvolutionBot({
+  evolutionBotId,
+  resetTable,
+}: UpdateEvolutionBotProps) {
   const { t } = useTranslation();
   const { instance } = useInstance();
   const navigate = useNavigate();
@@ -39,11 +42,11 @@ function UpdateGenericBot({ genericBotId, resetTable }: UpdateGenericBotProps) {
       try {
         const storedToken = localStorage.getItem("token");
 
-        if (storedToken && instance && instance.name && genericBotId) {
-          const data: GenericBot = await getGenericBot(
+        if (storedToken && instance && instance.name && evolutionBotId) {
+          const data: EvolutionBot = await getEvolutionBot(
             instance.name,
             storedToken,
-            genericBotId,
+            evolutionBotId,
           );
 
           setInitialData({
@@ -74,14 +77,14 @@ function UpdateGenericBot({ genericBotId, resetTable }: UpdateGenericBotProps) {
     };
 
     fetchData();
-  }, [genericBotId, instance]);
+  }, [evolutionBotId, instance]);
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
       const storedToken = localStorage.getItem("token");
 
-      if (storedToken && instance && instance.name && genericBotId) {
-        const genericBotData: GenericBot = {
+      if (storedToken && instance && instance.name && evolutionBotId) {
+        const evolutionBotData: EvolutionBot = {
           enabled: data.enabled,
           description: data.description,
           apiUrl: data.apiUrl,
@@ -99,15 +102,17 @@ function UpdateGenericBot({ genericBotId, resetTable }: UpdateGenericBotProps) {
           debounceTime: data.debounceTime || 0,
         };
 
-        await updateGenericBot(
+        await updateEvolutionBot(
           instance.name,
           storedToken,
-          genericBotId,
-          genericBotData,
+          evolutionBotId,
+          evolutionBotData,
         );
-        toast.success(t("genericBot.toast.success.update"));
+        toast.success(t("evolutionBot.toast.success.update"));
         resetTable();
-        navigate(`/manager/instance/${instance.id}/generic/${genericBotId}`);
+        navigate(
+          `/manager/instance/${instance.id}/evolutionBot/${evolutionBotId}`,
+        );
       } else {
         console.error("Token not found");
       }
@@ -121,18 +126,18 @@ function UpdateGenericBot({ genericBotId, resetTable }: UpdateGenericBotProps) {
     try {
       const storedToken = localStorage.getItem("token");
 
-      if (storedToken && instance && instance.name && genericBotId) {
-        await deleteGenericBot(instance.name, storedToken, genericBotId);
-        toast.success(t("genericBot.toast.success.delete"));
+      if (storedToken && instance && instance.name && evolutionBotId) {
+        await deleteEvolutionBot(instance.name, storedToken, evolutionBotId);
+        toast.success(t("evolutionBot.toast.success.delete"));
 
         setOpenDeletionDialog(false);
         resetTable();
-        navigate(`/manager/instance/${instance.id}/dify`);
+        navigate(`/manager/instance/${instance.id}/evolutionBot`);
       } else {
         console.error("instance not found");
       }
     } catch (error) {
-      console.error("Erro ao excluir dify:", error);
+      console.error("Erro ao excluir evolutionBot:", error);
     }
   };
 
@@ -142,10 +147,10 @@ function UpdateGenericBot({ genericBotId, resetTable }: UpdateGenericBotProps) {
 
   return (
     <div className="m-4">
-      <GenericBotForm
+      <EvolutionBotForm
         initialData={initialData}
         onSubmit={onSubmit}
-        genericBotId={genericBotId}
+        evolutionBotId={evolutionBotId}
         handleDelete={handleDelete}
         isModal={false}
         isLoading={loading}
@@ -156,4 +161,4 @@ function UpdateGenericBot({ genericBotId, resetTable }: UpdateGenericBotProps) {
   );
 }
 
-export { UpdateGenericBot };
+export { UpdateEvolutionBot };

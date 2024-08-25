@@ -15,13 +15,13 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createDify } from "@/lib/queries/dify/manageDify";
+import { createEvolutionBot } from "@/services/evolutionBot.service";
 
-import { Dify } from "@/types/evolution.types";
+import { EvolutionBot } from "@/types/evolution.types";
 
-import { FormSchemaType, DifyForm } from "./DifyForm";
+import { FormSchemaType, EvolutionBotForm } from "./EvolutionBotForm";
 
-function NewDify({ resetTable }: { resetTable: () => void }) {
+function NewEvolutionBot({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
@@ -35,10 +35,9 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
       }
 
       setUpdating(true);
-      const difyData: Dify = {
+      const evolutionBotData: EvolutionBot = {
         enabled: data.enabled,
         description: data.description,
-        botType: data.botType,
         apiUrl: data.apiUrl,
         apiKey: data.apiKey,
         triggerType: data.triggerType,
@@ -54,12 +53,8 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
         debounceTime: data.debounceTime || 0,
       };
 
-      await createDify({
-        instanceName: instance.name,
-        token: instance.token,
-        data: difyData,
-      });
-      toast.success(t("dify.toast.success.create"));
+      await createEvolutionBot(instance.name, instance.token, evolutionBotData);
+      toast.success(t("evolutionBot.toast.success.create"));
       setOpen(false);
       resetTable();
     } catch (error: any) {
@@ -75,17 +70,23 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
       <DialogTrigger asChild>
         <Button size="sm">
           <PlusIcon size={16} className="mr-1" />
-          <span className="hidden sm:inline">{t("dify.button.create")}</span>
+          <span className="hidden sm:inline">
+            {t("evolutionBot.button.create")}
+          </span>
         </Button>
       </DialogTrigger>
       <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]">
         <DialogHeader>
-          <DialogTitle>{t("dify.form.title")}</DialogTitle>
+          <DialogTitle>{t("evolutionBot.form.title")}</DialogTitle>
         </DialogHeader>
-        <DifyForm onSubmit={onSubmit} isModal={true} isLoading={updating} />
+        <EvolutionBotForm
+          onSubmit={onSubmit}
+          isModal={true}
+          isLoading={updating}
+        />
       </DialogContent>
     </Dialog>
   );
 }
 
-export { NewDify };
+export { NewEvolutionBot };

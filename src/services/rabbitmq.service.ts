@@ -16,10 +16,16 @@ export const createRabbitmq = async (
   token: string,
   data: Rabbitmq,
 ) => {
-  const response = await api.post(`/rabbitmq/set/${instanceName}`, data, {
-    headers: {
-      apikey: token,
+  const response = await api.post(
+    `/rabbitmq/set/${instanceName}`,
+    {
+      rabbitmq: data,
     },
-  });
+    {
+      headers: {
+        apikey: token,
+      },
+    },
+  );
   return response.data;
 };

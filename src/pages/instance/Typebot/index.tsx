@@ -130,11 +130,7 @@ function Typebot() {
           <>
             <ResizableHandle withHandle className="border border-black" />
             <ResizablePanel className="">
-              <UpdateTypebot
-                typebotId={typebotId}
-                instance={instance}
-                resetTable={resetTable}
-              />
+              <UpdateTypebot typebotId={typebotId} resetTable={resetTable} />
             </ResizablePanel>
           </>
         )}

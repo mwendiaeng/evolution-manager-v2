@@ -16,10 +16,16 @@ export const createSqs = async (
   token: string,
   data: Sqs,
 ) => {
-  const response = await api.post(`/sqs/set/${instanceName}`, data, {
-    headers: {
-      apikey: token,
+  const response = await api.post(
+    `/sqs/set/${instanceName}`,
+    {
+      sqs: data,
     },
-  });
+    {
+      headers: {
+        apikey: token,
+      },
+    },
+  );
   return response.data;
 };

@@ -7,7 +7,9 @@
   "button": {
     "delete": "Eliminar",
     "deleting": "Eliminando...",
-    "cancel": "Cancelar"
+    "cancel": "Cancelar",
+    "markAll": "Marcar Todos",
+    "unMarkAll": "Desmarcar Todos"
   },
   "modal": {
     "delete": {
@@ -31,7 +33,7 @@
       "label": "Cambiar Tema",
       "light": "Claro",
       "dark": "Oscuro",
-      "System": "Sistema"
+      "system": "Sistema"
     },
     "language": {
       "label": "Idioma",
@@ -46,7 +48,7 @@
     "configurations": "Configuraciones",
     "settings": "Comportamiento",
     "proxy": "Proxy",
-    "callbacks": "Callbacks",
+    "events": "Eventos",
     "webhook": "Webhook",
     "websocket": "WebSocket",
     "rabbitmq": "RabbitMQ",
@@ -56,7 +58,7 @@
     "typebot": "Typebot",
     "openai": "OpenAI",
     "dify": "Dify",
-    "genericBot": "Bot Genérico",
+    "evolutionBot": "Bot Evolution",
     "flowise": "Flowise",
     "documentation": "Documentación",
     "postman": "Postman",
@@ -96,7 +98,8 @@
         "baileys": "Baileys",
         "whatsapp": "WhatsApp Cloud API",
         "facebook": "Facebook",
-        "instagram": "Instagram"
+        "instagram": "Instagram",
+        "evolution": "Evolution"
       },
       "token": "Token",
       "number": "Número",
@@ -104,6 +107,7 @@
     },
     "button": {
       "save": "Guardar",
+      "saving": "Guardando...",
       "create": "Instancia",
       "connecting": "Conectando...",
       "facebook": "Conectar con Facebook",
@@ -116,7 +120,7 @@
           "label": "Generar Código QR",
           "title": "Escanea el Código QR con WhatsApp"
         },
-        "paitingCode": {
+        "pairingCode": {
           "label": "Generar Código de Emparejamiento",
           "title": "Emparejar con WhatsApp"
         },
@@ -216,11 +220,11 @@
       "url": {
         "label": "URL"
       },
-      "webhookByEvents": {
+      "byEvents": {
         "label": "Webhook por Eventos",
         "description": "Crear una ruta para cada evento agregando el nombre del evento al final de la URL"
       },
-      "webhookBase64": {
+      "base64": {
         "label": "Webhook Base64",
         "description": "Enviar datos de medios en base64 en el webhook"
       },
@@ -485,6 +489,7 @@
     "button": {
       "create": "Typebot",
       "save": "Guardar",
+      "saving": "Guardando...",
       "update": "Actualizar",
       "defaultSettings": "Configuraciones Predeterminadas",
       "delete": "Eliminar"
@@ -662,6 +667,7 @@
     "button": {
       "create": "OpenAI",
       "save": "Guardar",
+      "saving": "Guardando...",
       "update": "Actualizar",
       "defaultSettings": "Configuraciones Predeterminadas",
       "delete": "Eliminar"
@@ -802,6 +808,7 @@
     "button": {
       "create": "Dify",
       "save": "Guardar",
+      "saving": "Guardando...",
       "update": "Actualizar",
       "defaultSettings": "Configuraciones Predeterminadas",
       "delete": "Eliminar"
@@ -812,8 +819,8 @@
       }
     }
   },
-  "genericBot": {
-    "title": "Bot Genérico",
+  "evolutionBot": {
+    "title": "Bot Evolution",
     "sessions": {
       "label": "Sesiones",
       "search": "Buscar por remoteJid...",
@@ -839,18 +846,18 @@
         "error": "Ocurrió un error al aplicar las configuraciones predeterminadas"
       },
       "success": {
-        "update": "Bot Genérico actualizado con éxito",
-        "create": "Bot Genérico creado con éxito",
-        "delete": "Bot Genérico eliminado con éxito",
-        "status": "Estado de Bot Genérico actualizado con éxito"
+        "update": "Bot Evolution actualizado con éxito",
+        "create": "Bot Evolution creado con éxito",
+        "delete": "Bot Evolution eliminado con éxito",
+        "status": "Estado de Bot Evolution actualizado con éxito"
       },
-      "error": "Ocurrió un error al crear el Bot Genérico"
+      "error": "Ocurrió un error al crear el Bot Evolution"
     },
     "table": {
       "none": "Nada que mostrar"
     },
     "form": {
-      "title": "Nuevo Bot Genérico",
+      "title": "Nuevo Bot Evolution",
       "examples": {
         "keywordFinish": "#FINISH",
         "unknownMessage": "Lo siento, no entendí. ¿Puedes intentar de nuevo?"
@@ -861,8 +868,8 @@
       "description": {
         "label": "Descripción"
       },
-      "genericBotSettings": {
-        "label": "Configuraciones de Bot Genérico"
+      "evolutionBotSettings": {
+        "label": "Configuraciones de Bot Evolution"
       },
       "apiUrl": {
         "label": "URL de la API"
@@ -895,7 +902,7 @@
         "label": "Condiciones"
       },
       "botIdFallback": {
-        "label": "Fallback de Bot Genérico"
+        "label": "Fallback de Bot Evolution"
       },
       "generalSettings": {
         "label": "Configuraciones Generales"
@@ -933,8 +940,9 @@
       }
     },
     "button": {
-      "create": "Bot Genérico",
+      "create": "Bot Evolution",
       "save": "Guardar",
+      "saving": "Guardando...",
       "update": "Actualizar",
       "defaultSettings": "Configuraciones Predeterminadas",
       "delete": "Eliminar"
@@ -1027,7 +1035,7 @@
       "triggerConditions": {
         "label": "Condiciones"
       },
-      "botIdFallback": {
+      "flowiseIdFallback": {
         "label": "Fallback de Flowise"
       },
       "generalSettings": {
@@ -1068,6 +1076,7 @@
     "button": {
       "create": "Flowise",
       "save": "Guardar",
+      "saving": "Guardando...",
       "update": "Actualizar",
       "defaultSettings": "Configuraciones Predeterminadas",
       "delete": "Eliminar"

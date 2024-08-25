@@ -1,14 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  ColumnDef,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { ColumnDef, SortingState } from "@tanstack/react-table";
 import {
   Delete,
   ListCollapse,
@@ -23,6 +14,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
 import {
   Dialog,
   DialogContent,
@@ -39,14 +31,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
@@ -90,6 +74,7 @@ function SessionsFlowise({ flowiseId }: { flowiseId?: string }) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [sessions, setSessions] = useState<IntegrationSession[] | []>([]);
   const [open, setOpen] = useState(false);
+  const [globalFilter, setGlobalFilter] = useState("");
 
   useEffect(() => {
     if (open) fetchData(instance, setSessions, flowiseId);
@@ -212,19 +197,6 @@ function SessionsFlowise({ flowiseId }: { flowiseId?: string }) {
     },
   ];
 
-  const table = useReactTable({
-    data: sessions,
-    columns: columns as ColumnDef<unknown, any>[],
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting,
-    },
-  });
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
@@ -246,65 +218,22 @@ function SessionsFlowise({ flowiseId }: { flowiseId?: string }) {
           <div className="flex items-center justify-between gap-6 p-5">
             <Input
               placeholder={t("flowise.sessions.search")}
-              value={
-                (table.getColumn("remoteJid")?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn("remoteJid")?.setFilterValue(event.target.value)
-              }
+              value={globalFilter}
+              onChange={(event) => setGlobalFilter(event.target.value)}
             />
             <Button variant="outline" onClick={onReset} size="icon">
               <RotateCcw />
             </Button>
           </div>
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    {t("flowise.sessions.table.none")}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          <DataTable
+            columns={columns}
+            data={sessions}
+            onSortingChange={setSorting}
+            state={{ sorting, globalFilter }}
+            onGlobalFilterChange={setGlobalFilter}
+            enableGlobalFilter
+            noResultsMessage={t("flowise.sessions.table.none")}
+          />
         </div>
       </DialogContent>
     </Dialog>

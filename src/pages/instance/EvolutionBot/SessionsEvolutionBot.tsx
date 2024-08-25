@@ -1,14 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  ColumnDef,
-  SortingState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+
+import { ColumnDef, SortingState } from "@tanstack/react-table";
 import {
   Delete,
   ListCollapse,
@@ -23,6 +15,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
+import { DataTable } from "@/components/ui/data-table";
 import {
   Dialog,
   DialogContent,
@@ -39,39 +32,31 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { getToken, TOKEN_ID } from "@/lib/queries/token";
 
 import {
-  changeStatusGenericBot,
-  fetchSessionsGenericBot,
-} from "@/services/genericBot.service";
+  changeStatusEvolutionBot,
+  fetchSessionsEvolutionBot,
+} from "@/services/evolutionBot.service";
 
 import { IntegrationSession, Instance } from "@/types/evolution.types";
 
 const fetchData = async (
   instance: Instance | null,
   setSessions: any,
-  genericBotId?: string,
+  evolutionBotId?: string,
 ) => {
   try {
     const storedToken = getToken(TOKEN_ID.TOKEN);
 
     if (storedToken && instance && instance.name) {
-      const getSessions: IntegrationSession[] = await fetchSessionsGenericBot(
+      const getSessions: IntegrationSession[] = await fetchSessionsEvolutionBot(
         instance.name,
         storedToken,
-        genericBotId,
+        evolutionBotId,
       );
 
       setSessions(getSessions);
@@ -83,34 +68,35 @@ const fetchData = async (
   }
 };
 
-function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
+function SessionsEvolutionBot({ evolutionBotId }: { evolutionBotId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [sessions, setSessions] = useState<IntegrationSession[] | []>([]);
   const [open, setOpen] = useState(false);
+  const [globalFilter, setGlobalFilter] = useState("");
 
   useEffect(() => {
-    if (open) fetchData(instance, setSessions, genericBotId);
-  }, [instance, genericBotId, open]);
+    if (open) fetchData(instance, setSessions, evolutionBotId);
+  }, [instance, evolutionBotId, open]);
 
   function onReset() {
-    fetchData(instance, setSessions, genericBotId);
+    fetchData(instance, setSessions, evolutionBotId);
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {
     try {
       if (!instance) return;
 
-      await changeStatusGenericBot(
+      await changeStatusEvolutionBot(
         instance.name,
         instance.token,
         remoteJid,
         status,
       );
 
-      toast.success(t("genericBot.toast.success.status"));
+      toast.success(t("evolutionBot.toast.success.status"));
       onReset();
     } catch (error: any) {
       console.error("Error:", error);
@@ -123,7 +109,7 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
       accessorKey: "remoteJid",
       header: () => (
         <div className="text-center">
-          {t("genericBot.sessions.table.remoteJid")}
+          {t("evolutionBot.sessions.table.remoteJid")}
         </div>
       ),
       cell: ({ row }) => <div>{row.getValue("remoteJid")}</div>,
@@ -132,7 +118,7 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
       accessorKey: "pushName",
       header: () => (
         <div className="text-center">
-          {t("genericBot.sessions.table.pushName")}
+          {t("evolutionBot.sessions.table.pushName")}
         </div>
       ),
       cell: ({ row }) => <div>{row.getValue("pushName")}</div>,
@@ -141,7 +127,7 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
       accessorKey: "sessionId",
       header: () => (
         <div className="text-center">
-          {t("genericBot.sessions.table.sessionId")}
+          {t("evolutionBot.sessions.table.sessionId")}
         </div>
       ),
       cell: ({ row }) => <div>{row.getValue("sessionId")}</div>,
@@ -150,7 +136,7 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
       accessorKey: "status",
       header: () => (
         <div className="text-center">
-          {t("genericBot.sessions.table.status")}
+          {t("evolutionBot.sessions.table.status")}
         </div>
       ),
       cell: ({ row }) => <div>{row.getValue("status")}</div>,
@@ -166,14 +152,14 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
                 <span className="sr-only">
-                  {t("genericBot.sessions.table.actions.title")}
+                  {t("evolutionBot.sessions.table.actions.title")}
                 </span>
                 <MoreHorizontal className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>
-                {t("genericBot.sessions.table.actions.title")}
+                {t("evolutionBot.sessions.table.actions.title")}
               </DropdownMenuLabel>
               <DropdownMenuSeparator />
               {session.status !== "opened" && (
@@ -181,7 +167,7 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
                   onClick={() => changeStatus(session.remoteJid, "opened")}
                 >
                   <Play className="mr-2 h-4 w-4" />
-                  {t("genericBot.sessions.table.actions.open")}
+                  {t("evolutionBot.sessions.table.actions.open")}
                 </DropdownMenuItem>
               )}
               {session.status !== "paused" && session.status !== "closed" && (
@@ -189,7 +175,7 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
                   onClick={() => changeStatus(session.remoteJid, "paused")}
                 >
                   <Pause className="mr-2 h-4 w-4" />
-                  {t("genericBot.sessions.table.actions.pause")}
+                  {t("evolutionBot.sessions.table.actions.pause")}
                 </DropdownMenuItem>
               )}
               {session.status !== "closed" && (
@@ -197,7 +183,7 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
                   onClick={() => changeStatus(session.remoteJid, "closed")}
                 >
                   <StopCircle className="mr-2 h-4 w-4" />
-                  {t("genericBot.sessions.table.actions.close")}
+                  {t("evolutionBot.sessions.table.actions.close")}
                 </DropdownMenuItem>
               )}
 
@@ -205,7 +191,7 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
                 onClick={() => changeStatus(session.remoteJid, "delete")}
               >
                 <Delete className="mr-2 h-4 w-4" />
-                {t("genericBot.sessions.table.actions.delete")}
+                {t("evolutionBot.sessions.table.actions.delete")}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -214,26 +200,13 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
     },
   ];
 
-  const table = useReactTable({
-    data: sessions,
-    columns: columns as ColumnDef<unknown, any>[],
-    onSortingChange: setSorting,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    state: {
-      sorting,
-    },
-  });
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <ListCollapse size={16} className="mr-1" />
           <span className="hidden sm:inline">
-            {t("genericBot.sessions.label")}
+            {t("evolutionBot.sessions.label")}
           </span>
         </Button>
       </DialogTrigger>
@@ -242,75 +215,32 @@ function SessionsGenericBot({ genericBotId }: { genericBotId?: string }) {
         onCloseAutoFocus={onReset}
       >
         <DialogHeader>
-          <DialogTitle>{t("genericBot.sessions.label")}</DialogTitle>
+          <DialogTitle>{t("evolutionBot.sessions.label")}</DialogTitle>
         </DialogHeader>
         <div>
           <div className="flex items-center justify-between gap-6 p-5">
             <Input
-              placeholder={t("genericBot.sessions.search")}
-              value={
-                (table.getColumn("remoteJid")?.getFilterValue() as string) ?? ""
-              }
-              onChange={(event) =>
-                table.getColumn("remoteJid")?.setFilterValue(event.target.value)
-              }
+              placeholder={t("evolutionBot.sessions.search")}
+              value={globalFilter}
+              onChange={(event) => setGlobalFilter(event.target.value)}
             />
             <Button variant="outline" onClick={onReset} size="icon">
               <RotateCcw />
             </Button>
           </div>
-          <Table>
-            <TableHeader>
-              {table.getHeaderGroups().map((headerGroup) => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => {
-                    return (
-                      <TableHead key={header.id}>
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext(),
-                            )}
-                      </TableHead>
-                    );
-                  })}
-                </TableRow>
-              ))}
-            </TableHeader>
-            <TableBody>
-              {table.getRowModel().rows?.length ? (
-                table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={row.getIsSelected() && "selected"}
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
-                    {t("genericBot.sessions.table.none")}
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          <DataTable
+            columns={columns}
+            data={sessions}
+            onSortingChange={setSorting}
+            state={{ sorting, globalFilter }}
+            onGlobalFilterChange={setGlobalFilter}
+            enableGlobalFilter
+            noResultsMessage={t("evolutionBot.sessions.table.none")}
+          />
         </div>
       </DialogContent>
     </Dialog>
   );
 }
 
-export { SessionsGenericBot };
+export { SessionsEvolutionBot };

@@ -43,6 +43,7 @@ const FormSchema = z.object({
     "WHATSAPP-BAILEYS",
     "META-FACEBOOK",
     "META-INSTAGRAM",
+    "EVOLUTION",
   ]),
 });
 
@@ -57,6 +58,10 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
     {
       value: "WHATSAPP-BUSINESS",
       label: t("instance.form.integration.whatsapp"),
+    },
+    {
+      value: "EVOLUTION",
+      label: t("instance.form.integration.evolution"),
     },
   ]);
   const form = useForm<z.infer<typeof FormSchema>>({

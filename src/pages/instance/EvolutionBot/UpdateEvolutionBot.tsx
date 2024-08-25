@@ -8,24 +8,25 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
-
 import {
-  deleteOpenai,
-  getOpenai,
-  updateOpenai,
-} from "@/services/openai.service";
+  deleteEvolutionBot,
+  getEvolutionBot,
+  updateEvolutionBot,
+} from "@/services/evolutionBot.service";
 
-import { Openai } from "@/types/evolution.types";
+import { EvolutionBot } from "@/types/evolution.types";
 
-import { OpenaiForm, FormSchemaType } from "./OpenaiForm";
+import { EvolutionBotForm, FormSchemaType } from "./EvolutionBotForm";
 
-type UpdateOpenaiProps = {
-  openaiId: string;
+type UpdateEvolutionBotProps = {
+  evolutionBotId: string;
   resetTable: () => void;
 };
 
-function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
+function UpdateEvolutionBot({
+  evolutionBotId,
+  resetTable,
+}: UpdateEvolutionBotProps) {
   const { t } = useTranslation();
   const { instance } = useInstance();
   const navigate = useNavigate();
@@ -39,34 +40,20 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedToken = getToken(TOKEN_ID.TOKEN);
+        const storedToken = localStorage.getItem("token");
 
-        console.log(storedToken, instance, instance?.name, openaiId);
-        if (storedToken && instance && instance.name && openaiId) {
-          const data: Openai = await getOpenai(
+        if (storedToken && instance && instance.name && evolutionBotId) {
+          const data: EvolutionBot = await getEvolutionBot(
             instance.name,
             storedToken,
-            openaiId,
+            evolutionBotId,
           );
 
           setInitialData({
             enabled: data.enabled,
             description: data.description,
-            openaiCredsId: data.openaiCredsId,
-            botType: data.botType,
-            assistantId: data.assistantId || "",
-            functionUrl: data.functionUrl || "",
-            model: data.model || "",
-            systemMessages: Array.isArray(data.systemMessages)
-              ? data.systemMessages.join(", ")
-              : data.systemMessages || "",
-            assistantMessages: Array.isArray(data.assistantMessages)
-              ? data.assistantMessages.join(", ")
-              : data.assistantMessages || "",
-            userMessages: Array.isArray(data.userMessages)
-              ? data.userMessages.join(", ")
-              : data.userMessages || "",
-            maxTokens: data.maxTokens || 0,
+            apiUrl: data.apiUrl,
+            apiKey: data.apiKey || "",
             triggerType: data.triggerType || "",
             triggerOperator: data.triggerOperator || "",
             triggerValue: data.triggerValue,
@@ -90,25 +77,18 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
     };
 
     fetchData();
-  }, [openaiId, instance]);
+  }, [evolutionBotId, instance]);
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
-      const storedToken = getToken(TOKEN_ID.TOKEN);
+      const storedToken = localStorage.getItem("token");
 
-      if (storedToken && instance && instance.name && openaiId) {
-        const openaiData: Openai = {
+      if (storedToken && instance && instance.name && evolutionBotId) {
+        const evolutionBotData: EvolutionBot = {
           enabled: data.enabled,
           description: data.description,
-          openaiCredsId: data.openaiCredsId,
-          botType: data.botType,
-          assistantId: data.assistantId || "",
-          functionUrl: data.functionUrl || "",
-          model: data.model || "",
-          systemMessages: [data.systemMessages || ""],
-          assistantMessages: [data.assistantMessages || ""],
-          userMessages: [data.userMessages || ""],
-          maxTokens: data.maxTokens || 0,
+          apiUrl: data.apiUrl,
+          apiKey: data.apiKey,
           triggerType: data.triggerType,
           triggerOperator: data.triggerOperator || "",
           triggerValue: data.triggerValue || "",
@@ -122,10 +102,17 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
           debounceTime: data.debounceTime || 0,
         };
 
-        await updateOpenai(instance.name, storedToken, openaiId, openaiData);
-        toast.success(t("openai.toast.success.update"));
+        await updateEvolutionBot(
+          instance.name,
+          storedToken,
+          evolutionBotId,
+          evolutionBotData,
+        );
+        toast.success(t("evolutionBot.toast.success.update"));
         resetTable();
-        navigate(`/manager/instance/${instance.id}/openai/${openaiId}`);
+        navigate(
+          `/manager/instance/${instance.id}/evolutionBot/${evolutionBotId}`,
+        );
       } else {
         console.error("Token not found");
       }
@@ -137,20 +124,20 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
 
   const handleDelete = async () => {
     try {
-      const storedToken = getToken(TOKEN_ID.TOKEN);
+      const storedToken = localStorage.getItem("token");
 
-      if (storedToken && instance && instance.name && openaiId) {
-        await deleteOpenai(instance.name, storedToken, openaiId);
-        toast.success(t("openai.toast.success.delete"));
+      if (storedToken && instance && instance.name && evolutionBotId) {
+        await deleteEvolutionBot(instance.name, storedToken, evolutionBotId);
+        toast.success(t("evolutionBot.toast.success.delete"));
 
         setOpenDeletionDialog(false);
         resetTable();
-        navigate(`/manager/instance/${instance.id}/dify`);
+        navigate(`/manager/instance/${instance.id}/evolutionBot`);
       } else {
         console.error("instance not found");
       }
     } catch (error) {
-      console.error("Erro ao excluir dify:", error);
+      console.error("Erro ao excluir evolutionBot:", error);
     }
   };
 
@@ -160,10 +147,10 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
 
   return (
     <div className="m-4">
-      <OpenaiForm
+      <EvolutionBotForm
         initialData={initialData}
         onSubmit={onSubmit}
-        openaiId={openaiId}
+        evolutionBotId={evolutionBotId}
         handleDelete={handleDelete}
         isModal={false}
         isLoading={loading}
@@ -174,4 +161,4 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
   );
 }
 
-export { UpdateOpenai };
+export { UpdateEvolutionBot };

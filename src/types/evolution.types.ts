@@ -100,7 +100,7 @@ export type OpenaiCreds = {
   apiKey: string;
 };
 
-export type OpenaiBot = {
+export type Openai = {
   id?: string;
   openaiCredsId: string;
   enabled: boolean;
@@ -213,8 +213,8 @@ export type Webhook = {
   enabled: boolean;
   url: string;
   events: string[];
-  webhookBase64: boolean;
-  webhookByEvents: boolean;
+  base64: boolean;
+  byEvents: boolean;
 };
 
 export type Websocket = {
@@ -273,7 +273,7 @@ export type ModelOpenai = {
   owned_by: string;
 };
 
-export type GenericBot = {
+export type EvolutionBot = {
   id?: string;
   enabled: boolean;
   description: string;
@@ -293,7 +293,7 @@ export type GenericBot = {
   ignoreJids?: string[];
 };
 
-export type GenericBotSettings = {
+export type EvolutionBotSettings = {
   expire: number;
   keywordFinish: string;
   delayMessage: number;

@@ -16,10 +16,16 @@ export const createWebsocket = async (
   token: string,
   data: Websocket,
 ) => {
-  const response = await api.post(`/websocket/set/${instanceName}`, data, {
-    headers: {
-      apikey: token,
+  const response = await api.post(
+    `/websocket/set/${instanceName}`,
+    {
+      websocket: data,
     },
-  });
+    {
+      headers: {
+        apikey: token,
+      },
+    },
+  );
   return response.data;
 };

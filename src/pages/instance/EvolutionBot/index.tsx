@@ -14,21 +14,19 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
-
-import { findGenericBot } from "@/services/genericBot.service";
+import { findEvolutionBot } from "@/services/evolutionBot.service";
 
 import {
-  GenericBot as GenericBotType,
+  EvolutionBot as EvolutionBotType,
   Instance,
 } from "@/types/evolution.types";
 
 import { useMediaQuery } from "@/utils/useMediaQuery";
 
-import { DefaultSettingsGenericBot } from "./DefaultSettingsGenericBot";
-import { NewGenericBot } from "./NewGenericBot";
-import { SessionsGenericBot } from "./SessionsGenericBot";
-import { UpdateGenericBot } from "./UpdateGenericBot";
+import { DefaultSettingsEvolutionBot } from "./DefaultSettingsEvolutionBot";
+import { NewEvolutionBot } from "./NewEvolutionBot";
+import { SessionsEvolutionBot } from "./SessionsEvolutionBot";
+import { UpdateEvolutionBot } from "./UpdateEvolutionBot";
 
 const fetchData = async (
   instance: Instance | null,
@@ -36,10 +34,10 @@ const fetchData = async (
   setLoading: any,
 ) => {
   try {
-    const storedToken = getToken(TOKEN_ID.TOKEN);
+    const storedToken = localStorage.getItem("token");
 
     if (storedToken && instance && instance.name) {
-      const data: GenericBotType[] = await findGenericBot(
+      const data: EvolutionBotType[] = await findEvolutionBot(
         instance.name,
         storedToken,
       );
@@ -55,15 +53,15 @@ const fetchData = async (
   }
 };
 
-function GenericBot() {
+function EvolutionBot() {
   const { t } = useTranslation();
   const isMD = useMediaQuery("(min-width: 768px)");
   const { instance } = useInstance();
 
-  const { genericBotId } = useParams<{ genericBotId: string }>();
+  const { evolutionBotId } = useParams<{ evolutionBotId: string }>();
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [bots, setBots] = useState<GenericBotType[]>([]);
+  const [bots, setBots] = useState<EvolutionBotType[]>([]);
 
   const navigate = useNavigate();
 
@@ -75,7 +73,7 @@ function GenericBot() {
   const handleBotClick = (botId: string) => {
     if (!instance) return;
 
-    navigate(`/manager/instance/${instance.id}/generic/${botId}`);
+    navigate(`/manager/instance/${instance.id}/evolutionBot/${botId}`);
   };
 
   const resetTable = () => {
@@ -85,11 +83,11 @@ function GenericBot() {
   return (
     <main className="pt-5">
       <div className="mb-1 flex items-center justify-between">
-        <h3 className="text-lg font-medium">{t("genericBot.title")}</h3>
+        <h3 className="text-lg font-medium">{t("evolutionBot.title")}</h3>
         <div className="flex items-center justify-end gap-2">
-          <SessionsGenericBot />
-          <DefaultSettingsGenericBot />
-          <NewGenericBot resetTable={resetTable} />
+          <SessionsEvolutionBot />
+          <DefaultSettingsEvolutionBot />
+          <NewEvolutionBot resetTable={resetTable} />
         </div>
       </div>
       <Separator className="my-4" />
@@ -107,26 +105,25 @@ function GenericBot() {
                       key={bot.id}
                       onClick={() => handleBotClick(`${bot.id}`)}
                       variant={
-                        genericBotId === bot.id ? "secondary" : "outline"
+                        evolutionBotId === bot.id ? "secondary" : "outline"
                       }
                     >
                       <h4 className="text-base">{bot.description || bot.id}</h4>
                     </Button>
                   ))
                 ) : (
-                  <Button variant="link">{t("genericBot.table.none")}</Button>
+                  <Button variant="link">{t("evolutionBot.table.none")}</Button>
                 )}
               </>
             )}
           </div>
         </ResizablePanel>
-        {genericBotId && (
+        {evolutionBotId && (
           <>
             <ResizableHandle withHandle className="border border-border" />
             <ResizablePanel className="">
-              <UpdateGenericBot
-                genericBotId={genericBotId}
-                instance={instance}
+              <UpdateEvolutionBot
+                evolutionBotId={evolutionBotId}
                 resetTable={resetTable}
               />
             </ResizablePanel>
@@ -137,4 +134,4 @@ function GenericBot() {
   );
 }
 
-export { GenericBot };
+export { EvolutionBot };

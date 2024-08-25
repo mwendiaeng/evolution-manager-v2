@@ -112,6 +112,14 @@ function Websocket() {
     "TYPEBOT_CHANGE_STATUS",
   ];
 
+  const handleSelectAll = () => {
+    form.setValue("events", events);
+  };
+
+  const handleDeselectAll = () => {
+    form.setValue("events", []);
+  };
+
   return (
     <>
       <Form {...form}>
@@ -130,6 +138,22 @@ function Websocket() {
                 helper={t("websocket.form.enabled.description")}
               />
 
+              <div className="mb-4 flex justify-between">
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleSelectAll}
+                >
+                  {t("button.markAll")}
+                </Button>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleDeselectAll}
+                >
+                  {t("button.unMarkAll")}
+                </Button>
+              </div>
               <FormField
                 control={form.control}
                 name="events"

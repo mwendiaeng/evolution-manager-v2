@@ -32,8 +32,8 @@ const FormSchema = z.object({
   enabled: z.boolean(),
   url: z.string().url("Invalid URL format"),
   events: z.array(z.string()),
-  webhookBase64: z.boolean(),
-  webhookByEvents: z.boolean(),
+  base64: z.boolean(),
+  byEvents: z.boolean(),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -49,8 +49,8 @@ function Webhook() {
       enabled: false,
       url: "",
       events: [],
-      webhookBase64: false,
-      webhookByEvents: false,
+      base64: false,
+      byEvents: false,
     },
   });
 
@@ -79,8 +79,8 @@ function Webhook() {
         enabled: data.enabled,
         url: data.url,
         events: data.events,
-        webhookBase64: data.webhookBase64,
-        webhookByEvents: data.webhookByEvents,
+        base64: data.base64,
+        byEvents: data.byEvents,
       };
 
       await createWebhook(instance.name, instance.token, webhookData);
@@ -122,6 +122,14 @@ function Webhook() {
     "TYPEBOT_CHANGE_STATUS",
   ];
 
+  const handleSelectAll = () => {
+    form.setValue("events", events);
+  };
+
+  const handleDeselectAll = () => {
+    form.setValue("events", []);
+  };
+
   return (
     <>
       <Form {...form}>
@@ -143,17 +151,33 @@ function Webhook() {
                 <Input />
               </FormInput>
               <FormSwitch
-                name="webhookByEvents"
-                label={t("webhook.form.webhookByEvents.label")}
+                name="byEvents"
+                label={t("webhook.form.byEvents.label")}
                 className="w-full justify-between"
-                helper={t("webhook.form.webhookByEvents.description")}
+                helper={t("webhook.form.byEvents.description")}
               />
               <FormSwitch
-                name="webhookBase64"
-                label={t("webhook.form.webhookBase64.label")}
+                name="base64"
+                label={t("webhook.form.base64.label")}
                 className="w-full justify-between"
-                helper={t("webhook.form.webhookBase64.description")}
+                helper={t("webhook.form.base64.description")}
               />
+              <div className="mb-4 flex justify-between">
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleSelectAll}
+                >
+                  {t("button.markAll")}
+                </Button>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleDeselectAll}
+                >
+                  {t("button.unMarkAll")}
+                </Button>
+              </div>
               <FormField
                 control={form.control}
                 name="events"

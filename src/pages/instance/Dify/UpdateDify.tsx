@@ -1,25 +1,12 @@
-import { zodResolver } from "@hookform/resolvers/zod";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { z } from "zod";
 
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Form, FormInput, FormSelect, FormSwitch } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import { Separator } from "@/components/ui/separator";
+
+import { useInstance } from "@/contexts/InstanceContext";
 
 import { useGetDify } from "@/lib/queries/dify/getDify";
 import { deleteDify, updateDify } from "@/lib/queries/dify/manageDify";
@@ -50,12 +37,13 @@ type FormSchema = z.infer<typeof formSchema>;
 
 type UpdateDifyProps = {
   difyId: string;
-  instance: Instance | null;
   resetTable: () => void;
 };
 
-function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
+function UpdateDify({ difyId, resetTable }: UpdateDifyProps) {
   const { t } = useTranslation();
+  const { instance } = useInstance();
+  const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
   const { data: dify, isLoading: loading } = useGetDify({
@@ -109,7 +97,7 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
     }
   });
 
-  const onSubmit = async (data: FormSchema) => {
+  const onSubmit = async (data: FormSchemaType) => {
     try {
       if (instance && instance.name && difyId) {
         const difyData: Dify = {
@@ -121,14 +109,14 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
           triggerType: data.triggerType,
           triggerOperator: data.triggerOperator || "",
           triggerValue: data.triggerValue || "",
-          expire: data.expire,
-          keywordFinish: data.keywordFinish,
-          delayMessage: data.delayMessage,
-          unknownMessage: data.unknownMessage,
-          listeningFromMe: data.listeningFromMe,
-          stopBotFromMe: data.stopBotFromMe,
-          keepOpen: data.keepOpen,
-          debounceTime: data.debounceTime,
+          expire: data.expire || 0,
+          keywordFinish: data.keywordFinish || "",
+          delayMessage: data.delayMessage || 1000,
+          unknownMessage: data.unknownMessage || "",
+          listeningFromMe: data.listeningFromMe || false,
+          stopBotFromMe: data.stopBotFromMe || false,
+          keepOpen: data.keepOpen || false,
+          debounceTime: data.debounceTime || 0,
         };
 
         await updateDify({
@@ -137,10 +125,11 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
           data: difyData,
         });
         toast.success(t("dify.toast.success.update"));
+        resetTable();
+        navigate(`/manager/instance/${instance.id}/dify/${difyId}`);
       } else {
         console.error("Token not found");
       }
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(`Error: ${error?.response?.data?.response?.message}`);
@@ -164,236 +153,23 @@ function UpdateDify({ difyId, instance, resetTable }: UpdateDifyProps) {
     }
   };
 
-  const botDescription = form.watch("description");
-  const triggerType = form.watch("triggerType");
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   return (
-    <>
-      {loading && <LoadingSpinner />}
-      {!loading && (
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full space-y-6 pl-4 pr-2"
-          >
-            <div className="space-y-6">
-              <div className="flex flex-wrap items-center justify-between gap-4">
-                <h3 className="mb-4 text-lg font-medium">
-                  Dify: {botDescription}
-                </h3>
-                <FormSwitch
-                  name="enabled"
-                  className="flex items-center gap-3"
-                />
-              </div>
-              <div className="space-y-4">
-                <FormInput
-                  name="description"
-                  label={t("dify.form.description.label")}
-                  required
-                >
-                  <Input />
-                </FormInput>
-
-                <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">
-                    {t("dify.form.difySettings.label")}
-                  </h3>
-                  <Separator />
-                </div>
-                <FormSelect
-                  name="botType"
-                  label={t("dify.form.botType.label")}
-                  required
-                  options={[
-                    { label: t("dify.form.botType.chatBot"), value: "chatBot" },
-                    {
-                      label: t("dify.form.botType.textGenerator"),
-                      value: "textGenerator",
-                    },
-                    { label: t("dify.form.botType.agent"), value: "agent" },
-                    {
-                      label: t("dify.form.botType.workflow"),
-                      value: "workflow",
-                    },
-                  ]}
-                />
-                <FormInput
-                  name="apiUrl"
-                  label={t("dify.form.apiUrl.label")}
-                  required
-                >
-                  <Input />
-                </FormInput>
-                <FormInput
-                  name="apiKey"
-                  label={t("dify.form.apiKey.label")}
-                  required
-                >
-                  <Input type="password" />
-                </FormInput>
-                <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">
-                    {t("dify.form.triggerSettings.label")}
-                  </h3>
-                  <Separator />
-                </div>
-                <FormSelect
-                  name="triggerType"
-                  label={t("dify.form.triggerType.label")}
-                  options={[
-                    {
-                      label: t("dify.form.triggerType.keyword"),
-                      value: "keyword",
-                    },
-                    { label: t("dify.form.triggerType.all"), value: "all" },
-                    {
-                      label: t("dify.form.triggerType.advanced"),
-                      value: "advanced",
-                    },
-                    { label: t("dify.form.triggerType.none"), value: "none" },
-                  ]}
-                  required
-                />
-                {triggerType === "keyword" && (
-                  <>
-                    <FormSelect
-                      name="triggerOperator"
-                      label={t("dify.form.triggerOperator.label")}
-                      options={[
-                        {
-                          label: t("dify.form.triggerOperator.contains"),
-                          value: "contains",
-                        },
-                        {
-                          label: t("dify.form.triggerOperator.equals"),
-                          value: "equals",
-                        },
-                        {
-                          label: t("dify.form.triggerOperator.startsWith"),
-                          value: "startsWith",
-                        },
-                        {
-                          label: t("dify.form.triggerOperator.endsWith"),
-                          value: "endsWith",
-                        },
-                        {
-                          label: t("dify.form.triggerOperator.regex"),
-                          value: "regex",
-                        },
-                      ]}
-                      required
-                    />
-                    <FormInput
-                      name="triggerValue"
-                      label={t("dify.form.triggerValue.label")}
-                      required
-                    >
-                      <Input />
-                    </FormInput>
-                  </>
-                )}
-                {triggerType === "advanced" && (
-                  <FormInput
-                    name="triggerValue"
-                    label={t("dify.form.triggerConditions.label")}
-                    required
-                  >
-                    <Input />
-                  </FormInput>
-                )}
-                <div className="flex flex-col">
-                  <h3 className="my-4 text-lg font-medium">
-                    {t("dify.form.generalSettings.label")}
-                  </h3>
-                  <Separator />
-                </div>
-                <FormInput name="expire" label={t("dify.form.expire.label")}>
-                  <Input type="number" />
-                </FormInput>
-                <FormInput
-                  name="keywordFinish"
-                  label={t("dify.form.keywordFinish.label")}
-                  required
-                >
-                  <Input />
-                </FormInput>
-                <FormInput
-                  name="delayMessage"
-                  label={t("dify.form.delayMessage.label")}
-                >
-                  <Input type="number" />
-                </FormInput>
-                <FormInput
-                  name="unknownMessage"
-                  label={t("dify.form.unknownMessage.label")}
-                >
-                  <Input />
-                </FormInput>
-                <FormSwitch
-                  name="listeningFromMe"
-                  label={t("dify.form.listeningFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="stopBotFromMe"
-                  label={t("dify.form.stopBotFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="keepOpen"
-                  label={t("dify.form.keepOpen.label")}
-                  reverse
-                />
-                <FormInput
-                  name="debounceTime"
-                  label={t("dify.form.debounceTime.label")}
-                >
-                  <Input type="number" />
-                </FormInput>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <SessionsDify difyId={difyId} />
-              <div className="flex items-center gap-3">
-                <Dialog
-                  open={openDeletionDialog}
-                  onOpenChange={setOpenDeletionDialog}
-                >
-                  <DialogTrigger asChild>
-                    <Button variant="destructive" size="sm">
-                      {t("dify.button.delete")}
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>{t("modal.delete.title")}</DialogTitle>
-                      <DialogDescription>
-                        {t("modal.delete.messageSingle")}
-                      </DialogDescription>
-                      <DialogFooter>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => setOpenDeletionDialog(false)}
-                        >
-                          {t("button.cancel")}
-                        </Button>
-                        <Button variant="destructive" onClick={handleDelete}>
-                          {t("button.delete")}
-                        </Button>
-                      </DialogFooter>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-                <Button type="submit">{t("dify.button.update")}</Button>
-              </div>
-            </div>
-          </form>
-        </Form>
-      )}
-    </>
+    <div className="m-4">
+      <DifyForm
+        initialData={initialData}
+        onSubmit={onSubmit}
+        difyId={difyId}
+        handleDelete={handleDelete}
+        isModal={false}
+        isLoading={loading}
+        openDeletionDialog={openDeletionDialog}
+        setOpenDeletionDialog={setOpenDeletionDialog}
+      />
+    </div>
   );
 }
 

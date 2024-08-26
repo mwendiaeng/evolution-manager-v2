@@ -1,198 +1,285 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState } from "react";
+import { CircleUser, MessageCircle, RefreshCw, UsersRound } from "lucide-react";
+import { useMemo, useState } from "react";
+import { useTranslation } from "react-i18next";
+import QRCode from "react-qr-code";
+
+import { InstanceStatus } from "@/components/instance-status";
+import { InstanceToken } from "@/components/instance-token";
+import { useTheme } from "@/components/theme-provider";
+import { Alert, AlertTitle } from "@/components/ui/alert";
+import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import "./style.css";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { logout, connect } from "@/services/instances.service";
-import QRCodePopup from "@/components/QRCodePopup";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+
 import { useInstance } from "@/contexts/InstanceContext";
 
-const getStatusClass = (status: string) => {
-  switch (status) {
-    case "open":
-      return "status-connected";
-    case "close":
-      return "status-disconnected";
-    case "connecting":
-      return "status-connecting";
-    default:
-      return "status-disconnected";
-  }
-};
+import { logout, connect, restart } from "@/services/instances.service";
 
-const getStatusText = (status: string) => {
-  switch (status) {
-    case "open":
-      return "Conectado";
-    case "close":
-      return "Desconectado";
-    case "connecting":
-      return "Conectando";
-    default:
-      return "Desconectado";
-  }
-};
+const numberFormatter = new Intl.NumberFormat("pt-BR");
 
 function DashboardInstance() {
-  const [showQRCode, setShowQRCode] = useState(false);
-  const [qrCodeData, setQRCodeData] = useState("");
-  const [, setTimer] = useState(0);
+  const { t } = useTranslation();
+  const [qrCode, setQRCode] = useState<string | null>(null);
+  const [pairingCode, setPairingCode] = useState("");
   const token = localStorage.getItem("token");
+  const { theme } = useTheme();
 
   const { instance } = useInstance();
 
-  const handleRestart = async () => {
-    // verificar
+  const handleReload = () => {
+    window.location.reload();
+  };
+
+  const handleRestart = async (instanceName: string) => {
+    try {
+      await restart(instanceName);
+      window.location.reload();
+    } catch (error) {
+      console.error("Error:", error);
+    }
   };
 
   const handleLogout = async (instanceName: string) => {
     try {
       await logout(instanceName);
-      // verificar
+      window.location.reload();
     } catch (error) {
-      console.error("Erro ao desconectar:", error);
+      console.error("Error:", error);
     }
   };
 
-  const handleConnect = async (instanceName: string) => {
+  const handleConnect = async (instanceName: string, pairingCode: boolean) => {
     try {
-      setShowQRCode(true);
-      setQRCodeData("");
+      setQRCode(null);
 
       if (!token) {
-        console.error("Token não encontrado.");
+        console.error("Token not found.");
         return;
       }
 
-      const data = await connect(instanceName, token);
-      setQRCodeData(data.base64);
-      setTimer(0);
+      if (pairingCode) {
+        const data = await connect(instanceName, token, instance?.number);
+
+        setPairingCode(data.pairingCode);
+      } else {
+        const data = await connect(instanceName, token);
+
+        setQRCode(data.code);
+      }
     } catch (error) {
-      console.error("Erro ao conectar:", error);
+      console.error("Error:", error);
     }
   };
 
-  // const checkInstanceStatus = useCallback(async () => {
-  //   try {
-  //     if (!instance) {
-  //       return;
-  //     }
-  //     const instancesData = await fetchInstances();
-  //     const updatedInstance = instancesData.find(
-  //       (inst: Instance) => inst.name === instance.name
-  //     );
-  //     if (updatedInstance) {
-  //       setInstance(updatedInstance);
-
-  //       const status = updatedInstance.connectionStatus;
-
-  //       if (status === "open") {
-  //         setShowQRCode(false);
-  //         setQRCodeData("");
-  //       } else if (status === "close") {
-  //         setTimer((prevTimer) => {
-  //           if (prevTimer >= 45) {
-  //             handleConnect(instanceId);
-  //             return 0;
-  //           }
-  //           return prevTimer + 10;
-  //         });
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.error("Erro ao verificar status:", error);
-  //   }
-  // }, [instanceId]);
-
-  // useEffect(() => {
-  //   if (showQRCode) {
-  //     const interval = setInterval(checkInstanceStatus, 10000); // Verifica a cada 10 segundos
-  //     return () => clearInterval(interval);
-  //   }
-  // }, [showQRCode, checkInstanceStatus]);
-
   const closeQRCodePopup = () => {
-    setShowQRCode(false);
-    setQRCodeData("");
+    setQRCode(null);
+    setPairingCode("");
+    window.location.reload();
   };
 
+  const stats = useMemo(() => {
+    if (!instance) {
+      return {
+        contacts: 0,
+        chats: 0,
+        messages: 0,
+      };
+    }
+
+    return {
+      contacts: instance._count?.Contact || 0,
+      chats: instance._count?.Chat || 0,
+      messages: instance._count?.Message || 0,
+    };
+  }, [instance]);
+
+  const qrCodeColor = useMemo(() => {
+    if (theme === "dark") {
+      return "#fff";
+    }
+    if (theme === "light") {
+      return "#000";
+    }
+    return "#189d68";
+  }, [theme]);
+
   if (!instance) {
-    return <div>Carregando...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
-    <>
-      <main className="dashboard-instance">
-        <div className="dashboard-card" key={instance.id}>
-          <div className="dashboard-info">
-            <div
-              className={`dashboard-status ${getStatusClass(
-                instance.connectionStatus
-              )}`}
-            >
-              <i
-                className={`status-icon ${getStatusClass(
-                  instance.connectionStatus
-                )}`}
-              ></i>
-              <span className="status-text">
-                {getStatusText(instance.connectionStatus)}
-              </span>
+    <main className="flex flex-col gap-8">
+      <section>
+        <Card>
+          <CardHeader>
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <h2 className="break-all text-lg font-semibold">
+                {instance.name}
+              </h2>
+              <InstanceStatus status={instance.connectionStatus} />
             </div>
-            <div className="dashboard-name">{instance.name}</div>
-            <div className="dashboard-description">{instance.ownerJid}</div>
-            {instance.connectionStatus === "close" && (
-              <div className="connection-warning">
-                <span>Telefone não conectado</span>
-                <Button
-                  className="connect-button"
-                  onClick={() => handleConnect(instance.name)}
-                >
-                  CONECTAR
-                </Button>
+          </CardHeader>
+          <CardContent className="flex flex-col items-start space-y-6">
+            <div className="flex w-full flex-1">
+              <InstanceToken token={instance.token} />
+            </div>
+
+            {instance.profileName && (
+              <div className="flex flex-1 gap-2">
+                <Avatar>
+                  <AvatarImage src={instance.profilePicUrl} alt="" />
+                </Avatar>
+                <div className="space-y-1">
+                  <strong>{instance.profileName}</strong>
+                  <p className="break-all text-sm text-muted-foreground">
+                    {instance.ownerJid}
+                  </p>
+                </div>
               </div>
             )}
-          </div>
-          <div className="dashboard-actions">
-            <Button className="action-button" onClick={handleRestart}>
-              REINICIAR
+            {instance.connectionStatus !== "open" && (
+              <Alert
+                variant="warning"
+                className="flex flex-wrap items-center justify-between gap-3"
+              >
+                <AlertTitle className="text-lg font-bold tracking-wide">
+                  {t("instance.dashboard.alert")}
+                </AlertTitle>
+
+                <Dialog>
+                  <DialogTrigger
+                    onClick={() => handleConnect(instance.name, false)}
+                    asChild
+                  >
+                    <Button variant="warning">
+                      {t("instance.dashboard.button.qrcode.label")}
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent onCloseAutoFocus={closeQRCodePopup}>
+                    <DialogHeader>
+                      {t("instance.dashboard.button.qrcode.title")}
+                    </DialogHeader>
+                    <div className="flex items-center justify-center">
+                      {qrCode && (
+                        <QRCode
+                          value={qrCode}
+                          size={256}
+                          bgColor="transparent"
+                          fgColor={qrCodeColor}
+                          className="rounded-sm"
+                        />
+                      )}
+                    </div>
+                  </DialogContent>
+                </Dialog>
+
+                {instance.number && (
+                  <Dialog>
+                    <DialogTrigger
+                      className="connect-code-button"
+                      onClick={() => handleConnect(instance.name, true)}
+                    >
+                      {t("instance.dashboard.button.pairingCode.label")}
+                    </DialogTrigger>
+                    <DialogContent onCloseAutoFocus={closeQRCodePopup}>
+                      <DialogHeader>
+                        <DialogDescription>
+                          {pairingCode ? (
+                            <div className="py-3">
+                              <p className="text-center">
+                                <strong>
+                                  {t(
+                                    "instance.dashboard.button.pairingCode.title",
+                                  )}
+                                </strong>
+                              </p>
+                              <p className="pairing-code text-center">
+                                {pairingCode.substring(0, 4)}-
+                                {pairingCode.substring(4, 8)}
+                              </p>
+                            </div>
+                          ) : (
+                            <LoadingSpinner />
+                          )}
+                        </DialogDescription>
+                      </DialogHeader>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </Alert>
+            )}
+          </CardContent>
+          <CardFooter className="flex flex-wrap items-center justify-end gap-3">
+            <Button
+              variant="outline"
+              className="refresh-button"
+              size="icon"
+              onClick={handleReload}
+            >
+              <RefreshCw size="20" />
             </Button>
             <Button
-              className={`action-button ${
-                instance.connectionStatus === "close" ? "disabled" : ""
-              }`}
+              className="action-button"
+              variant="secondary"
+              onClick={() => handleRestart(instance.name)}
+            >
+              {t("instance.dashboard.button.restart").toUpperCase()}
+            </Button>
+            <Button
+              variant="destructive"
               onClick={() => handleLogout(instance.name)}
               disabled={instance.connectionStatus === "close"}
             >
-              DESCONECTAR
+              {t("instance.dashboard.button.disconnect").toUpperCase()}
             </Button>
-          </div>
-        </div>
-      </main>
-      <main className="instance-cards">
+          </CardFooter>
+        </Card>
+      </section>
+      <section className="grid grid-cols-[repeat(auto-fit,_minmax(15rem,_1fr))] gap-6">
         <Card className="instance-card">
           <CardHeader>
-            <CardTitle>Contatos</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <CircleUser size="20" />
+              {t("instance.dashboard.contacts")}
+            </CardTitle>
           </CardHeader>
-          <CardContent>0</CardContent>
+          <CardContent>{numberFormatter.format(stats.contacts)}</CardContent>
         </Card>
         <Card className="instance-card">
           <CardHeader>
-            <CardTitle>Chats</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <UsersRound size="20" />
+              {t("instance.dashboard.chats")}
+            </CardTitle>
           </CardHeader>
-          <CardContent>0</CardContent>
+          <CardContent>{numberFormatter.format(stats.chats)}</CardContent>
         </Card>
         <Card className="instance-card">
           <CardHeader>
-            <CardTitle>Mensagens</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <MessageCircle size="20" />
+              {t("instance.dashboard.messages")}
+            </CardTitle>
           </CardHeader>
-          <CardContent>0</CardContent>
+          <CardContent>{numberFormatter.format(stats.messages)}</CardContent>
         </Card>
-      </main>
-      {showQRCode && (
-        <QRCodePopup qrCodeData={qrCodeData} onClose={closeQRCodePopup} />
-      )}
-    </>
+      </section>
+    </main>
   );
 }
 

@@ -1,52 +1,87 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
+  FormSwitch,
 } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
-import { toast } from "@/components/ui/use-toast";
-import { Separator } from "@radix-ui/react-dropdown-menu";
-import {
-  MultiSelector,
-  MultiSelectorContent,
-  MultiSelectorInput,
-  MultiSelectorItem,
-  MultiSelectorList,
-  MultiSelectorTrigger,
-} from "@/components/ui/multiselector";
+
+import { useInstance } from "@/contexts/InstanceContext";
+
+import { cn } from "@/lib/utils";
+
+import { createWebsocket, fetchWebsocket } from "@/services/websocket.service";
+
+import { Websocket as WebsocketType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
   events: z.array(z.string()),
 });
 
+type FormSchemaType = z.infer<typeof FormSchema>;
+
 function Websocket() {
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const { t } = useTranslation();
+  const { instance } = useInstance();
+  const [loading, setLoading] = useState(false);
+
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enabled: true,
-      events: ["MESSAGES_UPSERT", "QRCODE_UPDATED"],
+      enabled: false,
+      events: [],
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  useEffect(() => {
+    const loadWebsocketData = async () => {
+      if (!instance) return;
+      setLoading(true);
+      try {
+        const data = await fetchWebsocket(instance.name, instance.token);
+        form.reset(data);
+      } catch (error) {
+        console.error("Erro ao buscar dados do websocket:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadWebsocketData();
+  }, [instance, form]);
+
+  const onSubmit = async (data: FormSchemaType) => {
+    if (!instance) return;
+
+    setLoading(true);
+    try {
+      const websocketData: WebsocketType = {
+        enabled: data.enabled,
+        events: data.events,
+      };
+
+      await createWebsocket(instance.name, instance.token, websocketData);
+      toast.success(t("websocket.toast.success"));
+    } catch (error: any) {
+      console.error(t("websocket.toast.error"), error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const events = [
     "APPLICATION_STARTUP",
@@ -68,6 +103,8 @@ function Websocket() {
     "GROUP_UPDATE",
     "GROUP_PARTICIPANTS_UPDATE",
     "CONNECTION_UPDATE",
+    "REMOVE_INSTANCE",
+    "LOGOUT_INSTANCE",
     "LABELS_EDIT",
     "LABELS_ASSOCIATION",
     "CALL",
@@ -75,75 +112,106 @@ function Websocket() {
     "TYPEBOT_CHANGE_STATUS",
   ];
 
+  const handleSelectAll = () => {
+    form.setValue("events", events);
+  };
+
+  const handleDeselectAll = () => {
+    form.setValue("events", []);
+  };
+
   return (
-    <main className="main-content">
+    <>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full space-y-6"
         >
           <div>
-            <h3 className="mb-1 text-lg font-medium">Websocket</h3>
-            <Separator className="my-4 border-t border-gray-600" />
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
+            <h3 className="mb-1 text-lg font-medium">{t("websocket.title")}</h3>
+            <Separator className="my-4" />
+            <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
+              <FormSwitch
                 name="enabled"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">Ativo</FormLabel>
-                      <FormDescription>
-                        Ativa ou desativa o websocket
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+                label={t("websocket.form.enabled.label")}
+                className="w-full justify-between"
+                helper={t("websocket.form.enabled.description")}
               />
+
+              <div className="mb-4 flex justify-between">
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleSelectAll}
+                >
+                  {t("button.markAll")}
+                </Button>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleDeselectAll}
+                >
+                  {t("button.unMarkAll")}
+                </Button>
+              </div>
               <FormField
                 control={form.control}
                 name="events"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Eventos</FormLabel>
+                    <FormLabel className="my-2 text-lg">
+                      {t("websocket.form.events.label")}
+                    </FormLabel>
                     <FormControl>
-                      <MultiSelector
-                        values={field.value}
-                        onValuesChange={(values) => {
-                          field.onChange(values);
-                        }}
-                        loop
-                        className="w-full border border-gray-600"
-                      >
-                        <MultiSelectorTrigger>
-                          <MultiSelectorInput placeholder="Selecione os Eventos" />
-                        </MultiSelectorTrigger>
-                        <MultiSelectorContent>
-                          <MultiSelectorList>
-                            {events.map((event) => (
-                              <MultiSelectorItem key={event} value={event}>
+                      <div className="flex flex-col gap-2 space-y-1 divide-y">
+                        {events
+                          .sort((a, b) => a.localeCompare(b))
+                          .map((event) => (
+                            <div
+                              key={event}
+                              className="flex items-center justify-between gap-3 pt-3"
+                            >
+                              <FormLabel
+                                className={cn(
+                                  "break-all",
+                                  field.value.includes(event)
+                                    ? "text-foreground"
+                                    : "text-muted-foreground",
+                                )}
+                              >
                                 {event}
-                              </MultiSelectorItem>
-                            ))}
-                          </MultiSelectorList>
-                        </MultiSelectorContent>
-                      </MultiSelector>
+                              </FormLabel>
+                              <Switch
+                                checked={field.value.includes(event)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    field.onChange([...field.value, event]);
+                                  } else {
+                                    field.onChange(
+                                      field.value.filter((e) => e !== event),
+                                    );
+                                  }
+                                }}
+                              />
+                            </div>
+                          ))}
+                      </div>
                     </FormControl>
                   </FormItem>
                 )}
               />
             </div>
+            <div className="mx-4 flex justify-end pt-6">
+              <Button type="submit" disabled={loading}>
+                {loading
+                  ? t("websocket.button.saving")
+                  : t("websocket.button.save")}
+              </Button>
+            </div>
           </div>
-          <Button type="submit">Salvar</Button>
         </form>
       </Form>
-    </main>
+    </>
   );
 }
 

@@ -1,59 +1,97 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Separator } from "@radix-ui/react-dropdown-menu";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
+  FormInput,
   FormItem,
   FormLabel,
+  FormSwitch,
 } from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
-import { toast } from "@/components/ui/use-toast";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@radix-ui/react-dropdown-menu";
-import {
-  MultiSelector,
-  MultiSelectorContent,
-  MultiSelectorInput,
-  MultiSelectorItem,
-  MultiSelectorList,
-  MultiSelectorTrigger,
-} from "@/components/ui/multiselector";
+import { Switch } from "@/components/ui/switch";
+
+import { useInstance } from "@/contexts/InstanceContext";
+
+import { cn } from "@/lib/utils";
+
+import { createWebhook, fetchWebhook } from "@/services/webhook.service";
+
+import { Webhook as WebhookType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
-  url: z.string(),
+  url: z.string().url("Invalid URL format"),
   events: z.array(z.string()),
-  webhookBase64: z.boolean(),
-  webhookByEvents: z.boolean(),
+  base64: z.boolean(),
+  byEvents: z.boolean(),
 });
 
+type FormSchemaType = z.infer<typeof FormSchema>;
+
 function Webhook() {
-  const form = useForm<z.infer<typeof FormSchema>>({
+  const { t } = useTranslation();
+  const { instance } = useInstance();
+  const [loading, setLoading] = useState(false);
+
+  const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enabled: true,
+      enabled: false,
       url: "",
-      events: ["MESSAGES_UPSERT", "QRCODE_UPDATED"],
-      webhookBase64: false,
-      webhookByEvents: false,
+      events: [],
+      base64: false,
+      byEvents: false,
     },
   });
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  useEffect(() => {
+    const loadWebhookData = async () => {
+      if (!instance) return;
+      setLoading(true);
+      try {
+        const data = await fetchWebhook(instance.name, instance.token);
+        form.reset(data);
+      } catch (error) {
+        console.error("Error:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadWebhookData();
+  }, [instance, form]);
+
+  const onSubmit = async (data: FormSchemaType) => {
+    if (!instance) return;
+    setLoading(true);
+    try {
+      const webhookData: WebhookType = {
+        enabled: data.enabled,
+        url: data.url,
+        events: data.events,
+        base64: data.base64,
+        byEvents: data.byEvents,
+      };
+
+      await createWebhook(instance.name, instance.token, webhookData);
+      toast.success(t("webhook.toast.success"));
+    } catch (error: any) {
+      console.error(t("webhook.toast.error"), error);
+      toast.error(`Error: ${error?.response?.data?.response?.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const events = [
     "APPLICATION_STARTUP",
@@ -75,6 +113,8 @@ function Webhook() {
     "GROUP_UPDATE",
     "GROUP_PARTICIPANTS_UPDATE",
     "CONNECTION_UPDATE",
+    "REMOVE_INSTANCE",
+    "LOGOUT_INSTANCE",
     "LABELS_EDIT",
     "LABELS_ASSOCIATION",
     "CALL",
@@ -82,131 +122,121 @@ function Webhook() {
     "TYPEBOT_CHANGE_STATUS",
   ];
 
+  const handleSelectAll = () => {
+    form.setValue("events", events);
+  };
+
+  const handleDeselectAll = () => {
+    form.setValue("events", []);
+  };
+
   return (
-    <main className="main-content">
+    <>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full space-y-6"
         >
           <div>
-            <h3 className="mb-1 text-lg font-medium">Webhook</h3>
-            <Separator className="my-4 border-t border-gray-600" />
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
+            <h3 className="mb-1 text-lg font-medium">{t("webhook.title")}</h3>
+            <Separator className="my-4" />
+            <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
+              <FormSwitch
                 name="enabled"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">Ativo</FormLabel>
-                      <FormDescription>
-                        Ativa ou desativa o webhook
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
+                label={t("webhook.form.enabled.label")}
+                className="w-full justify-between"
+                helper={t("webhook.form.enabled.description")}
               />
-              <FormField
-                control={form.control}
-                name="url"
-                render={({ field }) => (
-                  <Input
-                    {...field}
-                    className="border border-gray-600 w-full"
-                    placeholder="URL"
-                  />
-                )}
+              <FormInput name="url" label="URL">
+                <Input />
+              </FormInput>
+              <FormSwitch
+                name="byEvents"
+                label={t("webhook.form.byEvents.label")}
+                className="w-full justify-between"
+                helper={t("webhook.form.byEvents.description")}
               />
+              <FormSwitch
+                name="base64"
+                label={t("webhook.form.base64.label")}
+                className="w-full justify-between"
+                helper={t("webhook.form.base64.description")}
+              />
+              <div className="mb-4 flex justify-between">
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleSelectAll}
+                >
+                  {t("button.markAll")}
+                </Button>
+                <Button
+                  variant="outline"
+                  type="button"
+                  onClick={handleDeselectAll}
+                >
+                  {t("button.unMarkAll")}
+                </Button>
+              </div>
               <FormField
                 control={form.control}
                 name="events"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel>Eventos</FormLabel>
+                    <FormLabel className="my-2 text-lg">
+                      {t("webhook.form.events.label")}
+                    </FormLabel>
                     <FormControl>
-                      <MultiSelector
-                        values={field.value}
-                        onValuesChange={(values) => {
-                          field.onChange(values);
-                        }}
-                        loop
-                        className="w-full border border-gray-600"
-                      >
-                        <MultiSelectorTrigger>
-                          <MultiSelectorInput placeholder="Selecione os Eventos" />
-                        </MultiSelectorTrigger>
-                        <MultiSelectorContent>
-                          <MultiSelectorList>
-                            {events.map((event) => (
-                              <MultiSelectorItem key={event} value={event}>
+                      <div className="flex flex-col gap-2 space-y-1 divide-y">
+                        {events
+                          .sort((a, b) => a.localeCompare(b))
+                          .map((event) => (
+                            <div
+                              key={event}
+                              className="flex items-center justify-between gap-3 pt-3"
+                            >
+                              <FormLabel
+                                className={cn(
+                                  "break-all",
+                                  field.value.includes(event)
+                                    ? "text-foreground"
+                                    : "text-muted-foreground",
+                                )}
+                              >
                                 {event}
-                              </MultiSelectorItem>
-                            ))}
-                          </MultiSelectorList>
-                        </MultiSelectorContent>
-                      </MultiSelector>
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="webhookByEvents"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">
-                        Webhook por Eventos
-                      </FormLabel>
-                      <FormDescription>
-                        Cria uma rota para cada evento adicionando o nome do
-                        evento no final da URL
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="webhookBase64"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">
-                        Base64 no Webhook
-                      </FormLabel>
-                      <FormDescription>
-                        Envie os dados do base64 das mídias no webhook
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
+                              </FormLabel>
+                              <Switch
+                                checked={field.value.includes(event)}
+                                onCheckedChange={(checked) => {
+                                  if (checked) {
+                                    field.onChange([...field.value, event]);
+                                  } else {
+                                    field.onChange(
+                                      field.value.filter((e) => e !== event),
+                                    );
+                                  }
+                                }}
+                              />
+                            </div>
+                          ))}
+                      </div>
                     </FormControl>
                   </FormItem>
                 )}
               />
             </div>
+
+            <div className="mx-4 flex justify-end pt-6">
+              <Button type="submit" disabled={loading}>
+                {loading
+                  ? t("webhook.button.saving")
+                  : t("webhook.button.save")}
+              </Button>
+            </div>
           </div>
-          <Button type="submit">Salvar</Button>
         </form>
       </Form>
-    </main>
+    </>
   );
 }
 

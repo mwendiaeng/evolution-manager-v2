@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 import React, {
   createContext,
   useContext,
@@ -6,8 +7,10 @@ import React, {
   ReactNode,
 } from "react";
 import { useParams } from "react-router-dom";
-import { Instance } from "@/types/evolution.types";
+
 import { fetchInstance } from "@/services/instances.service";
+
+import { Instance } from "@/types/evolution.types";
 
 interface InstanceContextProps {
   instance: Instance | null;
@@ -30,13 +33,23 @@ interface InstanceProviderProps {
 export const InstanceProvider: React.FC<InstanceProviderProps> = ({
   children,
 }): React.ReactNode => {
-  const { instanceId } = useParams<{ instanceId: string }>();
+  const queryParams = useParams<{ instanceId: string }>();
+  const [instanceId, setInstanceId] = useState<string | null>(null);
   const [instance, setInstance] = useState<Instance | null>(null);
 
   useEffect(() => {
+    if (queryParams.instanceId) {
+      setInstanceId(queryParams.instanceId);
+    } else {
+      setInstanceId(null);
+    }
+  }, [queryParams]);
+
+  useEffect(() => {
+    const abortController = new AbortController();
     const fetchData = async (instanceId: string) => {
       try {
-        const data = await fetchInstance(instanceId);
+        const data = await fetchInstance(instanceId, abortController.signal);
         setInstance(data[0] || null);
       } catch (error) {
         console.error("Erro ao buscar dados:", error);
@@ -46,6 +59,9 @@ export const InstanceProvider: React.FC<InstanceProviderProps> = ({
     if (instanceId) {
       fetchData(instanceId);
     }
+    return () => {
+      abortController.abort();
+    };
   }, [instanceId]);
 
   return (

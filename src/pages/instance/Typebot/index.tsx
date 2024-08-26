@@ -1,416 +1,137 @@
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import "./style.css";
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate, useParams } from "react-router-dom";
 
+import { Button } from "@/components/ui/button";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
-import { Switch } from "@/components/ui/switch";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { z } from "zod";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { toast } from "@/components/ui/use-toast";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 
-const FormSchema = z.object({
-  enabled: z.boolean(),
-  url: z.string().url(),
-  typebot: z.string(),
-  triggerType: z.string(),
-  triggerOperator: z.string(),
-  triggerValue: z.string(),
-  expire: z.number(),
-  keywordFinish: z.string(),
-  delayMessage: z.number(),
-  unknownMessage: z.string(),
-  listeningFromMe: z.boolean(),
-  stopBotFromMe: z.boolean(),
-  keepOpen: z.boolean(),
-  debounceTime: z.number(),
-});
+import { useInstance } from "@/contexts/InstanceContext";
+
+import { findTypebot } from "@/services/typebot.service";
+
+import { Instance, Typebot as TypebotType } from "@/types/evolution.types";
+
+import { useMediaQuery } from "@/utils/useMediaQuery";
+
+import { DefaultSettingsTypebot } from "./DefaultSettingsTypebot";
+import { NewTypebot } from "./NewTypebot";
+import { SessionsTypebot } from "./SessionsTypebot";
+import { UpdateTypebot } from "./UpdateTypebot";
+
+const fetchData = async (
+  instance: Instance | null,
+  setTypebots: any,
+  setLoading: any,
+) => {
+  try {
+    const storedToken = localStorage.getItem("token");
+
+    if (storedToken && instance && instance.name) {
+      const data: TypebotType[] = await findTypebot(instance.name, storedToken);
+
+      setTypebots(data);
+    } else {
+      console.error("token not found.");
+    }
+    setLoading(false);
+  } catch (error) {
+    console.error("Error", error);
+    setLoading(false);
+  }
+};
 
 function Typebot() {
-  const form = useForm<z.infer<typeof FormSchema>>({
-    resolver: zodResolver(FormSchema),
-    defaultValues: {
-      enabled: true,
-      url: "",
-      typebot: "",
-      triggerType: "keyword",
-      triggerOperator: "contains",
-      triggerValue: "",
-      expire: 0,
-      keywordFinish: "",
-      delayMessage: 0,
-      unknownMessage: "",
-      listeningFromMe: false,
-      stopBotFromMe: false,
-      keepOpen: false,
-      debounceTime: 0,
-    },
-  });
+  const { t } = useTranslation();
+  const isMD = useMediaQuery("(min-width: 768px)");
+  const { instance } = useInstance();
 
-  function onSubmit(data: z.infer<typeof FormSchema>) {
-    toast({
-      title: "You submitted the following values:",
-      description: (
-        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-        </pre>
-      ),
-    });
-  }
+  const { typebotId } = useParams<{ typebotId: string }>();
+
+  const [loading, setLoading] = useState<boolean>(true);
+  const [typebots, setTypebots] = useState<TypebotType[]>([]);
+
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!instance) return;
+    fetchData(instance, setTypebots, setLoading);
+  }, [instance]);
+
+  const handleBotClick = (botId: string) => {
+    if (!instance) return;
+
+    navigate(`/manager/instance/${instance.id}/typebot/${botId}`);
+  };
+
+  const resetTable = () => {
+    fetchData(instance, setTypebots, setLoading);
+  };
 
   return (
-    <main className="main-table pt-5">
-      <h3 className="ml-5 mb-1 text-lg font-medium">Typebots</h3>
-      <Separator className="mt-4 border border-black" />
-      <ResizablePanelGroup direction="horizontal">
-        <ResizablePanel defaultSize={35} className="p-5">
-          <div className="table">
-            <div className="table-item selected">
-              <h3 className="table-item-title">
-                https://api.typebot.evolution-api.com
-              </h3>
-              <p className="table-item-description">fallback-2gidc8u</p>
-            </div>
-            <div className="table-item">
-              <h3 className="table-item-title">
-                https://api.typebot.evolution-api.com
-              </h3>
-              <p className="table-item-description">fallback-2gidc8u</p>
-            </div>
-            <div className="table-item">
-              <h3 className="table-item-title">
-                https://api.typebot.evolution-api.com
-              </h3>
-              <p className="table-item-description">fallback-2gidc8u</p>
-            </div>
-            <div className="table-item">
-              <h3 className="table-item-title">
-                https://api.typebot.evolution-api.com
-              </h3>
-              <p className="table-item-description">fallback-2gidc8u</p>
-            </div>
-            <div className="table-item">
-              <h3 className="table-item-title">
-                https://api.typebot.evolution-api.com
-              </h3>
-              <p className="table-item-description">fallback-2gidc8u</p>
-            </div>
-            <div className="table-item">
-              <h3 className="table-item-title">
-                https://api.typebot.evolution-api.com
-              </h3>
-              <p className="table-item-description">fallback-2gidc8u</p>
-            </div>
-            <div className="table-item">
-              <h3 className="table-item-title">
-                https://api.typebot.evolution-api.com
-              </h3>
-              <p className="table-item-description">fallback-2gidc8u</p>
-            </div>
-            <div className="table-item">
-              <h3 className="table-item-title">
-                https://api.typebot.evolution-api.com
-              </h3>
-              <p className="table-item-description">fallback-2gidc8u</p>
-            </div>
+    <main className="pt-5">
+      <div className="mb-1 flex items-center justify-between">
+        <h3 className="text-lg font-medium">{t("typebot.title")}</h3>
+        <div className="flex flex-wrap items-center justify-end gap-2">
+          <SessionsTypebot />
+          <DefaultSettingsTypebot />
+          <NewTypebot resetTable={resetTable} />
+        </div>
+      </div>
+      <Separator className="my-4" />
+      <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
+        <ResizablePanel defaultSize={35} className="pr-4">
+          <div className="flex flex-col gap-3">
+            {loading ? (
+              <LoadingSpinner />
+            ) : (
+              <>
+                {typebots && typebots.length > 0 && Array.isArray(typebots) ? (
+                  typebots.map((bot) => (
+                    <Button
+                      className="flex h-auto flex-col items-start justify-start"
+                      key={bot.id}
+                      onClick={() => handleBotClick(`${bot.id}`)}
+                      variant={typebotId === bot.id ? "secondary" : "outline"}
+                    >
+                      {bot.description ? (
+                        <>
+                          <h4 className="text-base">{bot.description}</h4>
+                          <p className="text-wrap text-sm font-normal text-muted-foreground">
+                            {bot.url} - {bot.typebot}
+                          </p>
+                        </>
+                      ) : (
+                        <>
+                          <h4 className="text-base">{bot.url}</h4>
+                          <p className="text-wrap text-sm font-normal text-muted-foreground">
+                            {bot.typebot}
+                          </p>
+                        </>
+                      )}
+                    </Button>
+                  ))
+                ) : (
+                  <Button variant="link">{t("typebot.table.none")}</Button>
+                )}
+              </>
+            )}
           </div>
         </ResizablePanel>
-        <ResizableHandle withHandle className="border border-black" />
-        <ResizablePanel>
-          <div className="form">
-            <Form {...form}>
-              <form
-                onSubmit={form.handleSubmit(onSubmit)}
-                className="w-full space-y-6"
-              >
-                <div>
-                  <h3 className="mb-4 text-lg font-medium">Typebot</h3>
-                  <div className="space-y-4">
-                    <FormField
-                      control={form.control}
-                      name="enabled"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-start py-4">
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <div className="ml-4 space-y-0.5">
-                            <FormLabel className="text-sm">Ativo</FormLabel>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                    <h3 className="mb-4 text-lg font-medium">
-                      Typebot Settings
-                    </h3>
-                    <Separator className="border border-gray-700" />
-                    <FormField
-                      control={form.control}
-                      name="url"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Url da API do Typebot</FormLabel>
-                          <Input
-                            {...field}
-                            className="border border-gray-600 w-full"
-                            placeholder="Url da API do Typebot"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="typebot"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Nome do Typebot</FormLabel>
-                          <Input
-                            {...field}
-                            className="border border-gray-600 w-full"
-                            placeholder="Nome do Typebot"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <h3 className="mb-4 text-lg font-medium">
-                      Trigger Settings
-                    </h3>
-                    <Separator className="border border-gray-700" />
-                    <FormField
-                      control={form.control}
-                      name="triggerType"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Tipo de gatilho</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl className="border border-gray-600">
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione um tipo" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="border border-gray-600">
-                              <SelectItem value="keyword">
-                                Palavra Chave
-                              </SelectItem>
-                              <SelectItem value="all">Todos</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="triggerOperator"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Operador do gatilho</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl className="border border-gray-600">
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione um operador" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="border border-gray-600">
-                              <SelectItem value="contains">Contém</SelectItem>
-                              <SelectItem value="equals">Igual à</SelectItem>
-                              <SelectItem value="startsWith">
-                                Começa com
-                              </SelectItem>
-                              <SelectItem value="endsWith">
-                                Termina com
-                              </SelectItem>
-                              <SelectItem value="regex">Regex</SelectItem>
-                              <SelectItem value="none">Nenhum</SelectItem>
-                            </SelectContent>
-                          </Select>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="triggerValue"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Gatilho</FormLabel>
-                          <Input
-                            {...field}
-                            className="border border-gray-600 w-full"
-                            placeholder="Gatilho"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <h3 className="mb-4 text-lg font-medium">
-                      Options Settings
-                    </h3>
-                    <Separator className="border border-gray-700" />
-                    <FormField
-                      control={form.control}
-                      name="expire"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Expira em (minitos)</FormLabel>
-                          <Input
-                            {...field}
-                            className="border border-gray-600 w-full"
-                            placeholder="Expira em (minitos)"
-                            type="number"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="keywordFinish"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Palavra Chave de Finalização</FormLabel>
-                          <Input
-                            {...field}
-                            className="border border-gray-600 w-full"
-                            placeholder="Palavra Chave de Finalização"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="delayMessage"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Delay padrão da mensagem</FormLabel>
-                          <Input
-                            {...field}
-                            className="border border-gray-600 w-full"
-                            placeholder="Delay padrão da mensagem"
-                            type="number"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="unknownMessage"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>
-                            Mensagem para tipo de mensagem desconhecida
-                          </FormLabel>
-                          <Input
-                            {...field}
-                            className="border border-gray-600 w-full"
-                            placeholder="Mensagem para tipo de mensagem desconhecida"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="listeningFromMe"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-start py-4">
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <div className="ml-4 space-y-0.5">
-                            <FormLabel className="text-sm">
-                              Escuta mensagens enviadas por mim
-                            </FormLabel>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="stopBotFromMe"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-start py-4">
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <div className="ml-4 space-y-0.5">
-                            <FormLabel className="text-sm">
-                              Para o bot quando eu enviar uma mensagem
-                            </FormLabel>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="keepOpen"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-row items-center justify-start py-4">
-                          <FormControl>
-                            <Switch
-                              checked={field.value}
-                              onCheckedChange={field.onChange}
-                            />
-                          </FormControl>
-                          <div className="ml-4 space-y-0.5">
-                            <FormLabel className="text-sm">
-                              Mantem a sessão do bot aberta
-                            </FormLabel>
-                          </div>
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="debounceTime"
-                      render={({ field }) => (
-                        <FormItem className="pb-4">
-                          <FormLabel>Tempo de espera</FormLabel>
-                          <Input
-                            {...field}
-                            className="border border-gray-600 w-full"
-                            placeholder="Tempo de espera"
-                            type="number"
-                          />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                </div>
-                <Button type="submit">Salvar</Button>
-              </form>
-            </Form>
-          </div>
-        </ResizablePanel>
+        {typebotId && (
+          <>
+            <ResizableHandle withHandle className="border border-black" />
+            <ResizablePanel className="">
+              <UpdateTypebot typebotId={typebotId} resetTable={resetTable} />
+            </ResizablePanel>
+          </>
+        )}
       </ResizablePanelGroup>
     </main>
   );

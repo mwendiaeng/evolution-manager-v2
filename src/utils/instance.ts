@@ -1,24 +1,34 @@
-import axios from "axios";
+import axios, { AxiosInstance } from "axios";
 
-const apiUrl = localStorage.getItem("apiUrl");
-const token = localStorage.getItem("token");
+class ApiService {
+  private apiInstance: AxiosInstance;
 
-const ApiInstance = axios.create({
-  baseURL: apiUrl?.toString(),
-  timeout: 10000,
-});
+  constructor() {
+    this.apiInstance = axios.create({
+      timeout: 10000,
+    });
 
-ApiInstance.interceptors.request.use(
-  async (config) => {
-    if (token) {
-      config.headers.apikey = `${token}`;
-    }
-
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
+    this.apiInstance.interceptors.request.use(
+      async (config) => {
+        const token = localStorage.getItem("token");
+        if (token) {
+          config.headers.apikey = `${token}`;
+        }
+        return config;
+      },
+      (error) => {
+        return Promise.reject(error);
+      },
+    );
   }
-);
 
-export default ApiInstance;
+  public getInstance() {
+    const apiUrl = localStorage.getItem("apiUrl");
+    if (apiUrl) {
+      this.apiInstance.defaults.baseURL = apiUrl.toString();
+    }
+    return this.apiInstance;
+  }
+}
+
+export default ApiService;

@@ -1,20 +1,20 @@
-import ApiInstance from "@/utils/instance";
+import axios from "axios";
 
 export const saveCredentials = async (url: string, token: string) => {
   try {
-    localStorage.setItem("apiUrl", url);
+    const urlFormatted = url.endsWith("/") ? url.slice(0, -1) : url;
+
+    localStorage.setItem("apiUrl", urlFormatted);
     localStorage.setItem("token", token);
 
-    console.log(localStorage.getItem("apiUrl"), localStorage.getItem("token"));
-    
     return true;
   } catch (error) {
     return false;
   }
 };
 
-export const verifyServer = async () => {
-  const response = await ApiInstance.get("/");
+export const verifyServer = async (url: string) => {
+  const response = await axios.get(`${url}/`);
   return response.data;
 };
 
@@ -22,4 +22,38 @@ export const logout = () => {
   localStorage.removeItem("apiUrl");
   localStorage.removeItem("token");
   localStorage.removeItem("version");
+  localStorage.removeItem("facebookAppId");
+  localStorage.removeItem("facebookConfigId");
+  localStorage.removeItem("facebookUserToken");
+};
+
+export const verifyCreds = async (url: string, token: string) => {
+  try {
+    const response = await axios.post(
+      `${url}/verify-creds`,
+      {},
+      {
+        headers: {
+          apikey: token,
+        },
+      },
+    );
+
+    const { data } = response;
+
+    console.log(data);
+
+    if (data?.facebookAppId)
+      localStorage.setItem("facebookAppId", data.facebookAppId);
+
+    if (data?.facebookConfigId)
+      localStorage.setItem("facebookConfigId", data.facebookConfigId);
+
+    if (data?.facebookUserToken)
+      localStorage.setItem("facebookUserToken", data.facebookUserToken);
+
+    return data;
+  } catch (error) {
+    return null;
+  }
 };

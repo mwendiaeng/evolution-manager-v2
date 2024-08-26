@@ -1,20 +1,28 @@
 import "./style.css";
-import { Button } from "@/components/ui/button";
-import { Link, useNavigate, useParams } from "react-router-dom";
-import { useEffect, useRef, useState } from "react";
 import { MessageCircle, PlusIcon } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useParams } from "react-router-dom";
+
+import { Button } from "@/components/ui/button";
 import {
   ResizableHandle,
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
-import { Messages } from "./messages";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { findChats } from "@/services/chat.service";
+
 import { useInstance } from "@/contexts/InstanceContext";
+
+import { findChats } from "@/services/chat.service";
+
 import { Chat as ChatType } from "@/types/evolution.types";
 
+import { useMediaQuery } from "@/utils/useMediaQuery";
+
+import { Messages } from "./messages";
+
 function Chat() {
+  const isMD = useMediaQuery("(min-width: 768px)");
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const [textareaHeight] = useState("auto");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -40,12 +48,12 @@ function Chat() {
       textareaRef.current.style.height = "auto";
       const scrollHeight = textareaRef.current.scrollHeight;
       const lineHeight = parseInt(
-        getComputedStyle(textareaRef.current).lineHeight
+        getComputedStyle(textareaRef.current).lineHeight,
       );
       const maxHeight = lineHeight * 10;
       textareaRef.current.style.height = `${Math.min(
         scrollHeight,
-        maxHeight
+        maxHeight,
       )}px`;
     }
   };
@@ -68,25 +76,25 @@ function Chat() {
   }, [instance]);
 
   const handleChat = (id: string) => {
-    navigate(`/instance/${instanceId}/chat/${id}`);
+    navigate(`/manager/instance/${instanceId}/chat/${id}`);
   };
 
   return (
-    <ResizablePanelGroup direction="horizontal">
+    <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
       <ResizablePanel defaultSize={20}>
-        <div className="flex-col hidden gap-2 text-foreground bg-background md:flex">
+        <div className="hidden flex-col gap-2 bg-background text-foreground md:flex">
           <div className="sticky top-0 p-2">
             <Button
               variant="ghost"
-              className="justify-start w-full gap-2 px-2 text-left"
+              className="w-full justify-start gap-2 px-2 text-left"
             >
-              <div className="flex items-center justify-center rounded-full w-7 h-7">
-                <MessageCircle className="w-4 h-4" />
+              <div className="flex h-7 w-7 items-center justify-center rounded-full">
+                <MessageCircle className="h-4 w-4" />
               </div>
-              <div className="overflow-hidden text-sm grow text-ellipsis whitespace-nowrap">
+              <div className="grow overflow-hidden text-ellipsis whitespace-nowrap text-sm">
                 Chat
               </div>
-              <PlusIcon className="w-4 h-4" />
+              <PlusIcon className="h-4 w-4" />
             </Button>
           </div>
           <Tabs defaultValue="contacts">
@@ -104,9 +112,10 @@ function Chat() {
                     (chat: ChatType) =>
                       chat.remoteJid.includes("@s.whatsapp.net") && (
                         <Link
+                          key={chat.id}
                           to="#"
                           onClick={() => handleChat(chat.remoteJid)}
-                          className={`flex items-center block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item border-b border-gray-600/50 ${
+                          className={`chat-item flex items-center overflow-hidden truncate whitespace-nowrap rounded-md border-b border-gray-600/50 p-2 text-sm transition-colors hover:bg-muted/50 ${
                             remoteJid === chat.remoteJid ? "active" : ""
                           }`}
                         >
@@ -117,10 +126,10 @@ function Chat() {
                                 "https://via.placeholder.com/150"
                               }
                               alt="Avatar"
-                              className="w-8 h-8 rounded-full"
+                              className="h-8 w-8 rounded-full"
                             />
                           </span>
-                          <div className="flex-1 min-w-0">
+                          <div className="min-w-0 flex-1">
                             <span className="chat-title block font-medium">
                               {chat.pushName}
                             </span>
@@ -129,7 +138,7 @@ function Chat() {
                             </span>
                           </div>
                         </Link>
-                      )
+                      ),
                   )}
                 </div>
               </div>
@@ -141,9 +150,10 @@ function Chat() {
                     (chat: ChatType) =>
                       chat.remoteJid.includes("@g.us") && (
                         <Link
+                          key={chat.id}
                           to="#"
                           onClick={() => handleChat(chat.remoteJid)}
-                          className={`flex items-center block p-2 overflow-hidden text-sm truncate transition-colors rounded-md whitespace-nowrap hover:bg-muted/50 chat-item border-b border-gray-600/50 ${
+                          className={`chat-item flex items-center overflow-hidden truncate whitespace-nowrap rounded-md border-b border-gray-600/50 p-2 text-sm transition-colors hover:bg-muted/50 ${
                             remoteJid === chat.remoteJid ? "active" : ""
                           }`}
                         >
@@ -154,10 +164,10 @@ function Chat() {
                                 "https://via.placeholder.com/150"
                               }
                               alt="Avatar"
-                              className="w-8 h-8 rounded-full"
+                              className="h-8 w-8 rounded-full"
                             />
                           </span>
-                          <div className="flex-1 min-w-0">
+                          <div className="min-w-0 flex-1">
                             <span className="chat-title block font-medium">
                               {chat.pushName}
                             </span>
@@ -166,7 +176,7 @@ function Chat() {
                             </span>
                           </div>
                         </Link>
-                      )
+                      ),
                   )}
                 </div>
               </div>

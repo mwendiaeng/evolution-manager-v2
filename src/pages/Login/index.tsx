@@ -1,3 +1,11 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { z } from "zod";
+
+import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -7,113 +15,114 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Form, FormInput } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
-import "./style.css";
-import { Footer } from "@/components/footer";
-import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useToast } from "@/components/ui/use-toast";
-import { logout, saveCredentials, verifyServer } from "@/services/auth.service";
+import {
+  logout,
+  saveCredentials,
+  verifyCreds,
+  verifyServer,
+} from "@/services/auth.service";
+
+const loginSchema = z.object({
+  serverUrl: z
+    .string({ required_error: "serverUrl is required" })
+    .url("URL inválida"),
+  apiKey: z.string({ required_error: "ApiKey is required" }),
+});
+type LoginSchema = z.infer<typeof loginSchema>;
 
 function Login() {
-  const { toast } = useToast();
-
+  const { t } = useTranslation();
   const navigate = useNavigate();
+  const loginForm = useForm<LoginSchema>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      serverUrl: window.location.protocol + "//" + window.location.host,
+      apiKey: "",
+    },
+  });
 
-  const [serverUrl, setServerUrl] = useState("");
-  const [apiKey, setApiKey] = useState("");
+  const handleLogin: SubmitHandler<LoginSchema> = async (data) => {
+    const server = await verifyServer(data.serverUrl);
 
-  const handleLogin = async () => {
-    if (!serverUrl || !apiKey) {
-      toast({
-        variant: "destructive",
-        title: "Oops!",
-        description: "Credenciais inválidas",
+    if (!server || !server.version) {
+      logout();
+      loginForm.setError("serverUrl", {
+        type: "manual",
+        message: t("login.message.invalidServer"),
       });
       return;
     }
 
-    const saveCreds = await saveCredentials(serverUrl, apiKey);
+    const verify = await verifyCreds(data.serverUrl, data.apiKey);
+
+    if (!verify) {
+      loginForm.setError("apiKey", {
+        type: "manual",
+        message: t("login.message.invalidCredentials"),
+      });
+      return;
+    }
+
+    const saveCreds = await saveCredentials(data.serverUrl, data.apiKey);
 
     if (!saveCreds) {
-      toast({
-        variant: "destructive",
-        title: "Oops!",
-        description: "Credenciais inválidas",
-      });
-      return;
-    }
-
-    const server = await verifyServer();
-
-    if (!server) {
-      logout();
-      toast({
-        variant: "destructive",
-        title: "Oops!",
-        description: "Servidor inválido",
-      });
+      toast.error(t("login.message.invalidCredentials"));
       return;
     }
 
     localStorage.setItem("version", server.version);
+    localStorage.setItem("clientName", server.clientName);
 
-    navigate("/");
+    navigate("/manager/");
   };
 
   return (
-    <div>
-      <div className="pt-2">
+    <div className="flex min-h-screen flex-col">
+      <div className="flex items-center justify-center pt-2">
         <img
-          className="logo"
+          className="h-10"
           src="/assets/images/evolution-logo.png"
           alt="logo"
         />
       </div>
-      <div className="root">
-        <Card className="w-[350px] no-border">
+      <div className="flex flex-1 items-center justify-center p-8">
+        <Card className="b-none w-[350px] shadow-none">
           <CardHeader>
-            <CardTitle className="text-center">Evolution Manager</CardTitle>
+            <CardTitle className="text-center">{t("login.title")}</CardTitle>
             <CardDescription className="text-center">
-              Login to your evolution api server
+              {t("login.description")}
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid w-full items-center gap-4">
-              <div className="flex flex-col space-y-1.5">
-                <Label className="text-center" htmlFor="serverUrl">
-                  Server URL
-                </Label>
-                <Input
-                  className="border border-gray-300"
-                  id="serverUrl"
-                  placeholder="Server URL"
-                  value={serverUrl}
-                  onChange={(e) => setServerUrl(e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col space-y-1.5">
-                <Label className="text-center" htmlFor="apiKey">
-                  Global ApiKey
-                </Label>
-                <Input
-                  id="apiKey"
-                  className="border border-gray-300"
-                  placeholder="Global ApiKey"
-                  type="password"
-                  value={apiKey}
-                  onChange={(e) => setApiKey(e.target.value)}
-                />
-              </div>
-            </div>
-          </CardContent>
-          <CardFooter className="flex justify-center">
-            <Button className="w-full" onClick={handleLogin}>
-              Login
-            </Button>
-          </CardFooter>
+          <Form {...loginForm}>
+            <form onSubmit={loginForm.handleSubmit(handleLogin)}>
+              <CardContent>
+                <div className="grid w-full items-center gap-4">
+                  <FormInput
+                    required
+                    name="serverUrl"
+                    label={t("login.form.serverUrl")}
+                  >
+                    <Input />
+                  </FormInput>
+                  <FormInput
+                    required
+                    name="apiKey"
+                    label={t("login.form.apiKey")}
+                  >
+                    <Input type="password" />
+                  </FormInput>
+                </div>
+              </CardContent>
+              <CardFooter className="flex justify-center">
+                <Button className="w-full" type="submit">
+                  {t("login.button.login")}
+                </Button>
+              </CardFooter>
+            </form>
+          </Form>
         </Card>
       </div>
       <Footer />

@@ -11,7 +11,7 @@ const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const version = localStorage.getItem("version");
 
   if (!apiUrl || !token || !version) {
-    return <Navigate to="/login" />;
+    return <Navigate to="/manager/login" />;
   }
 
   return children;

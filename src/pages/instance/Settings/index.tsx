@@ -1,26 +1,20 @@
-import { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 import { z } from "zod";
-import { useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
-import { Switch } from "@/components/ui/switch";
-import { toast } from "@/components/ui/use-toast";
+import { Form, FormInput, FormSwitch } from "@/components/ui/form";
+import { LoadingSpinner } from "@/components/ui/loading-spinner";
+import { Separator } from "@/components/ui/separator";
 import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@radix-ui/react-dropdown-menu";
-import {
-  settingsfind,
-  updateSettings,
-} from "@/services/instances.service";
+
+import { useInstance } from "@/contexts/InstanceContext";
+
+import { settingsfind, updateSettings } from "@/services/instances.service";
+
 import { Settings as SettingsType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
@@ -34,10 +28,12 @@ const FormSchema = z.object({
 });
 
 function Settings() {
-  const { instanceId } = useParams<{ instanceId: string }>();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [token, setToken] = useState("");
+
+  const { instance } = useInstance();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -55,14 +51,12 @@ function Settings() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const storedToken = localStorage.getItem("token");
-
-        if (storedToken && instanceId) {
-          setToken(storedToken);
+        if (instance && instance.name && instance.token) {
+          setToken(instance.token);
 
           const data: SettingsType = await settingsfind(
-            instanceId,
-            storedToken
+            instance.name,
+            instance.token,
           );
           form.reset({
             rejectCall: data.rejectCall,
@@ -74,22 +68,22 @@ function Settings() {
             readStatus: data.readStatus,
           });
         } else {
-          console.error("Token ou ID da instância não encontrados.");
+          console.error("token not found");
         }
         setLoading(false);
       } catch (error) {
-        console.error("Erro ao carregar configurações:", error);
+        console.error("Error:", error);
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [form, instanceId]);
+  }, [form, instance]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
-      if (!instanceId) {
-        throw new Error("ID da instância não encontrado.");
+      if (!instance || !instance.name) {
+        throw new Error("instance not found");
       }
 
       setUpdating(true);
@@ -101,196 +95,101 @@ function Settings() {
         readMessages: data.readMessages,
         syncFullHistory: data.syncFullHistory,
         readStatus: data.readStatus,
-      }
-      await updateSettings(instanceId, token, settingData);
-      toast({
-        title: "Configurações atualizadas",
-        description: "As configurações foram salvas com sucesso.",
-      });
+      };
+      await updateSettings(instance.name, token, settingData);
+      toast.success(t("settings.toast.success"));
     } catch (error) {
-      console.error("Erro ao atualizar configurações:", error);
-      toast({
-        title: "Erro ao atualizar configurações",
-        description:
-          "Ocorreu um erro ao salvar as configurações. Tente novamente.",
-      });
+      console.error(t("settings.toast.success"), error);
+      toast.error(t("settings.toast.error"));
     } finally {
       setUpdating(false);
     }
   };
 
+  const fields = [
+    {
+      name: "groupsIgnore",
+      label: t("settings.form.groupsIgnore.label"),
+      description: t("settings.form.groupsIgnore.description"),
+    },
+    {
+      name: "alwaysOnline",
+      label: t("settings.form.alwaysOnline.label"),
+      description: t("settings.form.alwaysOnline.description"),
+    },
+    {
+      name: "readMessages",
+      label: t("settings.form.readMessages.label"),
+      description: t("settings.form.readMessages.description"),
+    },
+    {
+      name: "syncFullHistory",
+      label: t("settings.form.syncFullHistory.label"),
+      description: t("settings.form.syncFullHistory.description"),
+    },
+    {
+      name: "readStatus",
+      label: t("settings.form.readStatus.label"),
+      description: t("settings.form.readStatus.description"),
+    },
+  ];
+
+  const isRejectCall = form.watch("rejectCall");
+
   if (loading) {
-    return <div>Carregando...</div>;
+    return <LoadingSpinner />;
   }
 
   return (
-    <main className="main-content">
+    <>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-full space-y-6"
         >
           <div>
-            <h3 className="mb-1 text-lg font-medium">Comportamento</h3>
-            <Separator className="my-4 border-t border-gray-600" />
-            <div className="space-y-4">
-              <FormField
-                control={form.control}
-                name="rejectCall"
-                render={({ field }) => (
-                  <FormItem className="flex flex-col items-start rounded-lg border border-gray-600 p-4">
-                    <div className="flex flex-row items-center justify-between w-full">
-                      <div className="space-y-0.5">
-                        <FormLabel className="text-sm">
-                          Rejeitar Chamadas
-                        </FormLabel>
-                        <FormDescription>
-                          Rejeitas chamadas de voz e vídeo no Whatsapp
-                        </FormDescription>
-                      </div>
-                      <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                        />
-                      </FormControl>
-                    </div>
-                    {field.value && (
-                      <div className="w-full mt-4">
-                        <FormField
-                          control={form.control}
-                          name="msgCall"
-                          render={({ field }) => (
-                            <FormControl>
-                              <Textarea
-                                {...field}
-                                placeholder="Mensagem ao rejeitar chamada"
-                                className="border border-gray-600 w-full"
-                              />
-                            </FormControl>
-                          )}
-                        />
-                      </div>
-                    )}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="groupsIgnore"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">Ignorar Grupos</FormLabel>
-                      <FormDescription>
-                        Ignora eventos de grupos no Whatsapp
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
+            <h3 className="mb-1 text-lg font-medium">{t("settings.title")}</h3>
+            <Separator className="my-4" />
+            <div className="mx-4 space-y-2 divide-y">
+              <div className="flex flex-col p-4">
+                <FormSwitch
+                  name="rejectCall"
+                  label={t("settings.form.rejectCall.label")}
+                  className="w-full justify-between"
+                  helper={t("settings.form.rejectCall.description")}
+                />
+                {isRejectCall && (
+                  <div className="mr-16 mt-2">
+                    <FormInput name="msgCall">
+                      <Textarea
+                        placeholder={t("settings.form.msgCall.description")}
                       />
-                    </FormControl>
-                  </FormItem>
+                    </FormInput>
+                  </div>
                 )}
-              />
-              <FormField
-                control={form.control}
-                name="alwaysOnline"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">Sempre Online</FormLabel>
-                      <FormDescription>
-                        Mantém o Whatsapp sempre online
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="readMessages"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">
-                        Visualizar Mensagens
-                      </FormLabel>
-                      <FormDescription>
-                        Visualiza mensagens automaticamente
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="syncFullHistory"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">
-                        Sincronizar Histórico Completo
-                      </FormLabel>
-                      <FormDescription>
-                        Sincroniza o histórico completo de mensagens ao ler o
-                        qrcode
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="readStatus"
-                render={({ field }) => (
-                  <FormItem className="flex flex-row items-center justify-between rounded-lg border border-gray-600 p-4">
-                    <div className="space-y-0.5">
-                      <FormLabel className="text-sm">
-                        Visualizar Status
-                      </FormLabel>
-                      <FormDescription>
-                        Recebe eventos dos broadcasts e visualiza todos os
-                        status
-                      </FormDescription>
-                    </div>
-                    <FormControl>
-                      <Switch
-                        checked={field.value}
-                        onCheckedChange={field.onChange}
-                      />
-                    </FormControl>
-                  </FormItem>
-                )}
-              />
+              </div>
+              {fields.map((field) => (
+                <div className="flex p-4" key={field.name}>
+                  <FormSwitch
+                    name={field.name}
+                    label={field.label}
+                    className="w-full justify-between"
+                    helper={field.description}
+                  />
+                </div>
+              ))}
+              <div className="flex justify-end pt-6">
+                <Button type="submit" disabled={updating}>
+                  {updating
+                    ? t("settings.button.saving")
+                    : t("settings.button.save")}
+                </Button>
+              </div>
             </div>
           </div>
-          <Button type="submit" disabled={updating}>
-            {updating ? "Salvando..." : "Salvar"}
-          </Button>
         </form>
       </Form>
-    </main>
+    </>
   );
 }
 

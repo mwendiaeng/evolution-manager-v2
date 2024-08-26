@@ -143,7 +143,7 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
 
         setOpenDeletionDialog(false);
         resetTable();
-        navigate(`/manager/instance/${instance.id}/dify`);
+        navigate(`/manager/instance/${instance.id}/openai`);
       } else {
         console.error("instance not found");
       }

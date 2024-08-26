@@ -111,7 +111,7 @@ function TypebotForm({
             <Input />
           </FormInput>
           <FormInput name="typebot" label={t("typebot.form.typebot.label")}>
-            <Input type="password" />
+            <Input />
           </FormInput>
 
           <div className="flex flex-col">

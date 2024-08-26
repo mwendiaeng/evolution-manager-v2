@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -33,19 +33,13 @@ const FormSchema = z.object({
   token: stringOrUndefined,
   number: stringOrUndefined,
   businessId: stringOrUndefined,
-  integration: z.enum([
-    "WHATSAPP-BUSINESS",
-    "WHATSAPP-BAILEYS",
-    "META-FACEBOOK",
-    "META-INSTAGRAM",
-    "EVOLUTION",
-  ]),
+  integration: z.enum(["WHATSAPP-BUSINESS", "WHATSAPP-BAILEYS", "EVOLUTION"]),
 });
 
 function NewInstance({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState([
+  const options = [
     {
       value: "WHATSAPP-BAILEYS",
       label: t("instance.form.integration.baileys"),
@@ -58,7 +52,8 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
       value: "EVOLUTION",
       label: t("instance.form.integration.evolution"),
     },
-  ]);
+  ];
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -69,27 +64,6 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
       businessId: "",
     },
   });
-
-  const facebookLogin =
-    localStorage.getItem("facebookUserToken") &&
-    localStorage.getItem("facebookConfigId") &&
-    localStorage.getItem("facebookAppId");
-
-  useEffect(() => {
-    if (facebookLogin) {
-      setOptions([
-        ...options,
-        {
-          value: "META-FACEBOOK",
-          label: t("instance.form.integration.facebook"),
-        },
-        {
-          value: "META-INSTAGRAM",
-          label: t("instance.form.integration.instagram"),
-        },
-      ]);
-    }
-  }, [facebookLogin]);
 
   const integrationSelected = form.watch("integration");
 

@@ -122,7 +122,7 @@ function UpdateFlowise({ flowiseId, resetTable }: UpdateFlowiseProps) {
 
         setOpenDeletionDialog(false);
         resetTable();
-        navigate(`/manager/instance/${instance.id}/dify`);
+        navigate(`/manager/instance/${instance.id}/flowise`);
       } else {
         console.error("instance not found");
       }

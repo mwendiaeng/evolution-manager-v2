@@ -23,10 +23,6 @@ import { createInstance } from "@/services/instances.service";
 
 import { NewInstance as NewInstanceType } from "@/types/evolution.types";
 
-import { LoginFacebookButton } from "./LoginFacebookButton";
-import { LoginInstagramButton } from "./LoginInstagramButton";
-import { LoginWhatsappButton } from "./LoginWhatsappButton";
-
 const stringOrUndefined = z
   .string()
   .optional()
@@ -170,32 +166,6 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
               </FormInput>
             )}
             <DialogFooter>
-              {facebookLogin && (
-                <>
-                  {integrationSelected === "WHATSAPP-BUSINESS" && (
-                    <LoginWhatsappButton
-                      setNumber={(number) => form.setValue("number", number)}
-                      setBusiness={(businessId) =>
-                        form.setValue("businessId", businessId)
-                      }
-                      setToken={(token) => form.setValue("token", token)}
-                    />
-                  )}
-                  {integrationSelected === "META-FACEBOOK" && (
-                    <LoginFacebookButton
-                      setUserID={(userID) => form.setValue("number", userID)}
-                      setToken={(token) => form.setValue("token", token)}
-                    />
-                  )}
-                  {integrationSelected === "META-INSTAGRAM" && (
-                    <LoginInstagramButton
-                      setUserID={(userID) => form.setValue("number", userID)}
-                      setToken={(token) => form.setValue("token", token)}
-                    />
-                  )}
-                </>
-              )}
-
               <Button type="submit">{t("instance.button.save")}</Button>
             </DialogFooter>
           </form>

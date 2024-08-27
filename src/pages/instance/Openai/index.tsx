@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,11 +13,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
-
-import { findOpenai } from "@/services/openai.service";
-
-import { Instance, Openai as OpenaiBot } from "@/types/evolution.types";
+import { useFindOpenai } from "@/lib/queries/openai/findOpenai";
 
 import { useMediaQuery } from "@/utils/useMediaQuery";
 
@@ -28,28 +23,6 @@ import { NewOpenai } from "./NewOpenai";
 import { SessionsOpenai } from "./SessionsOpenai";
 import { UpdateOpenai } from "./UpdateOpenai";
 
-const fetchData = async (
-  instance: Instance | null,
-  setBots: any,
-  setLoading: any,
-) => {
-  try {
-    const storedToken = getToken(TOKEN_ID.TOKEN);
-
-    if (storedToken && instance && instance.name) {
-      const data: OpenaiBot[] = await findOpenai(instance.name, storedToken);
-
-      setBots(data);
-    } else {
-      console.error("Token ou nome da instância não encontrados.");
-    }
-    setLoading(false);
-  } catch (error) {
-    console.error("Erro ao carregar configurações:", error);
-    setLoading(false);
-  }
-};
-
 function Openai() {
   const { t } = useTranslation();
   const isMD = useMediaQuery("(min-width: 768px)");
@@ -57,15 +30,15 @@ function Openai() {
 
   const { botId } = useParams<{ botId: string }>();
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [bots, setBots] = useState<OpenaiBot[]>([]);
+  const {
+    data: bots,
+    isLoading,
+    refetch,
+  } = useFindOpenai({
+    instanceName: instance?.name,
+  });
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!instance) return;
-    fetchData(instance, setBots, setLoading);
-  }, [instance]);
 
   const handleBotClick = (botId: string) => {
     if (!instance) return;
@@ -74,7 +47,7 @@ function Openai() {
   };
 
   const resetTable = () => {
-    fetchData(instance, setBots, setLoading);
+    refetch();
   };
 
   return (
@@ -92,7 +65,7 @@ function Openai() {
       <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
         <ResizablePanel defaultSize={35} className="pr-4">
           <div className="flex flex-col gap-3">
-            {loading ? (
+            {isLoading ? (
               <LoadingSpinner />
             ) : (
               <>

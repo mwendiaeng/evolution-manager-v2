@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,13 +8,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
-
-import {
-  deleteOpenai,
-  getOpenai,
-  updateOpenai,
-} from "@/services/openai.service";
+import { useGetOpenai } from "@/lib/queries/openai/getOpenai";
+import { deleteOpenai, updateOpenai } from "@/lib/queries/openai/manageOpenai";
 
 import { Openai } from "@/types/evolution.types";
 
@@ -31,72 +26,71 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
   const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [initialData, setInitialData] = useState<FormSchemaType | undefined>(
-    undefined,
+  const { data: openai, isLoading } = useGetOpenai({
+    instanceName: instance?.name,
+    openaiId,
+  });
+
+  const initialData = useMemo(
+    () => ({
+      enabled: openai?.enabled ?? true,
+      description: openai?.description ?? "",
+      openaiCredsId: openai?.openaiCredsId ?? "",
+      botType: openai?.botType ?? "",
+      assistantId: openai?.assistantId || "",
+      functionUrl: openai?.functionUrl || "",
+      model: openai?.model || "",
+      systemMessages: Array.isArray(openai?.systemMessages)
+        ? openai?.systemMessages.join(", ")
+        : openai?.systemMessages || "",
+      assistantMessages: Array.isArray(openai?.assistantMessages)
+        ? openai?.assistantMessages.join(", ")
+        : openai?.assistantMessages || "",
+      userMessages: Array.isArray(openai?.userMessages)
+        ? openai?.userMessages.join(", ")
+        : openai?.userMessages || "",
+      maxTokens: openai?.maxTokens || 0,
+      triggerType: openai?.triggerType || "",
+      triggerOperator: openai?.triggerOperator || "",
+      triggerValue: openai?.triggerValue,
+      expire: openai?.expire || 0,
+      keywordFinish: openai?.keywordFinish,
+      delayMessage: openai?.delayMessage || 0,
+      unknownMessage: openai?.unknownMessage,
+      listeningFromMe: openai?.listeningFromMe,
+      stopBotFromMe: openai?.stopBotFromMe,
+      keepOpen: openai?.keepOpen,
+      debounceTime: openai?.debounceTime || 0,
+    }),
+    [
+      openai?.assistantId,
+      openai?.assistantMessages,
+      openai?.botType,
+      openai?.debounceTime,
+      openai?.delayMessage,
+      openai?.description,
+      openai?.enabled,
+      openai?.expire,
+      openai?.functionUrl,
+      openai?.keepOpen,
+      openai?.keywordFinish,
+      openai?.listeningFromMe,
+      openai?.maxTokens,
+      openai?.model,
+      openai?.openaiCredsId,
+      openai?.stopBotFromMe,
+      openai?.systemMessages,
+      openai?.triggerOperator,
+      openai?.triggerType,
+      openai?.triggerValue,
+      openai?.unknownMessage,
+      openai?.userMessages,
+    ],
   );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedToken = getToken(TOKEN_ID.TOKEN);
-
-        console.log(storedToken, instance, instance?.name, openaiId);
-        if (storedToken && instance && instance.name && openaiId) {
-          const data: Openai = await getOpenai(
-            instance.name,
-            storedToken,
-            openaiId,
-          );
-
-          setInitialData({
-            enabled: data.enabled,
-            description: data.description,
-            openaiCredsId: data.openaiCredsId,
-            botType: data.botType,
-            assistantId: data.assistantId || "",
-            functionUrl: data.functionUrl || "",
-            model: data.model || "",
-            systemMessages: Array.isArray(data.systemMessages)
-              ? data.systemMessages.join(", ")
-              : data.systemMessages || "",
-            assistantMessages: Array.isArray(data.assistantMessages)
-              ? data.assistantMessages.join(", ")
-              : data.assistantMessages || "",
-            userMessages: Array.isArray(data.userMessages)
-              ? data.userMessages.join(", ")
-              : data.userMessages || "",
-            maxTokens: data.maxTokens || 0,
-            triggerType: data.triggerType || "",
-            triggerOperator: data.triggerOperator || "",
-            triggerValue: data.triggerValue,
-            expire: data.expire || 0,
-            keywordFinish: data.keywordFinish,
-            delayMessage: data.delayMessage || 0,
-            unknownMessage: data.unknownMessage,
-            listeningFromMe: data.listeningFromMe,
-            stopBotFromMe: data.stopBotFromMe,
-            keepOpen: data.keepOpen,
-            debounceTime: data.debounceTime || 0,
-          });
-        } else {
-          console.error("Token not found.");
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [openaiId, instance]);
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
-      const storedToken = getToken(TOKEN_ID.TOKEN);
-
-      if (storedToken && instance && instance.name && openaiId) {
+      if (instance && instance.name && openaiId) {
         const openaiData: Openai = {
           enabled: data.enabled,
           description: data.description,
@@ -122,7 +116,11 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
           debounceTime: data.debounceTime || 0,
         };
 
-        await updateOpenai(instance.name, storedToken, openaiId, openaiData);
+        await updateOpenai({
+          instanceName: instance.name,
+          openaiId,
+          data: openaiData,
+        });
         toast.success(t("openai.toast.success.update"));
         resetTable();
         navigate(`/manager/instance/${instance.id}/openai/${openaiId}`);
@@ -137,10 +135,8 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
 
   const handleDelete = async () => {
     try {
-      const storedToken = getToken(TOKEN_ID.TOKEN);
-
-      if (storedToken && instance && instance.name && openaiId) {
-        await deleteOpenai(instance.name, storedToken, openaiId);
+      if (instance && instance.name && openaiId) {
+        await deleteOpenai({ instanceName: instance.name, openaiId });
         toast.success(t("openai.toast.success.delete"));
 
         setOpenDeletionDialog(false);
@@ -154,7 +150,7 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 
@@ -166,7 +162,7 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
         openaiId={openaiId}
         handleDelete={handleDelete}
         isModal={false}
-        isLoading={loading}
+        isLoading={isLoading}
         openDeletionDialog={openDeletionDialog}
         setOpenDeletionDialog={setOpenDeletionDialog}
       />

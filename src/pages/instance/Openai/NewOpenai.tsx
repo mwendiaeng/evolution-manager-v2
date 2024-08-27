@@ -15,7 +15,7 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createOpenai } from "@/services/openai.service";
+import { createOpenai } from "@/lib/queries/openai/manageOpenai";
 
 import { Openai } from "@/types/evolution.types";
 
@@ -60,7 +60,11 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
         debounceTime: data.debounceTime || 0,
       };
 
-      await createOpenai(instance.name, instance.token, openaiData);
+      await createOpenai({
+        instanceName: instance.name,
+        token: instance.token,
+        data: openaiData,
+      });
       toast.success(t("openai.toast.success.create"));
       setOpen(false);
       resetTable();

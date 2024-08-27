@@ -1,5 +1,4 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -21,9 +20,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { findOpenaiCreds, getModels } from "@/services/openai.service";
-
-import { ModelOpenai, OpenaiCreds } from "@/types/evolution.types";
+import { useFindOpenaiCreds } from "@/lib/queries/openai/findOpenaiCreds";
+import { useGetModels } from "@/lib/queries/openai/getModels";
 
 import { SessionsOpenai } from "./SessionsOpenai";
 
@@ -78,10 +76,16 @@ function OpenaiForm({
   open,
 }: OpenaiFormProps) {
   const { t } = useTranslation();
-  const [creds, setCreds] = useState<OpenaiCreds[]>([]);
-  const [models, setModels] = useState<ModelOpenai[]>([]);
-
   const { instance } = useInstance();
+
+  const { data: creds } = useFindOpenaiCreds({
+    instanceName: instance?.name,
+    enabled: open,
+  });
+  const { data: models } = useGetModels({
+    instanceName: instance?.name,
+    enabled: open,
+  });
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -111,38 +115,6 @@ function OpenaiForm({
     },
   });
 
-  useEffect(() => {
-    if (open) {
-      const fetchModels = async () => {
-        try {
-          if (!instance) return;
-          const response = await getModels(instance.name, instance.token);
-
-          setModels(response);
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      };
-
-      const fetchCreds = async () => {
-        try {
-          if (!instance) return;
-          const getCreds: OpenaiCreds[] = await findOpenaiCreds(
-            instance.name,
-            instance.token,
-          );
-
-          setCreds(getCreds);
-        } catch (error) {
-          console.error("Error:", error);
-        }
-      };
-
-      fetchModels();
-      fetchCreds();
-    }
-  }, [instance, open]);
-
   const botType = form.watch("botType");
   const triggerType = form.watch("triggerType");
 
@@ -166,14 +138,16 @@ function OpenaiForm({
             name="openaiCredsId"
             label={t("openai.form.openaiCredsId.label")}
             required
-            options={creds
-              .filter((cred) => !!cred.id)
-              .map((cred) => ({
-                label: cred.name
-                  ? cred.name
-                  : cred.apiKey.substring(0, 15) + "...",
-                value: cred.id!,
-              }))}
+            options={
+              creds
+                ?.filter((cred) => !!cred.id)
+                .map((cred) => ({
+                  label: cred.name
+                    ? cred.name
+                    : cred.apiKey.substring(0, 15) + "...",
+                  value: cred.id!,
+                })) ?? []
+            }
           />
           <div className="flex flex-col">
             <h3 className="my-4 text-lg font-medium">
@@ -220,10 +194,12 @@ function OpenaiForm({
                 name="model"
                 label={t("openai.form.model.label")}
                 required
-                options={models.map((model) => ({
-                  label: model.id,
-                  value: model.id,
-                }))}
+                options={
+                  models?.map((model) => ({
+                    label: model.id,
+                    value: model.id,
+                  })) ?? []
+                }
               />
               <FormInput
                 name="systemMessages"

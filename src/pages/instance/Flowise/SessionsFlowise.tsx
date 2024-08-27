@@ -9,7 +9,7 @@ import {
   RotateCcw,
   StopCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
@@ -34,66 +34,38 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { useFetchSessionsFlowise } from "@/lib/queries/flowise/fetchSessionsFlowise";
+import { changeStatusFlowise } from "@/lib/queries/flowise/manageFlowise";
 
-import {
-  changeStatusFlowise,
-  fetchSessionsFlowise,
-} from "@/services/flowise.service";
-
-import { IntegrationSession, Instance } from "@/types/evolution.types";
-
-const fetchData = async (
-  instance: Instance | null,
-  setSessions: any,
-  flowiseId?: string,
-) => {
-  try {
-    const storedToken = getToken(TOKEN_ID.TOKEN);
-
-    if (storedToken && instance && instance.name) {
-      const getSessions: IntegrationSession[] = await fetchSessionsFlowise(
-        instance.name,
-        storedToken,
-        flowiseId,
-      );
-
-      setSessions(getSessions);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Errors:", error);
-  }
-};
+import { IntegrationSession } from "@/types/evolution.types";
 
 function SessionsFlowise({ flowiseId }: { flowiseId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [sessions, setSessions] = useState<IntegrationSession[] | []>([]);
   const [open, setOpen] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
-
-  useEffect(() => {
-    if (open) fetchData(instance, setSessions, flowiseId);
-  }, [instance, flowiseId, open]);
+  const { data: sessions, refetch } = useFetchSessionsFlowise({
+    instanceName: instance?.name,
+    flowiseId,
+    enabled: open,
+  });
 
   function onReset() {
-    fetchData(instance, setSessions, flowiseId);
+    refetch();
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {
     try {
       if (!instance) return;
 
-      await changeStatusFlowise(
-        instance.name,
-        instance.token,
+      await changeStatusFlowise({
+        instanceName: instance.name,
+        token: instance.token,
         remoteJid,
         status,
-      );
+      });
 
       toast.success(t("flowise.toast.success.status"));
       onReset();
@@ -227,7 +199,7 @@ function SessionsFlowise({ flowiseId }: { flowiseId?: string }) {
           </div>
           <DataTable
             columns={columns}
-            data={sessions}
+            data={sessions ?? []}
             onSortingChange={setSorting}
             state={{ sorting, globalFilter }}
             onGlobalFilterChange={setGlobalFilter}

@@ -26,15 +26,11 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { useFindDefaultSettingsFlowise } from "@/lib/queries/flowise/findDefaultSettingsFlowise";
+import { useFindFlowise } from "@/lib/queries/flowise/findFlowise";
+import { setDefaultSettingsFlowise } from "@/lib/queries/flowise/manageFlowise";
 
-import {
-  findDefaultSettingsFlowise,
-  findFlowise,
-  setDefaultSettingsFlowise,
-} from "@/services/flowise.service";
-
-import { Flowise, FlowiseSettings, Instance } from "@/types/evolution.types";
+import { FlowiseSettings } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   expire: z.string(),
@@ -49,40 +45,20 @@ const FormSchema = z.object({
   flowiseIdFallback: z.union([z.null(), z.string()]).optional(),
 });
 
-const fetchData = async (
-  instance: Instance | null,
-  setSettings: any,
-  setBots: any,
-) => {
-  try {
-    const storedToken = getToken(TOKEN_ID.TOKEN);
-
-    if (storedToken && instance && instance.name) {
-      const getSettings: FlowiseSettings[] = await findDefaultSettingsFlowise(
-        instance.name,
-        storedToken,
-      );
-
-      setSettings(getSettings);
-
-      const getBots: Flowise[] = await findFlowise(instance.name, storedToken);
-
-      setBots(getBots);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-
 function DefaultSettingsFlowise() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<FlowiseSettings>();
-  const [bots, setBots] = useState<Flowise[]>([]);
+  const { data: settings, refetch: refetchSettings } =
+    useFindDefaultSettingsFlowise({
+      instanceName: instance?.name,
+      enabled: open,
+    });
+  const { data: bots, refetch: refetchBots } = useFindFlowise({
+    instanceName: instance?.name,
+    enabled: open,
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -99,10 +75,6 @@ function DefaultSettingsFlowise() {
       flowiseIdFallback: undefined,
     },
   });
-
-  useEffect(() => {
-    if (open) fetchData(instance, setSettings, setBots);
-  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -145,11 +117,11 @@ function DefaultSettingsFlowise() {
         ignoreJids: data.ignoreJids,
       };
 
-      await setDefaultSettingsFlowise(
-        instance.name,
-        instance.token,
-        settingsData,
-      );
+      await setDefaultSettingsFlowise({
+        instanceName: instance.name,
+        token: instance.token,
+        data: settingsData,
+      });
       toast.success(t("flowise.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -159,7 +131,8 @@ function DefaultSettingsFlowise() {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setBots);
+    refetchSettings();
+    refetchBots();
   }
 
   return (

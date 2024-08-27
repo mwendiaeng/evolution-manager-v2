@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,13 +8,11 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
-
+import { useGetFlowise } from "@/lib/queries/flowise/getFlowise";
 import {
   deleteFlowise,
-  getFlowise,
   updateFlowise,
-} from "@/services/flowise.service";
+} from "@/lib/queries/flowise/manageFlowise";
 
 import { Flowise } from "@/types/evolution.types";
 
@@ -31,58 +29,51 @@ function UpdateFlowise({ flowiseId, resetTable }: UpdateFlowiseProps) {
   const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [initialData, setInitialData] = useState<FormSchemaType | undefined>(
-    undefined,
+  const { data: bot, isLoading } = useGetFlowise({
+    instanceName: instance?.name,
+    flowiseId,
+  });
+
+  const initialData = useMemo(
+    () => ({
+      enabled: bot?.enabled ?? true,
+      description: bot?.description ?? "",
+      apiUrl: bot?.apiUrl ?? "",
+      apiKey: bot?.apiKey ?? "",
+      triggerType: bot?.triggerType ?? "",
+      triggerOperator: bot?.triggerOperator ?? "",
+      triggerValue: bot?.triggerValue,
+      expire: bot?.expire ?? 0,
+      keywordFinish: bot?.keywordFinish,
+      delayMessage: bot?.delayMessage ?? 0,
+      unknownMessage: bot?.unknownMessage,
+      listeningFromMe: bot?.listeningFromMe,
+      stopBotFromMe: bot?.stopBotFromMe,
+      keepOpen: bot?.keepOpen,
+      debounceTime: bot?.debounceTime ?? 0,
+    }),
+    [
+      bot?.apiKey,
+      bot?.apiUrl,
+      bot?.debounceTime,
+      bot?.delayMessage,
+      bot?.description,
+      bot?.enabled,
+      bot?.expire,
+      bot?.keepOpen,
+      bot?.keywordFinish,
+      bot?.listeningFromMe,
+      bot?.stopBotFromMe,
+      bot?.triggerOperator,
+      bot?.triggerType,
+      bot?.triggerValue,
+      bot?.unknownMessage,
+    ],
   );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedToken = getToken(TOKEN_ID.TOKEN);
-
-        if (storedToken && instance && instance.name && flowiseId) {
-          const data: Flowise = await getFlowise(
-            instance.name,
-            storedToken,
-            flowiseId,
-          );
-
-          setInitialData({
-            enabled: data.enabled,
-            description: data.description,
-            apiUrl: data.apiUrl,
-            apiKey: data.apiKey || "",
-            triggerType: data.triggerType || "",
-            triggerOperator: data.triggerOperator || "",
-            triggerValue: data.triggerValue,
-            expire: data.expire || 0,
-            keywordFinish: data.keywordFinish,
-            delayMessage: data.delayMessage || 0,
-            unknownMessage: data.unknownMessage,
-            listeningFromMe: data.listeningFromMe,
-            stopBotFromMe: data.stopBotFromMe,
-            keepOpen: data.keepOpen,
-            debounceTime: data.debounceTime || 0,
-          });
-        } else {
-          console.error("Token not found.");
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [flowiseId, instance]);
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
-      const storedToken = getToken(TOKEN_ID.TOKEN);
-
-      if (storedToken && instance && instance.name && flowiseId) {
+      if (instance && instance.name && flowiseId) {
         const flowiseData: Flowise = {
           enabled: data.enabled,
           description: data.description,
@@ -101,7 +92,11 @@ function UpdateFlowise({ flowiseId, resetTable }: UpdateFlowiseProps) {
           debounceTime: data.debounceTime || 0,
         };
 
-        await updateFlowise(instance.name, storedToken, flowiseId, flowiseData);
+        await updateFlowise({
+          instanceName: instance.name,
+          flowiseId,
+          data: flowiseData,
+        });
         toast.success(t("flowise.toast.success.update"));
         resetTable();
         navigate(`/manager/instance/${instance.id}/flowise/${flowiseId}`);
@@ -116,10 +111,8 @@ function UpdateFlowise({ flowiseId, resetTable }: UpdateFlowiseProps) {
 
   const handleDelete = async () => {
     try {
-      const storedToken = getToken(TOKEN_ID.TOKEN);
-
-      if (storedToken && instance && instance.name && flowiseId) {
-        await deleteFlowise(instance.name, storedToken, flowiseId);
+      if (instance && instance.name && flowiseId) {
+        await deleteFlowise({ instanceName: instance.name, flowiseId });
         toast.success(t("flowise.toast.success.delete"));
 
         setOpenDeletionDialog(false);
@@ -133,7 +126,7 @@ function UpdateFlowise({ flowiseId, resetTable }: UpdateFlowiseProps) {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 
@@ -145,7 +138,7 @@ function UpdateFlowise({ flowiseId, resetTable }: UpdateFlowiseProps) {
         flowiseId={flowiseId}
         handleDelete={handleDelete}
         isModal={false}
-        isLoading={loading}
+        isLoading={isLoading}
         openDeletionDialog={openDeletionDialog}
         setOpenDeletionDialog={setOpenDeletionDialog}
       />

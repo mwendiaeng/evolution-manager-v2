@@ -3,6 +3,7 @@ import "./style.css";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import { isAxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -16,7 +17,7 @@ import { Input } from "@/components/ui/input";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchChatwoot } from "@/lib/queries/chatwoot/fetchChatwoot";
-import { createChatwoot } from "@/lib/queries/chatwoot/manageChatwoot";
+import { useManageChatwoot } from "@/lib/queries/chatwoot/manageChatwoot";
 
 import { Chatwoot as ChatwootType } from "@/types/evolution.types";
 
@@ -45,6 +46,7 @@ function Chatwoot() {
   const { t } = useTranslation();
   const { instance } = useInstance();
   const [, setLoading] = useState(false);
+  const { createChatwoot } = useManageChatwoot();
   const { data: chatwoot } = useFetchChatwoot({
     instanceName: instance?.name,
     token: instance?.token,
@@ -86,39 +88,49 @@ function Chatwoot() {
     const data = form.getValues();
 
     setLoading(true);
-    try {
-      const chatwootData: ChatwootType = {
-        enabled: data.enabled,
-        accountId: data.accountId,
-        token: data.token,
-        url: data.url,
-        signMsg: data.signMsg,
-        signDelimiter: data.signDelimiter,
-        nameInbox: data.nameInbox,
-        organization: data.organization,
-        logo: data.logo,
-        reopenConversation: data.reopenConversation,
-        conversationPending: data.conversationPending,
-        mergeBrazilContacts: data.mergeBrazilContacts,
-        importContacts: data.importContacts,
-        importMessages: data.importMessages,
-        daysLimitImportMessages: data.daysLimitImportMessages,
-        autoCreate: data.autoCreate,
-        ignoreJids: data.ignoreJids,
-      };
+    const chatwootData: ChatwootType = {
+      enabled: data.enabled,
+      accountId: data.accountId,
+      token: data.token,
+      url: data.url,
+      signMsg: data.signMsg,
+      signDelimiter: data.signDelimiter,
+      nameInbox: data.nameInbox,
+      organization: data.organization,
+      logo: data.logo,
+      reopenConversation: data.reopenConversation,
+      conversationPending: data.conversationPending,
+      mergeBrazilContacts: data.mergeBrazilContacts,
+      importContacts: data.importContacts,
+      importMessages: data.importMessages,
+      daysLimitImportMessages: data.daysLimitImportMessages,
+      autoCreate: data.autoCreate,
+      ignoreJids: data.ignoreJids,
+    };
 
-      await createChatwoot({
+    await createChatwoot(
+      {
         instanceName: instance.name,
         token: instance.token,
         data: chatwootData,
-      });
-      toast.success(t("chatwoot.toast.success"));
-    } catch (error: any) {
-      console.error(t("chatwoot.toast.error"), error);
-      toast.error(`Error: ${error?.response?.data?.response?.message}`);
-    } finally {
-      setLoading(false);
-    }
+      },
+      {
+        onSuccess: () => {
+          toast.success(t("chatwoot.toast.success"));
+        },
+        onError: (error) => {
+          console.error(t("chatwoot.toast.error"), error);
+          if (isAxiosError(error)) {
+            toast.error(`Error: ${error?.response?.data?.response?.message}`);
+          } else {
+            toast.error(t("chatwoot.toast.error"));
+          }
+        },
+        onSettled: () => {
+          setLoading(false);
+        },
+      },
+    );
   };
 
   return (

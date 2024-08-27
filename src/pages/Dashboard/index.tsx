@@ -36,7 +36,7 @@ import {
 import { Input } from "@/components/ui/input";
 
 import { useFetchInstances } from "@/lib/queries/instance/fetchInstances";
-import { deleteInstance, logout } from "@/lib/queries/instance/manageInstance";
+import { useManageInstance } from "@/lib/queries/instance/manageInstance";
 
 import { Instance } from "@/types/evolution.types";
 
@@ -48,6 +48,7 @@ function Dashboard() {
   const [deleteConfirmation, setDeleteConfirmation] = useState<string | null>(
     null,
   );
+  const { deleteInstance, logout } = useManageInstance();
   const { data: instances, refetch } = useFetchInstances();
   const [deleting, setDeleting] = useState<string[]>([]);
   const [searchStatus, setSearchStatus] = useState("all");

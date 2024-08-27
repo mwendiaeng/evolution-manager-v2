@@ -13,7 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { updateSettings } from "@/lib/queries/instance/manageInstance";
+import { useManageInstance } from "@/lib/queries/instance/manageInstance";
 import { useFetchSettings } from "@/lib/queries/instance/settingsFind";
 
 import { Settings as SettingsType } from "@/types/evolution.types";
@@ -33,6 +33,7 @@ function Settings() {
   const [updating, setUpdating] = useState(false);
 
   const { instance } = useInstance();
+  const { updateSettings } = useManageInstance();
   const { data: settings, isLoading: loading } = useFetchSettings({
     instanceName: instance?.name,
     token: instance?.token,
@@ -81,7 +82,11 @@ function Settings() {
         syncFullHistory: data.syncFullHistory,
         readStatus: data.readStatus,
       };
-      await updateSettings(instance.name, instance.token, settingData);
+      await updateSettings({
+        instanceName: instance.name,
+        token: instance.token,
+        data: settingData,
+      });
       toast.success(t("settings.toast.success"));
     } catch (error) {
       console.error(t("settings.toast.success"), error);

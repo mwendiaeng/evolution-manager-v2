@@ -28,11 +28,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  connect,
-  logout,
-  restart,
-} from "@/lib/queries/instance/manageInstance";
+import { useManageInstance } from "@/lib/queries/instance/manageInstance";
 import { getToken, TOKEN_ID } from "@/lib/queries/token";
 
 function DashboardInstance() {
@@ -43,6 +39,7 @@ function DashboardInstance() {
   const token = getToken(TOKEN_ID.TOKEN);
   const { theme } = useTheme();
 
+  const { connect, logout, restart } = useManageInstance();
   const { instance } = useInstance();
 
   const handleReload = () => {
@@ -77,11 +74,15 @@ function DashboardInstance() {
       }
 
       if (pairingCode) {
-        const data = await connect(instanceName, token, instance?.number);
+        const data = await connect({
+          instanceName,
+          token,
+          number: instance?.number,
+        });
 
         setPairingCode(data.pairingCode);
       } else {
-        const data = await connect(instanceName, token);
+        const data = await connect({ instanceName, token });
 
         setQRCode(data.code);
       }

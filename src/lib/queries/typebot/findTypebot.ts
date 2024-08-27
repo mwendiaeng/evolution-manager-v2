@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { api } from "../api";
 import { UseQueryParams } from "../types";
-import { FindEvolutionBotResponse } from "./types";
+import { FindTypebotResponse } from "./types";
 
 interface IParams {
   instanceName: string | null;
@@ -10,26 +10,26 @@ interface IParams {
 }
 
 const queryKey = (params: Partial<IParams>) => [
-  "evolutionBot",
-  "findEvolutionBot",
+  "typebot",
+  "findTypebot",
   JSON.stringify(params),
 ];
 
-export const findEvolutionBot = async ({ instanceName, token }: IParams) => {
-  const response = await api.get(`/evolutionBot/find/${instanceName}`, {
+export const findTypebot = async ({ instanceName, token }: IParams) => {
+  const response = await api.get(`/typebot/find/${instanceName}`, {
     headers: { apiKey: token },
   });
   return response.data;
 };
 
-export const useFindEvolutionBot = (
-  props: UseQueryParams<FindEvolutionBotResponse> & Partial<IParams>,
+export const useFindTypebot = (
+  props: UseQueryParams<FindTypebotResponse> & Partial<IParams>,
 ) => {
   const { instanceName, token, ...rest } = props;
-  return useQuery<FindEvolutionBotResponse>({
+  return useQuery<FindTypebotResponse>({
     ...rest,
     queryKey: queryKey({ instanceName }),
-    queryFn: () => findEvolutionBot({ instanceName: instanceName!, token }),
+    queryFn: () => findTypebot({ instanceName: instanceName!, token }),
     enabled: !!instanceName && (props.enabled ?? true),
   });
 };

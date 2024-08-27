@@ -26,15 +26,11 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { useFindDefaultSettingsTypebot } from "@/lib/queries/typebot/findDefaultSettingsTypebot";
+import { useFindTypebot } from "@/lib/queries/typebot/findTypebot";
+import { setDefaultSettingsTypebot } from "@/lib/queries/typebot/manageTypebot";
 
-import {
-  findDefaultSettingsTypebot,
-  findTypebot,
-  setDefaultSettingsTypebot,
-} from "@/services/typebot.service";
-
-import { Instance, Typebot, TypebotSettings } from "@/types/evolution.types";
+import { TypebotSettings } from "@/types/evolution.types";
 
 const formSchema = z.object({
   expire: z.coerce.number(),
@@ -50,43 +46,23 @@ const formSchema = z.object({
 });
 type FormSchema = z.infer<typeof formSchema>;
 
-const fetchData = async (
-  instance: Instance | null,
-  setSettings: any,
-  setTypebots: any,
-) => {
-  try {
-    const storedToken = getToken(TOKEN_ID.TOKEN);
-
-    if (storedToken && instance && instance.name) {
-      const getSettings: TypebotSettings[] = await findDefaultSettingsTypebot(
-        instance.name,
-        storedToken,
-      );
-
-      setSettings(getSettings);
-
-      const getTypebots: Typebot[] = await findTypebot(
-        instance.name,
-        storedToken,
-      );
-
-      setTypebots(getTypebots);
-    } else {
-      console.error("token not found.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-
 function DefaultSettingsTypebot() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
-  const [settings, setSettings] = useState<TypebotSettings>();
-  const [typebots, setTypebots] = useState<Typebot[]>([]);
   const [open, setOpen] = useState(false);
+
+  const { data: settings, refetch: refetchSettings } =
+    useFindDefaultSettingsTypebot({
+      instanceName: instance?.name,
+      token: instance?.token,
+      enabled: open,
+    });
+  const { data: typebots, refetch: refetchTypebots } = useFindTypebot({
+    instanceName: instance?.name,
+    token: instance?.token,
+    enabled: open,
+  });
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -103,10 +79,6 @@ function DefaultSettingsTypebot() {
       typebotIdFallback: undefined,
     },
   });
-
-  useEffect(() => {
-    if (open) fetchData(instance, setSettings, setTypebots);
-  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -145,11 +117,11 @@ function DefaultSettingsTypebot() {
         ignoreJids: data.ignoreJids,
       };
 
-      await setDefaultSettingsTypebot(
-        instance.name,
-        instance.token,
-        settingsData,
-      );
+      await setDefaultSettingsTypebot({
+        instanceName: instance.name,
+        token: instance.token,
+        data: settingsData,
+      });
       toast.success(t("typebot.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -159,7 +131,8 @@ function DefaultSettingsTypebot() {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setTypebots);
+    refetchSettings();
+    refetchTypebots();
   }
 
   return (

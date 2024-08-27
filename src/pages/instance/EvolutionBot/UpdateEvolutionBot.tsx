@@ -9,10 +9,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useGetEvolutionBot } from "@/lib/queries/evolutionBot/getEvolutionBot";
-import {
-  deleteEvolutionBot,
-  updateEvolutionBot,
-} from "@/lib/queries/evolutionBot/manageEvolutionBot";
+import { useManageEvolutionBot } from "@/lib/queries/evolutionBot/manageEvolutionBot";
 
 import { EvolutionBot } from "@/types/evolution.types";
 
@@ -32,6 +29,7 @@ function UpdateEvolutionBot({
   const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
+  const { deleteEvolutionBot, updateEvolutionBot } = useManageEvolutionBot();
   const { data: bot, isLoading } = useGetEvolutionBot({
     instanceName: instance?.name,
     evolutionBotId,

@@ -36,7 +36,7 @@ import { Input } from "@/components/ui/input";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchSessionsEvolutionBot } from "@/lib/queries/evolutionBot/fetchSessionsEvolutionBot";
-import { changeStatusEvolutionBot } from "@/lib/queries/evolutionBot/manageEvolutionBot";
+import { useManageEvolutionBot } from "@/lib/queries/evolutionBot/manageEvolutionBot";
 
 import { IntegrationSession } from "@/types/evolution.types";
 
@@ -53,6 +53,8 @@ function SessionsEvolutionBot({ evolutionBotId }: { evolutionBotId?: string }) {
       evolutionBotId,
       enabled: open,
     });
+
+  const { changeStatusEvolutionBot } = useManageEvolutionBot();
 
   function onReset() {
     refetchSessions();

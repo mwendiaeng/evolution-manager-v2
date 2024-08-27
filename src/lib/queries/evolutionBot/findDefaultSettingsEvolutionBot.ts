@@ -11,7 +11,7 @@ interface IParams {
 
 const queryKey = (params: Partial<IParams>) => [
   "evolutionBot",
-  "findDefaultSettingsEvolutionBot",
+  "fetchDefaultSettings",
   JSON.stringify(params),
 ];
 

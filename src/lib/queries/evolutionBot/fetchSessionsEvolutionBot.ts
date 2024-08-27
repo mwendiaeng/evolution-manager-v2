@@ -12,7 +12,7 @@ interface IParams {
 
 const queryKey = (params: Partial<IParams>) => [
   "evolutionBot",
-  "fetchEvolutionBotSessions",
+  "fetchSessions",
   JSON.stringify(params),
 ];
 
@@ -22,7 +22,7 @@ export const fetchEvolutionBotSessions = async ({
   token,
 }: IParams) => {
   const response = await api.get(
-    `/evolutionBot/fetchEvolutionBotSessions/${evolutionBotId}/${instanceName}`,
+    `/evolutionBot/fetchSessions/${evolutionBotId}/${instanceName}`,
     { headers: { apiKey: token } },
   );
   return response.data;

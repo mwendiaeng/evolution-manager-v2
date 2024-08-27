@@ -28,7 +28,7 @@ import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFindDefaultSettingsEvolutionBot } from "@/lib/queries/evolutionBot/findDefaultSettingsEvolutionBot";
 import { useFindEvolutionBot } from "@/lib/queries/evolutionBot/findEvolutionBot";
-import { setDefaultSettingsEvolutionBot } from "@/lib/queries/evolutionBot/manageEvolutionBot";
+import { useManageEvolutionBot } from "@/lib/queries/evolutionBot/manageEvolutionBot";
 
 import { EvolutionBotSettings } from "@/types/evolution.types";
 
@@ -60,6 +60,7 @@ function DefaultSettingsEvolutionBot() {
     instanceName: instance?.name,
     enabled: open,
   });
+  const { setDefaultSettingsEvolutionBot } = useManageEvolutionBot();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),

@@ -15,7 +15,7 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createDify } from "@/lib/queries/dify/manageDify";
+import { useManageDify } from "@/lib/queries/dify/manageDify";
 
 import { Dify } from "@/types/evolution.types";
 
@@ -27,6 +27,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
 
   const [updating, setUpdating] = useState(false);
   const [open, setOpen] = useState(false);
+  const { createDify } = useManageDify();
 
   const onSubmit = async (data: FormSchemaType) => {
     try {

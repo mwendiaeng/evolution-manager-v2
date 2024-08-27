@@ -1,6 +1,7 @@
 import { Dify, DifySettings } from "@/types/evolution.types";
 
 import { api } from "../api";
+import { useManageMutation } from "../mutateQuery";
 
 interface CreateDifyParams {
   instanceName: string;
@@ -8,7 +9,7 @@ interface CreateDifyParams {
   data: Dify;
 }
 
-export const createDify = async ({
+const createDify = async ({
   instanceName,
   token,
   ...data
@@ -24,7 +25,7 @@ interface UpdateDifyParams {
   difyId: string;
   data: Dify;
 }
-export const updateDify = async ({
+const updateDify = async ({
   instanceName,
   difyId,
   ...data
@@ -40,10 +41,7 @@ interface DeleteDifyParams {
   instanceName: string;
   difyId: string;
 }
-export const deleteDify = async ({
-  instanceName,
-  difyId,
-}: DeleteDifyParams) => {
+const deleteDify = async ({ instanceName, difyId }: DeleteDifyParams) => {
   const response = await api.delete(`/dify/delete/${difyId}/${instanceName}`);
   return response.data;
 };
@@ -53,7 +51,7 @@ interface SetDefaultSettingsDifyParams {
   token: string;
   data: DifySettings;
 }
-export const setDefaultSettingsDify = async ({
+const setDefaultSettingsDify = async ({
   instanceName,
   token,
   ...data
@@ -70,7 +68,7 @@ interface ChangeStatusDifyParams {
   remoteJid: string;
   status: string;
 }
-export const changeStatusDify = async ({
+const changeStatusDify = async ({
   instanceName,
   token,
   remoteJid,
@@ -83,3 +81,41 @@ export const changeStatusDify = async ({
   );
   return response.data;
 };
+
+export function useManageDify() {
+  const setDefaultSettingsDifyMutation = useManageMutation(
+    setDefaultSettingsDify,
+    { invalidateKeys: [["dify", "fetchDefaultSettings"]] },
+  );
+  const changeStatusDifyMutation = useManageMutation(changeStatusDify, {
+    invalidateKeys: [
+      ["dify", "getDify"],
+      ["dify", "fetchSessions"],
+    ],
+  });
+  const deleteDifyMutation = useManageMutation(deleteDify, {
+    invalidateKeys: [
+      ["dify", "getDify"],
+      ["dify", "fetchDify"],
+      ["dify", "fetchSessions"],
+    ],
+  });
+  const updateDifyMutation = useManageMutation(updateDify, {
+    invalidateKeys: [
+      ["dify", "getDify"],
+      ["dify", "fetchDify"],
+      ["dify", "fetchSessions"],
+    ],
+  });
+  const createDifyMutation = useManageMutation(createDify, {
+    invalidateKeys: [["dify", "fetchDify"]],
+  });
+
+  return {
+    setDefaultSettingsDify: setDefaultSettingsDifyMutation,
+    changeStatusDify: changeStatusDifyMutation,
+    deleteDify: deleteDifyMutation,
+    updateDify: updateDifyMutation,
+    createDify: createDifyMutation,
+  };
+}

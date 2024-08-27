@@ -35,7 +35,7 @@ import { Input } from "@/components/ui/input";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchSessionsDify } from "@/lib/queries/dify/fetchSessionsDify";
-import { changeStatusDify } from "@/lib/queries/dify/manageDify";
+import { useManageDify } from "@/lib/queries/dify/manageDify";
 
 import { IntegrationSession } from "@/types/evolution.types";
 
@@ -43,6 +43,7 @@ function SessionsDify({ difyId }: { difyId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { changeStatusDify } = useManageDify();
   const [sorting, setSorting] = useState<SortingState>([]);
   const { data: sessions, refetch } = useFetchSessionsDify({
     difyId,

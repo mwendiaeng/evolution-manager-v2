@@ -9,7 +9,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useGetDify } from "@/lib/queries/dify/getDify";
-import { deleteDify, updateDify } from "@/lib/queries/dify/manageDify";
+import { useManageDify } from "@/lib/queries/dify/manageDify";
 
 import { Dify } from "@/types/evolution.types";
 
@@ -26,6 +26,7 @@ function UpdateDify({ difyId, resetTable }: UpdateDifyProps) {
   const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
+  const { deleteDify, updateDify } = useManageDify();
   const { data: dify, isLoading: loading } = useGetDify({
     difyId,
     instanceName: instance?.name,

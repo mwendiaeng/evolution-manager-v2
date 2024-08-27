@@ -27,7 +27,7 @@ import { Input } from "@/components/ui/input";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchDify } from "@/lib/queries/dify/fetchDify";
-import { setDefaultSettingsDify } from "@/lib/queries/dify/manageDify";
+import { useManageDify } from "@/lib/queries/dify/manageDify";
 import { useFetchDefaultSettings } from "@/lib/queries/dify/settingsFind";
 
 import { DifySettings } from "@/types/evolution.types";
@@ -49,6 +49,7 @@ function DefaultSettingsDify() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { setDefaultSettingsDify } = useManageDify();
   const [open, setOpen] = useState(false);
   const { data: bots, refetch: refetchDify } = useFetchDify({
     instanceName: instance?.name,

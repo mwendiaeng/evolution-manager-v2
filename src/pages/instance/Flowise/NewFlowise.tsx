@@ -15,7 +15,7 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createFlowise } from "@/lib/queries/flowise/manageFlowise";
+import { useManageFlowise } from "@/lib/queries/flowise/manageFlowise";
 
 import { Flowise } from "@/types/evolution.types";
 
@@ -25,6 +25,7 @@ function NewFlowise({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { createFlowise } = useManageFlowise();
   const [updating, setUpdating] = useState(false);
   const [open, setOpen] = useState(false);
 

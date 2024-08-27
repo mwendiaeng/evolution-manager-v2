@@ -28,7 +28,7 @@ import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFindDefaultSettingsFlowise } from "@/lib/queries/flowise/findDefaultSettingsFlowise";
 import { useFindFlowise } from "@/lib/queries/flowise/findFlowise";
-import { setDefaultSettingsFlowise } from "@/lib/queries/flowise/manageFlowise";
+import { useManageFlowise } from "@/lib/queries/flowise/manageFlowise";
 
 import { FlowiseSettings } from "@/types/evolution.types";
 
@@ -49,6 +49,7 @@ function DefaultSettingsFlowise() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { setDefaultSettingsFlowise } = useManageFlowise();
   const [open, setOpen] = useState(false);
   const { data: settings, refetch: refetchSettings } =
     useFindDefaultSettingsFlowise({

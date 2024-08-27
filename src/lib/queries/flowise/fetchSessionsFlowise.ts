@@ -12,7 +12,7 @@ interface IParams {
 
 const queryKey = (params: Partial<IParams>) => [
   "flowise",
-  "fetchFlowiseSessions",
+  "fetchSessions",
   JSON.stringify(params),
 ];
 

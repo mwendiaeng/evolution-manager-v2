@@ -1,13 +1,14 @@
 import { Flowise, FlowiseSettings } from "@/types/evolution.types";
 
 import { api } from "../api";
+import { useManageMutation } from "../mutateQuery";
 
 interface CreateFlowiseParams {
   instanceName: string;
   token: string;
   data: Flowise;
 }
-export const createFlowise = async ({
+const createFlowise = async ({
   instanceName,
   token,
   data,
@@ -23,7 +24,7 @@ interface UpdateFlowiseParams {
   flowiseId: string;
   data: Flowise;
 }
-export const updateFlowise = async ({
+const updateFlowise = async ({
   instanceName,
   flowiseId,
   data,
@@ -39,7 +40,7 @@ interface DeleteFlowiseParams {
   instanceName: string;
   flowiseId: string;
 }
-export const deleteFlowise = async ({
+const deleteFlowise = async ({
   instanceName,
   flowiseId,
 }: DeleteFlowiseParams) => {
@@ -55,7 +56,7 @@ interface ChangeStatusFlowiseParams {
   remoteJid: string;
   status: string;
 }
-export const changeStatusFlowise = async ({
+const changeStatusFlowise = async ({
   instanceName,
   token,
   remoteJid,
@@ -74,7 +75,7 @@ interface SetDefaultSettingsFlowiseParams {
   token: string;
   data: FlowiseSettings;
 }
-export const setDefaultSettingsFlowise = async ({
+const setDefaultSettingsFlowise = async ({
   instanceName,
   token,
   data,
@@ -84,3 +85,41 @@ export const setDefaultSettingsFlowise = async ({
   });
   return response.data;
 };
+
+export function useManageFlowise() {
+  const setDefaultSettingsFlowiseMutation = useManageMutation(
+    setDefaultSettingsFlowise,
+    { invalidateKeys: [["flowise", "fetchDefaultSettings"]] },
+  );
+  const changeStatusFlowiseMutation = useManageMutation(changeStatusFlowise, {
+    invalidateKeys: [
+      ["flowise", "getFlowise"],
+      ["flowise", "fetchSessions"],
+    ],
+  });
+  const deleteFlowiseMutation = useManageMutation(deleteFlowise, {
+    invalidateKeys: [
+      ["flowise", "getFlowise"],
+      ["flowise", "findFlowise"],
+      ["flowise", "fetchSessions"],
+    ],
+  });
+  const updateFlowiseMutation = useManageMutation(updateFlowise, {
+    invalidateKeys: [
+      ["flowise", "getFlowise"],
+      ["flowise", "findFlowise"],
+      ["flowise", "fetchSessions"],
+    ],
+  });
+  const createFlowiseMutation = useManageMutation(createFlowise, {
+    invalidateKeys: [["flowise", "findFlowise"]],
+  });
+
+  return {
+    setDefaultSettingsFlowise: setDefaultSettingsFlowiseMutation,
+    changeStatusFlowise: changeStatusFlowiseMutation,
+    deleteFlowise: deleteFlowiseMutation,
+    updateFlowise: updateFlowiseMutation,
+    createFlowise: createFlowiseMutation,
+  };
+}

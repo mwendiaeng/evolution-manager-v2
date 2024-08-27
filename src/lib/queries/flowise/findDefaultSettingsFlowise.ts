@@ -11,7 +11,7 @@ interface IParams {
 
 const queryKey = (params: Partial<IParams>) => [
   "flowise",
-  "findDefaultSettingsFlowise",
+  "fetchDefaultSettings",
   JSON.stringify(params),
 ];
 

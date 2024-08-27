@@ -9,10 +9,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useGetFlowise } from "@/lib/queries/flowise/getFlowise";
-import {
-  deleteFlowise,
-  updateFlowise,
-} from "@/lib/queries/flowise/manageFlowise";
+import { useManageFlowise } from "@/lib/queries/flowise/manageFlowise";
 
 import { Flowise } from "@/types/evolution.types";
 
@@ -29,6 +26,7 @@ function UpdateFlowise({ flowiseId, resetTable }: UpdateFlowiseProps) {
   const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
+  const { deleteFlowise, updateFlowise } = useManageFlowise();
   const { data: bot, isLoading } = useGetFlowise({
     instanceName: instance?.name,
     flowiseId,

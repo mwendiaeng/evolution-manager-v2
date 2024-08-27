@@ -35,7 +35,7 @@ import { Input } from "@/components/ui/input";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchSessionsFlowise } from "@/lib/queries/flowise/fetchSessionsFlowise";
-import { changeStatusFlowise } from "@/lib/queries/flowise/manageFlowise";
+import { useManageFlowise } from "@/lib/queries/flowise/manageFlowise";
 
 import { IntegrationSession } from "@/types/evolution.types";
 
@@ -43,6 +43,7 @@ function SessionsFlowise({ flowiseId }: { flowiseId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { changeStatusFlowise } = useManageFlowise();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [open, setOpen] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");

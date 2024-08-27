@@ -9,7 +9,7 @@ interface IParams {
 }
 
 const queryKey = (params: Partial<IParams>) => [
-  "chats",
+  "instance",
   "fetchInstance",
   JSON.stringify(params),
 ];

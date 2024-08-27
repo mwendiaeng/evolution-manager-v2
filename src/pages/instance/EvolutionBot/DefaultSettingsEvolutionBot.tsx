@@ -26,19 +26,11 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { useFindDefaultSettingsEvolutionBot } from "@/lib/queries/evolutionBot/findDefaultSettingsEvolutionBot";
+import { useFindEvolutionBot } from "@/lib/queries/evolutionBot/findEvolutionBot";
+import { setDefaultSettingsEvolutionBot } from "@/lib/queries/evolutionBot/manageEvolutionBot";
 
-import {
-  findDefaultSettingsEvolutionBot,
-  findEvolutionBot,
-  setDefaultSettingsEvolutionBot,
-} from "@/services/evolutionBot.service";
-
-import {
-  EvolutionBot,
-  EvolutionBotSettings,
-  Instance,
-} from "@/types/evolution.types";
+import { EvolutionBotSettings } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   expire: z.string(),
@@ -53,41 +45,21 @@ const FormSchema = z.object({
   botIdFallback: z.union([z.null(), z.string()]).optional(),
 });
 
-const fetchData = async (
-  instance: Instance | null,
-  setSettings: any,
-  setBots: any,
-) => {
-  try {
-    const storedToken = getToken(TOKEN_ID.TOKEN);
-
-    if (storedToken && instance && instance.name) {
-      const getSettings: EvolutionBotSettings[] =
-        await findDefaultSettingsEvolutionBot(instance.name, storedToken);
-
-      setSettings(getSettings);
-
-      const getBots: EvolutionBot[] = await findEvolutionBot(
-        instance.name,
-        storedToken,
-      );
-
-      setBots(getBots);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-
 function DefaultSettingsEvolutionBot() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<EvolutionBotSettings>();
-  const [bots, setBots] = useState<EvolutionBot[]>([]);
+  const { data: settings, refetch: refetchSettings } =
+    useFindDefaultSettingsEvolutionBot({
+      instanceName: instance?.name,
+      enabled: open,
+    });
+
+  const { data: bots, refetch: refetchBots } = useFindEvolutionBot({
+    instanceName: instance?.name,
+    enabled: open,
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -104,10 +76,6 @@ function DefaultSettingsEvolutionBot() {
       botIdFallback: undefined,
     },
   });
-
-  useEffect(() => {
-    if (open) fetchData(instance, setSettings, setBots);
-  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -150,11 +118,11 @@ function DefaultSettingsEvolutionBot() {
         ignoreJids: data.ignoreJids,
       };
 
-      await setDefaultSettingsEvolutionBot(
-        instance.name,
-        instance.token,
-        settingsData,
-      );
+      await setDefaultSettingsEvolutionBot({
+        instanceName: instance.name,
+        token: instance.token,
+        data: settingsData,
+      });
       toast.success(t("evolutionBot.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -164,7 +132,8 @@ function DefaultSettingsEvolutionBot() {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setBots);
+    refetchSettings();
+    refetchBots();
   }
 
   return (

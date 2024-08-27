@@ -10,7 +10,7 @@ import {
   RotateCcw,
   StopCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
@@ -35,66 +35,39 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { useFetchSessionsEvolutionBot } from "@/lib/queries/evolutionBot/fetchSessionsEvolutionBot";
+import { changeStatusEvolutionBot } from "@/lib/queries/evolutionBot/manageEvolutionBot";
 
-import {
-  changeStatusEvolutionBot,
-  fetchSessionsEvolutionBot,
-} from "@/services/evolutionBot.service";
-
-import { IntegrationSession, Instance } from "@/types/evolution.types";
-
-const fetchData = async (
-  instance: Instance | null,
-  setSessions: any,
-  evolutionBotId?: string,
-) => {
-  try {
-    const storedToken = getToken(TOKEN_ID.TOKEN);
-
-    if (storedToken && instance && instance.name) {
-      const getSessions: IntegrationSession[] = await fetchSessionsEvolutionBot(
-        instance.name,
-        storedToken,
-        evolutionBotId,
-      );
-
-      setSessions(getSessions);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Errors:", error);
-  }
-};
+import { IntegrationSession } from "@/types/evolution.types";
 
 function SessionsEvolutionBot({ evolutionBotId }: { evolutionBotId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [sessions, setSessions] = useState<IntegrationSession[] | []>([]);
   const [open, setOpen] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
-
-  useEffect(() => {
-    if (open) fetchData(instance, setSessions, evolutionBotId);
-  }, [instance, evolutionBotId, open]);
+  const { data: sessions, refetch: refetchSessions } =
+    useFetchSessionsEvolutionBot({
+      instanceName: instance?.name,
+      evolutionBotId,
+      enabled: open,
+    });
 
   function onReset() {
-    fetchData(instance, setSessions, evolutionBotId);
+    refetchSessions();
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {
     try {
       if (!instance) return;
 
-      await changeStatusEvolutionBot(
-        instance.name,
-        instance.token,
+      await changeStatusEvolutionBot({
+        instanceName: instance.name,
+        token: instance.token,
         remoteJid,
         status,
-      );
+      });
 
       toast.success(t("evolutionBot.toast.success.status"));
       onReset();
@@ -230,7 +203,7 @@ function SessionsEvolutionBot({ evolutionBotId }: { evolutionBotId?: string }) {
           </div>
           <DataTable
             columns={columns}
-            data={sessions}
+            data={sessions ?? []}
             onSortingChange={setSorting}
             state={{ sorting, globalFilter }}
             onGlobalFilterChange={setGlobalFilter}

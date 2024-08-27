@@ -4,7 +4,7 @@ import { api } from "../api";
 import { UseQueryParams } from "../types";
 import { FetchInstancesResponse } from "./types";
 
-const queryKey = ["chats", "fetchInstances"];
+const queryKey = ["instance", "fetchInstances"];
 
 export const fetchInstances = async () => {
   const response = await api.get(`/instance/fetchInstances`);

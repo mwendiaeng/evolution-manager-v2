@@ -21,7 +21,7 @@ import { Switch } from "@/components/ui/switch";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchSqs } from "@/lib/queries/sqs/fetchSqs";
-import { createSqs } from "@/lib/queries/sqs/manageSqs";
+import { useManageSqs } from "@/lib/queries/sqs/manageSqs";
 import { cn } from "@/lib/utils";
 
 import { Sqs as SqsType } from "@/types/evolution.types";
@@ -38,6 +38,7 @@ function Sqs() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
+  const { createSqs } = useManageSqs();
   const { data: sqs } = useFetchSqs({
     instanceName: instance?.name,
     token: instance?.token,

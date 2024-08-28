@@ -1,6 +1,7 @@
 import { Typebot, TypebotSettings } from "@/types/evolution.types";
 
 import { api } from "../api";
+import { useManageMutation } from "../mutateQuery";
 
 interface CreateTypebotParams {
   instanceName: string;
@@ -8,7 +9,7 @@ interface CreateTypebotParams {
   data: Typebot;
 }
 
-export const createTypebot = async ({
+const createTypebot = async ({
   instanceName,
   token,
   data,
@@ -23,7 +24,7 @@ interface UpdateTypebotParams extends CreateTypebotParams {
   typebotId: string;
 }
 
-export const updateTypebot = async ({
+const updateTypebot = async ({
   instanceName,
   token,
   typebotId,
@@ -41,7 +42,7 @@ interface DeleteTypebotParams {
   instanceName: string;
   typebotId: string;
 }
-export const deleteTypebot = async ({
+const deleteTypebot = async ({
   instanceName,
   typebotId,
 }: DeleteTypebotParams) => {
@@ -56,7 +57,7 @@ interface SetDefaultSettingsTypebotParams {
   token: string;
   data: TypebotSettings;
 }
-export const setDefaultSettingsTypebot = async ({
+const setDefaultSettingsTypebot = async ({
   instanceName,
   token,
   data,
@@ -73,7 +74,7 @@ interface ChangeStatusTypebotParams {
   remoteJid: string;
   status: string;
 }
-export const changeStatusTypebot = async ({
+const changeStatusTypebot = async ({
   instanceName,
   token,
   remoteJid,
@@ -89,3 +90,41 @@ export const changeStatusTypebot = async ({
   );
   return response.data;
 };
+
+export function useManageTypebot() {
+  const setDefaultSettingsTypebotMutation = useManageMutation(
+    setDefaultSettingsTypebot,
+    { invalidateKeys: [["typebot", "fetchDefaultSettings"]] },
+  );
+  const changeStatusTypebotMutation = useManageMutation(changeStatusTypebot, {
+    invalidateKeys: [
+      ["typebot", "getTypebot"],
+      ["typebot", "fetchSessions"],
+    ],
+  });
+  const deleteTypebotMutation = useManageMutation(deleteTypebot, {
+    invalidateKeys: [
+      ["typebot", "getTypebot"],
+      ["typebot", "findTypebot"],
+      ["typebot", "fetchSessions"],
+    ],
+  });
+  const updateTypebotMutation = useManageMutation(updateTypebot, {
+    invalidateKeys: [
+      ["typebot", "getTypebot"],
+      ["typebot", "findTypebot"],
+      ["typebot", "fetchSessions"],
+    ],
+  });
+  const createTypebotMutation = useManageMutation(createTypebot, {
+    invalidateKeys: [["typebot", "findTypebot"]],
+  });
+
+  return {
+    setDefaultSettingsTypebot: setDefaultSettingsTypebotMutation,
+    changeStatusTypebot: changeStatusTypebotMutation,
+    deleteTypebot: deleteTypebotMutation,
+    updateTypebot: updateTypebotMutation,
+    createTypebot: createTypebotMutation,
+  };
+}

@@ -35,7 +35,7 @@ import { Input } from "@/components/ui/input";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchSessionsTypebot } from "@/lib/queries/typebot/fetchSessionsTypebot";
-import { changeStatusTypebot } from "@/lib/queries/typebot/manageTypebot";
+import { useManageTypebot } from "@/lib/queries/typebot/manageTypebot";
 
 import { IntegrationSession } from "@/types/evolution.types";
 
@@ -47,6 +47,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
   const [open, setOpen] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
 
+  const { changeStatusTypebot } = useManageTypebot();
   const { data: sessions, refetch: refetchSessions } = useFetchSessionsTypebot({
     instanceName: instance?.name,
     token: instance?.token,

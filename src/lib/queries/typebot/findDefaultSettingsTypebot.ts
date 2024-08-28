@@ -11,7 +11,7 @@ interface IParams {
 
 const queryKey = (params: Partial<IParams>) => [
   "typebot",
-  "findDefaultSettingsTypebot",
+  "fetchDefaultSettings",
   JSON.stringify(params),
 ];
 

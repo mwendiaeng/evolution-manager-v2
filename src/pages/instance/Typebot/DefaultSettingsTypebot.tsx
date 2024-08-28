@@ -28,7 +28,7 @@ import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFindDefaultSettingsTypebot } from "@/lib/queries/typebot/findDefaultSettingsTypebot";
 import { useFindTypebot } from "@/lib/queries/typebot/findTypebot";
-import { setDefaultSettingsTypebot } from "@/lib/queries/typebot/manageTypebot";
+import { useManageTypebot } from "@/lib/queries/typebot/manageTypebot";
 
 import { TypebotSettings } from "@/types/evolution.types";
 
@@ -52,6 +52,7 @@ function DefaultSettingsTypebot() {
 
   const [open, setOpen] = useState(false);
 
+  const { setDefaultSettingsTypebot } = useManageTypebot();
   const { data: settings, refetch: refetchSettings } =
     useFindDefaultSettingsTypebot({
       instanceName: instance?.name,

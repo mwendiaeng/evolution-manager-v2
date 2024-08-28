@@ -9,10 +9,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useGetTypebot } from "@/lib/queries/typebot/getTypebot";
-import {
-  deleteTypebot,
-  updateTypebot,
-} from "@/lib/queries/typebot/manageTypebot";
+import { useManageTypebot } from "@/lib/queries/typebot/manageTypebot";
 
 import { Typebot } from "@/types/evolution.types";
 
@@ -29,6 +26,7 @@ function UpdateTypebot({ typebotId, resetTable }: UpdateTypebotProps) {
   const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
+  const { deleteTypebot, updateTypebot } = useManageTypebot();
   const { data: bot, isLoading } = useGetTypebot({
     instanceName: instance?.name,
     typebotId,

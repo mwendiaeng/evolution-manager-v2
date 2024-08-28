@@ -12,7 +12,7 @@ interface IParams {
 
 const queryKey = (params: Partial<IParams>) => [
   "typebot",
-  "fetchTypebotSessions",
+  "fetchSessions",
   JSON.stringify(params),
 ];
 

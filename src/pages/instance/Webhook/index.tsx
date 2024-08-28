@@ -23,7 +23,7 @@ import { Switch } from "@/components/ui/switch";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchWebhook } from "@/lib/queries/webhook/fetchWebhook";
-import { createWebhook } from "@/lib/queries/webhook/manageWebhook";
+import { useManageWebhook } from "@/lib/queries/webhook/manageWebhook";
 import { cn } from "@/lib/utils";
 
 import { Webhook as WebhookType } from "@/types/evolution.types";
@@ -43,6 +43,7 @@ function Webhook() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
+  const { createWebhook } = useManageWebhook();
   const { data: webhook } = useFetchWebhook({
     instanceName: instance?.name,
     token: instance?.token,

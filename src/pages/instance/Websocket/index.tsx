@@ -21,7 +21,7 @@ import { Switch } from "@/components/ui/switch";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchWebsocket } from "@/lib/queries/websocket/fetchWebsocket";
-import { createWebsocket } from "@/lib/queries/websocket/manageWebsocket";
+import { useManageWebsocket } from "@/lib/queries/websocket/manageWebsocket";
 import { cn } from "@/lib/utils";
 
 import { Websocket as WebsocketType } from "@/types/evolution.types";
@@ -38,6 +38,7 @@ function Websocket() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
+  const { createWebsocket } = useManageWebsocket();
   const { data: websocket } = useFetchWebsocket({
     instanceName: instance?.name,
     token: instance?.token,

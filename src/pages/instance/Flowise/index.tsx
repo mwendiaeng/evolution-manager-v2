@@ -88,7 +88,7 @@ function Flowise() {
         {flowiseId && (
           <>
             <ResizableHandle withHandle className="border border-border" />
-            <ResizablePanel className="">
+            <ResizablePanel>
               <UpdateFlowise flowiseId={flowiseId} resetTable={resetTable} />
             </ResizablePanel>
           </>

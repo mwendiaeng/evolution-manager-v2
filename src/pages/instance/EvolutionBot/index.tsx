@@ -90,7 +90,7 @@ function EvolutionBot() {
         {evolutionBotId && (
           <>
             <ResizableHandle withHandle className="border border-border" />
-            <ResizablePanel className="">
+            <ResizablePanel>
               <UpdateEvolutionBot
                 evolutionBotId={evolutionBotId}
                 resetTable={resetTable}

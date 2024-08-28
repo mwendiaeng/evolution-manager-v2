@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,11 +13,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
-
-import { findTypebot } from "@/services/typebot.service";
-
-import { Instance, Typebot as TypebotType } from "@/types/evolution.types";
+import { useFindTypebot } from "@/lib/queries/typebot/findTypebot";
 
 import { useMediaQuery } from "@/utils/useMediaQuery";
 
@@ -27,28 +22,6 @@ import { NewTypebot } from "./NewTypebot";
 import { SessionsTypebot } from "./SessionsTypebot";
 import { UpdateTypebot } from "./UpdateTypebot";
 
-const fetchData = async (
-  instance: Instance | null,
-  setTypebots: any,
-  setLoading: any,
-) => {
-  try {
-    const storedToken = getToken(TOKEN_ID.TOKEN);
-
-    if (storedToken && instance && instance.name) {
-      const data: TypebotType[] = await findTypebot(instance.name, storedToken);
-
-      setTypebots(data);
-    } else {
-      console.error("token not found.");
-    }
-    setLoading(false);
-  } catch (error) {
-    console.error("Error", error);
-    setLoading(false);
-  }
-};
-
 function Typebot() {
   const { t } = useTranslation();
   const isMD = useMediaQuery("(min-width: 768px)");
@@ -56,15 +29,16 @@ function Typebot() {
 
   const { typebotId } = useParams<{ typebotId: string }>();
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [typebots, setTypebots] = useState<TypebotType[]>([]);
+  const {
+    data: typebots,
+    isLoading,
+    refetch,
+  } = useFindTypebot({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!instance) return;
-    fetchData(instance, setTypebots, setLoading);
-  }, [instance]);
 
   const handleBotClick = (botId: string) => {
     if (!instance) return;
@@ -73,7 +47,7 @@ function Typebot() {
   };
 
   const resetTable = () => {
-    fetchData(instance, setTypebots, setLoading);
+    refetch();
   };
 
   return (
@@ -90,7 +64,7 @@ function Typebot() {
       <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
         <ResizablePanel defaultSize={35} className="pr-4">
           <div className="flex flex-col gap-3">
-            {loading ? (
+            {isLoading ? (
               <LoadingSpinner />
             ) : (
               <>
@@ -129,7 +103,7 @@ function Typebot() {
         {typebotId && (
           <>
             <ResizableHandle withHandle className="border border-black" />
-            <ResizablePanel className="">
+            <ResizablePanel>
               <UpdateTypebot typebotId={typebotId} resetTable={resetTable} />
             </ResizablePanel>
           </>

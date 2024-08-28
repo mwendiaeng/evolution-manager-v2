@@ -13,7 +13,7 @@ export const queryClient = new QueryClient({
             displayedNetworkFailureError = true;
 
             toast.error(
-              "A aplicação está demorando mais que o esperado para carregar, tente novamente em alguns minutos.",
+              "The application is taking longer than expected to load, please try again in a few minutes.",
               {
                 onClose: () => {
                   displayedNetworkFailureError = false;

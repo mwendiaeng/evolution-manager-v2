@@ -93,7 +93,7 @@ function Openai() {
         {botId && (
           <>
             <ResizableHandle withHandle className="border border-border" />
-            <ResizablePanel className="">
+            <ResizablePanel>
               <UpdateOpenai openaiId={botId} resetTable={resetTable} />
             </ResizablePanel>
           </>

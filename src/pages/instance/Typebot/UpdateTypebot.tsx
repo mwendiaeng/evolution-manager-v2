@@ -114,7 +114,7 @@ function UpdateTypebot({ typebotId, resetTable }: UpdateTypebotProps) {
 
         setOpenDeletionDialog(false);
         resetTable();
-        navigate(`/manager/instance/${instance.id}/dify`);
+        navigate(`/manager/instance/${instance.id}/typebot`);
       } else {
         console.error("instance not found");
       }

@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { PlusIcon } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -24,10 +24,6 @@ import { getToken, TOKEN_ID } from "@/lib/queries/token";
 
 import { NewInstance as NewInstanceType } from "@/types/evolution.types";
 
-import { LoginFacebookButton } from "./LoginFacebookButton";
-import { LoginInstagramButton } from "./LoginInstagramButton";
-import { LoginWhatsappButton } from "./LoginWhatsappButton";
-
 const stringOrUndefined = z
   .string()
   .optional()
@@ -38,20 +34,14 @@ const FormSchema = z.object({
   token: stringOrUndefined,
   number: stringOrUndefined,
   businessId: stringOrUndefined,
-  integration: z.enum([
-    "WHATSAPP-BUSINESS",
-    "WHATSAPP-BAILEYS",
-    "META-FACEBOOK",
-    "META-INSTAGRAM",
-    "EVOLUTION",
-  ]),
+  integration: z.enum(["WHATSAPP-BUSINESS", "WHATSAPP-BAILEYS", "EVOLUTION"]),
 });
 
 function NewInstance({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const { createInstance } = useManageInstance();
   const [open, setOpen] = useState(false);
-  const [options, setOptions] = useState([
+  const options = [
     {
       value: "WHATSAPP-BAILEYS",
       label: t("instance.form.integration.baileys"),
@@ -64,7 +54,8 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
       value: "EVOLUTION",
       label: t("instance.form.integration.evolution"),
     },
-  ]);
+  ];
+
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -172,32 +163,6 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
               </FormInput>
             )}
             <DialogFooter>
-              {facebookLogin && (
-                <>
-                  {integrationSelected === "WHATSAPP-BUSINESS" && (
-                    <LoginWhatsappButton
-                      setNumber={(number) => form.setValue("number", number)}
-                      setBusiness={(businessId) =>
-                        form.setValue("businessId", businessId)
-                      }
-                      setToken={(token) => form.setValue("token", token)}
-                    />
-                  )}
-                  {integrationSelected === "META-FACEBOOK" && (
-                    <LoginFacebookButton
-                      setUserID={(userID) => form.setValue("number", userID)}
-                      setToken={(token) => form.setValue("token", token)}
-                    />
-                  )}
-                  {integrationSelected === "META-INSTAGRAM" && (
-                    <LoginInstagramButton
-                      setUserID={(userID) => form.setValue("number", userID)}
-                      setToken={(token) => form.setValue("token", token)}
-                    />
-                  )}
-                </>
-              )}
-
               <Button type="submit">{t("instance.button.save")}</Button>
             </DialogFooter>
           </form>

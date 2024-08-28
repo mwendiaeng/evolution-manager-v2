@@ -21,7 +21,7 @@ import { Switch } from "@/components/ui/switch";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchRabbitmq } from "@/lib/queries/rabbitmq/fetchRabbitmq";
-import { createRabbitmq } from "@/lib/queries/rabbitmq/manageRabbitmq";
+import { useManageRabbitmq } from "@/lib/queries/rabbitmq/manageRabbitmq";
 import { cn } from "@/lib/utils";
 
 import { Rabbitmq as RabbitmqType } from "@/types/evolution.types";
@@ -38,6 +38,7 @@ function Rabbitmq() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
+  const { createRabbitmq } = useManageRabbitmq();
   const { data: rabbitmq } = useFetchRabbitmq({
     instanceName: instance?.name,
     token: instance?.token,

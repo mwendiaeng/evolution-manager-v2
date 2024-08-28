@@ -14,6 +14,7 @@ import { Instance } from "@/types/evolution.types";
 
 interface InstanceContextProps {
   instance: Instance | null;
+  reloadInstance: () => Promise<void>;
 }
 
 export const InstanceContext = createContext<InstanceContextProps | null>(null);
@@ -35,7 +36,9 @@ export const InstanceProvider: React.FC<InstanceProviderProps> = ({
 }): React.ReactNode => {
   const queryParams = useParams<{ instanceId: string }>();
   const [instanceId, setInstanceId] = useState<string | null>(null);
-  const { data: instance } = useFetchInstance({ instanceId });
+  const { data: instance, refetch: reloadInstance } = useFetchInstance({
+    instanceId,
+  });
 
   useEffect(() => {
     if (queryParams.instanceId) {
@@ -46,7 +49,14 @@ export const InstanceProvider: React.FC<InstanceProviderProps> = ({
   }, [queryParams]);
 
   return (
-    <InstanceContext.Provider value={{ instance: instance ?? null }}>
+    <InstanceContext.Provider
+      value={{
+        instance: instance ?? null,
+        reloadInstance: async () => {
+          await reloadInstance();
+        },
+      }}
+    >
       {children}
     </InstanceContext.Provider>
   );

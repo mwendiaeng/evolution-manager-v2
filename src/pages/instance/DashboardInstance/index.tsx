@@ -40,16 +40,16 @@ function DashboardInstance() {
   const { theme } = useTheme();
 
   const { connect, logout, restart } = useManageInstance();
-  const { instance } = useInstance();
+  const { instance, reloadInstance } = useInstance();
 
-  const handleReload = () => {
-    window.location.reload();
+  const handleReload = async () => {
+    await reloadInstance();
   };
 
   const handleRestart = async (instanceName: string) => {
     try {
       await restart(instanceName);
-      window.location.reload();
+      await reloadInstance();
     } catch (error) {
       console.error("Error:", error);
     }
@@ -58,7 +58,7 @@ function DashboardInstance() {
   const handleLogout = async (instanceName: string) => {
     try {
       await logout(instanceName);
-      window.location.reload();
+      await reloadInstance();
     } catch (error) {
       console.error("Error:", error);
     }
@@ -91,10 +91,10 @@ function DashboardInstance() {
     }
   };
 
-  const closeQRCodePopup = () => {
+  const closeQRCodePopup = async () => {
     setQRCode(null);
     setPairingCode("");
-    window.location.reload();
+    await reloadInstance();
   };
 
   const stats = useMemo(() => {

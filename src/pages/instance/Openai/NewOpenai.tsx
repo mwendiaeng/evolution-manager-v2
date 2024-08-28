@@ -15,7 +15,7 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createOpenai } from "@/lib/queries/openai/manageOpenai";
+import { useManageOpenai } from "@/lib/queries/openai/manageOpenai";
 
 import { Openai } from "@/types/evolution.types";
 
@@ -25,6 +25,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { createOpenai } = useManageOpenai();
   const [updating, setUpdating] = useState(false);
   const [open, setOpen] = useState(false);
 

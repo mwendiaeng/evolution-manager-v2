@@ -33,10 +33,7 @@ import { Separator } from "@/components/ui/separator";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFindOpenaiCreds } from "@/lib/queries/openai/findOpenaiCreds";
-import {
-  createOpenaiCreds,
-  deleteOpenaiCreds,
-} from "@/lib/queries/openai/manageOpenai";
+import { useManageOpenai } from "@/lib/queries/openai/manageOpenai";
 
 import { OpenaiCreds } from "@/types/evolution.types";
 
@@ -49,6 +46,7 @@ function CredentialsOpenai() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { createOpenaiCreds, deleteOpenaiCreds } = useManageOpenai();
   const [open, setOpen] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
   const { data: creds, refetch: refetchCreds } = useFindOpenaiCreds({

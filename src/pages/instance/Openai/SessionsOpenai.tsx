@@ -35,7 +35,7 @@ import { Input } from "@/components/ui/input";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchSessionsOpenai } from "@/lib/queries/openai/fetchSessionsOpenai";
-import { changeStatusOpenai } from "@/lib/queries/openai/manageOpenai";
+import { useManageOpenai } from "@/lib/queries/openai/manageOpenai";
 
 import { IntegrationSession } from "@/types/evolution.types";
 
@@ -43,6 +43,7 @@ function SessionsOpenai({ openaiId }: { openaiId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { changeStatusOpenai } = useManageOpenai();
   const [sorting, setSorting] = useState<SortingState>([]);
   const [open, setOpen] = useState(false);
   const { data: sessions, refetch } = useFetchSessionsOpenai({

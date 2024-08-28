@@ -29,7 +29,7 @@ import { useInstance } from "@/contexts/InstanceContext";
 import { useFindDefaultSettingsOpenai } from "@/lib/queries/openai/findDefaultSettingsOpenai";
 import { useFindOpenai } from "@/lib/queries/openai/findOpenai";
 import { useFindOpenaiCreds } from "@/lib/queries/openai/findOpenaiCreds";
-import { setDefaultSettingsOpenai } from "@/lib/queries/openai/manageOpenai";
+import { useManageOpenai } from "@/lib/queries/openai/manageOpenai";
 
 import { OpenaiSettings } from "@/types/evolution.types";
 
@@ -52,6 +52,7 @@ function DefaultSettingsOpenai() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { setDefaultSettingsOpenai } = useManageOpenai();
   const [open, setOpen] = useState(false);
   const { data: settings, refetch: refetchSettings } =
     useFindDefaultSettingsOpenai({

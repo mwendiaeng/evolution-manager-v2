@@ -9,7 +9,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useGetOpenai } from "@/lib/queries/openai/getOpenai";
-import { deleteOpenai, updateOpenai } from "@/lib/queries/openai/manageOpenai";
+import { useManageOpenai } from "@/lib/queries/openai/manageOpenai";
 
 import { Openai } from "@/types/evolution.types";
 
@@ -26,6 +26,7 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
   const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
+  const { deleteOpenai, updateOpenai } = useManageOpenai();
   const { data: openai, isLoading } = useGetOpenai({
     instanceName: instance?.name,
     openaiId,

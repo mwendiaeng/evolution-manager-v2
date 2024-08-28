@@ -11,7 +11,7 @@ interface IParams {
 
 const queryKey = (params: Partial<IParams>) => [
   "openai",
-  "findDefaultSettingsOpenai",
+  "fetchDefaultSettings",
   JSON.stringify(params),
 ];
 

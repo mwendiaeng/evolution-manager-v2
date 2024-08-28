@@ -12,7 +12,7 @@ interface IParams {
 
 const queryKey = (params: Partial<IParams>) => [
   "openai",
-  "fetchSessionsOpenai",
+  "fetchSessions",
   JSON.stringify(params),
 ];
 

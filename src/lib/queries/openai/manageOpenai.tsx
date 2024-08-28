@@ -1,13 +1,14 @@
 import { Openai, OpenaiCreds, OpenaiSettings } from "@/types/evolution.types";
 
 import { api } from "../api";
+import { useManageMutation } from "../mutateQuery";
 
 interface CreateOpenaiCredsParams {
   instanceName: string;
   token?: string;
   data: OpenaiCreds;
 }
-export const createOpenaiCreds = async ({
+const createOpenaiCreds = async ({
   instanceName,
   token,
   data,
@@ -22,7 +23,7 @@ interface DeleteOpenaiCredsParams {
   openaiCredsId: string;
   instanceName: string;
 }
-export const deleteOpenaiCreds = async ({
+const deleteOpenaiCreds = async ({
   openaiCredsId,
   instanceName,
 }: DeleteOpenaiCredsParams) => {
@@ -37,7 +38,7 @@ interface CreateOpenaiParams {
   token?: string;
   data: Openai;
 }
-export const createOpenai = async ({
+const createOpenai = async ({
   instanceName,
   token,
   data,
@@ -54,7 +55,7 @@ interface UpdateOpenaiParams {
   openaiId: string;
   data: Openai;
 }
-export const updateOpenai = async ({
+const updateOpenai = async ({
   instanceName,
   token,
   openaiId,
@@ -73,7 +74,7 @@ interface DeleteOpenaiParams {
   token?: string;
   openaiId: string;
 }
-export const deleteOpenai = async ({
+const deleteOpenai = async ({
   instanceName,
   token,
   openaiId,
@@ -90,7 +91,7 @@ interface SetDefaultSettingsOpenaiParams {
   token?: string;
   data: OpenaiSettings;
 }
-export const setDefaultSettingsOpenai = async ({
+const setDefaultSettingsOpenai = async ({
   instanceName,
   token,
   data,
@@ -107,7 +108,7 @@ interface ChangeStatusOpenaiParams {
   remoteJid: string;
   status: string;
 }
-export const changeStatusOpenai = async ({
+const changeStatusOpenai = async ({
   instanceName,
   token,
   remoteJid,
@@ -120,3 +121,49 @@ export const changeStatusOpenai = async ({
   );
   return response.data;
 };
+
+export function useManageOpenai() {
+  const setDefaultSettingsOpenaiMutation = useManageMutation(
+    setDefaultSettingsOpenai,
+    { invalidateKeys: [["openai", "fetchDefaultSettings"]] },
+  );
+  const changeStatusOpenaiMutation = useManageMutation(changeStatusOpenai, {
+    invalidateKeys: [
+      ["openai", "getOpenai"],
+      ["openai", "fetchSessions"],
+    ],
+  });
+  const deleteOpenaiMutation = useManageMutation(deleteOpenai, {
+    invalidateKeys: [
+      ["openai", "getOpenai"],
+      ["openai", "findOpenai"],
+      ["openai", "fetchSessions"],
+    ],
+  });
+  const updateOpenaiMutation = useManageMutation(updateOpenai, {
+    invalidateKeys: [
+      ["openai", "getOpenai"],
+      ["openai", "findOpenai"],
+      ["openai", "fetchSessions"],
+    ],
+  });
+  const createOpenaiMutation = useManageMutation(createOpenai, {
+    invalidateKeys: [["openai", "findOpenai"]],
+  });
+  const createOpenaiCredsMutation = useManageMutation(createOpenaiCreds, {
+    invalidateKeys: [["openai", "findOpenaiCreds"]],
+  });
+  const deleteOpenaiCredsMutation = useManageMutation(deleteOpenaiCreds, {
+    invalidateKeys: [["openai", "findOpenaiCreds"]],
+  });
+
+  return {
+    setDefaultSettingsOpenai: setDefaultSettingsOpenaiMutation,
+    changeStatusOpenai: changeStatusOpenaiMutation,
+    deleteOpenai: deleteOpenaiMutation,
+    updateOpenai: updateOpenaiMutation,
+    createOpenai: createOpenaiMutation,
+    createOpenaiCreds: createOpenaiCredsMutation,
+    deleteOpenaiCreds: deleteOpenaiCredsMutation,
+  };
+}

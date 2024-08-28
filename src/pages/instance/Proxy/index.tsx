@@ -14,7 +14,7 @@ import { Input } from "@/components/ui/input";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useFetchProxy } from "@/lib/queries/proxy/fetchProxy";
-import { createProxy } from "@/lib/queries/proxy/manageProxy";
+import { useManageProxy } from "@/lib/queries/proxy/manageProxy";
 
 import { Proxy as ProxyType } from "@/types/evolution.types";
 
@@ -34,6 +34,7 @@ function Proxy() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
+  const { createProxy } = useManageProxy();
   const { data: proxy } = useFetchProxy({
     instanceName: instance?.name,
   });

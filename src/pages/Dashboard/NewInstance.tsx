@@ -20,7 +20,6 @@ import { FormInput, FormSelect } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useManageInstance } from "@/lib/queries/instance/manageInstance";
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
 
 import { NewInstance as NewInstanceType } from "@/types/evolution.types";
 
@@ -66,27 +65,6 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
       businessId: "",
     },
   });
-
-  const facebookLogin =
-    getToken(TOKEN_ID.FACEBOOK_USER_TOKEN) &&
-    getToken(TOKEN_ID.FACEBOOK_CONFIG_ID) &&
-    getToken(TOKEN_ID.FACEBOOK_APP_ID);
-
-  useEffect(() => {
-    if (facebookLogin) {
-      setOptions([
-        ...options,
-        {
-          value: "META-FACEBOOK",
-          label: t("instance.form.integration.facebook"),
-        },
-        {
-          value: "META-INSTAGRAM",
-          label: t("instance.form.integration.instagram"),
-        },
-      ]);
-    }
-  }, [facebookLogin]);
 
   const integrationSelected = form.watch("integration");
 

@@ -9,7 +9,7 @@ import {
   RotateCcw,
   StopCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
@@ -34,64 +34,39 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  changeStatusOpenai,
-  fetchSessionsOpenai,
-} from "@/services/openai.service";
+import { useFetchSessionsOpenai } from "@/lib/queries/openai/fetchSessionsOpenai";
+import { useManageOpenai } from "@/lib/queries/openai/manageOpenai";
 
-import { Instance, IntegrationSession } from "@/types/evolution.types";
-
-const fetchData = async (
-  instance: Instance | null,
-  setSessions: any,
-  botId?: string,
-) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const getSessions: IntegrationSession[] = await fetchSessionsOpenai(
-        instance.name,
-        storedToken,
-        botId,
-      );
-
-      setSessions(getSessions);
-    } else {
-      console.error("Token not found");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
+import { IntegrationSession } from "@/types/evolution.types";
 
 function SessionsOpenai({ openaiId }: { openaiId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { changeStatusOpenai } = useManageOpenai();
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [sessions, setSessions] = useState<IntegrationSession[] | []>([]);
   const [open, setOpen] = useState(false);
+  const { data: sessions, refetch } = useFetchSessionsOpenai({
+    instanceName: instance?.name,
+    openaiId,
+    enabled: open,
+  });
   const [globalFilter, setGlobalFilter] = useState("");
 
-  useEffect(() => {
-    if (open) fetchData(instance, setSessions, openaiId);
-  }, [instance, openaiId, open]);
-
   function onReset() {
-    fetchData(instance, setSessions, openaiId);
+    refetch();
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {
     try {
       if (!instance) return;
 
-      await changeStatusOpenai(
-        instance.name,
-        instance.token,
+      await changeStatusOpenai({
+        instanceName: instance.name,
+        token: instance.token,
         remoteJid,
         status,
-      );
+      });
 
       toast.success(t("openai.toast.success.status"));
       onReset();
@@ -221,7 +196,7 @@ function SessionsOpenai({ openaiId }: { openaiId?: string }) {
           </div>
           <DataTable
             columns={columns}
-            data={sessions}
+            data={sessions ?? []}
             onSortingChange={setSorting}
             state={{ sorting, globalFilter }}
             onGlobalFilterChange={setGlobalFilter}

@@ -15,7 +15,7 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createFlowise } from "@/services/flowise.service";
+import { useManageFlowise } from "@/lib/queries/flowise/manageFlowise";
 
 import { Flowise } from "@/types/evolution.types";
 
@@ -25,6 +25,7 @@ function NewFlowise({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { createFlowise } = useManageFlowise();
   const [updating, setUpdating] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -53,7 +54,11 @@ function NewFlowise({ resetTable }: { resetTable: () => void }) {
         debounceTime: data.debounceTime || 0,
       };
 
-      await createFlowise(instance.name, instance.token, flowiseData);
+      await createFlowise({
+        instanceName: instance.name,
+        token: instance.token,
+        data: flowiseData,
+      });
       toast.success(t("flowise.toast.success.create"));
       setOpen(false);
       resetTable();

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -20,9 +20,9 @@ import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { useFetchWebsocket } from "@/lib/queries/websocket/fetchWebsocket";
+import { useManageWebsocket } from "@/lib/queries/websocket/manageWebsocket";
 import { cn } from "@/lib/utils";
-
-import { createWebsocket, fetchWebsocket } from "@/services/websocket.service";
 
 import { Websocket as WebsocketType } from "@/types/evolution.types";
 
@@ -38,30 +38,19 @@ function Websocket() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
+  const { createWebsocket } = useManageWebsocket();
+  const { data: websocket } = useFetchWebsocket({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enabled: false,
-      events: [],
+      enabled: websocket?.enabled ?? false,
+      events: websocket?.events ?? [],
     },
   });
-
-  useEffect(() => {
-    const loadWebsocketData = async () => {
-      if (!instance) return;
-      setLoading(true);
-      try {
-        const data = await fetchWebsocket(instance.name, instance.token);
-        form.reset(data);
-      } catch (error) {
-        console.error("Erro ao buscar dados do websocket:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadWebsocketData();
-  }, [instance, form]);
 
   const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;
@@ -73,7 +62,11 @@ function Websocket() {
         events: data.events,
       };
 
-      await createWebsocket(instance.name, instance.token, websocketData);
+      await createWebsocket({
+        instanceName: instance.name,
+        token: instance.token,
+        data: websocketData,
+      });
       toast.success(t("websocket.toast.success"));
     } catch (error: any) {
       console.error(t("websocket.toast.error"), error);

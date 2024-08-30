@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,9 +13,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { findFlowise } from "@/services/flowise.service";
-
-import { Flowise as FlowiseType, Instance } from "@/types/evolution.types";
+import { useFindFlowise } from "@/lib/queries/flowise/findFlowise";
 
 import { useMediaQuery } from "@/utils/useMediaQuery";
 
@@ -25,28 +22,6 @@ import { NewFlowise } from "./NewFlowise";
 import { SessionsFlowise } from "./SessionsFlowise";
 import { UpdateFlowise } from "./UpdateFlowise";
 
-const fetchData = async (
-  instance: Instance | null,
-  setBots: any,
-  setLoading: any,
-) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const data: FlowiseType[] = await findFlowise(instance.name, storedToken);
-
-      setBots(data);
-    } else {
-      console.error("Token not found");
-    }
-    setLoading(false);
-  } catch (error) {
-    console.error("Error:", error);
-    setLoading(false);
-  }
-};
-
 function Flowise() {
   const { t } = useTranslation();
   const isMD = useMediaQuery("(min-width: 768px)");
@@ -54,15 +29,15 @@ function Flowise() {
 
   const { flowiseId } = useParams<{ flowiseId: string }>();
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [bots, setBots] = useState<FlowiseType[]>([]);
+  const {
+    data: bots,
+    isLoading,
+    refetch,
+  } = useFindFlowise({
+    instanceName: instance?.name,
+  });
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!instance) return;
-    fetchData(instance, setBots, setLoading);
-  }, [instance]);
 
   const handleBotClick = (botId: string) => {
     if (!instance) return;
@@ -71,7 +46,7 @@ function Flowise() {
   };
 
   const resetTable = () => {
-    fetchData(instance, setBots, setLoading);
+    refetch();
   };
 
   return (
@@ -88,7 +63,7 @@ function Flowise() {
       <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
         <ResizablePanel defaultSize={35} className="pr-4">
           <div className="flex flex-col gap-3">
-            {loading ? (
+            {isLoading ? (
               <LoadingSpinner />
             ) : (
               <>
@@ -113,7 +88,7 @@ function Flowise() {
         {flowiseId && (
           <>
             <ResizableHandle withHandle className="border border-border" />
-            <ResizablePanel className="">
+            <ResizablePanel>
               <UpdateFlowise flowiseId={flowiseId} resetTable={resetTable} />
             </ResizablePanel>
           </>

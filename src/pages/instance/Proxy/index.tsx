@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -13,7 +13,8 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createProxy, fetchProxy } from "@/services/proxy.service";
+import { useFetchProxy } from "@/lib/queries/proxy/fetchProxy";
+import { useManageProxy } from "@/lib/queries/proxy/manageProxy";
 
 import { Proxy as ProxyType } from "@/types/evolution.types";
 
@@ -33,34 +34,22 @@ function Proxy() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
+  const { createProxy } = useManageProxy();
+  const { data: proxy } = useFetchProxy({
+    instanceName: instance?.name,
+  });
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      enabled: false,
-      host: "",
-      port: "",
-      protocol: "http",
-      username: "",
-      password: "",
+      enabled: proxy?.enabled ?? false,
+      host: proxy?.host ?? "",
+      port: proxy?.port ?? "",
+      protocol: proxy?.protocol ?? "http",
+      username: proxy?.username ?? "",
+      password: proxy?.password ?? "",
     },
   });
-
-  useEffect(() => {
-    const loadProxyData = async () => {
-      if (!instance) return;
-      setLoading(true);
-      try {
-        const data = await fetchProxy(instance.name, instance.token);
-        form.reset(data);
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProxyData();
-  }, [instance, form]);
 
   const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;
@@ -76,7 +65,11 @@ function Proxy() {
         password: data.password,
       };
 
-      await createProxy(instance.name, instance.token, proxyData);
+      await createProxy({
+        instanceName: instance.name,
+        token: instance.token,
+        data: proxyData,
+      });
       toast.success(t("proxy.toast.success"));
     } catch (error: any) {
       console.error(t("proxy.toast.error"), error);

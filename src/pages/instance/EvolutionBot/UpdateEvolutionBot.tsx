@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,11 +8,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  deleteEvolutionBot,
-  getEvolutionBot,
-  updateEvolutionBot,
-} from "@/services/evolutionBot.service";
+import { useGetEvolutionBot } from "@/lib/queries/evolutionBot/getEvolutionBot";
+import { useManageEvolutionBot } from "@/lib/queries/evolutionBot/manageEvolutionBot";
 
 import { EvolutionBot } from "@/types/evolution.types";
 
@@ -32,58 +29,52 @@ function UpdateEvolutionBot({
   const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [initialData, setInitialData] = useState<FormSchemaType | undefined>(
-    undefined,
+  const { deleteEvolutionBot, updateEvolutionBot } = useManageEvolutionBot();
+  const { data: bot, isLoading } = useGetEvolutionBot({
+    instanceName: instance?.name,
+    evolutionBotId,
+  });
+
+  const initialData = useMemo(
+    () => ({
+      enabled: bot?.enabled ?? true,
+      description: bot?.description ?? "",
+      apiUrl: bot?.apiUrl ?? "",
+      apiKey: bot?.apiKey ?? "",
+      triggerType: bot?.triggerType ?? "",
+      triggerOperator: bot?.triggerOperator ?? "",
+      triggerValue: bot?.triggerValue,
+      expire: bot?.expire ?? 0,
+      keywordFinish: bot?.keywordFinish,
+      delayMessage: bot?.delayMessage ?? 0,
+      unknownMessage: bot?.unknownMessage,
+      listeningFromMe: bot?.listeningFromMe,
+      stopBotFromMe: !!bot?.stopBotFromMe,
+      keepOpen: !!bot?.keepOpen,
+      debounceTime: bot?.debounceTime ?? 0,
+    }),
+    [
+      bot?.apiKey,
+      bot?.apiUrl,
+      bot?.debounceTime,
+      bot?.delayMessage,
+      bot?.description,
+      bot?.enabled,
+      bot?.expire,
+      bot?.keepOpen,
+      bot?.keywordFinish,
+      bot?.listeningFromMe,
+      bot?.stopBotFromMe,
+      bot?.triggerOperator,
+      bot?.triggerType,
+      bot?.triggerValue,
+      bot?.unknownMessage,
+    ],
   );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedToken = localStorage.getItem("token");
-
-        if (storedToken && instance && instance.name && evolutionBotId) {
-          const data: EvolutionBot = await getEvolutionBot(
-            instance.name,
-            storedToken,
-            evolutionBotId,
-          );
-
-          setInitialData({
-            enabled: data.enabled,
-            description: data.description,
-            apiUrl: data.apiUrl,
-            apiKey: data.apiKey || "",
-            triggerType: data.triggerType || "",
-            triggerOperator: data.triggerOperator || "",
-            triggerValue: data.triggerValue,
-            expire: data.expire || 0,
-            keywordFinish: data.keywordFinish,
-            delayMessage: data.delayMessage || 0,
-            unknownMessage: data.unknownMessage,
-            listeningFromMe: data.listeningFromMe,
-            stopBotFromMe: data.stopBotFromMe,
-            keepOpen: data.keepOpen,
-            debounceTime: data.debounceTime || 0,
-          });
-        } else {
-          console.error("Token not found.");
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [evolutionBotId, instance]);
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
-      const storedToken = localStorage.getItem("token");
-
-      if (storedToken && instance && instance.name && evolutionBotId) {
+      if (instance && instance.name && evolutionBotId) {
         const evolutionBotData: EvolutionBot = {
           enabled: data.enabled,
           description: data.description,
@@ -102,12 +93,11 @@ function UpdateEvolutionBot({
           debounceTime: data.debounceTime || 0,
         };
 
-        await updateEvolutionBot(
-          instance.name,
-          storedToken,
+        await updateEvolutionBot({
+          instanceName: instance.name,
           evolutionBotId,
-          evolutionBotData,
-        );
+          data: evolutionBotData,
+        });
         toast.success(t("evolutionBot.toast.success.update"));
         resetTable();
         navigate(
@@ -124,10 +114,11 @@ function UpdateEvolutionBot({
 
   const handleDelete = async () => {
     try {
-      const storedToken = localStorage.getItem("token");
-
-      if (storedToken && instance && instance.name && evolutionBotId) {
-        await deleteEvolutionBot(instance.name, storedToken, evolutionBotId);
+      if (instance && instance.name && evolutionBotId) {
+        await deleteEvolutionBot({
+          instanceName: instance.name,
+          evolutionBotId,
+        });
         toast.success(t("evolutionBot.toast.success.delete"));
 
         setOpenDeletionDialog(false);
@@ -141,7 +132,7 @@ function UpdateEvolutionBot({
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 
@@ -153,7 +144,6 @@ function UpdateEvolutionBot({
         evolutionBotId={evolutionBotId}
         handleDelete={handleDelete}
         isModal={false}
-        isLoading={loading}
         openDeletionDialog={openDeletionDialog}
         setOpenDeletionDialog={setOpenDeletionDialog}
       />

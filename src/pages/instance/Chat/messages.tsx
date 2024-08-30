@@ -9,7 +9,7 @@ import {
   SparkleIcon,
   ZapIcon,
 } from "lucide-react";
-import { RefObject, useEffect, useState } from "react";
+import { RefObject, useEffect } from "react";
 import { useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -22,9 +22,10 @@ import { Textarea } from "@/components/ui/textarea";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { findChat, findMessages } from "@/services/chat.service";
+import { useFindChat } from "@/lib/queries/chat/findChat";
+import { useFindMessages } from "@/lib/queries/chat/findMessages";
 
-import { Chat, Message } from "@/types/evolution.types";
+import { Message } from "@/types/evolution.types";
 
 type MessagesProps = {
   textareaRef: RefObject<HTMLTextAreaElement>;
@@ -43,38 +44,22 @@ function Messages({
 }: MessagesProps) {
   const { instance } = useInstance();
 
-  const [chat, setChat] = useState<Chat | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
+  const { remoteJid } = useParams<{ remoteJid: string }>();
+  const { data: chat } = useFindChat({
+    remoteJid,
+    instanceName: instance?.name,
+  });
 
-  const { remoteJid } = useParams<{
-    remoteJid: string;
-  }>();
+  const { data: messages, isSuccess } = useFindMessages({
+    remoteJid,
+    instanceName: instance?.name,
+  });
 
   useEffect(() => {
-    const fetchChat = async (instanceName: string, remoteJid: string) => {
-      try {
-        const data = await findChat(instanceName, remoteJid);
-        setChat(data[0]);
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      }
-    };
-
-    const fetchMsgs = async (instanceName: string, remoteJid: string) => {
-      try {
-        const data = await findMessages(instanceName, remoteJid);
-        setMessages(data.messages.records);
-        scrollToBottom();
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      }
-    };
-
-    if (instance && remoteJid) {
-      fetchChat(instance.name, remoteJid);
-      fetchMsgs(instance.name, remoteJid);
+    if (isSuccess && messages) {
+      scrollToBottom();
     }
-  }, [remoteJid, instance, scrollToBottom]);
+  }, [isSuccess, messages, scrollToBottom]);
 
   const renderBubbleRight = (message: Message) => {
     return (
@@ -142,7 +127,7 @@ function Messages({
         </DropdownMenu>
       </div>
       <div className="message-container mx-auto flex max-w-4xl flex-1 flex-col gap-8 overflow-y-auto px-4">
-        {messages.map((message) => {
+        {messages?.map((message) => {
           if (message.key.fromMe) {
             return renderBubbleRight(message);
           } else {

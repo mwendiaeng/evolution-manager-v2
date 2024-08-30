@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -20,9 +20,9 @@ import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { useFetchRabbitmq } from "@/lib/queries/rabbitmq/fetchRabbitmq";
+import { useManageRabbitmq } from "@/lib/queries/rabbitmq/manageRabbitmq";
 import { cn } from "@/lib/utils";
-
-import { createRabbitmq, fetchRabbitmq } from "@/services/rabbitmq.service";
 
 import { Rabbitmq as RabbitmqType } from "@/types/evolution.types";
 
@@ -38,30 +38,19 @@ function Rabbitmq() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
+  const { createRabbitmq } = useManageRabbitmq();
+  const { data: rabbitmq } = useFetchRabbitmq({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      enabled: false,
-      events: [],
+      enabled: rabbitmq?.enabled ?? false,
+      events: rabbitmq?.events ?? [],
     },
   });
-
-  useEffect(() => {
-    const loadRabbitmqData = async () => {
-      if (!instance) return;
-      setLoading(true);
-      try {
-        const data = await fetchRabbitmq(instance.name, instance.token);
-        form.reset(data);
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadRabbitmqData();
-  }, [instance, form]);
 
   const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;
@@ -73,7 +62,11 @@ function Rabbitmq() {
         events: data.events,
       };
 
-      await createRabbitmq(instance.name, instance.token, rabbitmqData);
+      await createRabbitmq({
+        instanceName: instance.name,
+        token: instance.token,
+        data: rabbitmqData,
+      });
       toast.success(t("rabbitmq.toast.success"));
     } catch (error: any) {
       console.error(t("rabbitmq.toast.error"), error);

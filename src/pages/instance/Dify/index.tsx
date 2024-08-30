@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,9 +13,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { findDify } from "@/services/dify.service";
-
-import { Dify as DifyType, Instance } from "@/types/evolution.types";
+import { useFetchDify } from "@/lib/queries/dify/fetchDify";
 
 import { useMediaQuery } from "@/utils/useMediaQuery";
 
@@ -25,28 +22,6 @@ import { NewDify } from "./NewDify";
 import { SessionsDify } from "./SessionsDify";
 import { UpdateDify } from "./UpdateDify";
 
-const fetchData = async (
-  instance: Instance | null,
-  setBots: any,
-  setLoading: any,
-) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const data: DifyType[] = await findDify(instance.name, storedToken);
-
-      setBots(data);
-    } else {
-      console.error("Token not found");
-    }
-    setLoading(false);
-  } catch (error) {
-    console.error("Error:", error);
-    setLoading(false);
-  }
-};
-
 function Dify() {
   const { t } = useTranslation();
   const isMD = useMediaQuery("(min-width: 768px)");
@@ -54,15 +29,15 @@ function Dify() {
 
   const { difyId } = useParams<{ difyId: string }>();
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [bots, setBots] = useState<DifyType[]>([]);
+  const {
+    data: bots,
+    refetch,
+    isLoading,
+  } = useFetchDify({
+    instanceName: instance?.name,
+  });
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!instance) return;
-    fetchData(instance, setBots, setLoading);
-  }, [instance]);
 
   const handleBotClick = (botId: string) => {
     if (!instance) return;
@@ -71,7 +46,7 @@ function Dify() {
   };
 
   const resetTable = () => {
-    fetchData(instance, setBots, setLoading);
+    refetch();
   };
 
   return (
@@ -88,7 +63,7 @@ function Dify() {
       <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
         <ResizablePanel defaultSize={35} className="pr-4">
           <div className="flex flex-col gap-3">
-            {loading ? (
+            {isLoading ? (
               <LoadingSpinner />
             ) : (
               <>
@@ -116,7 +91,7 @@ function Dify() {
         {difyId && (
           <>
             <ResizableHandle withHandle className="border border-border" />
-            <ResizablePanel className="">
+            <ResizablePanel>
               <UpdateDify difyId={difyId} resetTable={resetTable} />
             </ResizablePanel>
           </>

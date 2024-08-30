@@ -15,7 +15,7 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createEvolutionBot } from "@/services/evolutionBot.service";
+import { useManageEvolutionBot } from "@/lib/queries/evolutionBot/manageEvolutionBot";
 
 import { EvolutionBot } from "@/types/evolution.types";
 
@@ -27,6 +27,8 @@ function NewEvolutionBot({ resetTable }: { resetTable: () => void }) {
 
   const [updating, setUpdating] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const { createEvolutionBot } = useManageEvolutionBot();
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
@@ -53,7 +55,11 @@ function NewEvolutionBot({ resetTable }: { resetTable: () => void }) {
         debounceTime: data.debounceTime || 0,
       };
 
-      await createEvolutionBot(instance.name, instance.token, evolutionBotData);
+      await createEvolutionBot({
+        instanceName: instance.name,
+        token: instance.token,
+        data: evolutionBotData,
+      });
       toast.success(t("evolutionBot.toast.success.create"));
       setOpen(false);
       resetTable();

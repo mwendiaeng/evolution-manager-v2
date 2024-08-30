@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,11 +8,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  deleteTypebot,
-  getTypebot,
-  updateTypebot,
-} from "@/services/typebot.service";
+import { useGetTypebot } from "@/lib/queries/typebot/getTypebot";
+import { useManageTypebot } from "@/lib/queries/typebot/manageTypebot";
 
 import { Typebot } from "@/types/evolution.types";
 
@@ -29,58 +26,51 @@ function UpdateTypebot({ typebotId, resetTable }: UpdateTypebotProps) {
   const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [initialData, setInitialData] = useState<FormSchemaType | undefined>(
-    undefined,
+  const { deleteTypebot, updateTypebot } = useManageTypebot();
+  const { data: bot, isLoading } = useGetTypebot({
+    instanceName: instance?.name,
+    typebotId,
+  });
+  const initialData = useMemo(
+    () => ({
+      enabled: !!bot?.enabled,
+      description: bot?.description ?? "",
+      url: bot?.url ?? "",
+      typebot: bot?.typebot ?? "",
+      triggerType: bot?.triggerType ?? "",
+      triggerOperator: bot?.triggerOperator ?? "",
+      triggerValue: bot?.triggerValue,
+      expire: bot?.expire ?? 0,
+      keywordFinish: bot?.keywordFinish,
+      delayMessage: bot?.delayMessage ?? 0,
+      unknownMessage: bot?.unknownMessage,
+      listeningFromMe: !!bot?.listeningFromMe,
+      stopBotFromMe: !!bot?.stopBotFromMe,
+      keepOpen: !!bot?.keepOpen,
+      debounceTime: bot?.debounceTime ?? 0,
+    }),
+    [
+      bot?.debounceTime,
+      bot?.delayMessage,
+      bot?.description,
+      bot?.enabled,
+      bot?.expire,
+      bot?.keepOpen,
+      bot?.keywordFinish,
+      bot?.listeningFromMe,
+      bot?.stopBotFromMe,
+      bot?.triggerOperator,
+      bot?.triggerType,
+      bot?.triggerValue,
+      bot?.typebot,
+      bot?.unknownMessage,
+      bot?.url,
+    ],
   );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedToken = localStorage.getItem("token");
-
-        if (storedToken && instance && instance.name && typebotId) {
-          const data: Typebot = await getTypebot(
-            instance.name,
-            storedToken,
-            typebotId,
-          );
-
-          setInitialData({
-            enabled: data.enabled,
-            description: data.description,
-            url: data.url,
-            typebot: data.typebot || "",
-            triggerType: data.triggerType || "",
-            triggerOperator: data.triggerOperator || "",
-            triggerValue: data.triggerValue,
-            expire: data.expire || 0,
-            keywordFinish: data.keywordFinish,
-            delayMessage: data.delayMessage || 0,
-            unknownMessage: data.unknownMessage,
-            listeningFromMe: data.listeningFromMe,
-            stopBotFromMe: data.stopBotFromMe,
-            keepOpen: data.keepOpen,
-            debounceTime: data.debounceTime || 0,
-          });
-        } else {
-          console.error("Token not found.");
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [typebotId, instance]);
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
-      const storedToken = localStorage.getItem("token");
-
-      if (storedToken && instance && instance.name && typebotId) {
+      if (instance && instance.name && typebotId) {
         const typebotData: Typebot = {
           enabled: data.enabled,
           description: data.description,
@@ -99,7 +89,11 @@ function UpdateTypebot({ typebotId, resetTable }: UpdateTypebotProps) {
           debounceTime: data.debounceTime || 0,
         };
 
-        await updateTypebot(instance.name, storedToken, typebotId, typebotData);
+        await updateTypebot({
+          instanceName: instance.name,
+          typebotId,
+          data: typebotData,
+        });
         toast.success(t("typebot.toast.success.update"));
         resetTable();
         navigate(`/manager/instance/${instance.id}/typebot/${typebotId}`);
@@ -114,10 +108,8 @@ function UpdateTypebot({ typebotId, resetTable }: UpdateTypebotProps) {
 
   const handleDelete = async () => {
     try {
-      const storedToken = localStorage.getItem("token");
-
-      if (storedToken && instance && instance.name && typebotId) {
-        await deleteTypebot(instance.name, storedToken, typebotId);
+      if (instance && instance.name && typebotId) {
+        await deleteTypebot({ instanceName: instance.name, typebotId });
         toast.success(t("typebot.toast.success.delete"));
 
         setOpenDeletionDialog(false);
@@ -131,7 +123,7 @@ function UpdateTypebot({ typebotId, resetTable }: UpdateTypebotProps) {
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return <LoadingSpinner />;
   }
 
@@ -143,7 +135,7 @@ function UpdateTypebot({ typebotId, resetTable }: UpdateTypebotProps) {
         typebotId={typebotId}
         handleDelete={handleDelete}
         isModal={false}
-        isLoading={loading}
+        isLoading={isLoading}
         openDeletionDialog={openDeletionDialog}
         setOpenDeletionDialog={setOpenDeletionDialog}
       />

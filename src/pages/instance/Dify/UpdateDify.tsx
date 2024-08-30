@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -8,7 +8,8 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { deleteDify, getDify, updateDify } from "@/services/dify.service";
+import { useGetDify } from "@/lib/queries/dify/getDify";
+import { useManageDify } from "@/lib/queries/dify/manageDify";
 
 import { Dify } from "@/types/evolution.types";
 
@@ -25,55 +26,54 @@ function UpdateDify({ difyId, resetTable }: UpdateDifyProps) {
   const navigate = useNavigate();
   const [openDeletionDialog, setOpenDeletionDialog] = useState<boolean>(false);
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [initialData, setInitialData] = useState<FormSchemaType | undefined>(
-    undefined,
+  const { deleteDify, updateDify } = useManageDify();
+  const { data: dify, isLoading: loading } = useGetDify({
+    difyId,
+    instanceName: instance?.name,
+  });
+
+  const initialData = useMemo(
+    () => ({
+      enabled: !!dify?.enabled,
+      description: dify?.description ?? "",
+      botType: dify?.botType ?? "",
+      apiUrl: dify?.apiUrl ?? "",
+      apiKey: dify?.apiKey ?? "",
+      triggerType: dify?.triggerType ?? "",
+      triggerOperator: dify?.triggerOperator ?? "",
+      triggerValue: dify?.triggerValue ?? "",
+      expire: dify?.expire ?? 0,
+      keywordFinish: dify?.keywordFinish ?? "",
+      delayMessage: dify?.delayMessage ?? 0,
+      unknownMessage: dify?.unknownMessage ?? "",
+      listeningFromMe: !!dify?.listeningFromMe,
+      stopBotFromMe: !!dify?.stopBotFromMe,
+      keepOpen: !!dify?.keepOpen,
+      debounceTime: dify?.debounceTime ?? 0,
+    }),
+    [
+      dify?.apiKey,
+      dify?.apiUrl,
+      dify?.botType,
+      dify?.debounceTime,
+      dify?.delayMessage,
+      dify?.description,
+      dify?.enabled,
+      dify?.expire,
+      dify?.keepOpen,
+      dify?.keywordFinish,
+      dify?.listeningFromMe,
+      dify?.stopBotFromMe,
+      dify?.triggerOperator,
+      dify?.triggerType,
+      dify?.triggerValue,
+      dify?.unknownMessage,
+    ],
   );
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storedToken = localStorage.getItem("token");
-
-        if (storedToken && instance && instance.name && difyId) {
-          const data: Dify = await getDify(instance.name, storedToken, difyId);
-
-          setInitialData({
-            enabled: data.enabled,
-            description: data.description,
-            botType: data.botType,
-            apiUrl: data.apiUrl,
-            apiKey: data.apiKey,
-            triggerType: data.triggerType || "",
-            triggerOperator: data.triggerOperator || "",
-            triggerValue: data.triggerValue,
-            expire: data.expire || 0,
-            keywordFinish: data.keywordFinish,
-            delayMessage: data.delayMessage || 0,
-            unknownMessage: data.unknownMessage,
-            listeningFromMe: data.listeningFromMe,
-            stopBotFromMe: data.stopBotFromMe,
-            keepOpen: data.keepOpen,
-            debounceTime: data.debounceTime || 0,
-          });
-        } else {
-          console.error("Token not found.");
-        }
-        setLoading(false);
-      } catch (error) {
-        console.error("Error:", error);
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, [difyId, instance]);
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
-      const storedToken = localStorage.getItem("token");
-
-      if (storedToken && instance && instance.name && difyId) {
+      if (instance && instance.name && difyId) {
         const difyData: Dify = {
           enabled: data.enabled,
           description: data.description,
@@ -93,7 +93,11 @@ function UpdateDify({ difyId, resetTable }: UpdateDifyProps) {
           debounceTime: data.debounceTime || 0,
         };
 
-        await updateDify(instance.name, storedToken, difyId, difyData);
+        await updateDify({
+          instanceName: instance.name,
+          difyId,
+          data: difyData,
+        });
         toast.success(t("dify.toast.success.update"));
         resetTable();
         navigate(`/manager/instance/${instance.id}/dify/${difyId}`);
@@ -108,10 +112,8 @@ function UpdateDify({ difyId, resetTable }: UpdateDifyProps) {
 
   const handleDelete = async () => {
     try {
-      const storedToken = localStorage.getItem("token");
-
-      if (storedToken && instance && instance.name && difyId) {
-        await deleteDify(instance.name, storedToken, difyId);
+      if (instance && instance.name && difyId) {
+        await deleteDify({ instanceName: instance.name, difyId });
         toast.success(t("dify.toast.success.delete"));
 
         setOpenDeletionDialog(false);

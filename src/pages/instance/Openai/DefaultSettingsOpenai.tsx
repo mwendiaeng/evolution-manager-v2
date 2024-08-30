@@ -26,19 +26,12 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  findDefaultSettingsOpenai,
-  findOpenai,
-  findOpenaiCreds,
-  setDefaultSettingsOpenai,
-} from "@/services/openai.service";
+import { useFindDefaultSettingsOpenai } from "@/lib/queries/openai/findDefaultSettingsOpenai";
+import { useFindOpenai } from "@/lib/queries/openai/findOpenai";
+import { useFindOpenaiCreds } from "@/lib/queries/openai/findOpenaiCreds";
+import { useManageOpenai } from "@/lib/queries/openai/manageOpenai";
 
-import {
-  Instance,
-  Openai as OpenaiBot,
-  OpenaiCreds,
-  OpenaiSettings,
-} from "@/types/evolution.types";
+import { OpenaiSettings } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   openaiCredsId: z.string(),
@@ -55,63 +48,25 @@ const FormSchema = z.object({
   openaiIdFallback: z.union([z.null(), z.string()]).optional(),
 });
 
-const fetchData = async (
-  instance: Instance | null,
-  setSettings: any,
-  setBots: any,
-) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const getSettings: OpenaiSettings[] = await findDefaultSettingsOpenai(
-        instance.name,
-        storedToken,
-      );
-
-      setSettings(getSettings);
-
-      const getBots: OpenaiBot[] = await findOpenai(
-        instance.name,
-        storedToken,
-      ).catch();
-
-      setBots(getBots);
-    } else {
-      console.error("Token not found");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-
-const fetchCreds = async (instance: Instance | null, setCreds: any) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const getCreds: OpenaiCreds[] = await findOpenaiCreds(
-        instance.name,
-        storedToken,
-      ).catch();
-
-      setCreds(getCreds);
-    } else {
-      console.error("Token not found");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-
 function DefaultSettingsOpenai() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { setDefaultSettingsOpenai } = useManageOpenai();
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<OpenaiSettings>();
-  const [bots, setBots] = useState<OpenaiBot[]>([]);
-  const [creds, setCreds] = useState<OpenaiCreds[]>();
+  const { data: settings, refetch: refetchSettings } =
+    useFindDefaultSettingsOpenai({
+      instanceName: instance?.name,
+      enabled: open,
+    });
+  const { data: bots, refetch: refetchBots } = useFindOpenai({
+    instanceName: instance?.name,
+    enabled: open,
+  });
+  const { data: creds } = useFindOpenaiCreds({
+    instanceName: instance?.name,
+    enabled: open,
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -130,13 +85,6 @@ function DefaultSettingsOpenai() {
       openaiIdFallback: undefined,
     },
   });
-
-  useEffect(() => {
-    if (open) {
-      fetchData(instance, setSettings, setBots);
-      fetchCreds(instance, setCreds);
-    }
-  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -179,11 +127,11 @@ function DefaultSettingsOpenai() {
         ignoreJids: data.ignoreJids,
       };
 
-      await setDefaultSettingsOpenai(
-        instance.name,
-        instance.token,
-        settingsData,
-      );
+      await setDefaultSettingsOpenai({
+        instanceName: instance.name,
+        token: instance.token,
+        data: settingsData,
+      });
       toast.success(t("openai.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -193,8 +141,8 @@ function DefaultSettingsOpenai() {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setBots);
-    fetchCreds(instance, setCreds);
+    refetchSettings();
+    refetchBots();
   }
 
   return (

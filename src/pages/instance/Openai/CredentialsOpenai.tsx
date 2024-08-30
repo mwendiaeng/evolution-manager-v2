@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
 import { ArrowUpDown, Lock, MoreHorizontal } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -32,45 +32,27 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  createOpenaiCreds,
-  deleteOpenaiCreds,
-  findOpenaiCreds,
-} from "@/services/openai.service";
+import { useFindOpenaiCreds } from "@/lib/queries/openai/findOpenaiCreds";
+import { useManageOpenai } from "@/lib/queries/openai/manageOpenai";
 
-import { Instance, OpenaiCreds } from "@/types/evolution.types";
+import { OpenaiCreds } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   name: z.string(),
   apiKey: z.string(),
 });
 
-const fetchData = async (instance: Instance | null, setCreds: any) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const getCreds: OpenaiCreds[] = await findOpenaiCreds(
-        instance.name,
-        storedToken,
-      );
-
-      setCreds(getCreds);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-
 function CredentialsOpenai() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { createOpenaiCreds, deleteOpenaiCreds } = useManageOpenai();
   const [open, setOpen] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [creds, setCreds] = useState<OpenaiCreds[] | []>([]);
+  const { data: creds, refetch: refetchCreds } = useFindOpenaiCreds({
+    instanceName: instance?.name,
+    enabled: open,
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -79,10 +61,6 @@ function CredentialsOpenai() {
       apiKey: "",
     },
   });
-
-  useEffect(() => {
-    if (open) fetchData(instance, setCreds);
-  }, [instance, open]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
@@ -95,7 +73,11 @@ function CredentialsOpenai() {
         apiKey: data.apiKey,
       };
 
-      await createOpenaiCreds(instance.name, instance.token, credsData);
+      await createOpenaiCreds({
+        instanceName: instance.name,
+        token: instance.token,
+        data: credsData,
+      });
       toast.success(t("openai.toast.success.credentialsCreate"));
       onReset();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,14 +89,21 @@ function CredentialsOpenai() {
 
   function onReset() {
     form.reset();
-    fetchData(instance, setCreds);
+    refetchCreds();
   }
 
   const handleDelete = async (id: string) => {
+    if (!instance?.name) {
+      toast.error("Instance not found.");
+      return;
+    }
     try {
-      await deleteOpenaiCreds(id, instance?.name as string);
+      await deleteOpenaiCreds({
+        openaiCredsId: id,
+        instanceName: instance?.name,
+      });
       toast.success(t("openai.toast.success.credentialsDelete"));
-      fetchData(instance, setCreds);
+      refetchCreds();
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(`Error: ${error?.response?.data?.response?.message}`);
@@ -226,7 +215,7 @@ function CredentialsOpenai() {
         <div>
           <DataTable
             columns={columns}
-            data={creds}
+            data={creds ?? []}
             onSortingChange={setSorting}
             state={{ sorting }}
             noResultsMessage={t("openai.credentials.table.none")}

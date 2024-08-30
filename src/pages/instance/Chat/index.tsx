@@ -1,6 +1,6 @@
 import "./style.css";
 import { MessageCircle, PlusIcon } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
@@ -13,7 +13,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { findChats } from "@/services/chat.service";
+import { useFindChats } from "@/lib/queries/chat/findChats";
 
 import { Chat as ChatType } from "@/types/evolution.types";
 
@@ -26,9 +26,11 @@ function Chat() {
   const lastMessageRef = useRef<HTMLDivElement | null>(null);
   const [textareaHeight] = useState("auto");
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
-  const [chats, setChats] = useState([]);
-
   const { instance } = useInstance();
+
+  const { data: chats, isSuccess } = useFindChats({
+    instanceName: instance?.name,
+  });
 
   const { instanceId, remoteJid } = useParams<{
     instanceId: string;
@@ -37,11 +39,11 @@ function Chat() {
 
   const navigate = useNavigate();
 
-  const scrollToBottom = () => {
+  const scrollToBottom = useCallback(() => {
     if (lastMessageRef.current) {
       lastMessageRef.current.scrollIntoView({});
     }
-  };
+  }, []);
 
   const handleTextareaChange = () => {
     if (textareaRef.current) {
@@ -59,21 +61,10 @@ function Chat() {
   };
 
   useEffect(() => {
-    const fetchData = async (instanceName: string) => {
-      try {
-        const data = await findChats(instanceName);
-        setChats(data);
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      }
-    };
-
-    if (instance) {
-      fetchData(instance.name);
+    if (isSuccess) {
+      scrollToBottom();
     }
-
-    scrollToBottom();
-  }, [instance]);
+  }, [isSuccess, scrollToBottom]);
 
   const handleChat = (id: string) => {
     navigate(`/manager/instance/${instanceId}/chat/${id}`);
@@ -108,7 +99,7 @@ function Chat() {
                   <div className="px-2 text-xs font-medium text-muted-foreground">
                     Contatos
                   </div>
-                  {chats.map(
+                  {chats?.map(
                     (chat: ChatType) =>
                       chat.remoteJid.includes("@s.whatsapp.net") && (
                         <Link
@@ -146,7 +137,7 @@ function Chat() {
             <TabsContent value="groups">
               <div className="flex-1 overflow-auto">
                 <div className="grid gap-1 p-2 text-foreground">
-                  {chats.map(
+                  {chats?.map(
                     (chat: ChatType) =>
                       chat.remoteJid.includes("@g.us") && (
                         <Link

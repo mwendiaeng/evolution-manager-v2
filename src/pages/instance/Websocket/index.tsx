@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -47,10 +47,19 @@ function Websocket() {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enabled: websocket?.enabled ?? false,
-      events: websocket?.events ?? [],
+      enabled: false,
+      events: [],
     },
   });
+
+  useEffect(() => {
+    if (websocket) {
+      form.reset({
+        enabled: websocket.enabled,
+        events: websocket.events,
+      });
+    }
+  }, [websocket]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;

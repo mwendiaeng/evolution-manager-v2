@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -47,10 +47,19 @@ function Sqs() {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enabled: sqs?.enabled ?? false,
-      events: sqs?.events ?? [],
+      enabled: false,
+      events: [],
     },
   });
+
+  useEffect(() => {
+    if (sqs) {
+      form.reset({
+        enabled: sqs.enabled,
+        events: sqs.events,
+      });
+    }
+  }, [sqs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;

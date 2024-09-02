@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -52,13 +52,25 @@ function Webhook() {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      enabled: webhook?.enabled ?? false,
-      url: webhook?.url ?? "",
-      events: webhook?.events ?? [],
-      base64: webhook?.base64 ?? false,
-      byEvents: webhook?.byEvents ?? false,
+      enabled: false,
+      url: "",
+      events: [],
+      base64: false,
+      byEvents: false,
     },
   });
+
+  useEffect(() => {
+    if (webhook) {
+      form.reset({
+        enabled: webhook.enabled,
+        url: webhook.url,
+        events: webhook.events,
+        base64: webhook.webhookBase64,
+        byEvents: webhook.webhookByEvents,
+      });
+    }
+  }, [webhook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;

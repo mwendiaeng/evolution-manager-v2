@@ -9,10 +9,10 @@ import { Button } from "./ui/button";
 function Footer() {
   const { t } = useTranslation();
 
-  const clientName = getToken(TOKEN_ID.CLIENT_NAME);
   const url = getToken(TOKEN_ID.API_URL);
   const { data: serverInfo } = useVerifyServer({ url });
 
+  const clientName = useMemo(() => serverInfo?.clientName, [serverInfo]);
   const version = useMemo(() => serverInfo?.version, [serverInfo]);
 
   const links = [

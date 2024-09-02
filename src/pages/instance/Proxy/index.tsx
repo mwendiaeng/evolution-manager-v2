@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -42,14 +42,27 @@ function Proxy() {
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      enabled: proxy?.enabled ?? false,
-      host: proxy?.host ?? "",
-      port: proxy?.port ?? "",
-      protocol: proxy?.protocol ?? "http",
-      username: proxy?.username ?? "",
-      password: proxy?.password ?? "",
+      enabled: false,
+      host: "",
+      port: "",
+      protocol: "http",
+      username: "",
+      password: "",
     },
   });
+
+  useEffect(() => {
+    if (proxy) {
+      form.reset({
+        enabled: proxy.enabled,
+        host: proxy.host,
+        port: proxy.port,
+        protocol: proxy.protocol,
+        username: proxy.username,
+        password: proxy.password,
+      });
+    }
+  }, [proxy]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;

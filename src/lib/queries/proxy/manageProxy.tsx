@@ -9,7 +9,7 @@ interface IParams {
   data: Proxy;
 }
 
-const createProxy = async ({ instanceName, token, ...data }: IParams) => {
+const createProxy = async ({ instanceName, token, data }: IParams) => {
   const response = await api.post(`/proxy/set/${instanceName}`, data, {
     headers: { apikey: token },
   });

@@ -9,7 +9,7 @@ interface IParams {
   data: Chatwoot;
 }
 
-const createChatwoot = async ({ instanceName, token, ...data }: IParams) => {
+const createChatwoot = async ({ instanceName, token, data }: IParams) => {
   const response = await api.post(`/chatwoot/set/${instanceName}`, data, {
     headers: {
       apikey: token,

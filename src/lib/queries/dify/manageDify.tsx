@@ -9,11 +9,7 @@ interface CreateDifyParams {
   data: Dify;
 }
 
-const createDify = async ({
-  instanceName,
-  token,
-  ...data
-}: CreateDifyParams) => {
+const createDify = async ({ instanceName, token, data }: CreateDifyParams) => {
   const response = await api.post(`/dify/create/${instanceName}`, data, {
     headers: { apikey: token },
   });
@@ -25,11 +21,7 @@ interface UpdateDifyParams {
   difyId: string;
   data: Dify;
 }
-const updateDify = async ({
-  instanceName,
-  difyId,
-  ...data
-}: UpdateDifyParams) => {
+const updateDify = async ({ instanceName, difyId, data }: UpdateDifyParams) => {
   const response = await api.put(
     `/dify/update/${difyId}/${instanceName}`,
     data,
@@ -54,7 +46,7 @@ interface SetDefaultSettingsDifyParams {
 const setDefaultSettingsDify = async ({
   instanceName,
   token,
-  ...data
+  data,
 }: SetDefaultSettingsDifyParams) => {
   const response = await api.post(`/dify/settings/${instanceName}`, data, {
     headers: { apikey: token },

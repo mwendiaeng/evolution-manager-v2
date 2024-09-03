@@ -30,6 +30,6 @@ export const useFetchDify = (
     ...rest,
     queryKey: queryKey({ instanceName, token }),
     queryFn: () => fetchDify({ instanceName: instanceName!, token: token! }),
-    enabled: !!instanceName && !!token && (props.enabled ?? true),
+    enabled: !!instanceName && (props.enabled ?? true),
   });
 };

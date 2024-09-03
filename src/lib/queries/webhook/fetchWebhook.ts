@@ -30,6 +30,6 @@ export const useFetchWebhook = (
     ...rest,
     queryKey: queryKey({ instanceName, token }),
     queryFn: () => fetchWebhook({ instanceName: instanceName!, token: token! }),
-    enabled: !!instanceName && !!token,
+    enabled: !!instanceName,
   });
 };

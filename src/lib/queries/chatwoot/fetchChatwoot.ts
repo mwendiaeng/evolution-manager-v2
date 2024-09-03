@@ -31,6 +31,6 @@ export const useFetchChatwoot = (
     queryKey: queryKey({ instanceName, token }),
     queryFn: () =>
       fetchChatwoot({ instanceName: instanceName!, token: token! }),
-    enabled: !!instanceName && !!token,
+    enabled: !!instanceName,
   });
 };

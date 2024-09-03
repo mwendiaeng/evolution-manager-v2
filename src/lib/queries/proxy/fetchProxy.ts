@@ -30,6 +30,6 @@ export const useFetchProxy = (
     ...rest,
     queryKey: queryKey({ instanceName, token }),
     queryFn: () => fetchProxy({ instanceName: instanceName!, token: token! }),
-    enabled: !!instanceName && !!token,
+    enabled: !!instanceName,
   });
 };

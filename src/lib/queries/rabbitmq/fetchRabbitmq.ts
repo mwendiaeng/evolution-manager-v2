@@ -31,6 +31,6 @@ export const useFetchRabbitmq = (
     queryKey: queryKey({ instanceName, token }),
     queryFn: () =>
       fetchRabbitmq({ instanceName: instanceName!, token: token! }),
-    enabled: !!instanceName && !!token,
+    enabled: !!instanceName,
   });
 };

@@ -31,6 +31,6 @@ export const useFetchSettings = (
     queryKey: queryKey({ instanceName, token }),
     queryFn: () =>
       fetchSettings({ instanceName: instanceName!, token: token! }),
-    enabled: !!instanceName && !!token,
+    enabled: !!instanceName,
   });
 };

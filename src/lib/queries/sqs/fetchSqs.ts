@@ -30,6 +30,6 @@ export const useFetchSqs = (
     ...rest,
     queryKey: queryKey({ instanceName, token }),
     queryFn: () => fetchSqs({ instanceName: instanceName!, token: token! }),
-    enabled: !!instanceName && !!token,
+    enabled: !!instanceName,
   });
 };

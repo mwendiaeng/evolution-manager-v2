@@ -21,22 +21,27 @@ import { useManageChatwoot } from "@/lib/queries/chatwoot/manageChatwoot";
 
 import { Chatwoot as ChatwootType } from "@/types/evolution.types";
 
+const stringOrUndefined = z
+  .string()
+  .optional()
+  .transform((value) => (value === "" ? undefined : value));
+
 const formSchema = z.object({
   enabled: z.boolean(),
   accountId: z.string(),
   token: z.string(),
   url: z.string(),
-  signMsg: z.boolean(),
-  signDelimiter: z.string(),
-  nameInbox: z.string(),
-  organization: z.string(),
-  logo: z.string(),
-  reopenConversation: z.boolean(),
-  conversationPending: z.boolean(),
-  mergeBrazilContacts: z.boolean(),
-  importContacts: z.boolean(),
-  importMessages: z.boolean(),
-  daysLimitImportMessages: z.coerce.number(),
+  signMsg: z.boolean().optional(),
+  signDelimiter: stringOrUndefined,
+  nameInbox: stringOrUndefined,
+  organization: stringOrUndefined,
+  logo: stringOrUndefined,
+  reopenConversation: z.boolean().optional(),
+  conversationPending: z.boolean().optional(),
+  mergeBrazilContacts: z.boolean().optional(),
+  importContacts: z.boolean().optional(),
+  importMessages: z.boolean().optional(),
+  daysLimitImportMessages: z.coerce.number().optional(),
   autoCreate: z.boolean(),
   ignoreJids: z.array(z.string()).default([]),
 });
@@ -78,9 +83,29 @@ function Chatwoot() {
   useEffect(() => {
     if (chatwoot) {
       form.setValue("ignoreJids", chatwoot.ignoreJids || []);
-      form.reset(chatwoot);
+      const chatwootData: ChatwootType = {
+        enabled: chatwoot.enabled,
+        accountId: chatwoot.accountId,
+        token: chatwoot.token,
+        url: chatwoot.url,
+        signMsg: chatwoot.signMsg || false,
+        signDelimiter: chatwoot.signDelimiter || "\\n",
+        nameInbox: chatwoot.nameInbox || "",
+        organization: chatwoot.organization || "",
+        logo: chatwoot.logo || "",
+        reopenConversation: chatwoot.reopenConversation || false,
+        conversationPending: chatwoot.conversationPending || false,
+        mergeBrazilContacts: chatwoot.mergeBrazilContacts || false,
+        importContacts: chatwoot.importContacts || false,
+        importMessages: chatwoot.importMessages || false,
+        daysLimitImportMessages: chatwoot.daysLimitImportMessages || 7,
+        autoCreate: chatwoot.autoCreate || false,
+        ignoreJids: chatwoot.ignoreJids,
+      };
+
+      form.reset(chatwootData);
     }
-  });
+  }, [chatwoot, form]);
 
   const onSubmit = async (data: FormSchema) => {
     if (!instance) return;
@@ -91,17 +116,17 @@ function Chatwoot() {
       accountId: data.accountId,
       token: data.token,
       url: data.url,
-      signMsg: data.signMsg,
-      signDelimiter: data.signDelimiter,
-      nameInbox: data.nameInbox,
-      organization: data.organization,
-      logo: data.logo,
-      reopenConversation: data.reopenConversation,
-      conversationPending: data.conversationPending,
-      mergeBrazilContacts: data.mergeBrazilContacts,
-      importContacts: data.importContacts,
-      importMessages: data.importMessages,
-      daysLimitImportMessages: data.daysLimitImportMessages,
+      signMsg: data.signMsg || false,
+      signDelimiter: data.signDelimiter || "\\n",
+      nameInbox: data.nameInbox || "",
+      organization: data.organization || "",
+      logo: data.logo || "",
+      reopenConversation: data.reopenConversation || false,
+      conversationPending: data.conversationPending || false,
+      mergeBrazilContacts: data.mergeBrazilContacts || false,
+      importContacts: data.importContacts || false,
+      importMessages: data.importMessages || false,
+      daysLimitImportMessages: data.daysLimitImportMessages || 7,
       autoCreate: data.autoCreate,
       ignoreJids: data.ignoreJids,
     };

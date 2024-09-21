@@ -3,7 +3,7 @@ import axios from "axios";
 import { getToken, TOKEN_ID } from "./token";
 
 export const api = axios.create({
-  timeout: 10000,
+  timeout: 30000,
 });
 
 api.interceptors.request.use(

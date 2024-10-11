@@ -481,6 +481,13 @@
       "debounceTime": {
         "label": "Debounce Time"
       },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
+      },
       "ignoreJids": {
         "label": "Ignore Jids",
         "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
@@ -659,6 +666,13 @@
       "debounceTime": {
         "label": "Debounce Time"
       },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
+      },
       "ignoreJids": {
         "label": "Ignore Jids",
         "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
@@ -800,6 +814,13 @@
       "debounceTime": {
         "label": "Debounce Time"
       },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
+      },
       "ignoreJids": {
         "label": "Ignore Jids",
         "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
@@ -934,6 +955,13 @@
       "debounceTime": {
         "label": "Debounce Time"
       },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
+      },
       "ignoreJids": {
         "label": "Ignore Jids",
         "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
@@ -1067,6 +1095,13 @@
       },
       "debounceTime": {
         "label": "Debounce Time"
+      },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
       },
       "ignoreJids": {
         "label": "Ignore Jids",

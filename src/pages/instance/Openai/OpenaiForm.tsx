@@ -48,6 +48,8 @@ export const FormSchema = z.object({
   stopBotFromMe: z.boolean().optional(),
   keepOpen: z.boolean().optional(),
   debounceTime: z.coerce.number().optional(),
+  splitMessages: z.boolean().optional(),
+  timePerChar: z.coerce.number().optional(),
 });
 
 export type FormSchemaType = z.infer<typeof FormSchema>;
@@ -112,6 +114,8 @@ function OpenaiForm({
       stopBotFromMe: false,
       keepOpen: false,
       debounceTime: 0,
+      splitMessages: false,
+      timePerChar: 0,
     },
   });
 
@@ -353,6 +357,21 @@ function OpenaiForm({
           >
             <Input type="number" />
           </FormInput>
+
+          <FormSwitch
+            name="splitMessages"
+            label={t("openai.form.splitMessages.label")}
+            reverse
+          />
+
+          {form.watch("splitMessages") && (
+            <FormInput
+              name="timePerChar"
+              label={t("openai.form.timePerChar.label")}
+            >
+              <Input type="number" />
+            </FormInput>
+          )}
         </div>
 
         {isModal && (

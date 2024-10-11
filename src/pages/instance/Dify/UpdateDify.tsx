@@ -50,6 +50,8 @@ function UpdateDify({ difyId, resetTable }: UpdateDifyProps) {
       stopBotFromMe: !!dify?.stopBotFromMe,
       keepOpen: !!dify?.keepOpen,
       debounceTime: dify?.debounceTime ?? 0,
+      splitMessages: dify?.splitMessages ?? false,
+      timePerChar: dify?.timePerChar ?? 0,
     }),
     [
       dify?.apiKey,
@@ -68,6 +70,8 @@ function UpdateDify({ difyId, resetTable }: UpdateDifyProps) {
       dify?.triggerType,
       dify?.triggerValue,
       dify?.unknownMessage,
+      dify?.splitMessages,
+      dify?.timePerChar,
     ],
   );
 
@@ -91,6 +95,8 @@ function UpdateDify({ difyId, resetTable }: UpdateDifyProps) {
           stopBotFromMe: data.stopBotFromMe || false,
           keepOpen: data.keepOpen || false,
           debounceTime: data.debounceTime || 0,
+          splitMessages: data.splitMessages || false,
+          timePerChar: data.timePerChar || 0,
         };
 
         await updateDify({

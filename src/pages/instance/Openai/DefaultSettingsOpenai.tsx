@@ -46,6 +46,8 @@ const FormSchema = z.object({
   speechToText: z.boolean(),
   ignoreJids: z.array(z.string()).default([]),
   openaiIdFallback: z.union([z.null(), z.string()]).optional(),
+  splitMessages: z.boolean().optional(),
+  timePerChar: z.coerce.number().optional(),
 });
 
 function DefaultSettingsOpenai() {
@@ -83,6 +85,8 @@ function DefaultSettingsOpenai() {
       speechToText: false,
       ignoreJids: [],
       openaiIdFallback: undefined,
+      splitMessages: false,
+      timePerChar: 0,
     },
   });
 
@@ -101,6 +105,8 @@ function DefaultSettingsOpenai() {
         speechToText: settings.speechToText,
         ignoreJids: settings.ignoreJids,
         openaiIdFallback: settings.openaiIdFallback,
+        splitMessages: settings.splitMessages,
+        timePerChar: settings.timePerChar ?? 0,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -125,6 +131,8 @@ function DefaultSettingsOpenai() {
         speechToText: data.speechToText,
         openaiIdFallback: data.openaiIdFallback || undefined,
         ignoreJids: data.ignoreJids,
+        splitMessages: data.splitMessages,
+        timePerChar: data.timePerChar,
       };
 
       await setDefaultSettingsOpenai({
@@ -243,6 +251,21 @@ function DefaultSettingsOpenai() {
                 >
                   <Input type="number" />
                 </FormInput>
+
+                <FormSwitch
+                  name="splitMessages"
+                  label={t("openai.form.splitMessages.label")}
+                  reverse
+                />
+
+                {form.watch("splitMessages") && (
+                  <FormInput
+                    name="timePerChar"
+                    label={t("openai.form.timePerChar.label")}
+                  >
+                    <Input type="number" />
+                  </FormInput>
+                )}
 
                 <FormTags
                   name="ignoreJids"

@@ -43,6 +43,8 @@ const FormSchema = z.object({
   debounceTime: z.string(),
   ignoreJids: z.array(z.string()).default([]),
   flowiseIdFallback: z.union([z.null(), z.string()]).optional(),
+  splitMessages: z.boolean(),
+  timePerChar: z.string(),
 });
 
 function DefaultSettingsFlowise() {
@@ -74,6 +76,8 @@ function DefaultSettingsFlowise() {
       debounceTime: "0",
       ignoreJids: [],
       flowiseIdFallback: undefined,
+      splitMessages: false,
+      timePerChar: "0",
     },
   });
 
@@ -94,6 +98,10 @@ function DefaultSettingsFlowise() {
           : "0",
         ignoreJids: settings.ignoreJids,
         flowiseIdFallback: settings.flowiseIdFallback,
+        splitMessages: settings.splitMessages,
+        timePerChar: settings.timePerChar
+          ? settings.timePerChar.toString()
+          : "0",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -116,6 +124,8 @@ function DefaultSettingsFlowise() {
         debounceTime: parseInt(data.debounceTime),
         flowiseIdFallback: data.flowiseIdFallback || undefined,
         ignoreJids: data.ignoreJids,
+        splitMessages: data.splitMessages,
+        timePerChar: parseInt(data.timePerChar),
       };
 
       await setDefaultSettingsFlowise({
@@ -214,6 +224,21 @@ function DefaultSettingsFlowise() {
                 >
                   <Input type="number" />
                 </FormInput>
+
+                <FormSwitch
+                  name="splitMessages"
+                  label={t("flowise.form.splitMessages.label")}
+                  reverse
+                />
+
+                {form.watch("splitMessages") && (
+                  <FormInput
+                    name="timePerChar"
+                    label={t("flowise.form.timePerChar.label")}
+                  >
+                    <Input type="number" />
+                  </FormInput>
+                )}
 
                 <FormTags
                   name="ignoreJids"

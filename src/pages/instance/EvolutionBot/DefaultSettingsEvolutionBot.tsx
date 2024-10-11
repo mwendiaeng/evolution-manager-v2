@@ -43,6 +43,8 @@ const FormSchema = z.object({
   debounceTime: z.string(),
   ignoreJids: z.array(z.string()).default([]),
   botIdFallback: z.union([z.null(), z.string()]).optional(),
+  splitMessages: z.boolean(),
+  timePerChar: z.string(),
 });
 
 function DefaultSettingsEvolutionBot() {
@@ -75,6 +77,8 @@ function DefaultSettingsEvolutionBot() {
       debounceTime: "0",
       ignoreJids: [],
       botIdFallback: undefined,
+      splitMessages: false,
+      timePerChar: "0",
     },
   });
 
@@ -95,6 +99,10 @@ function DefaultSettingsEvolutionBot() {
           : "0",
         ignoreJids: settings.ignoreJids,
         botIdFallback: settings.botIdFallback,
+        splitMessages: settings.splitMessages,
+        timePerChar: settings.timePerChar
+          ? settings.timePerChar.toString()
+          : "0",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -117,6 +125,8 @@ function DefaultSettingsEvolutionBot() {
         debounceTime: parseInt(data.debounceTime),
         botIdFallback: data.botIdFallback || undefined,
         ignoreJids: data.ignoreJids,
+        splitMessages: data.splitMessages,
+        timePerChar: parseInt(data.timePerChar),
       };
 
       await setDefaultSettingsEvolutionBot({
@@ -218,6 +228,21 @@ function DefaultSettingsEvolutionBot() {
                 >
                   <Input type="number" />
                 </FormInput>
+
+                <FormSwitch
+                  name="splitMessages"
+                  label={t("evolutionBot.form.splitMessages.label")}
+                  reverse
+                />
+
+                {form.watch("splitMessages") && (
+                  <FormInput
+                    name="timePerChar"
+                    label={t("evolutionBot.form.timePerChar.label")}
+                  >
+                    <Input type="number" />
+                  </FormInput>
+                )}
 
                 <FormTags
                   name="ignoreJids"

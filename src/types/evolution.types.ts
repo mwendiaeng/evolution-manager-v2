@@ -125,6 +125,8 @@ export type Openai = {
   keepOpen: boolean;
   debounceTime: number;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type OpenaiSettings = {
@@ -140,6 +142,8 @@ export type OpenaiSettings = {
   speechToText: boolean;
   openaiIdFallback?: string;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type Dify = {
@@ -161,6 +165,8 @@ export type Dify = {
   keepOpen: boolean;
   debounceTime: number;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type DifySettings = {
@@ -174,6 +180,8 @@ export type DifySettings = {
   debounceTime: number;
   difyIdFallback?: string;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type Typebot = {
@@ -193,6 +201,8 @@ export type Typebot = {
   stopBotFromMe: boolean;
   keepOpen: boolean;
   debounceTime: number;
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type TypebotSettings = {
@@ -206,6 +216,8 @@ export type TypebotSettings = {
   debounceTime: number;
   typebotIdFallback?: string;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type Webhook = {
@@ -291,6 +303,8 @@ export type EvolutionBot = {
   keepOpen: boolean;
   debounceTime: number;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type EvolutionBotSettings = {
@@ -304,6 +318,8 @@ export type EvolutionBotSettings = {
   debounceTime: number;
   botIdFallback?: string;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type Flowise = {
@@ -324,6 +340,8 @@ export type Flowise = {
   keepOpen: boolean;
   debounceTime: number;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type FlowiseSettings = {
@@ -337,4 +355,6 @@ export type FlowiseSettings = {
   debounceTime: number;
   flowiseIdFallback?: string;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };

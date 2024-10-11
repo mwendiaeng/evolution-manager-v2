@@ -59,6 +59,8 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
         stopBotFromMe: data.stopBotFromMe || false,
         keepOpen: data.keepOpen || false,
         debounceTime: data.debounceTime || 0,
+        splitMessages: data.splitMessages || false,
+        timePerChar: data.timePerChar || 0,
       };
 
       await createOpenai({

@@ -480,6 +480,13 @@
       "debounceTime": {
         "label": "Temps de Déclenchement"
       },
+      "splitMessages": {
+        "label": "Diviser les Messages",
+        "description": "Diviser les messages en plusieurs messages"
+      },
+      "timePerChar": {
+        "label": "Temps par Caractère"
+      },
       "ignoreJids": {
         "label": "Ignorer les JIDs",
         "placeholder": "Ajouter des JIDs ex: 1234567890@s.whatsapp.net et appuyez sur entrer"
@@ -658,6 +665,13 @@
       "debounceTime": {
         "label": "Temps de Déclenchement"
       },
+      "splitMessages": {
+        "label": "Diviser les Messages",
+        "description": "Diviser les messages en plusieurs messages"
+      },
+      "timePerChar": {
+        "label": "Temps par Caractère"
+      },
       "ignoreJids": {
         "label": "Ignorer les JIDs",
         "placeholder": "Ajouter des JIDs ex: 1234567890@s.whatsapp.net et appuyez sur entrer"
@@ -799,6 +813,13 @@
       "debounceTime": {
         "label": "Temps de Déclenchement"
       },
+      "splitMessages": {
+        "label": "Diviser les Messages",
+        "description": "Diviser les messages en plusieurs messages"
+      },
+      "timePerChar": {
+        "label": "Temps par Caractère"
+      },
       "ignoreJids": {
         "label": "Ignorer les JIDs",
         "placeholder": "Ajouter des JIDs ex: 1234567890@s.whatsapp.net et appuyez sur entrer"
@@ -933,6 +954,13 @@
       "debounceTime": {
         "label": "Temps de Déclenchement"
       },
+      "splitMessages": {
+        "label": "Diviser les Messages",
+        "description": "Diviser les messages en plusieurs messages"
+      },
+      "timePerChar": {
+        "label": "Temps par Caractère"
+      },
       "ignoreJids": {
         "label": "Ignorer les JIDs",
         "placeholder": "Ajouter des JIDs ex: 1234567890@s.whatsapp.net et appuyez sur entrer"
@@ -1066,6 +1094,13 @@
       },
       "debounceTime": {
         "label": "Temps de Déclenchement"
+      },
+      "splitMessages": {
+        "label": "Diviser les Messages",
+        "description": "Diviser les messages en plusieurs messages"
+      },
+      "timePerChar": {
+        "label": "Temps par Caractère"
       },
       "ignoreJids": {
         "label": "Ignorer les JIDs",

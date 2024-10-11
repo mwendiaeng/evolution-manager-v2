@@ -52,6 +52,8 @@ function UpdateEvolutionBot({
       stopBotFromMe: !!bot?.stopBotFromMe,
       keepOpen: !!bot?.keepOpen,
       debounceTime: bot?.debounceTime ?? 0,
+      splitMessages: bot?.splitMessages ?? false,
+      timePerChar: bot?.timePerChar ? bot?.timePerChar : 0,
     }),
     [
       bot?.apiKey,
@@ -69,6 +71,8 @@ function UpdateEvolutionBot({
       bot?.triggerType,
       bot?.triggerValue,
       bot?.unknownMessage,
+      bot?.splitMessages,
+      bot?.timePerChar,
     ],
   );
 
@@ -91,6 +95,8 @@ function UpdateEvolutionBot({
           stopBotFromMe: data.stopBotFromMe || false,
           keepOpen: data.keepOpen || false,
           debounceTime: data.debounceTime || 0,
+          splitMessages: data.splitMessages || false,
+          timePerChar: data.timePerChar ? data.timePerChar : 0,
         };
 
         await updateEvolutionBot({

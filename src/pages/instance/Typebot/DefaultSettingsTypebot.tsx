@@ -41,8 +41,6 @@ const formSchema = z.object({
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
   debounceTime: z.coerce.number(),
-  ignoreJids: z.array(z.string()).default([]),
-  typebotIdFallback: z.union([z.null(), z.string()]).optional(),
 });
 type FormSchema = z.infer<typeof formSchema>;
 
@@ -76,8 +74,6 @@ function DefaultSettingsTypebot() {
       stopBotFromMe: false,
       keepOpen: false,
       debounceTime: 0,
-      ignoreJids: [],
-      typebotIdFallback: undefined,
     },
   });
 
@@ -92,8 +88,6 @@ function DefaultSettingsTypebot() {
         stopBotFromMe: settings.stopBotFromMe,
         keepOpen: settings.keepOpen,
         debounceTime: settings.debounceTime ?? 0,
-        ignoreJids: settings.ignoreJids,
-        typebotIdFallback: settings.typebotIdFallback,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -114,8 +108,6 @@ function DefaultSettingsTypebot() {
         stopBotFromMe: data.stopBotFromMe,
         keepOpen: data.keepOpen,
         debounceTime: data.debounceTime,
-        typebotIdFallback: data.typebotIdFallback || undefined,
-        ignoreJids: data.ignoreJids,
       };
 
       await setDefaultSettingsTypebot({

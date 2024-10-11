@@ -62,6 +62,8 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
       stopBotFromMe: openai?.stopBotFromMe,
       keepOpen: openai?.keepOpen,
       debounceTime: openai?.debounceTime || 0,
+      splitMessages: openai?.splitMessages || false,
+      timePerChar: openai?.timePerChar || 0,
     }),
     [
       openai?.assistantId,
@@ -86,6 +88,8 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
       openai?.triggerValue,
       openai?.unknownMessage,
       openai?.userMessages,
+      openai?.splitMessages,
+      openai?.timePerChar,
     ],
   );
 
@@ -115,6 +119,8 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
           stopBotFromMe: data.stopBotFromMe || false,
           keepOpen: data.keepOpen || false,
           debounceTime: data.debounceTime || 0,
+          splitMessages: data.splitMessages || false,
+          timePerChar: data.timePerChar || 0,
         };
 
         await updateOpenai({

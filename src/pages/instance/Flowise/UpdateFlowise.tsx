@@ -49,6 +49,8 @@ function UpdateFlowise({ flowiseId, resetTable }: UpdateFlowiseProps) {
       stopBotFromMe: bot?.stopBotFromMe,
       keepOpen: bot?.keepOpen,
       debounceTime: bot?.debounceTime ?? 0,
+      splitMessages: bot?.splitMessages ?? false,
+      timePerChar: bot?.timePerChar ?? 0,
     }),
     [
       bot?.apiKey,
@@ -66,6 +68,8 @@ function UpdateFlowise({ flowiseId, resetTable }: UpdateFlowiseProps) {
       bot?.triggerType,
       bot?.triggerValue,
       bot?.unknownMessage,
+      bot?.splitMessages,
+      bot?.timePerChar,
     ],
   );
 
@@ -88,6 +92,8 @@ function UpdateFlowise({ flowiseId, resetTable }: UpdateFlowiseProps) {
           stopBotFromMe: data.stopBotFromMe || false,
           keepOpen: data.keepOpen || false,
           debounceTime: data.debounceTime || 0,
+          splitMessages: data.splitMessages || false,
+          timePerChar: data.timePerChar || 0,
         };
 
         await updateFlowise({

@@ -481,6 +481,13 @@
       "debounceTime": {
         "label": "Tiempo de Debounce"
       },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes largos en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por Carácter"
+      },
       "ignoreJids": {
         "label": "Ignorar JIDs",
         "placeholder": "Agregar JIDs ej: 1234567890@s.whatsapp.net y presiona enter"
@@ -659,6 +666,13 @@
       "debounceTime": {
         "label": "Tiempo de Debounce"
       },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes largos en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por Carácter"
+      },
       "ignoreJids": {
         "label": "Ignorar JIDs",
         "placeholder": "Agregar JIDs ej: 1234567890@s.whatsapp.net y presiona enter"
@@ -800,6 +814,13 @@
       "debounceTime": {
         "label": "Tiempo de Debounce"
       },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes largos en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por Carácter"
+      },
       "ignoreJids": {
         "label": "Ignorar JIDs",
         "placeholder": "Agregar JIDs ej: 1234567890@s.whatsapp.net y presiona enter"
@@ -934,6 +955,13 @@
       "debounceTime": {
         "label": "Tiempo de Debounce"
       },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes largos en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por Carácter"
+      },
       "ignoreJids": {
         "label": "Ignorar JIDs",
         "placeholder": "Agregar JIDs ej: 1234567890@s.whatsapp.net y presiona enter"
@@ -1067,6 +1095,13 @@
       },
       "debounceTime": {
         "label": "Tiempo de Debounce"
+      },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes largos en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por Carácter"
       },
       "ignoreJids": {
         "label": "Ignorar JIDs",

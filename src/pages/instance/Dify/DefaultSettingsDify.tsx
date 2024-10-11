@@ -43,6 +43,8 @@ const FormSchema = z.object({
   debounceTime: z.string(),
   ignoreJids: z.array(z.string()).default([]),
   difyIdFallback: z.union([z.null(), z.string()]).optional(),
+  splitMessages: z.boolean(),
+  timePerChar: z.string(),
 });
 
 function DefaultSettingsDify() {
@@ -75,6 +77,8 @@ function DefaultSettingsDify() {
       debounceTime: "0",
       ignoreJids: [],
       difyIdFallback: undefined,
+      splitMessages: false,
+      timePerChar: "0",
     },
   });
 
@@ -95,6 +99,10 @@ function DefaultSettingsDify() {
           : "0",
         ignoreJids: settings.ignoreJids,
         difyIdFallback: settings.difyIdFallback,
+        splitMessages: settings.splitMessages,
+        timePerChar: settings.timePerChar
+          ? settings.timePerChar.toString()
+          : "0",
       });
     }
   }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -116,6 +124,8 @@ function DefaultSettingsDify() {
         debounceTime: parseInt(data.debounceTime),
         difyIdFallback: data.difyIdFallback || undefined,
         ignoreJids: data.ignoreJids,
+        splitMessages: data.splitMessages,
+        timePerChar: parseInt(data.timePerChar),
       };
 
       await setDefaultSettingsDify({
@@ -209,6 +219,19 @@ function DefaultSettingsDify() {
                 <FormInput
                   name="debounceTime"
                   label={t("dify.form.debounceTime.label")}
+                >
+                  <Input type="number" />
+                </FormInput>
+
+                <FormSwitch
+                  name="splitMessages"
+                  label={t("dify.form.splitMessages.label")}
+                  reverse
+                />
+
+                <FormInput
+                  name="timePerChar"
+                  label={t("dify.form.timePerChar.label")}
                 >
                   <Input type="number" />
                 </FormInput>

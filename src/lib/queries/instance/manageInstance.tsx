@@ -1,10 +1,10 @@
 import { NewInstance, Settings } from "@/types/evolution.types";
 
-import { api } from "../api";
+import { api, apiGlobal } from "../api";
 import { useManageMutation } from "../mutateQuery";
 
 const createInstance = async (instance: NewInstance) => {
-  const response = await api.post("/instance/create", instance);
+  const response = await apiGlobal.post("/instance/create", instance);
   return response.data;
 };
 
@@ -19,7 +19,7 @@ const logout = async (instanceName: string) => {
 };
 
 const deleteInstance = async (instanceName: string) => {
-  const response = await api.delete(`/instance/delete/${instanceName}`);
+  const response = await apiGlobal.delete(`/instance/delete/${instanceName}`);
   return response.data;
 };
 

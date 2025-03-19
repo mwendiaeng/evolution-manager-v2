@@ -2,6 +2,9 @@
 export enum TOKEN_ID {
   API_URL = "apiUrl",
   TOKEN = "token",
+  INSTANCE_ID = "instanceId",
+  INSTANCE_NAME = "instanceName",
+  INSTANCE_TOKEN = "instanceToken",
   VERSION = "version",
   FACEBOOK_APP_ID = "facebookAppId",
   FACEBOOK_CONFIG_ID = "facebookConfigId",

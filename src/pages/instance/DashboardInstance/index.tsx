@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CircleUser, MessageCircle, RefreshCw, UsersRound } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
 
@@ -41,6 +41,14 @@ function DashboardInstance() {
 
   const { connect, logout, restart } = useManageInstance();
   const { instance, reloadInstance } = useInstance();
+
+  useEffect(() => {
+    if (instance) {
+      localStorage.setItem(TOKEN_ID.INSTANCE_ID, instance.id);
+      localStorage.setItem(TOKEN_ID.INSTANCE_NAME, instance.name);
+      localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, instance.token);
+    }
+  }, [instance]);
 
   const handleReload = async () => {
     await reloadInstance();

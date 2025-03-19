@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 
-import { api } from "../api";
+import { apiGlobal } from "../api";
 import { UseQueryParams } from "../types";
 import { FetchInstanceResponse } from "./types";
 
@@ -15,7 +15,7 @@ const queryKey = (params: Partial<IParams>) => [
 ];
 
 export const fetchInstance = async ({ instanceId }: IParams) => {
-  const response = await api.get(`/instance/fetchInstances`, {
+  const response = await apiGlobal.get(`/instance/fetchInstances`, {
     params: { instanceId },
   });
   if (Array.isArray(response.data)) {

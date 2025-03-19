@@ -14,6 +14,31 @@ api.interceptors.request.use(
     }
 
     if (!config.headers.apiKey || config.headers.apiKey === "") {
+      const token = getToken(TOKEN_ID.INSTANCE_TOKEN);
+      if (token) {
+        config.headers.apikey = `${token}`;
+      }
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
+export const apiGlobal = axios.create({
+  timeout: 30000,
+});
+
+apiGlobal.interceptors.request.use(
+  async (config) => {
+    const apiUrl = getToken(TOKEN_ID.API_URL);
+    if (apiUrl) {
+      config.baseURL = apiUrl.toString();
+    }
+
+    if (!config.headers.apiKey || config.headers.apiKey === "") {
       const token = getToken(TOKEN_ID.TOKEN);
       if (token) {
         config.headers.apikey = `${token}`;

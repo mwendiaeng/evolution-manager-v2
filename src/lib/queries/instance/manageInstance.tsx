@@ -9,7 +9,7 @@ const createInstance = async (instance: NewInstance) => {
 };
 
 const restart = async (instanceName: string) => {
-  const response = await api.post(`/instance/restart/${instanceName}`);
+  const response = await api.put(`/instance/restart/${instanceName}`);
   return response.data;
 };
 

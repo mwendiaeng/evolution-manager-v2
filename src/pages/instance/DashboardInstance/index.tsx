@@ -44,9 +44,9 @@ function DashboardInstance() {
 
   useEffect(() => {
     if (instance) {
-      localStorage.setItem(TOKEN_ID.INSTANCE_ID, instance.id);
-      localStorage.setItem(TOKEN_ID.INSTANCE_NAME, instance.name);
-      localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, instance.token);
+      localStorage.setItem(TOKEN_ID.INSTANCE_ID, instance.instanceId);
+      localStorage.setItem(TOKEN_ID.INSTANCE_NAME, instance.instanceName);
+      localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, instance.apikey);
     }
   }, [instance]);
 
@@ -87,6 +87,7 @@ function DashboardInstance() {
           token,
           number: instance?.number,
         });
+
 
         setPairingCode(data.pairingCode);
       } else {
@@ -142,30 +143,30 @@ function DashboardInstance() {
           <CardHeader>
             <div className="flex flex-wrap items-center justify-between gap-4">
               <h2 className="break-all text-lg font-semibold">
-                {instance.name}
+                {instance.instanceName}
               </h2>
-              <InstanceStatus status={instance.connectionStatus} />
+              <InstanceStatus status={instance.status} />
             </div>
           </CardHeader>
           <CardContent className="flex flex-col items-start space-y-6">
             <div className="flex w-full flex-1">
-              <InstanceToken token={instance.token} />
+              <InstanceToken token={instance.apikey} />
             </div>
 
             {instance.profileName && (
               <div className="flex flex-1 gap-2">
                 <Avatar>
-                  <AvatarImage src={instance.profilePicUrl} alt="" />
+                  <AvatarImage src={instance.profilePictureUrl} alt="" />
                 </Avatar>
                 <div className="space-y-1">
                   <strong>{instance.profileName}</strong>
                   <p className="break-all text-sm text-muted-foreground">
-                    {instance.ownerJid}
+                    {instance.owner}
                   </p>
                 </div>
               </div>
             )}
-            {instance.connectionStatus !== "open" && (
+            {instance.status !== "open" && (
               <Alert
                 variant="warning"
                 className="flex flex-wrap items-center justify-between gap-3"
@@ -176,7 +177,7 @@ function DashboardInstance() {
 
                 <Dialog>
                   <DialogTrigger
-                    onClick={() => handleConnect(instance.name, false)}
+                    onClick={() => handleConnect(instance.instanceName, false)}
                     asChild
                   >
                     <Button variant="warning">
@@ -205,7 +206,7 @@ function DashboardInstance() {
                   <Dialog>
                     <DialogTrigger
                       className="connect-code-button"
-                      onClick={() => handleConnect(instance.name, true)}
+                      onClick={() => handleConnect(instance.instanceName, true)}
                     >
                       {t("instance.dashboard.button.pairingCode.label")}
                     </DialogTrigger>
@@ -249,14 +250,14 @@ function DashboardInstance() {
             <Button
               className="action-button"
               variant="secondary"
-              onClick={() => handleRestart(instance.name)}
+              onClick={() => handleRestart(instance.instanceName)}
             >
               {t("instance.dashboard.button.restart").toUpperCase()}
             </Button>
             <Button
               variant="destructive"
-              onClick={() => handleLogout(instance.name)}
-              disabled={instance.connectionStatus === "close"}
+              onClick={() => handleLogout(instance.instanceName)}
+              disabled={instance.status === "close"}
             >
               {t("instance.dashboard.button.disconnect").toUpperCase()}
             </Button>

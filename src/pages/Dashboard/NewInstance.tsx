@@ -76,6 +76,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
         token: data.token === "" ? null : data.token,
         number: data.number === "" ? null : data.number,
         businessId: data.businessId === "" ? null : data.businessId,
+        qrcode:true
       };
 
       await createInstance(instanceData);

@@ -45,12 +45,7 @@ function Sidebar() {
             id: "settings",
             title: t("sidebar.settings"),
             path: "settings",
-          },
-          {
-            id: "proxy",
-            title: t("sidebar.proxy"),
-            path: "proxy",
-          },
+          }
         ],
       },
       {
@@ -83,11 +78,11 @@ function Sidebar() {
         title: t("sidebar.integrations"),
         icon: Zap,
         children: [
-          {
-            id: "evolutionBot",
-            title: t("sidebar.evolutionBot"),
-            path: "evolutionBot",
-          },
+          // {
+          //   id: "evolutionBot",
+          //   title: t("sidebar.evolutionBot"),
+          //   path: "evolutionBot",
+          // },
           {
             id: "chatwoot",
             title: t("sidebar.chatwoot"),
@@ -98,21 +93,21 @@ function Sidebar() {
             title: t("sidebar.typebot"),
             path: "typebot",
           },
-          {
-            id: "openai",
-            title: t("sidebar.openai"),
-            path: "openai",
-          },
-          {
-            id: "dify",
-            title: t("sidebar.dify"),
-            path: "dify",
-          },
-          {
-            id: "flowise",
-            title: t("sidebar.flowise"),
-            path: "flowise",
-          },
+          // {
+          //   id: "openai",
+          //   title: t("sidebar.openai"),
+          //   path: "openai",
+          // },
+          // {
+          //   id: "dify",
+          //   title: t("sidebar.dify"),
+          //   path: "dify",
+          // },
+          // {
+          //   id: "flowise",
+          //   title: t("sidebar.flowise"),
+          //   path: "flowise",
+          // },
         ],
       },
       {
@@ -152,7 +147,7 @@ function Sidebar() {
   const handleNavigate = (menu?: any) => {
     if (!menu || !instance) return;
 
-    if (menu.path) navigate(`/manager/instance/${instance.id}/${menu.path}`);
+    if (menu.path) navigate(`/manager/instance/${instance.instanceName}/${menu.path}`);
     if (menu.link) window.open(menu.link, "_blank");
   };
 
@@ -236,7 +231,7 @@ function Sidebar() {
               )}
               {"path" in menu && (
                 <Link
-                  to={`/manager/instance/${instance?.id}/${menu.path}`}
+                  to={`/manager/instance/${instance?.instanceName}/${menu.path}`}
                   className="absolute inset-0 h-full w-full"
                 />
               )}

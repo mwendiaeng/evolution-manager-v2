@@ -35,8 +35,8 @@ function Settings() {
   const { instance } = useInstance();
   const { updateSettings } = useManageInstance();
   const { data: settings, isLoading: loading } = useFetchSettings({
-    instanceName: instance?.name,
-    token: instance?.token,
+    instanceName: instance?.instanceName,
+    token: instance?.apikey,
   });
 
   const form = useForm<z.infer<typeof FormSchema>>({
@@ -55,36 +55,36 @@ function Settings() {
   useEffect(() => {
     if (settings) {
       form.reset({
-        rejectCall: settings.rejectCall,
-        msgCall: settings.msgCall || "",
-        groupsIgnore: settings.groupsIgnore,
-        alwaysOnline: settings.alwaysOnline,
-        readMessages: settings.readMessages,
-        syncFullHistory: settings.syncFullHistory,
-        readStatus: settings.readStatus,
+        rejectCall: settings.reject_call,
+        msgCall: settings.msg_call || "",
+        groupsIgnore: settings.groups_ignore,
+        alwaysOnline: settings.always_online,
+        readMessages: settings.read_messages,
+        syncFullHistory: settings.sync_full_history,
+        readStatus: settings.read_status,
       });
     }
   }, [form, settings]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
-      if (!instance || !instance.name) {
+      if (!instance || !instance.instanceName) {
         throw new Error("instance not found");
       }
 
       setUpdating(true);
       const settingData: SettingsType = {
-        rejectCall: data.rejectCall,
-        msgCall: data.msgCall,
-        groupsIgnore: data.groupsIgnore,
-        alwaysOnline: data.alwaysOnline,
-        readMessages: data.readMessages,
-        syncFullHistory: data.syncFullHistory,
-        readStatus: data.readStatus,
+        reject_call: data.rejectCall,
+        msg_call: data.msgCall,
+        groups_ignore: data.groupsIgnore,
+        always_online: data.alwaysOnline,
+        read_messages: data.readMessages,
+        sync_full_history: data.syncFullHistory,
+        read_status: data.readStatus,
       };
       await updateSettings({
-        instanceName: instance.name,
-        token: instance.token,
+        instanceName: instance.instanceName,
+        token: instance.apikey,
         data: settingData,
       });
       toast.success(t("settings.toast.success"));

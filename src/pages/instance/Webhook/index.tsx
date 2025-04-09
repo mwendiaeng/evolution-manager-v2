@@ -45,8 +45,8 @@ function Webhook() {
 
   const { createWebhook } = useManageWebhook();
   const { data: webhook } = useFetchWebhook({
-    instanceName: instance?.name,
-    token: instance?.token,
+    instanceName: instance?.instanceName,
+    token: instance?.apikey,
   });
 
   const form = useForm<FormSchemaType>({
@@ -66,8 +66,8 @@ function Webhook() {
         enabled: webhook.enabled,
         url: webhook.url,
         events: webhook.events,
-        base64: webhook.webhookBase64,
-        byEvents: webhook.webhookByEvents,
+        base64: webhook.webhook_base64,
+        byEvents: webhook.webhook_by_events,
       });
     }
   }, [webhook]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -80,13 +80,13 @@ function Webhook() {
         enabled: data.enabled,
         url: data.url,
         events: data.events,
-        base64: data.base64,
-        byEvents: data.byEvents,
+        webhook_base64: data.base64,
+        webhook_by_events: data.byEvents,
       };
 
       await createWebhook({
-        instanceName: instance.name,
-        token: instance.token,
+        instanceName: instance.instanceName,
+        token: instance.apikey,
         data: webhookData,
       });
       toast.success(t("webhook.toast.success"));
@@ -118,8 +118,6 @@ function Webhook() {
     "GROUP_UPDATE",
     "GROUP_PARTICIPANTS_UPDATE",
     "CONNECTION_UPDATE",
-    "REMOVE_INSTANCE",
-    "LOGOUT_INSTANCE",
     "LABELS_EDIT",
     "LABELS_ASSOCIATION",
     "CALL",

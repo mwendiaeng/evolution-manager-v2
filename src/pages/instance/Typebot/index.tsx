@@ -34,8 +34,8 @@ function Typebot() {
     isLoading,
     refetch,
   } = useFindTypebot({
-    instanceName: instance?.name,
-    token: instance?.token,
+    instanceName: instance?.instanceName,
+    token: instance?.apikey,
   });
 
   const navigate = useNavigate();
@@ -43,7 +43,7 @@ function Typebot() {
   const handleBotClick = (botId: string) => {
     if (!instance) return;
 
-    navigate(`/manager/instance/${instance.id}/typebot/${botId}`);
+    navigate(`/manager/instance/${instance.instanceName}/typebot/${botId}`);
   };
 
   const resetTable = () => {

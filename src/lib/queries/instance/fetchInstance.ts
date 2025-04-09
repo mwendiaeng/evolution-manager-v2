@@ -16,12 +16,13 @@ const queryKey = (params: Partial<IParams>) => [
 
 export const fetchInstance = async ({ instanceId }: IParams) => {
   const response = await apiGlobal.get(`/instance/fetchInstances`, {
-    params: { instanceId },
+    params: { instanceName: instanceId },
   });
   if (Array.isArray(response.data)) {
-    return response.data[0];
+    return response.data[0].instance;
   }
-  return response.data;
+
+  return response.data.instance;
 };
 
 export const useFetchInstance = (

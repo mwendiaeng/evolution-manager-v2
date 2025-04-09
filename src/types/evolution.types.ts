@@ -1,12 +1,12 @@
 export type Settings = {
   id?: string;
-  rejectCall: boolean;
-  msgCall?: string;
-  groupsIgnore: boolean;
-  alwaysOnline: boolean;
-  readMessages: boolean;
-  readStatus: boolean;
-  syncFullHistory: boolean;
+  reject_call: boolean;
+  msg_call?: string;
+  groups_ignore: boolean;
+  always_online: boolean;
+  read_messages: boolean;
+  read_status: boolean;
+  sync_full_history: boolean;
   createdAt?: string;
   updatedAt?: string;
   instanceId?: string;
@@ -22,16 +22,16 @@ export type NewInstance = {
 };
 
 export type Instance = {
-  id: string;
-  name: string;
-  connectionStatus: string;
-  ownerJid: string;
+  instanceId: string;
+  instanceName: string;
+  status: string;
+  owner: string;
   profileName: string;
-  profilePicUrl: string;
+  profilePictureUrl: string;
   integration: string;
   number: string;
   businessId: string;
-  token: string;
+  apikey: string;
   clientName: string;
   createdAt: string;
   updatedAt: string;
@@ -225,8 +225,8 @@ export type Webhook = {
   enabled: boolean;
   url: string;
   events: string[];
-  base64: boolean;
-  byEvents: boolean;
+  webhook_base64: boolean;
+  webhook_by_events: boolean;
 };
 
 export type Websocket = {

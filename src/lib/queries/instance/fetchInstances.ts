@@ -8,7 +8,14 @@ const queryKey = ["instance", "fetchInstances"];
 
 export const fetchInstances = async () => {
   const response = await apiGlobal.get(`/instance/fetchInstances`);
-  return response.data;
+
+  let resultado: FetchInstancesResponse = [];
+
+  for(let i = 0; i < response.data.length; i++){
+    resultado.push(response.data[i].instance);
+  }
+
+  return resultado;
 };
 
 export const useFetchInstances = (

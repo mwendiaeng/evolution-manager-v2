@@ -40,8 +40,8 @@ function Rabbitmq() {
 
   const { createRabbitmq } = useManageRabbitmq();
   const { data: rabbitmq } = useFetchRabbitmq({
-    instanceName: instance?.name,
-    token: instance?.token,
+    instanceName: instance?.instanceName,
+    token: instance?.apikey,
   });
 
   const form = useForm<FormSchemaType>({
@@ -72,8 +72,8 @@ function Rabbitmq() {
       };
 
       await createRabbitmq({
-        instanceName: instance.name,
-        token: instance.token,
+        instanceName: instance.instanceName,
+        token: instance.apikey,
         data: rabbitmqData,
       });
       toast.success(t("rabbitmq.toast.success"));
@@ -105,8 +105,6 @@ function Rabbitmq() {
     "GROUP_UPDATE",
     "GROUP_PARTICIPANTS_UPDATE",
     "CONNECTION_UPDATE",
-    "REMOVE_INSTANCE",
-    "LOGOUT_INSTANCE",
     "LABELS_EDIT",
     "LABELS_ASSOCIATION",
     "CALL",

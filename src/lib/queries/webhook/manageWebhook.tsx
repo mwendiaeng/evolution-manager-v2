@@ -12,7 +12,7 @@ interface IParams {
 const createWebhook = async ({ instanceName, token, data }: IParams) => {
   const response = await api.post(
     `/webhook/set/${instanceName}`,
-    { webhook: data },
+    { ...data },
     { headers: { apikey: token } },
   );
   return response.data;

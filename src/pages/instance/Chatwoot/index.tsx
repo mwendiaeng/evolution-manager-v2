@@ -53,8 +53,8 @@ function Chatwoot() {
   const [, setLoading] = useState(false);
   const { createChatwoot } = useManageChatwoot();
   const { data: chatwoot } = useFetchChatwoot({
-    instanceName: instance?.name,
-    token: instance?.token,
+    instanceName: instance?.instanceName,
+    token: instance?.apikey,
   });
 
   const form = useForm<FormSchema>({
@@ -133,8 +133,8 @@ function Chatwoot() {
 
     await createChatwoot(
       {
-        instanceName: instance.name,
-        token: instance.token,
+        instanceName: instance.instanceName,
+        token: instance.apikey,
         data: chatwootData,
       },
       {

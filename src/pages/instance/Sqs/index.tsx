@@ -40,8 +40,8 @@ function Sqs() {
 
   const { createSqs } = useManageSqs();
   const { data: sqs } = useFetchSqs({
-    instanceName: instance?.name,
-    token: instance?.token,
+    instanceName: instance?.instanceName,
+    token: instance?.apikey,
   });
 
   const form = useForm<FormSchemaType>({
@@ -71,8 +71,8 @@ function Sqs() {
       };
 
       await createSqs({
-        instanceName: instance.name,
-        token: instance.token,
+        instanceName: instance.instanceName,
+        token: instance.apikey,
         data: sqsData,
       });
       toast.success(t("sqs.toast.success"));
@@ -104,8 +104,6 @@ function Sqs() {
     "GROUP_UPDATE",
     "GROUP_PARTICIPANTS_UPDATE",
     "CONNECTION_UPDATE",
-    "REMOVE_INSTANCE",
-    "LOGOUT_INSTANCE",
     "LABELS_EDIT",
     "LABELS_ASSOCIATION",
     "CALL",

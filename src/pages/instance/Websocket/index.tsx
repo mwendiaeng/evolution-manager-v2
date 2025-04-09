@@ -40,8 +40,8 @@ function Websocket() {
 
   const { createWebsocket } = useManageWebsocket();
   const { data: websocket } = useFetchWebsocket({
-    instanceName: instance?.name,
-    token: instance?.token,
+    instanceName: instance?.instanceName,
+    token: instance?.apikey,
   });
 
   const form = useForm<FormSchemaType>({
@@ -72,8 +72,8 @@ function Websocket() {
       };
 
       await createWebsocket({
-        instanceName: instance.name,
-        token: instance.token,
+        instanceName: instance.instanceName,
+        token: instance.apikey,
         data: websocketData,
       });
       toast.success(t("websocket.toast.success"));
@@ -105,8 +105,6 @@ function Websocket() {
     "GROUP_UPDATE",
     "GROUP_PARTICIPANTS_UPDATE",
     "CONNECTION_UPDATE",
-    "REMOVE_INSTANCE",
-    "LOGOUT_INSTANCE",
     "LABELS_EDIT",
     "LABELS_ASSOCIATION",
     "CALL",

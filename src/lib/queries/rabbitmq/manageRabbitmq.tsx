@@ -12,7 +12,7 @@ interface IParams {
 const createRabbitmq = async ({ instanceName, token, data }: IParams) => {
   const response = await api.post(
     `/rabbitmq/set/${instanceName}`,
-    { rabbitmq: data },
+    { ...data },
     { headers: { apikey: token } },
   );
   return response.data;

@@ -69,6 +69,7 @@ function Dashboard() {
       }
       await deleteInstance(instanceName);
       await new Promise((resolve) => setTimeout(resolve, 1000));
+      toast.success(`Instancia deletada`)
       resetTable();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -80,18 +81,21 @@ function Dashboard() {
   };
 
   const filteredInstances = useMemo(() => {
+    console.log(searchStatus, nameSearch);
     let instancesList = instances ? [...instances] : [];
     if (searchStatus !== "all") {
       instancesList = instancesList.filter(
-        (instance) => instance.connectionStatus === searchStatus,
+        (instance) => instance.status === searchStatus,
       );
     }
 
     if (nameSearch !== "") {
       instancesList = instancesList.filter((instance) =>
-        instance.name.toLowerCase().includes(nameSearch.toLowerCase()),
+        instance.instanceName.toLowerCase().includes(nameSearch.toLowerCase()),
       );
     }
+
+    console.log(instancesList)
 
     return instancesList;
   }, [instances, nameSearch, searchStatus]);
@@ -147,34 +151,34 @@ function Dashboard() {
       </div>
       <main className="grid gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredInstances.length > 0 &&
-          Array.isArray(instances) &&
-          instances.map((instance: Instance) => (
-            <Card key={instance.id}>
+          Array.isArray(filteredInstances) &&
+          filteredInstances.map((instance: Instance) => (
+            <Card key={instance.instanceName}>
               <CardHeader>
                 <Link
-                  to={`/manager/instance/${instance.id}/dashboard`}
+                  to={`/manager/instance/${instance.instanceName}/dashboard`}
                   className="flex w-full flex-row items-center justify-between gap-4"
                 >
-                  <h3 className="text-wrap font-semibold">{instance.name}</h3>
+                  <h3 className="text-wrap font-semibold truncate">{instance.instanceName}</h3>
                   <Button variant="ghost" size="icon">
                     <Cog className="card-icon" size="20" />
                   </Button>
                 </Link>
               </CardHeader>
               <CardContent className="flex-1 space-y-6">
-                <InstanceToken token={instance.token} />
+                <InstanceToken token={instance.apikey} />
                 <div className="flex w-full flex-wrap">
                   <div className="flex flex-1 gap-2">
                     {instance.profileName && (
                       <>
                         <Avatar>
-                          <AvatarImage src={instance.profilePicUrl} alt="" />
+                          <AvatarImage src={instance.profilePictureUrl} alt="" />
                         </Avatar>
                         <div className="space-y-1">
                           <strong>{instance.profileName}</strong>
                           <p className="text-sm text-muted-foreground">
-                            {instance.ownerJid &&
-                              instance.ownerJid.split("@")[0]}
+                            {instance.owner &&
+                              instance.owner.split("@")[0]}
                           </p>
                         </div>
                       </>
@@ -205,14 +209,14 @@ function Dashboard() {
                 </div>
               </CardContent>
               <CardFooter className="justify-between">
-                <InstanceStatus status={instance.connectionStatus} />
+                <InstanceStatus status={instance.status} />
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => setDeleteConfirmation(instance.name)}
-                  disabled={deleting.includes(instance.name)}
+                  onClick={() => setDeleteConfirmation(instance.instanceName)}
+                  disabled={deleting.includes(instance.instanceName)}
                 >
-                  {deleting.includes(instance.name) ? (
+                  {deleting.includes(instance.instanceName) ? (
                     <span>{t("button.deleting")}</span>
                   ) : (
                     <span>{t("button.delete")}</span>

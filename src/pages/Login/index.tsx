@@ -52,18 +52,18 @@ function Login() {
       return;
     }
 
-    const verify = await verifyCreds({
-      token: data.apiKey,
-      url: data.serverUrl,
-    });
+    // const verify = await verifyCreds({
+    //   token: data.apiKey,
+    //   url: data.serverUrl,
+    // });
 
-    if (!verify) {
-      loginForm.setError("apiKey", {
-        type: "manual",
-        message: t("login.message.invalidCredentials"),
-      });
-      return;
-    }
+    // if (!verify) {
+    //   loginForm.setError("apiKey", {
+    //     type: "manual",
+    //     message: t("login.message.invalidCredentials"),
+    //   });
+    //   return;
+    // }
 
     saveToken({
       version: server.version,

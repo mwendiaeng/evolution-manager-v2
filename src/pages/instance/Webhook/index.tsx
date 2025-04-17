@@ -22,18 +22,15 @@ import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { useFetchWebhook } from "@/lib/queries/webhook/fetchWebhook";
-import { useManageWebhook } from "@/lib/queries/webhook/manageWebhook";
+import { useManageInstance } from "@/lib/queries/instance/manageInstance";
 import { cn } from "@/lib/utils";
 
 import { Webhook as WebhookType } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   enabled: z.boolean(),
-  url: z.string().url("Invalid URL format"),
-  events: z.array(z.string()),
-  base64: z.boolean(),
-  byEvents: z.boolean(),
+  webhookUrl: z.string().url("Invalid URL format"),
+  subscribe: z.array(z.string()),
 });
 
 type FormSchemaType = z.infer<typeof FormSchema>;
@@ -43,34 +40,50 @@ function Webhook() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
-  const { createWebhook } = useManageWebhook();
-  const { data: webhook } = useFetchWebhook({
-    instanceName: instance?.instanceName,
-    token: instance?.apikey,
-  });
+  const { connect } = useManageInstance();
+
+  const eventsOptions = [
+    "MESSAGE",
+    "SEND_MESSAGE",
+    "READ_RECEIPT",
+    "PRESENCE",
+    "HISTORY_SYNC",
+    "CHAT_PRESENCE",
+    "CALL",
+    "CONNECTION",
+    "QRCODE",
+    "LABEL",
+    "CONTACT",
+    "GROUP",
+    "NEWSLETTER",
+  ];
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       enabled: false,
-      url: "",
-      events: [],
-      base64: false,
-      byEvents: false,
+      webhookUrl: "",
+      subscribe: [],
     },
   });
 
   useEffect(() => {
-    if (webhook) {
+    if (instance) {
+      let events = [];
+
+      if (instance.events === "ALL") {
+        events = eventsOptions;
+      } else {
+        events = instance.events.split(",") || [];
+      }
+
       form.reset({
-        enabled: webhook.enabled,
-        url: webhook.url,
-        events: webhook.events,
-        base64: webhook.webhook_base64,
-        byEvents: webhook.webhook_by_events,
+        enabled: instance.webhook !== "",
+        webhookUrl: instance.webhook,
+        subscribe: events,
       });
     }
-  }, [webhook]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [instance, eventsOptions]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;
@@ -78,17 +91,20 @@ function Webhook() {
     try {
       const webhookData: WebhookType = {
         enabled: data.enabled,
-        url: data.url,
-        events: data.events,
-        webhook_base64: data.base64,
-        webhook_by_events: data.byEvents,
+        webhookUrl: data.webhookUrl,
+        subscribe: data.subscribe,
       };
 
-      await createWebhook({
-        instanceName: instance.instanceName,
-        token: instance.apikey,
-        data: webhookData,
+      if (webhookData.enabled && webhookData.subscribe.length === 0) {
+        webhookData.subscribe = ["ALL"];
+      }
+
+      await connect({
+        webhookUrl: webhookData.enabled ? webhookData.webhookUrl : "",
+        subscribe: webhookData.subscribe,
+        token: instance.token,
       });
+
       toast.success(t("webhook.toast.success"));
     } catch (error: any) {
       console.error(t("webhook.toast.error"), error);
@@ -98,39 +114,12 @@ function Webhook() {
     }
   };
 
-  const events = [
-    "APPLICATION_STARTUP",
-    "QRCODE_UPDATED",
-    "MESSAGES_SET",
-    "MESSAGES_UPSERT",
-    "MESSAGES_UPDATE",
-    "MESSAGES_DELETE",
-    "SEND_MESSAGE",
-    "CONTACTS_SET",
-    "CONTACTS_UPSERT",
-    "CONTACTS_UPDATE",
-    "PRESENCE_UPDATE",
-    "CHATS_SET",
-    "CHATS_UPSERT",
-    "CHATS_UPDATE",
-    "CHATS_DELETE",
-    "GROUPS_UPSERT",
-    "GROUP_UPDATE",
-    "GROUP_PARTICIPANTS_UPDATE",
-    "CONNECTION_UPDATE",
-    "LABELS_EDIT",
-    "LABELS_ASSOCIATION",
-    "CALL",
-    "TYPEBOT_START",
-    "TYPEBOT_CHANGE_STATUS",
-  ];
-
   const handleSelectAll = () => {
-    form.setValue("events", events);
+    form.setValue("subscribe", eventsOptions);
   };
 
   const handleDeselectAll = () => {
-    form.setValue("events", []);
+    form.setValue("subscribe", []);
   };
 
   return (
@@ -150,21 +139,9 @@ function Webhook() {
                 className="w-full justify-between"
                 helper={t("webhook.form.enabled.description")}
               />
-              <FormInput name="url" label="URL">
+              <FormInput name="webhookUrl" label="URL">
                 <Input />
               </FormInput>
-              <FormSwitch
-                name="byEvents"
-                label={t("webhook.form.byEvents.label")}
-                className="w-full justify-between"
-                helper={t("webhook.form.byEvents.description")}
-              />
-              <FormSwitch
-                name="base64"
-                label={t("webhook.form.base64.label")}
-                className="w-full justify-between"
-                helper={t("webhook.form.base64.description")}
-              />
               <div className="mb-4 flex justify-between">
                 <Button
                   variant="outline"
@@ -183,7 +160,7 @@ function Webhook() {
               </div>
               <FormField
                 control={form.control}
-                name="events"
+                name="subscribe"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
                     <FormLabel className="my-2 text-lg">
@@ -191,7 +168,7 @@ function Webhook() {
                     </FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-2 space-y-1 divide-y">
-                        {events
+                        {eventsOptions
                           .sort((a, b) => a.localeCompare(b))
                           .map((event) => (
                             <div

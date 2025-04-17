@@ -16,7 +16,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FormInput, FormSelect } from "@/components/ui/form";
+import { FormInput } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useManageInstance } from "@/lib/queries/instance/manageInstance";
@@ -31,52 +31,26 @@ const stringOrUndefined = z
 const FormSchema = z.object({
   name: z.string(),
   token: stringOrUndefined,
-  number: stringOrUndefined,
-  businessId: stringOrUndefined,
-  integration: z.enum(["WHATSAPP-BUSINESS", "WHATSAPP-BAILEYS", "EVOLUTION"]),
 });
 
 function NewInstance({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const { createInstance } = useManageInstance();
   const [open, setOpen] = useState(false);
-  const options = [
-    {
-      value: "WHATSAPP-BAILEYS",
-      label: t("instance.form.integration.baileys"),
-    },
-    {
-      value: "WHATSAPP-BUSINESS",
-      label: t("instance.form.integration.whatsapp"),
-    },
-    {
-      value: "EVOLUTION",
-      label: t("instance.form.integration.evolution"),
-    },
-  ];
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       name: "",
-      integration: "WHATSAPP-BAILEYS",
       token: uuidv4().replace("-", "").toUpperCase(),
-      number: "",
-      businessId: "",
     },
   });
-
-  const integrationSelected = form.watch("integration");
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
       const instanceData: NewInstanceType = {
-        instanceName: data.name,
-        integration: data.integration,
+        name: data.name,
         token: data.token === "" ? null : data.token,
-        number: data.number === "" ? null : data.number,
-        businessId: data.businessId === "" ? null : data.businessId,
-        qrcode:true
       };
 
       await createInstance(instanceData);
@@ -95,10 +69,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
   const onReset = () => {
     form.reset({
       name: "",
-      integration: "WHATSAPP-BAILEYS",
       token: uuidv4().replace("-", "").toLocaleUpperCase(),
-      number: "",
-      businessId: "",
     });
   };
 
@@ -121,26 +92,9 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
             <FormInput required name="name" label={t("instance.form.name")}>
               <Input />
             </FormInput>
-            <FormSelect
-              name="integration"
-              label={t("instance.form.integration.label")}
-              options={options}
-            />
             <FormInput required name="token" label={t("instance.form.token")}>
               <Input />
             </FormInput>
-            <FormInput name="number" label={t("instance.form.number")}>
-              <Input type="tel" />
-            </FormInput>
-            {integrationSelected === "WHATSAPP-BUSINESS" && (
-              <FormInput
-                required
-                name="businessId"
-                label={t("instance.form.businessId")}
-              >
-                <Input />
-              </FormInput>
-            )}
             <DialogFooter>
               <Button type="submit">{t("instance.button.save")}</Button>
             </DialogFooter>

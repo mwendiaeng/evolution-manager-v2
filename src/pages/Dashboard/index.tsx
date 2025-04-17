@@ -1,10 +1,4 @@
-import {
-  ChevronsUpDown,
-  CircleUser,
-  Cog,
-  MessageCircle,
-  RefreshCw,
-} from "lucide-react";
+import { ChevronsUpDown, Cog, RefreshCw } from "lucide-react";
 import { useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "react-router-dom";
@@ -57,25 +51,32 @@ function Dashboard() {
     await refetch();
   };
 
-  const handleDelete = async (instanceName: string) => {
+  const handleDelete = async (token: string) => {
     setDeleteConfirmation(null);
-    setDeleting([...deleting, instanceName]);
+    setDeleting([...deleting, token]);
     try {
       try {
-        await logout(instanceName);
+        await logout(token);
       } catch (error) {
         console.error("Error logout:", error);
       }
-      await deleteInstance(instanceName);
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success(`Instancia deletada`);
-      resetTable();
+
+      const instanceId = instances?.find(
+        (instance) => instance.token === token,
+      )?.id;
+
+      if (instanceId) {
+        await deleteInstance(instanceId);
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        toast.success(`Instancia deletada`);
+        resetTable();
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error instance delete:", error);
       toast.error(`Error : ${error?.response?.data?.response?.message}`);
     } finally {
-      setDeleting(deleting.filter((item) => item !== instanceName));
+      setDeleting(deleting.filter((item) => item !== token));
     }
   };
 
@@ -83,18 +84,16 @@ function Dashboard() {
     console.log(searchStatus, nameSearch);
     let instancesList = instances ? [...instances] : [];
     if (searchStatus !== "all") {
-      instancesList = instancesList.filter(
-        (instance) => instance.status === searchStatus,
+      instancesList = instancesList.filter((instance) =>
+        searchStatus === "open" ? instance.connected : !instance.connected,
       );
     }
 
     if (nameSearch !== "") {
       instancesList = instancesList.filter((instance) =>
-        instance.instanceName.toLowerCase().includes(nameSearch.toLowerCase()),
+        instance.name.toLowerCase().includes(nameSearch.toLowerCase()),
       );
     }
-
-    console.log(instancesList);
 
     return instancesList;
   }, [instances, nameSearch, searchStatus]);
@@ -152,14 +151,14 @@ function Dashboard() {
         {filteredInstances.length > 0 &&
           Array.isArray(filteredInstances) &&
           filteredInstances.map((instance: Instance) => (
-            <Card key={instance.instanceName}>
+            <Card key={instance.name}>
               <CardHeader>
                 <Link
-                  to={`/manager/instance/${instance.instanceName}/dashboard`}
+                  to={`/manager/instance/${instance.id}/dashboard`}
                   className="flex w-full flex-row items-center justify-between gap-4"
                 >
                   <h3 className="truncate text-wrap font-semibold">
-                    {instance.instanceName}
+                    {instance.name}
                   </h3>
                   <Button variant="ghost" size="icon">
                     <Cog className="card-icon" size="20" />
@@ -167,40 +166,17 @@ function Dashboard() {
                 </Link>
               </CardHeader>
               <CardContent className="flex-1 space-y-6">
-                <InstanceToken token={instance.apikey} />
-                <div className="flex w-full flex-wrap">
-                  <div className="flex items-center justify-end gap-4 text-sm">
-                    <div className="flex flex-col items-center justify-center gap-1">
-                      <CircleUser className="text-muted-foreground" size="20" />
-                      <span>
-                        {new Intl.NumberFormat("pt-BR").format(
-                          instance?._count?.Contact || 0,
-                        )}
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center justify-center gap-1">
-                      <MessageCircle
-                        className="text-muted-foreground"
-                        size="20"
-                      />
-                      <span>
-                        {new Intl.NumberFormat("pt-BR").format(
-                          instance?._count?.Message || 0,
-                        )}
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                <InstanceToken token={instance.token} />
               </CardContent>
               <CardFooter className="justify-between">
-                <InstanceStatus status={instance.status} />
+                <InstanceStatus connected={instance.connected} />
                 <Button
                   variant="destructive"
                   size="sm"
-                  onClick={() => setDeleteConfirmation(instance.instanceName)}
-                  disabled={deleting.includes(instance.instanceName)}
+                  onClick={() => setDeleteConfirmation(instance.token)}
+                  disabled={deleting.includes(instance.token)}
                 >
-                  {deleting.includes(instance.instanceName) ? (
+                  {deleting.includes(instance.token) ? (
                     <span>{t("button.deleting")}</span>
                   ) : (
                     <span>{t("button.delete")}</span>

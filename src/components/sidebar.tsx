@@ -1,15 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  CircleHelp,
-  Cog,
-  FileQuestion,
-  IterationCcw,
-  LayoutDashboard,
-  LifeBuoy,
-  MessageCircle,
-  Zap,
-  ChevronDown,
-} from "lucide-react";
+import { IterationCcw, LayoutDashboard, ChevronDown } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -37,18 +27,6 @@ function Sidebar() {
         path: "dashboard",
       },
       {
-        navLabel: true,
-        title: t("sidebar.configurations"),
-        icon: Cog,
-        children: [
-          {
-            id: "settings",
-            title: t("sidebar.settings"),
-            path: "settings",
-          }
-        ],
-      },
-      {
         title: t("sidebar.events"),
         icon: IterationCcw,
         children: [
@@ -57,83 +35,7 @@ function Sidebar() {
             title: t("sidebar.webhook"),
             path: "webhook",
           },
-          {
-            id: "websocket",
-            title: t("sidebar.websocket"),
-            path: "websocket",
-          },
-          {
-            id: "rabbitmq",
-            title: t("sidebar.rabbitmq"),
-            path: "rabbitmq",
-          },
-          {
-            id: "sqs",
-            title: t("sidebar.sqs"),
-            path: "sqs",
-          },
         ],
-      },
-      {
-        title: t("sidebar.integrations"),
-        icon: Zap,
-        children: [
-          // {
-          //   id: "evolutionBot",
-          //   title: t("sidebar.evolutionBot"),
-          //   path: "evolutionBot",
-          // },
-          {
-            id: "chatwoot",
-            title: t("sidebar.chatwoot"),
-            path: "chatwoot",
-          },
-          {
-            id: "typebot",
-            title: t("sidebar.typebot"),
-            path: "typebot",
-          },
-          // {
-          //   id: "openai",
-          //   title: t("sidebar.openai"),
-          //   path: "openai",
-          // },
-          // {
-          //   id: "dify",
-          //   title: t("sidebar.dify"),
-          //   path: "dify",
-          // },
-          // {
-          //   id: "flowise",
-          //   title: t("sidebar.flowise"),
-          //   path: "flowise",
-          // },
-        ],
-      },
-      {
-        id: "documentation",
-        title: t("sidebar.documentation"),
-        icon: FileQuestion,
-        link: "https://doc.evolution-api.com",
-        divider: true,
-      },
-      {
-        id: "postman",
-        title: t("sidebar.postman"),
-        icon: CircleHelp,
-        link: "https://evolution-api.com/postman",
-      },
-      {
-        id: "discord",
-        title: t("sidebar.discord"),
-        icon: MessageCircle,
-        link: "https://evolution-api.com/discord",
-      },
-      {
-        id: "support-premium",
-        title: t("sidebar.supportPremium"),
-        icon: LifeBuoy,
-        link: "https://evolution-api.com/suporte-pro",
       },
     ],
     [t],
@@ -147,7 +49,7 @@ function Sidebar() {
   const handleNavigate = (menu?: any) => {
     if (!menu || !instance) return;
 
-    if (menu.path) navigate(`/manager/instance/${instance.instanceName}/${menu.path}`);
+    if (menu.path) navigate(`/manager/instance/${instance.id}/${menu.path}`);
     if (menu.link) window.open(menu.link, "_blank");
   };
 
@@ -223,7 +125,7 @@ function Sidebar() {
             >
               {"link" in menu && (
                 <a
-                  href={menu.link}
+                  href={menu.link as string}
                   target="_blank"
                   rel="noreferrer"
                   className="absolute inset-0 h-full w-full"
@@ -231,7 +133,7 @@ function Sidebar() {
               )}
               {"path" in menu && (
                 <Link
-                  to={`/manager/instance/${instance?.instanceName}/${menu.path}`}
+                  to={`/manager/instance/${instance?.id}/${menu.path}`}
                   className="absolute inset-0 h-full w-full"
                 />
               )}

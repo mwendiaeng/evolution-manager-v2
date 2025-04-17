@@ -10,9 +10,8 @@ type PublicRouteProps = {
 const PublicRoute = ({ children }: PublicRouteProps) => {
   const apiUrl = getToken(TOKEN_ID.API_URL);
   const token = getToken(TOKEN_ID.TOKEN);
-  const version = getToken(TOKEN_ID.VERSION);
 
-  if (apiUrl && token && version) {
+  if (apiUrl && token) {
     return <Navigate to="/" />;
   }
 

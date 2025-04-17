@@ -1,4 +1,4 @@
-import { NewInstance, Settings } from "@/types/evolution.types";
+import { NewInstance } from "@/types/evolution.types";
 
 import { api, apiGlobal } from "../api";
 import { useManageMutation } from "../mutateQuery";
@@ -8,48 +8,81 @@ const createInstance = async (instance: NewInstance) => {
   return response.data;
 };
 
-const restart = async (instanceName: string) => {
-  const response = await api.put(`/instance/restart/${instanceName}`);
-  return response.data;
-};
-
-const logout = async (instanceName: string) => {
-  const response = await api.delete(`/instance/logout/${instanceName}`);
-  return response.data;
-};
-
-const deleteInstance = async (instanceName: string) => {
-  const response = await apiGlobal.delete(`/instance/delete/${instanceName}`);
-  return response.data;
-};
-
-interface ConnectParams {
-  instanceName: string;
-  token: string;
-  number?: string;
-}
-const connect = async ({ instanceName, token, number }: ConnectParams) => {
-  const response = await api.get(`/instance/connect/${instanceName}`, {
+const restart = async (token: string) => {
+  const response = await api.post(`/instance/reconnect`, {
     headers: { apikey: token },
-    params: { number },
   });
   return response.data;
 };
 
-interface UpdateSettingsParams {
-  instanceName: string;
+const logout = async (token: string) => {
+  const response = await api.delete(`/instance/logout`, {
+    headers: { apikey: token },
+  });
+  return response.data;
+};
+
+const deleteInstance = async (instanceId: string) => {
+  const response = await apiGlobal.delete(`/instance/delete/${instanceId}`);
+  return response.data;
+};
+
+interface ConnectParams {
   token: string;
-  data: Settings;
+  webhookUrl: string;
+  subscribe: string[];
+  rabbitmqEnable?: string;
+  websocketEnable?: string;
 }
-const updateSettings = async ({
-  instanceName,
+
+interface PairingCodeParams {
+  token: string;
+  number: string;
+}
+
+const connect = async ({
   token,
-  data,
-}: UpdateSettingsParams) => {
-  const response = await api.post(`/settings/set/${instanceName}`, data, {
-    headers: {
-      apikey: token,
+  subscribe,
+  webhookUrl,
+  rabbitmqEnable = "disabled",
+  websocketEnable = "disabled",
+}: ConnectParams) => {
+  const response = await api.post(
+    `/instance/connect`,
+    {
+      subscribe,
+      webhookUrl,
+      rabbitmqEnable,
+      websocketEnable,
     },
+    {
+      headers: { apikey: token },
+    },
+  );
+  return response.data;
+};
+
+const pairingCode = async ({ token, number }: PairingCodeParams) => {
+  const response = await api.post(
+    `/instance/pair`,
+    { phone: number },
+    {
+      headers: { apikey: token },
+    },
+  );
+  return response.data;
+};
+
+const getStatus = async (token: string) => {
+  const response = await api.get(`/instance/status`, {
+    headers: { apikey: token },
+  });
+  return response.data;
+};
+
+const getQrcode = async (token: string) => {
+  const response = await api.get(`/instance/qr`, {
+    headers: { apikey: token },
   });
   return response.data;
 };
@@ -61,9 +94,11 @@ export function useManageInstance() {
       ["instance", "fetchInstances"],
     ],
   });
-  const updateSettingsMutation = useManageMutation(updateSettings, {
-    invalidateKeys: [["instance", "fetchSettings"]],
+
+  const pairingCodeMutation = useManageMutation(pairingCode, {
+    invalidateKeys: [["instance", "fetchInstance"]],
   });
+
   const deleteInstanceMutation = useManageMutation(deleteInstance, {
     invalidateKeys: [
       ["instance", "fetchInstance"],
@@ -86,12 +121,22 @@ export function useManageInstance() {
     invalidateKeys: [["instance", "fetchInstances"]],
   });
 
+  const getStatusMutation = useManageMutation(getStatus, {
+    invalidateKeys: [["instance", "fetchInstance"]],
+  });
+
+  const getQrcodeMutation = useManageMutation(getQrcode, {
+    invalidateKeys: [["instance", "fetchInstance"]],
+  });
+
   return {
     connect: connectMutation,
-    updateSettings: updateSettingsMutation,
     deleteInstance: deleteInstanceMutation,
     logout: logoutMutation,
     restart: restartMutation,
     createInstance: createInstanceMutation,
+    getStatus: getStatusMutation,
+    getQrcode: getQrcodeMutation,
+    pair: pairingCodeMutation,
   };
 }

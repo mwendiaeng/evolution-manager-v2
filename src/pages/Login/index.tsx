@@ -42,7 +42,7 @@ function Login() {
   const handleLogin: SubmitHandler<LoginSchema> = async (data) => {
     const server = await verifyServer({ url: data.serverUrl });
 
-    if (!server || !server.version) {
+    if (!server || !server.status || server.status !== "ok") {
       logout();
       loginForm.setError("serverUrl", {
         type: "manual",
@@ -65,8 +65,6 @@ function Login() {
     // }
 
     saveToken({
-      version: server.version,
-      clientName: server.clientName,
       url: data.serverUrl,
       token: data.apiKey,
     });

@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { CircleUser, MessageCircle, RefreshCw, UsersRound } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
@@ -14,12 +14,10 @@ import {
   CardContent,
   CardFooter,
   CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTrigger,
 } from "@/components/ui/dialog";
@@ -28,24 +26,23 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useManageInstance } from "@/lib/queries/instance/manageInstance";
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { TOKEN_ID } from "@/lib/queries/token";
 
 function DashboardInstance() {
-  const { t, i18n } = useTranslation();
-  const numberFormatter = new Intl.NumberFormat(i18n.language);
+  const { t } = useTranslation();
+  // const numberFormatter = new Intl.NumberFormat(i18n.language);
   const [qrCode, setQRCode] = useState<string | null>(null);
-  const [pairingCode, setPairingCode] = useState("");
-  const token = getToken(TOKEN_ID.TOKEN);
+  // const [pairingCode, setPairingCode] = useState("");
   const { theme } = useTheme();
 
-  const { connect, logout, restart } = useManageInstance();
+  const { connect, getQrcode, logout, restart } = useManageInstance();
   const { instance, reloadInstance } = useInstance();
 
   useEffect(() => {
     if (instance) {
-      localStorage.setItem(TOKEN_ID.INSTANCE_ID, instance.instanceId);
-      localStorage.setItem(TOKEN_ID.INSTANCE_NAME, instance.instanceName);
-      localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, instance.apikey);
+      localStorage.setItem(TOKEN_ID.INSTANCE_ID, instance.id);
+      localStorage.setItem(TOKEN_ID.INSTANCE_NAME, instance.name);
+      localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, instance.token);
     }
   }, [instance]);
 
@@ -53,25 +50,29 @@ function DashboardInstance() {
     await reloadInstance();
   };
 
-  const handleRestart = async (instanceName: string) => {
+  const handleRestart = async (token: string) => {
     try {
-      await restart(instanceName);
+      await restart(token);
       await reloadInstance();
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  const handleLogout = async (instanceName: string) => {
+  const handleLogout = async (token: string) => {
     try {
-      await logout(instanceName);
+      await logout(token);
       await reloadInstance();
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  const handleConnect = async (instanceName: string, pairingCode: boolean) => {
+  const handleConnect = async (
+    token: string,
+    pairingCode: boolean,
+    number?: string,
+  ) => {
     try {
       setQRCode(null);
 
@@ -80,18 +81,30 @@ function DashboardInstance() {
         return;
       }
 
-      if (pairingCode) {
-        const data = await connect({
-          instanceName,
+      if (pairingCode && number) {
+        // await connect({
+        //   subscribe: ["ALL"],
+        //   token,
+        //   webhookUrl: "",
+        // });
+        // const pairingCodeData = await pair({
+        //   token,
+        //   number: number!,
+        // });
+        // setPairingCode(pairingCodeData.data.pairingCode);
+      } else {
+        await connect({
+          subscribe: ["ALL"],
           token,
-          number: instance?.number,
+          webhookUrl: "",
         });
 
-        setPairingCode(data.pairingCode);
-      } else {
-        const data = await connect({ instanceName, token });
+        // espera 1 segundo
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
-        setQRCode(data.code);
+        const qrcodeData = await getQrcode(token);
+
+        setQRCode(qrcodeData.data.Code);
       }
     } catch (error) {
       console.error("Error:", error);
@@ -100,25 +113,9 @@ function DashboardInstance() {
 
   const closeQRCodePopup = async () => {
     setQRCode(null);
-    setPairingCode("");
+    // setPairingCode("");
     await reloadInstance();
   };
-
-  const stats = useMemo(() => {
-    if (!instance) {
-      return {
-        contacts: 0,
-        chats: 0,
-        messages: 0,
-      };
-    }
-
-    return {
-      contacts: instance._count?.Contact || 0,
-      chats: instance._count?.Chat || 0,
-      messages: instance._count?.Message || 0,
-    };
-  }, [instance]);
 
   const qrCodeColor = useMemo(() => {
     if (theme === "dark") {
@@ -141,16 +138,16 @@ function DashboardInstance() {
           <CardHeader>
             <div className="flex flex-wrap items-center justify-between gap-4">
               <h2 className="break-all text-lg font-semibold">
-                {instance.instanceName}
+                {instance.name}
               </h2>
-              <InstanceStatus status={instance.status} />
+              <InstanceStatus connected={instance.connected} />
             </div>
           </CardHeader>
           <CardContent className="flex flex-col items-start space-y-6">
             <div className="flex w-full flex-1">
-              <InstanceToken token={instance.apikey} />
+              <InstanceToken token={instance.token} />
             </div>
-            {instance.status !== "open" && (
+            {instance.connected === false && (
               <Alert
                 variant="warning"
                 className="flex flex-wrap items-center justify-between gap-3"
@@ -161,7 +158,7 @@ function DashboardInstance() {
 
                 <Dialog>
                   <DialogTrigger
-                    onClick={() => handleConnect(instance.instanceName, false)}
+                    onClick={() => handleConnect(instance.token, false)}
                     asChild
                   >
                     <Button variant="warning">
@@ -186,11 +183,11 @@ function DashboardInstance() {
                   </DialogContent>
                 </Dialog>
 
-                {instance.number && (
+                {/* {instance.number && (
                   <Dialog>
                     <DialogTrigger
                       className="connect-code-button"
-                      onClick={() => handleConnect(instance.instanceName, true)}
+                      onClick={() => handleConnect(instance.token, true)}
                     >
                       {t("instance.dashboard.button.pairingCode.label")}
                     </DialogTrigger>
@@ -218,7 +215,7 @@ function DashboardInstance() {
                       </DialogHeader>
                     </DialogContent>
                   </Dialog>
-                )}
+                )} */}
               </Alert>
             )}
           </CardContent>
@@ -234,47 +231,18 @@ function DashboardInstance() {
             <Button
               className="action-button"
               variant="secondary"
-              onClick={() => handleRestart(instance.instanceName)}
+              onClick={() => handleRestart(instance.token)}
             >
               {t("instance.dashboard.button.restart").toUpperCase()}
             </Button>
             <Button
               variant="destructive"
-              onClick={() => handleLogout(instance.instanceName)}
-              disabled={instance.status === "close"}
+              onClick={() => handleLogout(instance.token)}
+              disabled={instance.connected === false}
             >
               {t("instance.dashboard.button.disconnect").toUpperCase()}
             </Button>
           </CardFooter>
-        </Card>
-      </section>
-      <section className="grid grid-cols-[repeat(auto-fit,_minmax(15rem,_1fr))] gap-6">
-        <Card className="instance-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <CircleUser size="20" />
-              {t("instance.dashboard.contacts")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>{numberFormatter.format(stats.contacts)}</CardContent>
-        </Card>
-        <Card className="instance-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <UsersRound size="20" />
-              {t("instance.dashboard.chats")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>{numberFormatter.format(stats.chats)}</CardContent>
-        </Card>
-        <Card className="instance-card">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <MessageCircle size="20" />
-              {t("instance.dashboard.messages")}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>{numberFormatter.format(stats.messages)}</CardContent>
         </Card>
       </section>
     </main>

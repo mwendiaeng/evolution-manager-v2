@@ -15,7 +15,7 @@ const queryKey = (params: Partial<IParams>) => [
 ];
 
 export const verifyServer = async ({ url }: IParams) => {
-  const response = await axios.get(`${url}/`);
+  const response = await axios.get(`${url}/server/ok`);
   return response.data;
 };
 

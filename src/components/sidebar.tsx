@@ -45,7 +45,7 @@ function Sidebar() {
             id: "settings",
             title: t("sidebar.settings"),
             path: "settings",
-          }
+          },
         ],
       },
       {
@@ -147,7 +147,8 @@ function Sidebar() {
   const handleNavigate = (menu?: any) => {
     if (!menu || !instance) return;
 
-    if (menu.path) navigate(`/manager/instance/${instance.instanceName}/${menu.path}`);
+    if (menu.path)
+      navigate(`/manager/instance/${instance.instanceName}/${menu.path}`);
     if (menu.link) window.open(menu.link, "_blank");
   };
 

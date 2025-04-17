@@ -77,11 +77,7 @@ function Login() {
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex items-center justify-center pt-2">
-        <img
-          className="h-10"
-          src="/assets/images/evolution-logo.png"
-          alt="logo"
-        />
+        <img className="h-10" src="/assets/images/icom-white.png" alt="logo" />
       </div>
       <div className="flex flex-1 items-center justify-center p-8">
         <Card className="b-none w-[350px] shadow-none">

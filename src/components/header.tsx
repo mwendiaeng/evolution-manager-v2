@@ -36,11 +36,11 @@ function Header() {
         className="flex h-8 items-center gap-4"
       >
         <img
-          src="/assets/images/evolution-logo.png"
+          src="/assets/images/icom-white.png"
           alt="Logo"
           className="h-full"
         />
-        <span>Evolution Manager</span>
+        <span>Manager</span>
       </Link>
       <div className="flex items-center gap-4">
         <LanguageToggle />

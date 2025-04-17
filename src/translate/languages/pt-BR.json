@@ -73,7 +73,7 @@
     }
   },
   "login": {
-    "title": "Evolution Manager",
+    "title": "Manager",
     "description": "Por favor, faça login para continuar",
     "form": {
       "serverUrl": "URL do Servidor",

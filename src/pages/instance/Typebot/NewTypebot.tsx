@@ -31,32 +31,25 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
-      if (!instance || !instance.name) {
+      if (!instance || !instance.instanceName) {
         throw new Error("instance not found");
       }
 
       setUpdating(true);
       const typebotData: Typebot = {
         enabled: data.enabled,
-        description: data.description,
         url: data.url,
         typebot: data.typebot || "",
-        triggerType: data.triggerType,
-        triggerOperator: data.triggerOperator || "",
-        triggerValue: data.triggerValue || "",
         expire: data.expire || 0,
-        keywordFinish: data.keywordFinish || "",
-        delayMessage: data.delayMessage || 0,
-        unknownMessage: data.unknownMessage || "",
-        listeningFromMe: data.listeningFromMe || false,
-        stopBotFromMe: data.stopBotFromMe || false,
-        keepOpen: data.keepOpen || false,
-        debounceTime: data.debounceTime || 0,
+        keyword_finish: data.keyword_finish || "",
+        delay_message: data.delay_message || 0,
+        unknown_message: data.unknown_message || "",
+        listening_from_me: data.listening_from_me || false,
       };
 
       await createTypebot({
-        instanceName: instance.name,
-        token: instance.token,
+        instanceName: instance.instanceName,
+        token: instance.apikey,
         data: typebotData,
       });
       toast.success(t("typebot.toast.success.create"));

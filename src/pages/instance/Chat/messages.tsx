@@ -47,12 +47,12 @@ function Messages({
   const { remoteJid } = useParams<{ remoteJid: string }>();
   const { data: chat } = useFindChat({
     remoteJid,
-    instanceName: instance?.name,
+    instanceName: instance?.instanceName,
   });
 
   const { data: messages, isSuccess } = useFindMessages({
     remoteJid,
-    instanceName: instance?.name,
+    instanceName: instance?.instanceName,
   });
 
   useEffect(() => {

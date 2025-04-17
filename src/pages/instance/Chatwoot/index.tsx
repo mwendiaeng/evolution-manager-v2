@@ -11,7 +11,7 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import { Form, FormInput, FormSwitch, FormTags } from "@/components/ui/form";
+import { Form, FormInput, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -28,22 +28,17 @@ const stringOrUndefined = z
 
 const formSchema = z.object({
   enabled: z.boolean(),
-  accountId: z.string(),
+  account_id: z.string(),
   token: z.string(),
   url: z.string(),
-  signMsg: z.boolean().optional(),
-  signDelimiter: stringOrUndefined,
-  nameInbox: stringOrUndefined,
-  organization: stringOrUndefined,
-  logo: stringOrUndefined,
-  reopenConversation: z.boolean().optional(),
-  conversationPending: z.boolean().optional(),
-  mergeBrazilContacts: z.boolean().optional(),
-  importContacts: z.boolean().optional(),
-  importMessages: z.boolean().optional(),
-  daysLimitImportMessages: z.coerce.number().optional(),
-  autoCreate: z.boolean(),
-  ignoreJids: z.array(z.string()).default([]),
+  sign_msg: z.boolean().optional(),
+  sign_delimiter: stringOrUndefined,
+  reopen_conversation: z.boolean().optional(),
+  conversation_pending: z.boolean().optional(),
+  import_contacts: z.boolean().optional(),
+  import_messages: z.boolean().optional(),
+  days_limit_import_messages: z.coerce.number().optional(),
+  auto_create: z.boolean(),
 });
 type FormSchema = z.infer<typeof formSchema>;
 
@@ -61,46 +56,35 @@ function Chatwoot() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       enabled: true,
-      accountId: "",
+      account_id: "",
       token: "",
       url: "",
-      signMsg: true,
-      signDelimiter: "\\n",
-      nameInbox: "",
-      organization: "",
-      logo: "",
-      reopenConversation: true,
-      conversationPending: false,
-      mergeBrazilContacts: true,
-      importContacts: false,
-      importMessages: false,
-      daysLimitImportMessages: 7,
-      autoCreate: true,
-      ignoreJids: [],
+      sign_msg: true,
+      sign_delimiter: "\\n",
+      reopen_conversation: true,
+      conversation_pending: false,
+      import_contacts: false,
+      import_messages: false,
+      days_limit_import_messages: 7,
+      auto_create: true,
     },
   });
 
   useEffect(() => {
     if (chatwoot) {
-      form.setValue("ignoreJids", chatwoot.ignoreJids || []);
       const chatwootData: ChatwootType = {
         enabled: chatwoot.enabled,
-        accountId: chatwoot.accountId,
+        account_id: chatwoot.account_id,
         token: chatwoot.token,
         url: chatwoot.url,
-        signMsg: chatwoot.signMsg || false,
-        signDelimiter: chatwoot.signDelimiter || "\\n",
-        nameInbox: chatwoot.nameInbox || "",
-        organization: chatwoot.organization || "",
-        logo: chatwoot.logo || "",
-        reopenConversation: chatwoot.reopenConversation || false,
-        conversationPending: chatwoot.conversationPending || false,
-        mergeBrazilContacts: chatwoot.mergeBrazilContacts || false,
-        importContacts: chatwoot.importContacts || false,
-        importMessages: chatwoot.importMessages || false,
-        daysLimitImportMessages: chatwoot.daysLimitImportMessages || 7,
-        autoCreate: chatwoot.autoCreate || false,
-        ignoreJids: chatwoot.ignoreJids,
+        sign_msg: chatwoot.sign_msg || false,
+        sign_delimiter: chatwoot.sign_delimiter || "\\n",
+        reopen_conversation: chatwoot.reopen_conversation || false,
+        conversation_pending: chatwoot.conversation_pending || false,
+        import_contacts: chatwoot.import_contacts || false,
+        import_messages: chatwoot.import_messages || false,
+        days_limit_import_messages: chatwoot.days_limit_import_messages || 7,
+        auto_create: chatwoot.auto_create || false,
       };
 
       form.reset(chatwootData);
@@ -113,22 +97,17 @@ function Chatwoot() {
     setLoading(true);
     const chatwootData: ChatwootType = {
       enabled: data.enabled,
-      accountId: data.accountId,
+      account_id: data.account_id,
       token: data.token,
       url: data.url,
-      signMsg: data.signMsg || false,
-      signDelimiter: data.signDelimiter || "\\n",
-      nameInbox: data.nameInbox || "",
-      organization: data.organization || "",
-      logo: data.logo || "",
-      reopenConversation: data.reopenConversation || false,
-      conversationPending: data.conversationPending || false,
-      mergeBrazilContacts: data.mergeBrazilContacts || false,
-      importContacts: data.importContacts || false,
-      importMessages: data.importMessages || false,
-      daysLimitImportMessages: data.daysLimitImportMessages || 7,
-      autoCreate: data.autoCreate,
-      ignoreJids: data.ignoreJids,
+      sign_msg: data.sign_msg || false,
+      sign_delimiter: data.sign_delimiter || "\\n",
+      reopen_conversation: data.reopen_conversation || false,
+      conversation_pending: data.conversation_pending || false,
+      import_contacts: data.import_contacts || false,
+      import_messages: data.import_messages || false,
+      days_limit_import_messages: data.days_limit_import_messages || 7,
+      auto_create: data.auto_create,
     };
 
     await createChatwoot(
@@ -177,8 +156,8 @@ function Chatwoot() {
                 <Input />
               </FormInput>
               <FormInput
-                name="accountId"
-                label={t("chatwoot.form.accountId.label")}
+                name="account_id"
+                label={t("chatwoot.form.account_id.label")}
               >
                 <Input />
               </FormInput>
@@ -187,72 +166,52 @@ function Chatwoot() {
               </FormInput>
 
               <FormSwitch
-                name="signMsg"
-                label={t("chatwoot.form.signMsg.label")}
+                name="sign_msg"
+                label={t("chatwoot.form.sign_msg.label")}
                 className="w-full justify-between"
-                helper={t("chatwoot.form.signMsg.description")}
+                helper={t("chatwoot.form.sign_msg.description")}
               />
               <FormInput
-                name="signDelimiter"
-                label={t("chatwoot.form.signDelimiter.label")}
+                name="sign_delimiter"
+                label={t("chatwoot.form.sign_delimiter.label")}
               >
                 <Input />
               </FormInput>
-              <FormInput
-                name="nameInbox"
-                label={t("chatwoot.form.nameInbox.label")}
-              >
-                <Input />
-              </FormInput>
-              <FormInput
-                name="organization"
-                label={t("chatwoot.form.organization.label")}
-              >
-                <Input />
-              </FormInput>
-              <FormInput name="logo" label={t("chatwoot.form.logo.label")}>
-                <Input />
-              </FormInput>
               <FormSwitch
-                name="conversationPending"
-                label={t("chatwoot.form.conversationPending.label")}
+                name="reopen_conversation"
+                label={t("chatwoot.form.reopen_conversation.label")}
                 className="w-full justify-between"
-                helper={t("chatwoot.form.conversationPending.description")}
+                helper={t("chatwoot.form.reopen_conversation.description")}
               />
               <FormSwitch
-                name="reopenConversation"
-                label={t("chatwoot.form.reopenConversation.label")}
+                name="conversation_pending"
+                label={t("chatwoot.form.conversation_pending.label")}
                 className="w-full justify-between"
-                helper={t("chatwoot.form.reopenConversation.description")}
+                helper={t("chatwoot.form.conversation_pending.description")}
               />
               <FormSwitch
-                name="importContacts"
-                label={t("chatwoot.form.importContacts.label")}
+                name="import_contacts"
+                label={t("chatwoot.form.import_contacts.label")}
                 className="w-full justify-between"
-                helper={t("chatwoot.form.importContacts.description")}
+                helper={t("chatwoot.form.import_contacts.description")}
               />
               <FormSwitch
-                name="importMessages"
-                label={t("chatwoot.form.importMessages.label")}
+                name="import_messages"
+                label={t("chatwoot.form.import_messages.label")}
                 className="w-full justify-between"
-                helper={t("chatwoot.form.importMessages.description")}
+                helper={t("chatwoot.form.import_messages.description")}
               />
               <FormInput
-                name="daysLimitImportMessages"
-                label={t("chatwoot.form.daysLimitImportMessages.label")}
+                name="days_limit_import_messages"
+                label={t("chatwoot.form.days_limit_import_messages.label")}
               >
                 <Input type="number" />
               </FormInput>
-              <FormTags
-                name="ignoreJids"
-                label={t("chatwoot.form.ignoreJids.label")}
-                placeholder={t("chatwoot.form.ignoreJids.placeholder")}
-              />
               <FormSwitch
-                name="autoCreate"
-                label={t("chatwoot.form.autoCreate.label")}
+                name="auto_create"
+                label={t("chatwoot.form.auto_create.label")}
                 className="w-full justify-between"
-                helper={t("chatwoot.form.autoCreate.description")}
+                helper={t("chatwoot.form.auto_create.description")}
               />
             </div>
           </div>

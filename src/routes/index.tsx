@@ -10,10 +10,6 @@ import Dashboard from "@/pages/Dashboard";
 import { Chat } from "@/pages/instance/Chat";
 import { Chatwoot } from "@/pages/instance/Chatwoot";
 import { DashboardInstance } from "@/pages/instance/DashboardInstance";
-import { Dify } from "@/pages/instance/Dify";
-import { EvolutionBot } from "@/pages/instance/EvolutionBot";
-import { Flowise } from "@/pages/instance/Flowise";
-import { Openai } from "@/pages/instance/Openai";
 import { Proxy } from "@/pages/instance/Proxy";
 import { Rabbitmq } from "@/pages/instance/Rabbitmq";
 import { Settings } from "@/pages/instance/Settings";
@@ -78,26 +74,6 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <InstanceLayout>
           <Settings />
-        </InstanceLayout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/manager/instance/:instanceId/openai",
-    element: (
-      <ProtectedRoute>
-        <InstanceLayout>
-          <Openai />
-        </InstanceLayout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/manager/instance/:instanceId/openai/:botId",
-    element: (
-      <ProtectedRoute>
-        <InstanceLayout>
-          <Openai />
         </InstanceLayout>
       </ProtectedRoute>
     ),
@@ -168,66 +144,6 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <InstanceLayout>
           <Typebot />
-        </InstanceLayout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/manager/instance/:instanceId/dify",
-    element: (
-      <ProtectedRoute>
-        <InstanceLayout>
-          <Dify />
-        </InstanceLayout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/manager/instance/:instanceId/dify/:difyId",
-    element: (
-      <ProtectedRoute>
-        <InstanceLayout>
-          <Dify />
-        </InstanceLayout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/manager/instance/:instanceId/evolutionBot",
-    element: (
-      <ProtectedRoute>
-        <InstanceLayout>
-          <EvolutionBot />
-        </InstanceLayout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/manager/instance/:instanceId/evolutionBot/:evolutionBotId",
-    element: (
-      <ProtectedRoute>
-        <InstanceLayout>
-          <EvolutionBot />
-        </InstanceLayout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/manager/instance/:instanceId/flowise",
-    element: (
-      <ProtectedRoute>
-        <InstanceLayout>
-          <Flowise />
-        </InstanceLayout>
-      </ProtectedRoute>
-    ),
-  },
-  {
-    path: "/manager/instance/:instanceId/flowise/:flowiseId",
-    element: (
-      <ProtectedRoute>
-        <InstanceLayout>
-          <Flowise />
         </InstanceLayout>
       </ProtectedRoute>
     ),

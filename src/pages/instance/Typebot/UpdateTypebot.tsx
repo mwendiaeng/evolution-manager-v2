@@ -28,75 +28,56 @@ function UpdateTypebot({ typebotId, resetTable }: UpdateTypebotProps) {
 
   const { deleteTypebot, updateTypebot } = useManageTypebot();
   const { data: bot, isLoading } = useGetTypebot({
-    instanceName: instance?.name,
+    instanceName: instance?.instanceName,
     typebotId,
   });
   const initialData = useMemo(
     () => ({
       enabled: !!bot?.enabled,
-      description: bot?.description ?? "",
       url: bot?.url ?? "",
       typebot: bot?.typebot ?? "",
-      triggerType: bot?.triggerType ?? "",
-      triggerOperator: bot?.triggerOperator ?? "",
-      triggerValue: bot?.triggerValue,
       expire: bot?.expire ?? 0,
-      keywordFinish: bot?.keywordFinish,
-      delayMessage: bot?.delayMessage ?? 0,
-      unknownMessage: bot?.unknownMessage,
-      listeningFromMe: !!bot?.listeningFromMe,
-      stopBotFromMe: !!bot?.stopBotFromMe,
-      keepOpen: !!bot?.keepOpen,
-      debounceTime: bot?.debounceTime ?? 0,
+      keyword_finish: bot?.keyword_finish,
+      delay_message: bot?.delay_message ?? 0,
+      unknown_message: bot?.unknown_message,
+      listening_from_me: !!bot?.listening_from_me,
     }),
     [
-      bot?.debounceTime,
-      bot?.delayMessage,
-      bot?.description,
       bot?.enabled,
       bot?.expire,
-      bot?.keepOpen,
-      bot?.keywordFinish,
-      bot?.listeningFromMe,
-      bot?.stopBotFromMe,
-      bot?.triggerOperator,
-      bot?.triggerType,
-      bot?.triggerValue,
+      bot?.keyword_finish,
+      bot?.delay_message,
+      bot?.unknown_message,
+      bot?.listening_from_me,
       bot?.typebot,
-      bot?.unknownMessage,
       bot?.url,
     ],
   );
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
-      if (instance && instance.name && typebotId) {
+      if (instance && instance.instanceName && typebotId) {
         const typebotData: Typebot = {
           enabled: data.enabled,
-          description: data.description,
           url: data.url,
           typebot: data.typebot || "",
-          triggerType: data.triggerType,
-          triggerOperator: data.triggerOperator || "",
-          triggerValue: data.triggerValue || "",
           expire: data.expire || 0,
-          keywordFinish: data.keywordFinish || "",
-          delayMessage: data.delayMessage || 1000,
-          unknownMessage: data.unknownMessage || "",
-          listeningFromMe: data.listeningFromMe || false,
-          stopBotFromMe: data.stopBotFromMe || false,
-          keepOpen: data.keepOpen || false,
-          debounceTime: data.debounceTime || 0,
+          keyword_finish: data.keyword_finish || "",
+          delay_message: data.delay_message || 1000,
+          unknown_message: data.unknown_message || "",
+          listening_from_me: data.listening_from_me || false,
         };
 
         await updateTypebot({
-          instanceName: instance.name,
+          instanceName: instance.instanceName,
           typebotId,
           data: typebotData,
         });
         toast.success(t("typebot.toast.success.update"));
         resetTable();
-        navigate(`/manager/instance/${instance.id}/typebot/${typebotId}`);
+        navigate(
+          `/manager/instance/${instance.instanceId}/typebot/${typebotId}`,
+        );
       } else {
         console.error("Token not found");
       }
@@ -108,13 +89,13 @@ function UpdateTypebot({ typebotId, resetTable }: UpdateTypebotProps) {
 
   const handleDelete = async () => {
     try {
-      if (instance && instance.name && typebotId) {
-        await deleteTypebot({ instanceName: instance.name, typebotId });
+      if (instance && instance.instanceName && typebotId) {
+        await deleteTypebot({ instanceName: instance.instanceName, typebotId });
         toast.success(t("typebot.toast.success.delete"));
 
         setOpenDeletionDialog(false);
         resetTable();
-        navigate(`/manager/instance/${instance.id}/typebot`);
+        navigate(`/manager/instance/${instance.instanceId}/typebot`);
       } else {
         console.error("instance not found");
       }

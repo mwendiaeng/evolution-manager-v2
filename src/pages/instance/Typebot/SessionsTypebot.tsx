@@ -49,8 +49,8 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
 
   const { changeStatusTypebot } = useManageTypebot();
   const { data: sessions, refetch: refetchSessions } = useFetchSessionsTypebot({
-    instanceName: instance?.name,
-    token: instance?.token,
+    instanceName: instance?.instanceName,
+    token: instance?.apikey,
     typebotId,
   });
 
@@ -63,8 +63,8 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
       if (!instance) return;
 
       await changeStatusTypebot({
-        instanceName: instance.name,
-        token: instance.token,
+        instanceName: instance.instanceName,
+        token: instance.apikey,
         remoteJid,
         status,
       });

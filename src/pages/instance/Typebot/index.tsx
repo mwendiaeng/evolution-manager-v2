@@ -17,7 +17,6 @@ import { useFindTypebot } from "@/lib/queries/typebot/findTypebot";
 
 import { useMediaQuery } from "@/utils/useMediaQuery";
 
-import { DefaultSettingsTypebot } from "./DefaultSettingsTypebot";
 import { NewTypebot } from "./NewTypebot";
 import { SessionsTypebot } from "./SessionsTypebot";
 import { UpdateTypebot } from "./UpdateTypebot";
@@ -56,7 +55,6 @@ function Typebot() {
         <h3 className="text-lg font-medium">{t("typebot.title")}</h3>
         <div className="flex flex-wrap items-center justify-end gap-2">
           <SessionsTypebot />
-          <DefaultSettingsTypebot />
           <NewTypebot resetTable={resetTable} />
         </div>
       </div>
@@ -76,21 +74,12 @@ function Typebot() {
                       onClick={() => handleBotClick(`${bot.id}`)}
                       variant={typebotId === bot.id ? "secondary" : "outline"}
                     >
-                      {bot.description ? (
-                        <>
-                          <h4 className="text-base">{bot.description}</h4>
-                          <p className="text-wrap text-sm font-normal text-muted-foreground">
-                            {bot.url} - {bot.typebot}
-                          </p>
-                        </>
-                      ) : (
-                        <>
-                          <h4 className="text-base">{bot.url}</h4>
-                          <p className="text-wrap text-sm font-normal text-muted-foreground">
-                            {bot.typebot}
-                          </p>
-                        </>
-                      )}
+                      <>
+                        <h4 className="text-base">{bot.url}</h4>
+                        <p className="text-wrap text-sm font-normal text-muted-foreground">
+                          {bot.typebot}
+                        </p>
+                      </>
                     </Button>
                   ))
                 ) : (

@@ -36,7 +36,7 @@ function Proxy() {
 
   const { createProxy } = useManageProxy();
   const { data: proxy } = useFetchProxy({
-    instanceName: instance?.name,
+    instanceName: instance?.instanceName,
   });
 
   const form = useForm<FormSchemaType>({
@@ -55,11 +55,11 @@ function Proxy() {
     if (proxy) {
       form.reset({
         enabled: proxy.enabled,
-        host: proxy.host,
-        port: proxy.port,
-        protocol: proxy.protocol,
-        username: proxy.username,
-        password: proxy.password,
+        host: proxy.proxy.host,
+        port: proxy.proxy.port,
+        protocol: proxy.proxy.protocol,
+        username: proxy.proxy.username,
+        password: proxy.proxy.password,
       });
     }
   }, [proxy]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -71,16 +71,18 @@ function Proxy() {
     try {
       const proxyData: ProxyType = {
         enabled: data.enabled,
-        host: data.host,
-        port: data.port,
-        protocol: data.protocol,
-        username: data.username,
-        password: data.password,
+        proxy: {
+          host: data.host,
+          port: data.port,
+          protocol: data.protocol,
+          username: data.username,
+          password: data.password,
+        },
       };
 
       await createProxy({
-        instanceName: instance.name,
-        token: instance.token,
+        instanceName: instance.instanceName,
+        token: instance.apikey,
         data: proxyData,
       });
       toast.success(t("proxy.toast.success"));

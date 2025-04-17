@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { FormInput, FormSelect, FormSwitch } from "@/components/ui/form";
+import { FormInput, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 
@@ -21,20 +21,13 @@ import { SessionsTypebot } from "./SessionsTypebot";
 
 export const FormSchema = z.object({
   enabled: z.boolean(),
-  description: z.string(),
   url: z.string(),
   typebot: z.string().optional(),
-  triggerType: z.string(),
-  triggerOperator: z.string().optional(),
-  triggerValue: z.string().optional(),
   expire: z.coerce.number().optional(),
-  keywordFinish: z.string().optional(),
-  delayMessage: z.coerce.number().optional(),
-  unknownMessage: z.string().optional(),
-  listeningFromMe: z.boolean().optional(),
-  stopBotFromMe: z.boolean().optional(),
-  keepOpen: z.boolean().optional(),
-  debounceTime: z.coerce.number().optional(),
+  keyword_finish: z.string().optional(),
+  delay_message: z.coerce.number().optional(),
+  unknown_message: z.string().optional(),
+  listening_from_me: z.boolean().optional(),
 });
 
 export type FormSchemaType = z.infer<typeof FormSchema>;
@@ -65,24 +58,15 @@ function TypebotForm({
     resolver: zodResolver(FormSchema),
     defaultValues: initialData || {
       enabled: true,
-      description: "",
       url: "",
       typebot: "",
-      triggerType: "keyword",
-      triggerOperator: "contains",
-      triggerValue: "",
       expire: 0,
-      keywordFinish: "",
-      delayMessage: 0,
-      unknownMessage: "",
-      listeningFromMe: false,
-      stopBotFromMe: false,
-      keepOpen: false,
-      debounceTime: 0,
+      keyword_finish: "",
+      delay_message: 0,
+      unknown_message: "",
+      listening_from_me: false,
     },
   });
-
-  const triggerType = form.watch("triggerType");
 
   return (
     <FormProvider {...form}>
@@ -93,13 +77,6 @@ function TypebotForm({
             label={t("typebot.form.enabled.label")}
             reverse
           />
-          <FormInput
-            name="description"
-            label={t("typebot.form.description.label")}
-            required
-          >
-            <Input />
-          </FormInput>
 
           <div className="flex flex-col">
             <h3 className="my-4 text-lg font-medium">
@@ -116,79 +93,6 @@ function TypebotForm({
 
           <div className="flex flex-col">
             <h3 className="my-4 text-lg font-medium">
-              {t("typebot.form.triggerSettings.label")}
-            </h3>
-            <Separator />
-          </div>
-          <FormSelect
-            name="triggerType"
-            label={t("typebot.form.triggerType.label")}
-            options={[
-              {
-                label: t("typebot.form.triggerType.keyword"),
-                value: "keyword",
-              },
-              {
-                label: t("typebot.form.triggerType.all"),
-                value: "all",
-              },
-              {
-                label: t("typebot.form.triggerType.advanced"),
-                value: "advanced",
-              },
-              {
-                label: t("typebot.form.triggerType.none"),
-                value: "none",
-              },
-            ]}
-          />
-
-          {triggerType === "keyword" && (
-            <>
-              <FormSelect
-                name="triggerOperator"
-                label={t("typebot.form.triggerOperator.label")}
-                options={[
-                  {
-                    label: t("typebot.form.triggerOperator.contains"),
-                    value: "contains",
-                  },
-                  {
-                    label: t("typebot.form.triggerOperator.equals"),
-                    value: "equals",
-                  },
-                  {
-                    label: t("typebot.form.triggerOperator.startsWith"),
-                    value: "startsWith",
-                  },
-                  {
-                    label: t("typebot.form.triggerOperator.endsWith"),
-                    value: "endsWith",
-                  },
-                  {
-                    label: t("typebot.form.triggerOperator.regex"),
-                    value: "regex",
-                  },
-                ]}
-              />
-              <FormInput
-                name="triggerValue"
-                label={t("typebot.form.triggerValue.label")}
-              >
-                <Input />
-              </FormInput>
-            </>
-          )}
-          {triggerType === "advanced" && (
-            <FormInput
-              name="triggerValue"
-              label={t("typebot.form.triggerConditions.label")}
-            >
-              <Input />
-            </FormInput>
-          )}
-          <div className="flex flex-col">
-            <h3 className="my-4 text-lg font-medium">
               {t("typebot.form.generalSettings.label")}
             </h3>
             <Separator />
@@ -197,44 +101,28 @@ function TypebotForm({
             <Input type="number" />
           </FormInput>
           <FormInput
-            name="keywordFinish"
-            label={t("typebot.form.keywordFinish.label")}
+            name="keyword_finish"
+            label={t("typebot.form.keyword_finish.label")}
           >
             <Input />
           </FormInput>
           <FormInput
-            name="delayMessage"
-            label={t("typebot.form.delayMessage.label")}
+            name="delay_message"
+            label={t("typebot.form.delay_message.label")}
           >
             <Input type="number" />
           </FormInput>
           <FormInput
-            name="unknownMessage"
-            label={t("typebot.form.unknownMessage.label")}
+            name="unknown_message"
+            label={t("typebot.form.unknown_message.label")}
           >
             <Input />
           </FormInput>
           <FormSwitch
-            name="listeningFromMe"
-            label={t("typebot.form.listeningFromMe.label")}
+            name="listening_from_me"
+            label={t("typebot.form.listening_from_me.label")}
             reverse
           />
-          <FormSwitch
-            name="stopBotFromMe"
-            label={t("typebot.form.stopBotFromMe.label")}
-            reverse
-          />
-          <FormSwitch
-            name="keepOpen"
-            label={t("typebot.form.keepOpen.label")}
-            reverse
-          />
-          <FormInput
-            name="debounceTime"
-            label={t("typebot.form.debounceTime.label")}
-          >
-            <Input type="number" />
-          </FormInput>
         </div>
 
         {isModal && (

@@ -12,7 +12,6 @@ import { toast } from "react-toastify";
 
 import { InstanceStatus } from "@/components/instance-status";
 import { InstanceToken } from "@/components/instance-token";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -69,7 +68,7 @@ function Dashboard() {
       }
       await deleteInstance(instanceName);
       await new Promise((resolve) => setTimeout(resolve, 1000));
-      toast.success(`Instancia deletada`)
+      toast.success(`Instancia deletada`);
       resetTable();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -95,7 +94,7 @@ function Dashboard() {
       );
     }
 
-    console.log(instancesList)
+    console.log(instancesList);
 
     return instancesList;
   }, [instances, nameSearch, searchStatus]);
@@ -159,7 +158,9 @@ function Dashboard() {
                   to={`/manager/instance/${instance.instanceName}/dashboard`}
                   className="flex w-full flex-row items-center justify-between gap-4"
                 >
-                  <h3 className="text-wrap font-semibold truncate">{instance.instanceName}</h3>
+                  <h3 className="truncate text-wrap font-semibold">
+                    {instance.instanceName}
+                  </h3>
                   <Button variant="ghost" size="icon">
                     <Cog className="card-icon" size="20" />
                   </Button>
@@ -168,23 +169,6 @@ function Dashboard() {
               <CardContent className="flex-1 space-y-6">
                 <InstanceToken token={instance.apikey} />
                 <div className="flex w-full flex-wrap">
-                  <div className="flex flex-1 gap-2">
-                    {instance.profileName && (
-                      <>
-                        <Avatar>
-                          <AvatarImage src={instance.profilePictureUrl} alt="" />
-                        </Avatar>
-                        <div className="space-y-1">
-                          <strong>{instance.profileName}</strong>
-                          <p className="text-sm text-muted-foreground">
-                            {instance.owner &&
-                              instance.owner.split("@")[0]}
-                          </p>
-                        </div>
-                      </>
-                    )}
-                  </div>
-
                   <div className="flex items-center justify-end gap-4 text-sm">
                     <div className="flex flex-col items-center justify-center gap-1">
                       <CircleUser className="text-muted-foreground" size="20" />

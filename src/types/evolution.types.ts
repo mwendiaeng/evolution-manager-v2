@@ -25,14 +25,10 @@ export type Instance = {
   instanceId: string;
   instanceName: string;
   status: string;
-  owner: string;
-  profileName: string;
-  profilePictureUrl: string;
   integration: string;
   number: string;
-  businessId: string;
+  token: string;
   apikey: string;
-  clientName: string;
   createdAt: string;
   updatedAt: string;
   Setting: Settings;
@@ -94,130 +90,16 @@ export type IntegrationSession = {
   botId: string;
 };
 
-export type OpenaiCreds = {
-  id?: string;
-  name: string;
-  apiKey: string;
-};
-
-export type Openai = {
-  id?: string;
-  openaiCredsId: string;
-  enabled: boolean;
-  description: string;
-  botType: string;
-  assistantId: string;
-  functionUrl: string;
-  model: string;
-  systemMessages: string | string[];
-  assistantMessages: string | string[];
-  userMessages: string | string[];
-  maxTokens: number;
-  triggerType: string;
-  triggerOperator: string;
-  triggerValue: string;
-  expire: number;
-  keywordFinish: string;
-  delayMessage: number;
-  unknownMessage: string;
-  listeningFromMe: boolean;
-  stopBotFromMe: boolean;
-  keepOpen: boolean;
-  debounceTime: number;
-  ignoreJids?: string[];
-  splitMessages?: boolean;
-  timePerChar?: number;
-};
-
-export type OpenaiSettings = {
-  openaiCredsId: string;
-  expire: number;
-  keywordFinish: string;
-  delayMessage: number;
-  unknownMessage: string;
-  listeningFromMe: boolean;
-  stopBotFromMe: boolean;
-  keepOpen: boolean;
-  debounceTime: number;
-  speechToText: boolean;
-  openaiIdFallback?: string;
-  ignoreJids?: string[];
-  splitMessages?: boolean;
-  timePerChar?: number;
-};
-
-export type Dify = {
-  id?: string;
-  enabled: boolean;
-  description: string;
-  botType: string;
-  apiUrl: string;
-  apiKey: string;
-  triggerType: string;
-  triggerOperator: string;
-  triggerValue: string;
-  expire: number;
-  keywordFinish: string;
-  delayMessage: number;
-  unknownMessage: string;
-  listeningFromMe: boolean;
-  stopBotFromMe: boolean;
-  keepOpen: boolean;
-  debounceTime: number;
-  ignoreJids?: string[];
-  splitMessages?: boolean;
-  timePerChar?: number;
-};
-
-export type DifySettings = {
-  expire: number;
-  keywordFinish: string;
-  delayMessage: number;
-  unknownMessage: string;
-  listeningFromMe: boolean;
-  stopBotFromMe: boolean;
-  keepOpen: boolean;
-  debounceTime: number;
-  difyIdFallback?: string;
-  ignoreJids?: string[];
-  splitMessages?: boolean;
-  timePerChar?: number;
-};
-
 export type Typebot = {
   id?: string;
   enabled: boolean;
-  description: string;
   url: string;
   typebot: string;
-  triggerType: string;
-  triggerOperator: string;
-  triggerValue: string;
   expire: number;
-  keywordFinish: string;
-  delayMessage: number;
-  unknownMessage: string;
-  listeningFromMe: boolean;
-  stopBotFromMe: boolean;
-  keepOpen: boolean;
-  debounceTime: number;
-  splitMessages?: boolean;
-  timePerChar?: number;
-};
-
-export type TypebotSettings = {
-  expire: number;
-  keywordFinish: string;
-  delayMessage: number;
-  unknownMessage: string;
-  listeningFromMe: boolean;
-  stopBotFromMe: boolean;
-  keepOpen: boolean;
-  debounceTime: number;
-  typebotIdFallback?: string;
-  ignoreJids?: string[];
-  splitMessages?: boolean;
-  timePerChar?: number;
+  keyword_finish: string;
+  delay_message: number;
+  unknown_message: string;
+  listening_from_me: boolean;
 };
 
 export type Webhook = {
@@ -247,9 +129,7 @@ export type Sqs = {
   events: string[];
 };
 
-export type Proxy = {
-  id?: string;
-  enabled: boolean;
+export type ProxyType = {
   host: string;
   port: string;
   protocol: string;
@@ -257,104 +137,24 @@ export type Proxy = {
   password?: string;
 };
 
+export type Proxy = {
+  id?: string;
+  enabled: boolean;
+  proxy: ProxyType;
+};
+
 export type Chatwoot = {
   id?: string;
   enabled: boolean;
-  accountId: string;
+  account_id: string;
   token: string;
   url: string;
-  signMsg: boolean;
-  reopenConversation: boolean;
-  conversationPending: boolean;
-  nameInbox: string;
-  mergeBrazilContacts: boolean;
-  importContacts: boolean;
-  importMessages: boolean;
-  daysLimitImportMessages: number;
-  signDelimiter: string;
-  autoCreate: boolean;
-  organization: string;
-  logo: string;
-  ignoreJids?: string[];
-};
-
-export type ModelOpenai = {
-  id: string;
-  object: string;
-  created: number;
-  owned_by: string;
-};
-
-export type EvolutionBot = {
-  id?: string;
-  enabled: boolean;
-  description: string;
-  apiUrl: string;
-  apiKey?: string;
-  triggerType: string;
-  triggerOperator: string;
-  triggerValue: string;
-  expire: number;
-  keywordFinish: string;
-  delayMessage: number;
-  unknownMessage: string;
-  listeningFromMe: boolean;
-  stopBotFromMe: boolean;
-  keepOpen: boolean;
-  debounceTime: number;
-  ignoreJids?: string[];
-  splitMessages?: boolean;
-  timePerChar?: number;
-};
-
-export type EvolutionBotSettings = {
-  expire: number;
-  keywordFinish: string;
-  delayMessage: number;
-  unknownMessage: string;
-  listeningFromMe: boolean;
-  stopBotFromMe: boolean;
-  keepOpen: boolean;
-  debounceTime: number;
-  botIdFallback?: string;
-  ignoreJids?: string[];
-  splitMessages?: boolean;
-  timePerChar?: number;
-};
-
-export type Flowise = {
-  id?: string;
-  enabled: boolean;
-  description: string;
-  apiUrl: string;
-  apiKey?: string;
-  triggerType: string;
-  triggerOperator: string;
-  triggerValue: string;
-  expire: number;
-  keywordFinish: string;
-  delayMessage: number;
-  unknownMessage: string;
-  listeningFromMe: boolean;
-  stopBotFromMe: boolean;
-  keepOpen: boolean;
-  debounceTime: number;
-  ignoreJids?: string[];
-  splitMessages?: boolean;
-  timePerChar?: number;
-};
-
-export type FlowiseSettings = {
-  expire: number;
-  keywordFinish: string;
-  delayMessage: number;
-  unknownMessage: string;
-  listeningFromMe: boolean;
-  stopBotFromMe: boolean;
-  keepOpen: boolean;
-  debounceTime: number;
-  flowiseIdFallback?: string;
-  ignoreJids?: string[];
-  splitMessages?: boolean;
-  timePerChar?: number;
+  sign_msg: boolean;
+  sign_delimiter: string;
+  reopen_conversation: boolean;
+  conversation_pending: boolean;
+  import_contacts: boolean;
+  import_messages: boolean;
+  days_limit_import_messages: number;
+  auto_create: boolean;
 };

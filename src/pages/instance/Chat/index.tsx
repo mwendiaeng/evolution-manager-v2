@@ -29,7 +29,7 @@ function Chat() {
   const { instance } = useInstance();
 
   const { data: chats, isSuccess } = useFindChats({
-    instanceName: instance?.name,
+    instanceName: instance?.instanceName,
   });
 
   const { instanceId, remoteJid } = useParams<{

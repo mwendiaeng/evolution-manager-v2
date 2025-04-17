@@ -1,4 +1,4 @@
-import { Typebot, TypebotSettings } from "@/types/evolution.types";
+import { Typebot } from "@/types/evolution.types";
 
 import { api } from "../api";
 import { useManageMutation } from "../mutateQuery";
@@ -52,22 +52,6 @@ const deleteTypebot = async ({
   return response.data;
 };
 
-interface SetDefaultSettingsTypebotParams {
-  instanceName: string;
-  token: string;
-  data: TypebotSettings;
-}
-const setDefaultSettingsTypebot = async ({
-  instanceName,
-  token,
-  data,
-}: SetDefaultSettingsTypebotParams) => {
-  const response = await api.post(`/typebot/settings/${instanceName}`, data, {
-    headers: { apikey: token },
-  });
-  return response.data;
-};
-
 interface ChangeStatusTypebotParams {
   instanceName: string;
   token: string;
@@ -92,10 +76,6 @@ const changeStatusTypebot = async ({
 };
 
 export function useManageTypebot() {
-  const setDefaultSettingsTypebotMutation = useManageMutation(
-    setDefaultSettingsTypebot,
-    { invalidateKeys: [["typebot", "fetchDefaultSettings"]] },
-  );
   const changeStatusTypebotMutation = useManageMutation(changeStatusTypebot, {
     invalidateKeys: [
       ["typebot", "getTypebot"],
@@ -121,7 +101,6 @@ export function useManageTypebot() {
   });
 
   return {
-    setDefaultSettingsTypebot: setDefaultSettingsTypebotMutation,
     changeStatusTypebot: changeStatusTypebotMutation,
     deleteTypebot: deleteTypebotMutation,
     updateTypebot: updateTypebotMutation,

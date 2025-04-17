@@ -1,5 +1,4 @@
 import React from "react";
-import { useParams } from "react-router-dom";
 
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
@@ -13,12 +12,10 @@ interface LayoutProps {
 }
 
 function InstanceLayout({ children }: LayoutProps) {
-  const { instanceId } = useParams<{ instanceId: string }>();
-
   return (
     <InstanceProvider>
       <div className="flex h-screen flex-col">
-        <Header instanceId={instanceId} />
+        <Header />
 
         <div className="flex min-h-[calc(100vh_-_56px)] flex-1 flex-col md:flex-row">
           <ScrollArea className="mr-2 py-6 md:w-64">

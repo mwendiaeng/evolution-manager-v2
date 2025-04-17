@@ -2,12 +2,10 @@ import { DoorOpen } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { useFetchInstance } from "@/lib/queries/instance/fetchInstance";
 import { logout } from "@/lib/queries/token";
 
 import { LanguageToggle } from "./language-toggle";
 import { ModeToggle } from "./mode-toggle";
-import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
   Dialog,
@@ -17,7 +15,7 @@ import {
   DialogHeader,
 } from "./ui/dialog";
 
-function Header({ instanceId }: { instanceId?: string }) {
+function Header() {
   const [logoutConfirmation, setLogoutConfirmation] = useState(false);
   const navigate = useNavigate();
 
@@ -29,8 +27,6 @@ function Header({ instanceId }: { instanceId?: string }) {
   const navigateToDashboard = () => {
     navigate("/manager/");
   };
-
-  const { data: instance } = useFetchInstance({ instanceId });
 
   return (
     <header className="flex items-center justify-between px-4 py-2">
@@ -47,16 +43,6 @@ function Header({ instanceId }: { instanceId?: string }) {
         <span>Evolution Manager</span>
       </Link>
       <div className="flex items-center gap-4">
-        {instanceId && (
-          <Avatar className="h-8 w-8">
-            <AvatarImage
-              src={
-                instance?.profilePicUrl || "/assets/images/evolution-logo.png"
-              }
-              alt={instance?.name}
-            />
-          </Avatar>
-        )}
         <LanguageToggle />
         <ModeToggle />
         <Button

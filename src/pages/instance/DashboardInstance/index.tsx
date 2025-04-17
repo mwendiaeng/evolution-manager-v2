@@ -8,7 +8,6 @@ import { InstanceStatus } from "@/components/instance-status";
 import { InstanceToken } from "@/components/instance-token";
 import { useTheme } from "@/components/theme-provider";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -88,7 +87,6 @@ function DashboardInstance() {
           number: instance?.number,
         });
 
-
         setPairingCode(data.pairingCode);
       } else {
         const data = await connect({ instanceName, token });
@@ -152,20 +150,6 @@ function DashboardInstance() {
             <div className="flex w-full flex-1">
               <InstanceToken token={instance.apikey} />
             </div>
-
-            {instance.profileName && (
-              <div className="flex flex-1 gap-2">
-                <Avatar>
-                  <AvatarImage src={instance.profilePictureUrl} alt="" />
-                </Avatar>
-                <div className="space-y-1">
-                  <strong>{instance.profileName}</strong>
-                  <p className="break-all text-sm text-muted-foreground">
-                    {instance.owner}
-                  </p>
-                </div>
-              </div>
-            )}
             {instance.status !== "open" && (
               <Alert
                 variant="warning"

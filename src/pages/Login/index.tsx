@@ -17,7 +17,6 @@ import {
 import { Form, FormInput } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { verifyCreds } from "@/lib/queries/auth/verifyCreds";
 import { verifyServer } from "@/lib/queries/auth/verifyServer";
 import { logout, saveToken } from "@/lib/queries/token";
 

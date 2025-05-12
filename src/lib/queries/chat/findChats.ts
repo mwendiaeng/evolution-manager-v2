@@ -15,9 +15,9 @@ const queryKey = (params: Partial<IParams>) => [
 ];
 
 export const findChats = async ({ instanceName }: IParams) => {
-  const response = await api.post(`/chat/findChats/${instanceName}`, {
-    where: {},
-  });
+  const response = await api.get(
+    `/chat/fetchContactsWithLastMessage/${instanceName}`,
+  );
   return response.data;
 };
 

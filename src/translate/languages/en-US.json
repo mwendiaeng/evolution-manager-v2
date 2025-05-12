@@ -1121,5 +1121,120 @@
         "title": "Default Settings"
       }
     }
+  },
+  "chat": {
+    "title": "Chat",
+    "contacts": "Contatos",
+    "groups": "Grupos",
+    "sent": "enviou",
+    "received": "recebeu",
+    "noMessage": "Nenhuma mensagem",
+    "messageTypes": {
+      "interactive": "interativa",
+      "image": "imagem",
+      "video": "vídeo",
+      "audio": "áudio",
+      "document": "documento",
+      "sticker": "figurinha",
+      "contact": "contato",
+      "location": "localização"
+    },
+    "newChat": {
+      "title": "Nova Conversa",
+      "description": "Iniciar uma nova conversa com um contato",
+      "placeholder": "Selecione um contato",
+      "contact": "Contato",
+      "submit": "Iniciar Conversa"
+    },
+    "window": {
+      "expired": "Janela de 24 horas expirada. Aguarde o cliente iniciar uma nova conversa.",
+      "expiresIn": "Janela de atendimento expira em {{time}}"
+    },
+    "message": {
+      "options": "Opções da mensagem",
+      "reply": "Responder mensagem",
+      "forward": "Encaminhar mensagem",
+      "delete": "Apagar mensagem",
+      "deleted": "Mensagem apagada",
+      "placeholder": "Enviar mensagem..."
+    },
+    "buttons": {
+      "preview": {
+        "title": "Preview da Mensagem",
+        "buttonPlaceholder": "Sem texto"
+      },
+      "toast": {
+        "success": "Botão enviado com sucesso!",
+        "error": "Erro ao enviar botão!"
+      },
+      "form": {
+        "title": "Título",
+        "titlePlaceholder": "Digite o título",
+        "description": "Descrição",
+        "descriptionPlaceholder": "Digite a descrição",
+        "footer": "Rodapé (Opcional)",
+        "footerPlaceholder": "Digite o rodapé",
+        "buttons": "Botões",
+        "addButton": "Adicionar Botão",
+        "buttonType": "Tipo do Botão",
+        "selectButtonType": "Selecione o tipo do botão",
+        "buttonText": "Texto do Botão",
+        "buttonTextPlaceholder": "Digite o texto do botão",
+        "copyText": "Texto para Copiar",
+        "copyTextPlaceholder": "Digite o texto para copiar",
+        "url": "URL",
+        "urlPlaceholder": "Digite a URL",
+        "phoneNumber": "Número de Telefone",
+        "phoneNumberPlaceholder": "Digite o número de telefone",
+        "replyId": "ID da Resposta",
+        "replyIdPlaceholder": "Digite o ID da resposta",
+        "removeButton": "Remover Botão",
+        "save": "Salvar",
+        "validation": {
+          "titleRequired": "O título é obrigatório",
+          "descriptionRequired": "A descrição é obrigatória",
+          "buttonTypeRequired": "O tipo do botão é obrigatório",
+          "buttonTextRequired": "O texto do botão é obrigatório",
+          "minimumOneButton": "Adicione pelo menos um botão",
+          "replyIdRequired": "O ID da resposta é obrigatório",
+          "copyTextRequired": "O texto para copiar é obrigatório",
+          "urlRequired": "A URL é obrigatória",
+          "phoneRequired": "O número de telefone é obrigatório"
+        }
+      },
+      "types": {
+        "reply": "Resposta",
+        "copy": "Copiar",
+        "url": "URL",
+        "call": "Ligação"
+      },
+      "dialog": {
+        "title": "Criar botão interativo",
+        "description": "Crie um botão interativo para responder a mensagens do usuário."
+      }
+    },
+    "toast": {
+      "recordingError": "Erro ao iniciar gravação",
+      "error": "Erro",
+      "sendError": "Erro ao enviar mensagem"
+    },
+    "media": {
+      "attach": "Anexar",
+      "document": "Documento",
+      "photosAndVideos": "Fotos e vídeos",
+      "createInteractiveButton": "Criar botão interativo",
+      "selectedMedia": {
+        "imageAlt": "Mídia selecionada",
+        "file": "Arquivo",
+        "selectedFile": "Arquivo selecionado"
+      },
+      "errors": {
+        "audioSize": "Áudio deve ter no máximo 16MB",
+        "imageSize": "Imagem deve ter no máximo 5MB",
+        "videoSize": "Vídeo deve ter no máximo 16MB",
+        "documentSize": "Documento deve ter no máximo 100MB",
+        "unsupportedType": "Tipo de arquivo não suportado"
+      }
+    }
   }
 }

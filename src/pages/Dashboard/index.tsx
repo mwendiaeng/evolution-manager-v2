@@ -80,7 +80,6 @@ function Dashboard() {
   };
 
   const filteredInstances = useMemo(() => {
-    console.log(searchStatus, nameSearch);
     let instancesList = instances ? [...instances] : [];
     if (searchStatus !== "all") {
       instancesList = instancesList.filter(
@@ -93,8 +92,6 @@ function Dashboard() {
         instance.instanceName.toLowerCase().includes(nameSearch.toLowerCase()),
       );
     }
-
-    console.log(instancesList);
 
     return instancesList;
   }, [instances, nameSearch, searchStatus]);

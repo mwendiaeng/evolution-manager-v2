@@ -16,9 +16,9 @@ const queryKey = (params: Partial<IParams>) => [
 ];
 
 export const findChat = async ({ instanceName, remoteJid }: IParams) => {
-  const response = await api.post(`/chat/findChats/${instanceName}`, {
-    where: { remoteJid },
-  });
+  const response = await api.get(
+    `/chat/findChats/${instanceName}?remoteJid=${remoteJid}`,
+  );
   if (Array.isArray(response.data)) {
     return response.data[0];
   }

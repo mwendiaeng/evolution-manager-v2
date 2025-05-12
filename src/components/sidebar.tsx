@@ -9,6 +9,7 @@ import {
   MessageCircle,
   Zap,
   ChevronDown,
+  MessageCircleIcon,
 } from "lucide-react";
 import { useMemo } from "react";
 import { useTranslation } from "react-i18next";
@@ -27,6 +28,7 @@ import {
 
 function Sidebar() {
   const { t } = useTranslation();
+  const { instance } = useInstance();
 
   const Menus = useMemo(
     () => [
@@ -35,6 +37,13 @@ function Sidebar() {
         title: t("sidebar.dashboard"),
         icon: LayoutDashboard,
         path: "dashboard",
+      },
+      {
+        id: "embed-chat",
+        title: t("sidebar.chat"),
+        icon: MessageCircleIcon,
+        path: "embed-chat",
+        isEmbed: true,
       },
       {
         navLabel: true,
@@ -136,19 +145,22 @@ function Sidebar() {
         link: "https://evolution-api.com/suporte-pro",
       },
     ],
-    [t],
+    [t, instance],
   );
 
   const navigate = useNavigate();
   const { pathname } = useLocation();
 
-  const { instance } = useInstance();
-
   const handleNavigate = (menu?: any) => {
-    if (!menu || !instance) return;
+    if (!menu) return;
 
-    if (menu.path)
-      navigate(`/manager/instance/${instance.instanceName}/${menu.path}`);
+    let url;
+    if (menu.isEmbed) {
+      url = `/manager/${menu.path}?token=${instance?.apikey}&instanceName=${instance?.instanceName}`;
+    } else if (menu.path && instance) {
+      url = `/manager/instance/${instance.instanceName}/${menu.path}`;
+    }
+    if (url) navigate(url);
     if (menu.link) window.open(menu.link, "_blank");
   };
 
@@ -232,7 +244,11 @@ function Sidebar() {
               )}
               {"path" in menu && (
                 <Link
-                  to={`/manager/instance/${instance?.instanceName}/${menu.path}`}
+                  to={
+                    menu.isEmbed
+                      ? `/manager/${menu.path}?token=${instance?.apikey}&instanceName=${instance?.instanceName}`
+                      : `/manager/instance/${instance?.instanceName}/${menu.path}`
+                  }
                   className="absolute inset-0 h-full w-full"
                 />
               )}

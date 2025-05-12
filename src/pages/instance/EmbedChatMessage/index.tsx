@@ -349,37 +349,32 @@ function EmbedChatMessage() {
               </Button>
             </div>
             <Tabs defaultValue="contacts">
-              {(activeInstance?.integration === "WHATSAPP-EVOLUTION" ||
-                activeInstance?.integration === "WHATSAPP-WHATSMEOW") && (
-                <TabsList className="tabs-chat">
-                  <TabsTrigger
-                    value="contacts"
-                    className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                    style={
-                      {
-                        "--primary": primaryColor || "#e2e8f0",
-                        "--primary-foreground":
-                          textForegroundColor || "#000000",
-                      } as React.CSSProperties
-                    }
-                  >
-                    {t("chat.contacts")}
-                  </TabsTrigger>
-                  <TabsTrigger
-                    value="groups"
-                    className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
-                    style={
-                      {
-                        "--primary": primaryColor || "#e2e8f0",
-                        "--primary-foreground":
-                          textForegroundColor || "#000000",
-                      } as React.CSSProperties
-                    }
-                  >
-                    {t("chat.groups")}
-                  </TabsTrigger>
-                </TabsList>
-              )}
+              <TabsList className="tabs-chat">
+                <TabsTrigger
+                  value="contacts"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  style={
+                    {
+                      "--primary": primaryColor || "#e2e8f0",
+                      "--primary-foreground": textForegroundColor || "#000000",
+                    } as React.CSSProperties
+                  }
+                >
+                  {t("chat.contacts")}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="groups"
+                  className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground"
+                  style={
+                    {
+                      "--primary": primaryColor || "#e2e8f0",
+                      "--primary-foreground": textForegroundColor || "#000000",
+                    } as React.CSSProperties
+                  }
+                >
+                  {t("chat.groups")}
+                </TabsTrigger>
+              </TabsList>
               <TabsContent value="contacts">
                 <div className="contacts-container">
                   <div className="grid gap-1 p-2 text-foreground">

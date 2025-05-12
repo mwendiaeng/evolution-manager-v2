@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { apiGlobal } from "@/lib/queries/api";
+import { api } from "@/lib/queries/api";
 
 import { Instance } from "@/types/evolution.types";
 
@@ -39,12 +39,17 @@ export function EmbedInstanceProvider({
       }
 
       try {
-        const { data } = await apiGlobal.get(`/instance/fetchInstances`, {
-          params: { instanceName },
-        });
+        const { data } = await api.get(
+          `/instance/fetchInstances?instanceName=${instanceName}`,
+          {
+            headers: {
+              apikey: token,
+            },
+          },
+        );
 
-        if (data && data.instance) {
-          setInstance(data.instance);
+        if (data && data[0]?.instance) {
+          setInstance(data[0].instance);
         } else {
           setError("Instância não encontrada");
         }

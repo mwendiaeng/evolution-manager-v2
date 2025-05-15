@@ -1,9 +1,9 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { api } from "@/lib/queries/api";
-
 import { Instance } from "@/types/evolution.types";
+import { TOKEN_ID } from "@/lib/queries/token";
+import axios from "axios";
 
 interface EmbedInstanceContextType {
   instance: Instance | null;
@@ -39,17 +39,21 @@ export function EmbedInstanceProvider({
       }
 
       try {
-        const { data } = await api.get(
-          `/instance/fetchInstances?instanceName=${instanceName}`,
+        const apiUrl = "https://lb.icommarketing.com.br";
+        localStorage.setItem(TOKEN_ID.API_URL, apiUrl);
+        localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, token);
+
+        const { data } = await axios.get(
+          `${apiUrl}/instance/fetchInstances?instanceName=${instanceName}`,
           {
             headers: {
-              apikey: token,
+              apikey: "fpsdv1DeD1SXg5Eb",
             },
           },
         );
 
-        if (data && data[0]?.instance) {
-          setInstance(data[0].instance);
+        if (data && data?.instance) {
+          setInstance(data.instance);
         } else {
           setError("Instância não encontrada");
         }

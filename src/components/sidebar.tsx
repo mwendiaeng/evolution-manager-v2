@@ -84,6 +84,16 @@ function Sidebar() {
         icon: Zap,
         children: [
           {
+            id: "evoai",
+            title: t("sidebar.evoai"),
+            path: "evoai",
+          },
+          {
+            id: "n8n",
+            title: t("sidebar.n8n"),
+            path: "n8n",
+          },
+          {
             id: "evolutionBot",
             title: t("sidebar.evolutionBot"),
             path: "evolutionBot",
@@ -112,16 +122,6 @@ function Sidebar() {
             id: "flowise",
             title: t("sidebar.flowise"),
             path: "flowise",
-          },
-          {
-            id: "n8n",
-            title: t("sidebar.n8n"),
-            path: "n8n",
-          },
-          {
-            id: "evoai",
-            title: t("sidebar.evoai"),
-            path: "evoai",
           },
         ],
       },

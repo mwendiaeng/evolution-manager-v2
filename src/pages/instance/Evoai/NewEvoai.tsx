@@ -39,9 +39,8 @@ function NewEvoai({ resetTable }: { resetTable: () => void }) {
       const evoaiData: Evoai = {
         enabled: data.enabled,
         description: data.description,
-        webhookUrl: data.webhookUrl,
-        basicAuthUser: data.basicAuthUser,
-        basicAuthPass: data.basicAuthPass,
+        agentUrl: data.agentUrl,
+        apiKey: data.apiKey,
         triggerType: data.triggerType,
         triggerOperator: data.triggerOperator || "",
         triggerValue: data.triggerValue || "",

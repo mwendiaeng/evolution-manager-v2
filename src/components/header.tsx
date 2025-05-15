@@ -16,10 +16,12 @@ import {
   DialogFooter,
   DialogHeader,
 } from "./ui/dialog";
+import { useTheme } from "./theme-provider";
 
 function Header({ instanceId }: { instanceId?: string }) {
   const [logoutConfirmation, setLogoutConfirmation] = useState(false);
   const navigate = useNavigate();
+  const { theme } = useTheme();
 
   const handleClose = () => {
     logout();
@@ -40,11 +42,14 @@ function Header({ instanceId }: { instanceId?: string }) {
         className="flex h-8 items-center gap-4"
       >
         <img
-          src="/assets/images/evolution-logo.png"
+          src={
+            theme === "dark"
+              ? "https://evolution-api.com/files/evo/evolution-logo-white.svg"
+              : "https://evolution-api.com/files/evo/evolution-logo.svg"
+          }
           alt="Logo"
           className="h-full"
         />
-        <span>Evolution Manager</span>
       </Link>
       <div className="flex items-center gap-4">
         {instanceId && (

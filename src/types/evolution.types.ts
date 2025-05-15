@@ -184,6 +184,81 @@ export type DifySettings = {
   timePerChar?: number;
 };
 
+export type N8n = {
+  id?: string;
+  enabled: boolean;
+  description: string;
+  webhookUrl: string;
+  basicAuthUser: string;
+  basicAuthPass: string;
+  triggerType: string;
+  triggerOperator: string;
+  triggerValue: string;
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
+};
+
+export type N8nSettings = {
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  n8nIdFallback?: string;
+  ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
+};
+
+export type Evoai = {
+  id?: string;
+  enabled: boolean;
+  description: string;
+  agentUrl: string;
+  apiKey: string;
+  triggerType: string;
+  triggerOperator: string;
+  triggerValue: string;
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
+};
+
+export type EvoaiSettings = {
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  evoaiIdFallback?: string;
+  ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
+};
+
 export type Typebot = {
   id?: string;
   enabled: boolean;

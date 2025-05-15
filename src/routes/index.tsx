@@ -11,6 +11,8 @@ import { Chat } from "@/pages/instance/Chat";
 import { Chatwoot } from "@/pages/instance/Chatwoot";
 import { DashboardInstance } from "@/pages/instance/DashboardInstance";
 import { Dify } from "@/pages/instance/Dify";
+import { N8n } from "@/pages/instance/N8n";
+import { Evoai } from "@/pages/instance/Evoai";
 import { EvolutionBot } from "@/pages/instance/EvolutionBot";
 import { Flowise } from "@/pages/instance/Flowise";
 import { Openai } from "@/pages/instance/Openai";
@@ -188,6 +190,46 @@ const router = createBrowserRouter([
       <ProtectedRoute>
         <InstanceLayout>
           <Dify />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/n8n",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <N8n />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/n8n/:n8nId",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <N8n />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/evoai",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Evoai />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/evoai/:evoaiId",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Evoai />
         </InstanceLayout>
       </ProtectedRoute>
     ),

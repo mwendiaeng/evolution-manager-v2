@@ -113,6 +113,16 @@ function Sidebar() {
             title: t("sidebar.flowise"),
             path: "flowise",
           },
+          {
+            id: "n8n",
+            title: t("sidebar.n8n"),
+            path: "n8n",
+          },
+          {
+            id: "evoai",
+            title: t("sidebar.evoai"),
+            path: "evoai",
+          },
         ],
       },
       {

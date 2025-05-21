@@ -2,7 +2,6 @@ import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 // Importações de contextos
 import { ChevronDown } from "lucide-react";
-import moment from "moment";
 
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
@@ -30,7 +29,8 @@ const Messages = ({
   messages,
   setMessages,
 }: MessagesProps) => {
-  const { backgroundColor, textForegroundColor, primaryColor } = useEmbedColors();
+  const { backgroundColor, textForegroundColor, primaryColor } =
+    useEmbedColors();
   const [isAtBottom, setIsAtBottom] = useState(true);
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [newMessagesCount, setNewMessagesCount] = useState(0);
@@ -48,7 +48,7 @@ const Messages = ({
   const checkIfAtBottom = () => {
     const container = messagesContainerRef.current;
     if (!container) return true;
-    
+
     const { scrollTop, scrollHeight, clientHeight } = container;
     // Add some threshold to avoid issues with pixel-perfect detection
     const isBottom = Math.abs(scrollHeight - scrollTop - clientHeight) < 20;
@@ -80,7 +80,7 @@ const Messages = ({
       }, 100);
     }
   }, [isSuccess, initialMessages, setMessages]);
-  
+
   // Reset component state when opening a new chat
   useEffect(() => {
     // Reset all state values when changing chats
@@ -88,7 +88,7 @@ const Messages = ({
     setShowScrollButton(false);
     setNewMessagesCount(0);
     prevMessagesLengthRef.current = 0;
-    
+
     // Scroll to bottom with a delay to ensure rendering is complete
     if (messages.length > 0) {
       setTimeout(() => {
@@ -108,7 +108,7 @@ const Messages = ({
     const handleScroll = () => {
       const atBottom = checkIfAtBottom();
       setIsAtBottom(atBottom);
-      
+
       if (atBottom) {
         // User scrolled to bottom, hide button and reset counter
         setShowScrollButton(false);
@@ -116,19 +116,19 @@ const Messages = ({
       }
     };
 
-    container.addEventListener('scroll', handleScroll);
-    return () => container.removeEventListener('scroll', handleScroll);
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
   }, []);
 
   // Smooth scroll-to-bottom function
   const scrollToBottom = () => {
     if (lastMessageRef.current) {
       // Use smooth scrolling animation when scrolling to the last message
-      lastMessageRef.current.scrollIntoView({ 
-        behavior: "smooth", 
-        block: "end" 
+      lastMessageRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
       });
-      
+
       // After scrolling to bottom, update state
       setIsAtBottom(true);
       setShowScrollButton(false);
@@ -139,9 +139,9 @@ const Messages = ({
       if (container) {
         container.scrollTo({
           top: container.scrollHeight,
-          behavior: 'smooth'
+          behavior: "smooth",
         });
-        
+
         // After scrolling to bottom, update state
         setIsAtBottom(true);
         setShowScrollButton(false);
@@ -155,7 +155,7 @@ const Messages = ({
     if (messages.length > 0) {
       const hasNewMessages = messages.length > prevMessagesLengthRef.current;
       prevMessagesLengthRef.current = messages.length;
-      
+
       if (hasNewMessages) {
         if (isAtBottom) {
           // User is at bottom, auto-scroll to newest message
@@ -163,7 +163,7 @@ const Messages = ({
         } else {
           // User is scrolled up, show button with counter
           setShowScrollButton(true);
-          setNewMessagesCount(prev => prev + 1);
+          setNewMessagesCount((prev) => prev + 1);
         }
       }
     }
@@ -336,7 +336,7 @@ const Messages = ({
   return (
     <div
       ref={messagesContainerRef}
-      className="custom-scrollbar flex-grow overflow-y-auto relative"
+      className="custom-scrollbar relative flex-grow overflow-y-auto"
       style={containerStyle}
     >
       <div className="relative mx-auto box-border flex w-full max-w-[64rem] flex-col gap-6 bg-transparent p-[0.375rem_1rem_0_1rem]">
@@ -360,19 +360,22 @@ const Messages = ({
         ) : (
           processMessagesWithReactions(messages)
             .filter((message) => !message.message.senderKeyDistributionMessage)
-            .sort(
-              (a, b) => {
-                // Safely handle messages with missing timestamps
-                const aTime = a.messageTimestamp ? new Date(a.messageTimestamp).getTime() : 0;
-                const bTime = b.messageTimestamp ? new Date(b.messageTimestamp).getTime() : 0;
-                return aTime - bTime;
-              },
-            )
+            .sort((a, b) => {
+              // Safely handle messages with missing timestamps
+              const aTime = a.messageTimestamp
+                ? new Date(a.messageTimestamp).getTime()
+                : 0;
+              const bTime = b.messageTimestamp
+                ? new Date(b.messageTimestamp).getTime()
+                : 0;
+              return aTime - bTime;
+            })
             .map((message, index) => {
               const isLastMessage = index === messages.length - 1;
               // Generate a reliable ID for the message (either from key.id or fallback to index)
-              const messageId = message.key?.id || `temp-${message.messageTimestamp}-${index}`;
-              
+              const messageId =
+                message.key?.id || `temp-${message.messageTimestamp}-${index}`;
+
               return (
                 <MessageBubble
                   key={messageId}
@@ -396,7 +399,9 @@ const Messages = ({
                       />
                     </>
                   ) : (
-                    <MessageBubble.Content fromMe={message.key?.fromMe || false}>
+                    <MessageBubble.Content
+                      fromMe={message.key?.fromMe || false}
+                    >
                       <div className="text-muted-foreground">
                         {t("chat.message.deleted")}
                       </div>
@@ -407,58 +412,58 @@ const Messages = ({
             })
         )}
       </div>
-      
+
       {/* Fixed floating button - only shown when needed */}
       {showScrollButton && (
-        <div 
+        <div
           style={{
-            position: 'fixed',
-            bottom: '20px',
-            right: '20px',
+            position: "fixed",
+            bottom: "20px",
+            right: "20px",
             zIndex: 9999,
-            backgroundColor: primaryColor || '#e2e8f0',
-            color: textForegroundColor || '#000000',
-            width: '50px',
-            height: '50px',
-            borderRadius: '50%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-            transition: 'all 0.2s ease-in-out',
-            border: `1px solid ${backgroundColor === '#ffffff' ? '#e2e8f0' : 'transparent'}`,
+            backgroundColor: primaryColor || "#e2e8f0",
+            color: textForegroundColor || "#000000",
+            width: "50px",
+            height: "50px",
+            borderRadius: "50%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            boxShadow: "0 4px 12px rgba(0,0,0,0.15)",
+            transition: "all 0.2s ease-in-out",
+            border: `1px solid ${backgroundColor === "#ffffff" ? "#e2e8f0" : "transparent"}`,
           }}
           onClick={scrollToBottom}
           onMouseOver={(e) => {
-            e.currentTarget.style.transform = 'scale(1.05)';
+            e.currentTarget.style.transform = "scale(1.05)";
           }}
           onMouseOut={(e) => {
-            e.currentTarget.style.transform = 'scale(1)';
+            e.currentTarget.style.transform = "scale(1)";
           }}
         >
           <ChevronDown size={24} />
           {newMessagesCount > 0 && (
-            <div 
+            <div
               style={{
-                position: 'absolute',
-                top: '-8px',
-                right: '-8px',
-                backgroundColor: '#ef4444', // Red color works well in both light/dark themes
-                color: '#ffffff',
-                minWidth: '24px',
-                height: '24px',
-                borderRadius: '12px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '12px',
-                padding: '0 4px',
-                fontWeight: 'bold',
-                boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
+                position: "absolute",
+                top: "-8px",
+                right: "-8px",
+                backgroundColor: "#ef4444", // Red color works well in both light/dark themes
+                color: "#ffffff",
+                minWidth: "24px",
+                height: "24px",
+                borderRadius: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                fontSize: "12px",
+                padding: "0 4px",
+                fontWeight: "bold",
+                boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
               }}
             >
-              {newMessagesCount > 99 ? '99+' : newMessagesCount}
+              {newMessagesCount > 99 ? "99+" : newMessagesCount}
             </div>
           )}
         </div>

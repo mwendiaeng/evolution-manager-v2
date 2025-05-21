@@ -183,7 +183,7 @@ function EmbedChatMessage() {
 
     const socket = connectSocket(serverUrl);
 
-    function updateChats(event: string, data: any) {
+    function updateChats(_: string, data: any) {
       if (!activeInstance) return;
 
       if (data.instance !== activeInstance.instanceName) return;
@@ -191,26 +191,31 @@ function EmbedChatMessage() {
       setChats((prevChats) => {
         // Check both remoteJid and id fields - some chats might only have one or the other
         const messageRemoteJid = data?.data?.key?.remoteJid;
-        
+
         // Find existing chat by any matching identifier
         const existingChatIndex = prevChats.findIndex(
-          (chat) => 
-            (chat.remoteJid && chat.remoteJid === messageRemoteJid) || 
-            (chat.id && chat.id === messageRemoteJid)
+          (chat) =>
+            (chat.remoteJid && chat.remoteJid === messageRemoteJid) ||
+            (chat.id && chat.id === messageRemoteJid),
         );
 
-        const existingChat = existingChatIndex !== -1 ? prevChats[existingChatIndex] : null;
+        const existingChat =
+          existingChatIndex !== -1 ? prevChats[existingChatIndex] : null;
 
         // Create contact object with just the Contact properties
         const chatObject: Contact = {
           id: messageRemoteJid,
           remoteJid: messageRemoteJid,
           // Prefer existing contact info over pushname from message
-          pushName: existingChat?.pushName || data?.data?.pushName || formatRemoteJid(messageRemoteJid),
+          pushName:
+            existingChat?.pushName ||
+            data?.data?.pushName ||
+            formatRemoteJid(messageRemoteJid),
           // Keep existing profile picture if available
-          profilePictureUrl: existingChat?.profilePictureUrl || 
-                            data?.data?.key?.profilePictureUrl || 
-                            "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg",
+          profilePictureUrl:
+            existingChat?.profilePictureUrl ||
+            data?.data?.key?.profilePictureUrl ||
+            "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg",
           lastMessage: data?.data,
           updatedAt: new Date().toISOString(),
           // Preserve existing labels

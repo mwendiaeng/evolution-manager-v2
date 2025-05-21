@@ -39,7 +39,7 @@ export function EmbedInstanceProvider({
       }
 
       try {
-        const apiUrl = "http://localhost:8082";
+        const apiUrl = import.meta.env.VITE_API_URL;
         localStorage.setItem(TOKEN_ID.API_URL, apiUrl);
         localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, token);
 
@@ -47,7 +47,7 @@ export function EmbedInstanceProvider({
           `${apiUrl}/instance/fetchInstances?instanceName=${instanceName}`,
           {
             headers: {
-              apikey: "B6D711FCDE4D4FD5936544120E713976",
+              apikey: import.meta.env.VITE_API_KEY,
             },
           },
         );

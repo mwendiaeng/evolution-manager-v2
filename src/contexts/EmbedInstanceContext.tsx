@@ -39,7 +39,7 @@ export function EmbedInstanceProvider({
       }
 
       try {
-        const apiUrl = 'https://lb123.icommarketing.com.br';
+        const apiUrl = 'https://lb.icommarketing.com.br';
         localStorage.setItem(TOKEN_ID.API_URL, apiUrl);
         localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, token);
 

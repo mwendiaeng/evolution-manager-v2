@@ -378,38 +378,59 @@ const InputMessage = ({ chat }: InputMessageProps) => {
   const sendMediaMessage = async () => {
     if (!embeddedInstance || !selectedMedia || !remoteJid) return;
 
-    const info = {
-      instanceName: embeddedInstance.instanceName,
-      token: embeddedInstance.token,
-      data: {
-        number: remoteJid,
-        mediaMessage: {
-          mediatype:
-            selectedMedia.type.split("/")[0] === "application"
-              ? "document"
-              : selectedMedia.type.split("/")[0],
-          mimetype: selectedMedia.type,
-          caption: message,
-          media: selectedMedia,
-          fileName: selectedMedia.name,
-        },
-        options: {
-          quoted: replyingMessage,
-        },
-      },
-    };
+    setIsSendingMessage(true);
 
-    await sendMedia(info, {
-      onSuccess: () => {
-        setSelectedMedia(null); // Limpa a mídia selecionada
-        setMessage(""); // Limpa o textarea
-        if (textareaRef.current) {
-          textareaRef.current.style.height = "auto";
-        }
-      },
-      onError: handleError,
-      onSettled: handleSettled,
-    });
+    try {
+      // Convert media to base64
+      const base64Data = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(selectedMedia);
+        reader.onload = () => {
+          const base64 = reader.result as string;
+          // Strip the data URI prefix (data:image/xyz;base64,)
+          const base64Data = base64.split(',')[1];
+          resolve(base64Data);
+        };
+        reader.onerror = reject;
+      });
+
+      const info = {
+        instanceName: embeddedInstance.instanceName,
+        token: embeddedInstance.token,
+        data: {
+          number: remoteJid,
+          mediaMessage: {
+            mediatype:
+              selectedMedia.type.split("/")[0] === "application"
+                ? "document"
+                : selectedMedia.type.split("/")[0],
+            mimetype: selectedMedia.type,
+            caption: message,
+            media: base64Data, // Send as base64 string instead of File
+            fileName: selectedMedia.name,
+          },
+          options: {
+            quoted: replyingMessage,
+          },
+        },
+      };
+
+      await sendMedia(info, {
+        onSuccess: () => {
+          setSelectedMedia(null); // Limpa a mídia selecionada
+          setMessage(""); // Limpa o textarea
+          if (textareaRef.current) {
+            textareaRef.current.style.height = "auto";
+          }
+        },
+        onError: handleError,
+        onSettled: handleSettled,
+      });
+    } catch (error) {
+      console.error("Error converting media to base64:", error);
+      handleError(error);
+      setIsSendingMessage(false);
+    }
   };
 
   const sendAudioMessage = async () => {
@@ -417,28 +438,48 @@ const InputMessage = ({ chat }: InputMessageProps) => {
 
     setIsSendingMessage(true);
 
-    const info = {
-      instanceName: embeddedInstance.instanceName,
-      token: embeddedInstance.token,
-      data: {
-        number: remoteJid,
-        audioMessage: {
-          audio: audioBlob,
-        },
-        options: {
-          quoted: replyingMessage,
-        },
-      },
-    };
+    try {
+      // Convert audio blob to base64
+      const base64Data = await new Promise<string>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(audioBlob);
+        reader.onload = () => {
+          const base64 = reader.result as string;
+          // Strip the data URI prefix (data:audio/xyz;base64,)
+          const base64Data = base64.split(',')[1];
+          resolve(base64Data);
+        };
+        reader.onerror = reject;
+      });
 
-    await sendAudio(info, {
-      onSuccess: () => {
-        setAudioBlob(null); // Limpa o áudio gravado
-        setElapsedTime(0); // Zera o tempo decorrido
-      },
-      onError: handleError,
-      onSettled: handleSettled,
-    });
+      const info = {
+        instanceName: embeddedInstance.instanceName,
+        token: embeddedInstance.token,
+        data: {
+          number: remoteJid,
+          audioMessage: {
+            // Instead of sending the raw blob, send the base64 string
+            audio: base64Data
+          },
+          options: {
+            quoted: replyingMessage,
+          },
+        },
+      };
+
+      await sendAudio(info, {
+        onSuccess: () => {
+          setAudioBlob(null); // Limpa o áudio gravado
+          setElapsedTime(0); // Zera o tempo decorrido
+        },
+        onError: handleError,
+        onSettled: handleSettled,
+      });
+    } catch (error) {
+      console.error("Error converting audio to base64:", error);
+      handleError(error);
+      setIsSendingMessage(false);
+    }
   };
 
   // Função que decide qual tipo de mensagem enviar

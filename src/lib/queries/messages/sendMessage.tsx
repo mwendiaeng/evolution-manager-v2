@@ -33,73 +33,63 @@ const sendText = async ({ instanceName, token, data }: SendTextParams) => {
 
 const sendMedia = async ({ instanceName, token, data }: SendMediaParams) => {
   try {
-    const formData = new FormData();
+    // Always send as JSON with base64 media
+    const jsonData = {
+      number: data.number,
+      mediaMessage: {
+        mediatype: data.mediaMessage.mediatype,
+        mimetype: data.mediaMessage.mimetype,
+        caption: data.mediaMessage.caption,
+        media: data.mediaMessage.media, // Base64 string
+        fileName: data.mediaMessage.fileName
+      },
+      options: data.options
+    };
 
-    if (data.mediaMessage.media instanceof File) {
-      formData.append("file", data.mediaMessage.media); // Adiciona o arquivo ao FormData
-    }
-
-    // Adiciona os outros campos ao FormData
-    formData.append("number", data.number);
-    formData.append("mediatype", data.mediaMessage.mediatype);
-    formData.append("mimetype", data.mediaMessage.mimetype);
-    if (data.mediaMessage.caption)
-      formData.append("caption", data.mediaMessage.caption);
-    formData.append("fileName", data.mediaMessage.fileName);
-    if (data.options?.quoted) {
-      formData.append("quoted", JSON.stringify(data.options.quoted));
-    }
-
-    // Faz a requisição POST para a rota com o ID da instância
     const response = await api.post(
       `/message/sendMedia/${instanceName}`,
-      formData,
+      jsonData,
       {
         headers: {
           apikey: token,
-          "content-type": "multipart/form-data",
+          "content-type": "application/json",
         },
       },
     );
-
-    return response.data; // Retorna a resposta se for necessário
+    
+    return response.data;
   } catch (error) {
     console.error("Erro ao enviar mídia:", error);
-    throw error; // Propaga o erro para lidar com ele em outro lugar
+    throw error;
   }
 };
 
 const sendAudio = async ({ instanceName, token, data }: SendAudioParams) => {
   try {
-    const formData = new FormData();
-
-    if (data.audioMessage.audio instanceof File) {
-      formData.append("file", data.audioMessage.audio); // Adiciona o arquivo ao FormData
-    }
-
-    // Adiciona os outros campos ao FormData
-    formData.append("number", data.number);
-    // Faz a requisição POST para a rota com o ID da instância
-
-    if (data.options?.quoted) {
-      formData.append("quoted", JSON.stringify(data.options.quoted));
-    }
+    // Always send as JSON with base64 audio
+    const jsonData = {
+      number: data.number,
+      audioMessage: {
+        audio: data.audioMessage.audio // Base64 string
+      },
+      options: data.options
+    };
 
     const response = await api.post(
       `/message/sendWhatsAppAudio/${instanceName}`,
-      formData,
+      jsonData,
       {
         headers: {
           apikey: token,
-          "content-type": "multipart/form-data",
+          "content-type": "application/json",
         },
       },
     );
-
-    return response.data; // Retorna a resposta se for necessário
+    
+    return response.data;
   } catch (error) {
     console.error("Erro ao enviar áudio:", error);
-    throw error; // Propaga o erro para lidar com ele em outro lugar
+    throw error;
   }
 };
 

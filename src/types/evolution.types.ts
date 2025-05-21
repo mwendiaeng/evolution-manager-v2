@@ -92,9 +92,14 @@ type LastMessage = {
 
 export type Contact = {
   id: string;
+  remoteJid?: string;
   pushName: string;
   profilePictureUrl: string;
   lastMessage?: LastMessage;
+  labels?: string[];
+  createdAt?: string;
+  updatedAt?: string;
+  instanceName?: string;
 };
 
 export type Chat = {

@@ -47,17 +47,31 @@ export function MessageRenderer({ message, fromMe }: MessageRendererProps) {
       );
 
     case "imageMessage":
+      // Ensure proper data URI format for image base64
+      const imageBase64 = message.message.base64 ? 
+        (message.message.base64.startsWith('data:') ? 
+          message.message.base64 : 
+          `data:image/jpeg;base64,${message.message.base64}`) : 
+        null;
+      
       return (
         <div className="mb-2 flex flex-col gap-2">
-          <img
-            src={message.message.mediaUrl}
-            width="400px"
-            alt="Image"
-            style={{
-              maxHeight: "400px",
-              objectFit: "contain",
-            }}
-          />
+          {imageBase64 ? (
+            <img
+              src={imageBase64}
+              width="400px"
+              alt="Image"
+              style={{
+                maxHeight: "400px",
+                objectFit: "contain",
+              }}
+            />
+          ) : (
+            <div className="rounded bg-gray-100 p-4 dark:bg-gray-800">
+              <p className="text-center text-muted-foreground">Image couldn't be loaded</p>
+              <p className="text-center text-xs text-muted-foreground mt-1">Missing base64 data</p>
+            </div>
+          )}
           <MarkdownWrapper>
             {message.message.imageMessage?.caption}
           </MarkdownWrapper>
@@ -65,9 +79,30 @@ export function MessageRenderer({ message, fromMe }: MessageRendererProps) {
       );
 
     case "videoMessage":
+      // Ensure proper data URI format for video base64
+      const videoBase64 = message.message.base64 ? 
+        (message.message.base64.startsWith('data:') ? 
+          message.message.base64 : 
+          `data:video/mp4;base64,${message.message.base64}`) : 
+        null;
+      
       return (
         <div className="mb-2 flex flex-col gap-2">
-          <video src={message.message.mediaUrl} width="400px" controls />
+          {videoBase64 ? (
+            <video 
+              src={videoBase64} 
+              width="400px" 
+              controls
+              style={{
+                maxHeight: "400px",
+              }}
+            />
+          ) : (
+            <div className="rounded bg-gray-100 p-4 dark:bg-gray-800">
+              <p className="text-center text-muted-foreground">Video couldn't be loaded</p>
+              <p className="text-center text-xs text-muted-foreground mt-1">Missing base64 data</p>
+            </div>
+          )}
           <MarkdownWrapper>
             {message.message.videoMessage?.caption}
           </MarkdownWrapper>
@@ -75,12 +110,24 @@ export function MessageRenderer({ message, fromMe }: MessageRendererProps) {
       );
 
     case "audioMessage":
-      return (
+      // Ensure proper data URI format for audio base64
+      const audioBase64 = message.message.base64 ? 
+        (message.message.base64.startsWith('data:') ? 
+          message.message.base64 : 
+          `data:audio/mpeg;base64,${message.message.base64}`) : 
+        null;
+      
+      return audioBase64 ? (
         <AudioPlayer
-          audioUrl={message.message.mediaUrl}
+          audioUrl={audioBase64}
           fromMe={fromMe}
           profilePicUrl={message.key.profilePicUrl}
         />
+      ) : (
+        <div className="rounded bg-gray-100 p-4 dark:bg-gray-800">
+          <p className="text-center text-muted-foreground">Audio couldn't be loaded</p>
+          <p className="text-center text-xs text-muted-foreground mt-1">Missing base64 data</p>
+        </div>
       );
 
     case "documentMessage":

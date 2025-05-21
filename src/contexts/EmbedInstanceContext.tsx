@@ -39,7 +39,7 @@ export function EmbedInstanceProvider({
       }
 
       try {
-        const apiUrl = "https://lb.icommarketing.com.br";
+        const apiUrl = import.meta.env.VITE_API_URL;
         localStorage.setItem(TOKEN_ID.API_URL, apiUrl);
         localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, token);
 
@@ -47,7 +47,7 @@ export function EmbedInstanceProvider({
           `${apiUrl}/instance/fetchInstances?instanceName=${instanceName}`,
           {
             headers: {
-              apikey: "fpsdv1DeD1SXg5Eb",
+              apikey: import.meta.env.VITE_API_KEY,
             },
           },
         );

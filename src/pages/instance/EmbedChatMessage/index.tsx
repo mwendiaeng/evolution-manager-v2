@@ -28,7 +28,7 @@ import { api } from "@/lib/queries/api";
 
 import { TOKEN_ID, getToken } from "@/lib/queries/token";
 
-// import { connectSocket, disconnectSocket } from "@/services/websocket/socket";
+import { connectSocket, disconnectSocket } from "@/services/websocket/socket";
 
 import { Contact, Instance, Message } from "@/types/evolution.types";
 
@@ -130,46 +130,43 @@ function EmbedChatMessage() {
   useEffect(() => {
     if (!activeInstance?.instanceName) return;
 
-    const interval = setInterval(() => {
-      const fetchChats = async () => {
+    // Initial fetch of chats and messages
+    const fetchChats = async () => {
+      try {
+        const { data } = await api.get(
+          `/chat/fetchContactsWithLastMessage/${activeInstance.instanceName}`,
+          {
+            headers: {
+              apikey: tokenFromUrl || activeInstance.token,
+            },
+          },
+        );
+        setChats(data || []);
+      } catch (error) {
+        console.error("Erro ao buscar chats:", error);
+        toast.error("Erro ao buscar chats");
+      }
+    };
+    fetchChats();
+
+    if (remoteJid) {
+      const fetchMessages = async () => {
         try {
-          const { data } = await api.get(
-            `/chat/fetchContactsWithLastMessage/${activeInstance.instanceName}`,
+          const { data } = await api.post(
+            `/chat/findMessages/${activeInstance.instanceName}`,
             {
-              headers: {
-                apikey: tokenFromUrl || activeInstance.token,
-              },
+              where: { key: { remoteJid } },
             },
           );
-          setChats(data || []);
+          setMessages(data || []);
         } catch (error) {
-          console.error("Erro ao buscar chats:", error);
-          toast.error("Erro ao buscar chats");
+          console.error("Erro ao buscar mensagens:", error);
+          toast.error("Erro ao buscar mensagens");
         }
       };
-      fetchChats();
-
-      if (remoteJid) {
-        const fetchMessages = async () => {
-          try {
-            const { data } = await api.post(
-              `/chat/findMessages/${activeInstance.instanceName}`,
-              {
-                where: { key: { remoteJid } },
-              },
-            );
-            setMessages(data || []);
-          } catch (error) {
-            console.error("Erro ao buscar mensagens:", error);
-            toast.error("Erro ao buscar mensagens");
-          }
-        };
-        fetchMessages();
-      }
-    }, 1000);
-
-    return () => clearInterval(interval);
-  }, [activeInstance, activeInstance?.instanceName, tokenFromUrl]);
+      fetchMessages();
+    }
+  }, [activeInstance, activeInstance?.instanceName, tokenFromUrl, remoteJid]);
 
   useEffect(() => {
     if (!activeInstance) return;
@@ -184,115 +181,116 @@ function EmbedChatMessage() {
       localStorage.setItem("accessToken", tokenFromUrl);
     }
 
-    // const socket = connectSocket(serverUrl);
+    const socket = connectSocket(serverUrl);
 
-    // function updateChats(event: string, data: any) {
-    //   if (!activeInstance) return;
+    function updateChats(event: string, data: any) {
+      if (!activeInstance) return;
 
-    //   if (data.instance !== activeInstance.instanceName) return;
+      if (data.instance !== activeInstance.instanceName) return;
 
-    //   setChats((prevChats) => {
-    //     const existingChatIndex = prevChats.findIndex(
-    //       (chat) => chat.remoteJid === data?.data?.key?.remoteJid,
-    //     );
+      setChats((prevChats) => {
+        // Check both remoteJid and id fields - some chats might only have one or the other
+        const messageRemoteJid = data?.data?.key?.remoteJid;
+        
+        // Find existing chat by any matching identifier
+        const existingChatIndex = prevChats.findIndex(
+          (chat) => 
+            (chat.remoteJid && chat.remoteJid === messageRemoteJid) || 
+            (chat.id && chat.id === messageRemoteJid)
+        );
 
-    //     const getChat = prevChats.find(
-    //       (chat) => chat.remoteJid === data?.data?.key?.remoteJid,
-    //     );
+        const existingChat = existingChatIndex !== -1 ? prevChats[existingChatIndex] : null;
 
-    //     const chatObject: ChatType = {
-    //       id: data?.data?.key?.remoteJid,
-    //       remoteJid:
-    //         event === "send.message"
-    //           ? getChat?.remoteJid
-    //           : data?.data?.key?.remoteJid,
-    //       pushName:
-    //         event === "send.message"
-    //           ? getChat?.pushName
-    //           : data?.data?.pushName || data?.data?.key?.remoteJid,
-    //       profilePicUrl:
-    //         event === "send.message"
-    //           ? getChat?.profilePicUrl
-    //           : data?.data?.key?.profilePicUrl,
-    //       lastMessage: data?.data,
-    //       updatedAt: new Date().toISOString(),
-    //       labels: [],
-    //       createdAt: new Date().toISOString(),
-    //       instanceName: activeInstance.instanceName,
-    //       windowStart: data?.data?.chat?.windowStart,
-    //       windowExpires: data?.data?.chat?.windowExpires,
-    //       windowActive: data?.data?.chat?.windowActive,
-    //     };
+        // Create contact object with just the Contact properties
+        const chatObject: Contact = {
+          id: messageRemoteJid,
+          remoteJid: messageRemoteJid,
+          // Prefer existing contact info over pushname from message
+          pushName: existingChat?.pushName || data?.data?.pushName || formatRemoteJid(messageRemoteJid),
+          // Keep existing profile picture if available
+          profilePictureUrl: existingChat?.profilePictureUrl || 
+                            data?.data?.key?.profilePictureUrl || 
+                            "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg",
+          lastMessage: data?.data,
+          updatedAt: new Date().toISOString(),
+          // Preserve existing labels
+          labels: existingChat?.labels || [],
+          // Keep existing createdAt if available
+          createdAt: existingChat?.createdAt || new Date().toISOString(),
+          instanceName: activeInstance.instanceName,
+        };
 
-    //     if (existingChatIndex !== -1) {
-    //       const updatedChats = [...prevChats];
-    //       updatedChats[existingChatIndex] = {
-    //         ...updatedChats[existingChatIndex],
-    //         ...chatObject,
-    //       };
-    //       return updatedChats;
-    //     } else {
-    //       return [...prevChats, chatObject];
-    //     }
-    //   });
-    // }
+        if (existingChatIndex !== -1) {
+          const updatedChats = [...prevChats];
+          // Merge existing chat with new data, prioritizing existing information
+          updatedChats[existingChatIndex] = {
+            ...existingChat!,
+            lastMessage: chatObject.lastMessage,
+            updatedAt: chatObject.updatedAt,
+          } as Contact;
+          return updatedChats;
+        } else {
+          return [...prevChats, chatObject];
+        }
+      });
+    }
 
-    // function updateMessages(data: any) {
-    //   if (
-    //     data.instance !== activeInstance?.instanceName ||
-    //     data.data.key.remoteJid !== remoteJid
-    //   )
-    //     return;
+    function updateMessages(data: any) {
+      if (
+        data.instance !== activeInstance?.instanceName ||
+        data.data.key.remoteJid !== remoteJid
+      )
+        return;
 
-    //   const { data: message } = data;
+      const { data: message } = data;
 
-    //   setMessages((prevMessages) => [...prevMessages, message]);
-    // }
+      setMessages((prevMessages) => [...prevMessages, message]);
+    }
 
-    // function updateMessageStatus(data: any) {
-    //   const { data: message } = data;
+    function updateMessageStatus(data: any) {
+      const { data: message } = data;
 
-    //   setMessages((prevMessages) => {
-    //     const messageIndex = prevMessages.findIndex(
-    //       (msg) => msg.key.id === message.keyId,
-    //     );
+      setMessages((prevMessages) => {
+        const messageIndex = prevMessages.findIndex(
+          (msg) => msg.key.id === message.keyId,
+        );
 
-    //     if (messageIndex === -1) return prevMessages;
+        if (messageIndex === -1) return prevMessages;
 
-    //     const updatedMessages = [...prevMessages];
-    //     updatedMessages[messageIndex] = {
-    //       ...updatedMessages[messageIndex],
-    //       messageUpdate: [
-    //         ...(updatedMessages[messageIndex].messageUpdate ?? []),
-    //         { status: message.status },
-    //       ],
-    //     };
+        const updatedMessages = [...prevMessages];
+        updatedMessages[messageIndex] = {
+          ...updatedMessages[messageIndex],
+          messageUpdate: [
+            ...(updatedMessages[messageIndex].messageUpdate ?? []),
+            { status: message.status },
+          ],
+        };
 
-    //     return updatedMessages;
-    //   });
-    // }
+        return updatedMessages;
+      });
+    }
 
-    // socket.on("messages.upsert", (data: any) => {
-    //   updateMessages(data);
-    //   updateChats("messages.upsert", data);
-    // });
+    socket.on("messages.upsert", (data: any) => {
+      updateMessages(data);
+      updateChats("messages.upsert", data);
+    });
 
-    // socket.on("send.message", (data: any) => {
-    //   updateMessages(data);
-    //   updateChats("send.message", data);
-    // });
+    socket.on("send.message", (data: any) => {
+      updateMessages(data);
+      updateChats("send.message", data);
+    });
 
-    // socket.on("messages.update", (data: any) => {
-    //   updateMessageStatus(data);
-    // });
+    socket.on("messages.update", (data: any) => {
+      updateMessageStatus(data);
+    });
 
-    // socket.connect();
+    socket.connect();
 
     return () => {
-      // socket.off("messages.upsert");
-      // socket.off("send.message");
-      // socket.off("messages.update");
-      // disconnectSocket(socket);
+      socket.off("messages.upsert");
+      socket.off("send.message");
+      socket.off("messages.update");
+      disconnectSocket(socket);
 
       if (tokenFromUrl) {
         localStorage.setItem("accessToken", currentToken || "");

@@ -11,6 +11,11 @@ export const connectSocket = (url: string): Socket => {
   // if (!socket) {
   socket = io(urlWithToken, {
     autoConnect: false,
+    withCredentials: true, // Enable CORS credentials
+    transports: ['websocket', 'polling'], // Try WebSocket first, then fall back to polling
+    extraHeaders: {
+      "Access-Control-Allow-Origin": "*",
+    }
   });
   // }
   return socket;

@@ -37,6 +37,9 @@ export function MessageContent({
   fromMe,
   onQuoteClick,
 }: MessageContentProps & { onQuoteClick?: (messageId: string) => void }) {
+  // Check if message is complete with required properties
+  const isValidMessage = message && message.key && (message.id || message.key.id);
+  
   // Verifica se a mensagem foi lida
   const checkDeliveryStatus = () => {
     const { messageUpdate } = message;
@@ -139,6 +142,64 @@ export function MessageContent({
     );
   };
 
+  // Handle timestamp issues
+  const renderTimestamp = () => {
+    let formattedTime;
+    try {
+      // Try to format timestamp based on its type and format
+      if (!message.messageTimestamp) {
+        formattedTime = "No time";
+      }
+      // Handle case where timestamp is an object
+      else if (typeof message.messageTimestamp === 'object') {
+        // Try common timestamp fields that might be in the object
+        const possibleTimestamps = [
+          (message.messageTimestamp as any).low,
+          (message.messageTimestamp as any).seconds,
+          (message.messageTimestamp as any).timestamp,
+          (message.messageTimestamp as any).time,
+          (message.messageTimestamp as any).value
+        ];
+        
+        // Find the first valid timestamp in the object
+        const timestamp = possibleTimestamps.find(val => typeof val === 'number' && !isNaN(val));
+        
+        if (timestamp) {
+          // Use the extracted timestamp value
+          formattedTime = moment.unix(timestamp).format("HH:mm");
+        } else {
+          // If we have the full object printed in logs, manually extract using keys we see
+          formattedTime = "Time obj";
+        }
+      }
+      // Handle number or numeric string
+      else if (!isNaN(Number(message.messageTimestamp))) {
+        const timestampNum = Number(message.messageTimestamp);
+        
+        // Check if it's a Unix timestamp (seconds since epoch) or milliseconds
+        if (timestampNum > 1000000000000) {
+          // Likely milliseconds format (13 digits), convert to seconds
+          formattedTime = moment(timestampNum).format("HH:mm");
+        } else {
+          // Likely seconds format (10 digits)
+          formattedTime = moment.unix(timestampNum).format("HH:mm");
+        }
+      } 
+      // If it's an ISO date string format
+      else if (typeof message.messageTimestamp === 'string' && message.messageTimestamp.includes('T')) {
+        formattedTime = moment(message.messageTimestamp).format("HH:mm");
+      }
+      // If all else fails
+      else {
+        formattedTime = "Invalid format";
+      }
+    } catch (error) {
+      formattedTime = "Error";
+    }
+    
+    return formattedTime;
+  };
+
   return (
     <MessageBubble.Content fromMe={fromMe}>
       {renderReactions()}
@@ -157,10 +218,7 @@ export function MessageContent({
         <MessageRenderer message={message} fromMe={fromMe} />
 
         <MessageBubble.Footer fromMe={fromMe}>
-          {moment
-            .unix(Number(message.messageTimestamp))
-            .local()
-            .format("HH:mm")}
+          {renderTimestamp()}
           {fromMe && checkDeliveryStatus()}
         </MessageBubble.Footer>
       </div>

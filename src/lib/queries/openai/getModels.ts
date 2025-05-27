@@ -6,6 +6,7 @@ import { GetModelsResponse } from "./types";
 
 interface IParams {
   instanceName: string;
+  openaiCredsId?: string;
   token?: string | null;
 }
 
@@ -15,9 +16,16 @@ const queryKey = (params: Partial<IParams>) => [
   JSON.stringify(params),
 ];
 
-export const getModels = async ({ instanceName, token }: IParams) => {
+export const getModels = async ({
+  instanceName,
+  openaiCredsId,
+  token,
+}: IParams) => {
+  const params = openaiCredsId ? { openaiCredsId } : {};
+
   const response = await api.get(`/openai/getModels/${instanceName}`, {
     headers: { apiKey: token },
+    params,
   });
   return response.data;
 };
@@ -25,16 +33,17 @@ export const getModels = async ({ instanceName, token }: IParams) => {
 export const useGetModels = (
   props: UseQueryParams<GetModelsResponse> & Partial<IParams>,
 ) => {
-  const { instanceName, token, ...rest } = props;
+  const { instanceName, openaiCredsId, token, ...rest } = props;
   return useQuery<GetModelsResponse>({
     staleTime: 1000 * 60 * 60 * 6, // 6 hours
     ...rest,
-    queryKey: queryKey({ instanceName }),
+    queryKey: queryKey({ instanceName, openaiCredsId }),
     queryFn: () =>
       getModels({
         instanceName: instanceName!,
+        openaiCredsId,
         token,
       }),
-    enabled: !!instanceName && (props.enabled ?? true),
+    enabled: !!instanceName && !!openaiCredsId && (props.enabled ?? true),
   });
 };

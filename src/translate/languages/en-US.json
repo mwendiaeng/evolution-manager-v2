@@ -596,7 +596,7 @@
         "label": "System Messages",
         "description": "Send system messages to OpenAI"
       },
-      "assystantMessages": {
+      "assistantMessages": {
         "label": "Assistant Messages",
         "description": "Send assistant messages to OpenAI"
       },
@@ -686,7 +686,9 @@
       "saving": "Saving...",
       "update": "Update",
       "defaultSettings": "Default Settings",
-      "delete": "Delete"
+      "delete": "Delete",
+      "loadModels": "Load Models",
+      "loading": "Loading..."
     },
     "modal": {
       "defaultSettings": {

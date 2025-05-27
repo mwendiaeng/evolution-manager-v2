@@ -292,12 +292,14 @@ const FormSelect = <
   required,
   options,
   placeholder,
+  disabled,
   ...props
 }: Omit<ControllerProps<TFieldValues, TName>, "render"> & {
   label?: string;
   required?: boolean;
   helper?: string;
   placeholder?: string;
+  disabled?: boolean;
   options: { value: string; label: string }[];
 }) => {
   return (
@@ -313,7 +315,11 @@ const FormSelect = <
             </FormLabel>
           )}
           <FormControl>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
+            <Select
+              onValueChange={field.onChange}
+              defaultValue={field.value}
+              disabled={disabled}
+            >
               <FormControl>
                 <SelectTrigger>
                   <SelectValue placeholder={placeholder} />

@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
-import { ArrowUpDown, Lock, MoreHorizontal } from "lucide-react";
-import { useState } from "react";
+import { ArrowUpDown, Lock, Plus, MoreHorizontal } from "lucide-react";
+import React, { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -42,14 +42,22 @@ const FormSchema = z.object({
   apiKey: z.string(),
 });
 
-function CredentialsOpenai() {
+interface CredentialsOpenaiProps {
+  onCredentialsUpdate?: () => void;
+  showText?: boolean;
+}
+
+function CredentialsOpenai({
+  onCredentialsUpdate,
+  showText = true,
+}: CredentialsOpenaiProps) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const { createOpenaiCreds, deleteOpenaiCreds } = useManageOpenai();
   const [open, setOpen] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const { data: creds, refetch: refetchCreds } = useFindOpenaiCreds({
+  const { data: creds } = useFindOpenaiCreds({
     instanceName: instance?.name,
     enabled: open,
   });
@@ -79,18 +87,16 @@ function CredentialsOpenai() {
         data: credsData,
       });
       toast.success(t("openai.toast.success.credentialsCreate"));
-      onReset();
+      form.reset();
+      if (onCredentialsUpdate) {
+        onCredentialsUpdate();
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(`Error: ${error?.response?.data?.response?.message}`);
     }
   };
-
-  function onReset() {
-    form.reset();
-    refetchCreds();
-  }
 
   const handleDelete = async (id: string) => {
     if (!instance?.name) {
@@ -103,7 +109,9 @@ function CredentialsOpenai() {
         instanceName: instance?.name,
       });
       toast.success(t("openai.toast.success.credentialsDelete"));
-      refetchCreds();
+      if (onCredentialsUpdate) {
+        onCredentialsUpdate();
+      }
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(`Error: ${error?.response?.data?.response?.message}`);
@@ -171,45 +179,58 @@ function CredentialsOpenai() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary" size="sm">
-          <Lock size={16} className="mr-1" />
-          <span className="hidden md:inline">
-            {t("openai.credentials.title")}
-          </span>
+        <Button variant="secondary" size="sm" type="button">
+          {showText ? (
+            <>
+              <Lock size={16} className="mr-1" />
+              <span className="hidden md:inline">
+                {t("openai.credentials.title")}
+              </span>
+            </>
+          ) : (
+            <Plus size={16} />
+          )}
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
-        onCloseAutoFocus={onReset}
-      >
+      <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]">
         <DialogHeader>
           <DialogTitle>{t("openai.credentials.title")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full space-y-6"
+          <div
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
           >
-            <div>
-              <div className="grid gap-3 md:grid-cols-2">
-                <FormInput
-                  name="name"
-                  label={t("openai.credentials.table.name")}
-                >
-                  <Input />
-                </FormInput>
-                <FormInput
-                  name="apiKey"
-                  label={t("openai.credentials.table.apiKey")}
-                >
-                  <Input type="password" />
-                </FormInput>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                form.handleSubmit(onSubmit)(e);
+              }}
+              className="w-full space-y-6"
+            >
+              <div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <FormInput
+                    name="name"
+                    label={t("openai.credentials.table.name")}
+                  >
+                    <Input />
+                  </FormInput>
+                  <FormInput
+                    name="apiKey"
+                    label={t("openai.credentials.table.apiKey")}
+                  >
+                    <Input type="password" />
+                  </FormInput>
+                </div>
               </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">{t("openai.button.save")}</Button>
-            </DialogFooter>
-          </form>
+              <DialogFooter>
+                <Button type="submit">{t("openai.button.save")}</Button>
+              </DialogFooter>
+            </form>
+          </div>
         </FormProvider>
         <Separator />
         <div>

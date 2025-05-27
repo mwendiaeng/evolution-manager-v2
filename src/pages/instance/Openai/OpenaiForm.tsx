@@ -1,4 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
+import { RefreshCw } from "lucide-react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { z } from "zod";
@@ -23,6 +25,7 @@ import { useInstance } from "@/contexts/InstanceContext";
 import { useFindOpenaiCreds } from "@/lib/queries/openai/findOpenaiCreds";
 import { useGetModels } from "@/lib/queries/openai/getModels";
 
+import { CredentialsOpenai } from "./CredentialsOpenai";
 import { SessionsOpenai } from "./SessionsOpenai";
 
 export const FormSchema = z.object({
@@ -79,12 +82,9 @@ function OpenaiForm({
 }: OpenaiFormProps) {
   const { t } = useTranslation();
   const { instance } = useInstance();
+  const [shouldFetchModels, setShouldFetchModels] = useState(false);
 
-  const { data: creds } = useFindOpenaiCreds({
-    instanceName: instance?.name,
-    enabled: open,
-  });
-  const { data: models } = useGetModels({
+  const { data: creds, refetch: refetchCreds } = useFindOpenaiCreds({
     instanceName: instance?.name,
     enabled: open,
   });
@@ -121,6 +121,29 @@ function OpenaiForm({
 
   const botType = form.watch("botType");
   const triggerType = form.watch("triggerType");
+  const selectedCredId = form.watch("openaiCredsId");
+
+  const {
+    data: models,
+    isLoading: isLoadingModels,
+    refetch: refetchModels,
+  } = useGetModels({
+    instanceName: instance?.name,
+    openaiCredsId: selectedCredId,
+    token: instance?.token,
+    enabled: shouldFetchModels && !!selectedCredId,
+  });
+
+  const handleFetchModels = () => {
+    if (selectedCredId) {
+      setShouldFetchModels(true);
+      refetchModels();
+    }
+  };
+
+  const handleCredentialsUpdate = () => {
+    refetchCreds();
+  };
 
   return (
     <FormProvider {...form}>
@@ -138,21 +161,31 @@ function OpenaiForm({
           >
             <Input />
           </FormInput>
-          <FormSelect
-            name="openaiCredsId"
-            label={t("openai.form.openaiCredsId.label")}
-            required
-            options={
-              creds
-                ?.filter((cred) => !!cred.id)
-                .map((cred) => ({
-                  label: cred.name
-                    ? cred.name
-                    : cred.apiKey.substring(0, 15) + "...",
-                  value: cred.id!,
-                })) ?? []
-            }
-          />
+          <div className="space-y-2">
+            <div className="flex items-end gap-2">
+              <div className="flex-1">
+                <FormSelect
+                  name="openaiCredsId"
+                  label={t("openai.form.openaiCredsId.label")}
+                  required
+                  options={
+                    creds
+                      ?.filter((cred) => !!cred.id)
+                      .map((cred) => ({
+                        label: cred.name
+                          ? cred.name
+                          : cred.apiKey.substring(0, 15) + "...",
+                        value: cred.id!,
+                      })) ?? []
+                  }
+                />
+              </div>
+              <CredentialsOpenai
+                onCredentialsUpdate={handleCredentialsUpdate}
+                showText={false}
+              />
+            </div>
+          </div>
           <div className="flex flex-col">
             <h3 className="my-4 text-lg font-medium">
               {t("openai.form.openaiSettings.label")}
@@ -194,17 +227,44 @@ function OpenaiForm({
           )}
           {botType === "chatCompletion" && (
             <>
-              <FormSelect
-                name="model"
-                label={t("openai.form.model.label")}
-                required
-                options={
-                  models?.map((model) => ({
-                    label: model.id,
-                    value: model.id,
-                  })) ?? []
-                }
-              />
+              <div className="space-y-2">
+                <div className="flex items-end gap-2">
+                  <div className="flex-1">
+                    <FormSelect
+                      name="model"
+                      label={t("openai.form.model.label")}
+                      required
+                      disabled={!models || models.length === 0}
+                      options={
+                        models?.map((model) => ({
+                          label: model.id,
+                          value: model.id,
+                        })) ?? []
+                      }
+                    />
+                  </div>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    disabled={!selectedCredId || isLoadingModels}
+                    onClick={handleFetchModels}
+                    className="mb-2"
+                  >
+                    {isLoadingModels ? (
+                      <>
+                        <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
+                        {t("openai.button.loading")}
+                      </>
+                    ) : (
+                      <>
+                        <RefreshCw className="mr-2 h-4 w-4" />
+                        {t("openai.button.loadModels")}
+                      </>
+                    )}
+                  </Button>
+                </div>
+              </div>
               <FormInput
                 name="systemMessages"
                 label={t("openai.form.systemMessages.label")}

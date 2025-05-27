@@ -101,7 +101,7 @@ function UpdateN8n({ n8nId, resetTable }: UpdateN8nProps) {
 
         await updateN8n({
           instanceName: instance.name,
-          n8nId: n8nId,
+          n8nId,
           data: n8nData,
         });
         toast.success(t("n8n.toast.success.update"));

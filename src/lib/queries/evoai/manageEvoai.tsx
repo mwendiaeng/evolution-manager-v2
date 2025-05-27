@@ -9,7 +9,11 @@ interface CreateEvoaiParams {
   data: Evoai;
 }
 
-const createEvoai = async ({ instanceName, token, data }: CreateEvoaiParams) => {
+const createEvoai = async ({
+  instanceName,
+  token,
+  data,
+}: CreateEvoaiParams) => {
   const response = await api.post(`/evoai/create/${instanceName}`, data, {
     headers: { apikey: token },
   });
@@ -21,7 +25,11 @@ interface UpdateEvoaiParams {
   evoaiId: string;
   data: Evoai;
 }
-const updateEvoai = async ({ instanceName, evoaiId, data }: UpdateEvoaiParams) => {
+const updateEvoai = async ({
+  instanceName,
+  evoaiId,
+  data,
+}: UpdateEvoaiParams) => {
   const response = await api.put(
     `/evoai/update/${evoaiId}/${instanceName}`,
     data,

@@ -7,6 +7,7 @@ import { logout } from "@/lib/queries/token";
 
 import { LanguageToggle } from "./language-toggle";
 import { ModeToggle } from "./mode-toggle";
+import { useTheme } from "./theme-provider";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -16,7 +17,6 @@ import {
   DialogFooter,
   DialogHeader,
 } from "./ui/dialog";
-import { useTheme } from "./theme-provider";
 
 function Header({ instanceId }: { instanceId?: string }) {
   const [logoutConfirmation, setLogoutConfirmation] = useState(false);

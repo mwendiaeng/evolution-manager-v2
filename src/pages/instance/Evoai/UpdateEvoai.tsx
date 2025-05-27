@@ -98,7 +98,7 @@ function UpdateEvoai({ evoaiId, resetTable }: UpdateEvoaiProps) {
 
         await updateEvoai({
           instanceName: instance.name,
-          evoaiId: evoaiId,
+          evoaiId,
           data: evoaiData,
         });
         toast.success(t("evoai.toast.success.update"));

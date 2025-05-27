@@ -22,10 +22,7 @@ interface UpdateN8nParams {
   data: N8n;
 }
 const updateN8n = async ({ instanceName, n8nId, data }: UpdateN8nParams) => {
-  const response = await api.put(
-    `/n8n/update/${n8nId}/${instanceName}`,
-    data,
-  );
+  const response = await api.put(`/n8n/update/${n8nId}/${instanceName}`, data);
   return response.data;
 };
 

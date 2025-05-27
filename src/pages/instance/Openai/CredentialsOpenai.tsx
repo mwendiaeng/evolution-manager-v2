@@ -2,7 +2,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
 import { ArrowUpDown, Lock, Plus, MoreHorizontal } from "lucide-react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";

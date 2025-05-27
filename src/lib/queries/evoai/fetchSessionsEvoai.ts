@@ -15,7 +15,10 @@ const queryKey = (params: Partial<IParams>) => [
   JSON.stringify(params),
 ];
 
-export const fetchSessionsEvoai = async ({ evoaiId, instanceName }: IParams) => {
+export const fetchSessionsEvoai = async ({
+  evoaiId,
+  instanceName,
+}: IParams) => {
   const response = await api.get(
     `/evoai/fetchSessions/${evoaiId}/${instanceName}`,
   );

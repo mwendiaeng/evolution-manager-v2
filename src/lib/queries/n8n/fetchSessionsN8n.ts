@@ -16,9 +16,7 @@ const queryKey = (params: Partial<IParams>) => [
 ];
 
 export const fetchSessionsN8n = async ({ n8nId, instanceName }: IParams) => {
-  const response = await api.get(
-    `/n8n/fetchSessions/${n8nId}/${instanceName}`,
-  );
+  const response = await api.get(`/n8n/fetchSessions/${n8nId}/${instanceName}`);
   return response.data;
 };
 

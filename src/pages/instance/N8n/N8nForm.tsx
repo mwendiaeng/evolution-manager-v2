@@ -99,10 +99,7 @@ function N8nForm({
             label={t("n8n.form.enabled.label")}
             reverse
           />
-          <FormInput
-            name="description"
-            label={t("n8n.form.description.label")}
-          >
+          <FormInput name="description" label={t("n8n.form.description.label")}>
             <Input />
           </FormInput>
 
@@ -112,7 +109,11 @@ function N8nForm({
             </h3>
             <Separator />
           </div>
-          <FormInput name="webhookUrl" label={t("n8n.form.webhookUrl.label")} required>
+          <FormInput
+            name="webhookUrl"
+            label={t("n8n.form.webhookUrl.label")}
+            required
+          >
             <Input />
           </FormInput>
           <div className="flex flex-col">
@@ -121,11 +122,19 @@ function N8nForm({
             </h3>
             <Separator />
           </div>
-          <div className="flex flex-row gap-4 w-full">
-            <FormInput name="basicAuthUser" label={t("n8n.form.basicAuthUser.label")} className="flex-1">
+          <div className="flex w-full flex-row gap-4">
+            <FormInput
+              name="basicAuthUser"
+              label={t("n8n.form.basicAuthUser.label")}
+              className="flex-1"
+            >
               <Input />
             </FormInput>
-            <FormInput name="basicAuthPass" label={t("n8n.form.basicAuthPass.label")} className="flex-1">
+            <FormInput
+              name="basicAuthPass"
+              label={t("n8n.form.basicAuthPass.label")}
+              className="flex-1"
+            >
               <Input type="password" />
             </FormInput>
           </div>

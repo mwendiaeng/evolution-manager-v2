@@ -110,11 +110,19 @@ function EvoaiForm({
             </h3>
             <Separator />
           </div>
-          <FormInput name="agentUrl" label={t("evoai.form.agentUrl.label")} required>
+          <FormInput
+            name="agentUrl"
+            label={t("evoai.form.agentUrl.label")}
+            required
+          >
             <Input />
           </FormInput>
 
-          <FormInput name="apiKey" label={t("evoai.form.apiKey.label")} className="flex-1">
+          <FormInput
+            name="apiKey"
+            label={t("evoai.form.apiKey.label")}
+            className="flex-1"
+          >
             <Input type="password" />
           </FormInput>
 
@@ -293,7 +301,9 @@ function EvoaiForm({
                 </DialogContent>
               </Dialog>
               <Button disabled={isLoading} type="submit">
-                {isLoading ? t("evoai.button.saving") : t("evoai.button.update")}
+                {isLoading
+                  ? t("evoai.button.saving")
+                  : t("evoai.button.update")}
               </Button>
             </div>
           </div>

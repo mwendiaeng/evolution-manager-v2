@@ -23,6 +23,7 @@ import { Sqs } from "@/pages/instance/Sqs";
 import { Typebot } from "@/pages/instance/Typebot";
 import { Webhook } from "@/pages/instance/Webhook";
 import { Websocket } from "@/pages/instance/Websocket";
+import { EmbedChat } from "@/pages/instance/EmbedChat";
 import Login from "@/pages/Login";
 
 const router = createBrowserRouter([
@@ -284,6 +285,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+          {
+          path: "/manager/embed-chat",
+          element: <EmbedChat />,
+        },
+        {
+          path: "/manager/embed-chat/:remoteJid",
+          element: <EmbedChat />,
+        },
 ]);
 
 export default router;

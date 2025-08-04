@@ -28,7 +28,7 @@ function InstanceLayout({ children }: LayoutProps) {
           </ScrollArea>
           <ScrollArea className="w-full">
             <div className="flex h-full flex-col">
-              <div className="my-6 flex flex-1 flex-col gap-2 pl-2 pr-4">
+              <div className="my-2 flex flex-1 flex-col gap-2 pl-2 pr-4">
                 {children}
               </div>
               <Footer />

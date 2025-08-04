@@ -82,6 +82,42 @@ export type Message = {
   source: string;
 };
 
+export type SendText = {
+  number: string;
+  text: string;
+  options?: {
+    delay?: number;
+    presence?: string;
+    linkPreview?: boolean;
+  };
+};
+
+export type SendMedia = {
+  number: string;
+  mediaMessage: {
+    mediatype: 'image' | 'video' | 'audio' | 'document';
+    mimetype: string;
+    caption?: string;
+    media: string; // Base64 string
+    fileName?: string;
+  };
+  options?: {
+    delay?: number;
+    presence?: string;
+  };
+};
+
+export type SendAudio = {
+  number: string;
+  audioMessage: {
+    audio: string; // Base64 string
+  };
+  options?: {
+    delay?: number;
+    presence?: string;
+  };
+};
+
 export type IntegrationSession = {
   id?: string;
   remoteJid: string;

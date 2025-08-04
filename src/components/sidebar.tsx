@@ -37,6 +37,12 @@ function Sidebar() {
         path: "dashboard",
       },
       {
+        id: "chat",
+        title: t("sidebar.chat"),
+        icon: MessageCircle,
+        path: "chat",
+      },
+      {
         navLabel: true,
         title: t("sidebar.configurations"),
         icon: Cog,

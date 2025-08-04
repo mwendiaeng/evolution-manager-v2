@@ -43,8 +43,28 @@
       "french": "French"
     }
   },
+  "chat": {
+    "media": {
+      "attach": "Attach file",
+      "document": "Document",
+      "photosAndVideos": "Photos and Videos",
+      "errors": {
+        "audioSize": "Audio file size must be less than 16 MB",
+        "imageSize": "Image file size must be less than 5 MB",
+        "videoSize": "Video file size must be less than 16 MB",
+        "documentSize": "Document file size must be less than 100 MB",
+        "unsupportedType": "Unsupported file type"
+      },
+      "selectedMedia": {
+        "imageAlt": "Selected image",
+        "file": "File",
+        "selectedFile": "Selected file"
+      }
+    }
+  },
   "sidebar": {
     "dashboard": "Dashboard",
+    "chat": "Chat",
     "configurations": "Configurations",
     "settings": "Settings",
     "proxy": "Proxy",

@@ -1,5 +1,5 @@
 import "./style.css";
-import { MessageCircle, PlusIcon } from "lucide-react";
+import { User, MessageCircle, PlusIcon } from "lucide-react";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
@@ -10,6 +10,7 @@ import {
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
@@ -17,9 +18,17 @@ import { useFindChats } from "@/lib/queries/chat/findChats";
 
 import { Chat as ChatType } from "@/types/evolution.types";
 
+import React from "react";
 import { useMediaQuery } from "@/utils/useMediaQuery";
 
+import { connectSocket, disconnectSocket } from "@/services/websocket/socket";
+
 import { Messages } from "./messages";
+
+// Simple utility function
+const formatJid = (remoteJid: string): string => {
+  return remoteJid.split("@")[0];
+};
 
 function Chat() {
   const isMD = useMediaQuery("(min-width: 768px)");
@@ -28,9 +37,37 @@ function Chat() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const { instance } = useInstance();
 
+  // Local state for real-time chats (to supplement React Query data)
+  const [realtimeChats, setRealtimeChats] = useState<ChatType[]>([]);
+
   const { data: chats, isSuccess } = useFindChats({
     instanceName: instance?.name,
   });
+
+  // Combine React Query chats with real-time updates
+  const allChats = React.useMemo(() => {
+    if (!chats) return realtimeChats;
+    
+    // Merge chats from React Query with real-time updates
+    const chatMap = new Map();
+    
+    // First add all chats from React Query
+    chats.forEach(chat => chatMap.set(chat.remoteJid, chat));
+    
+    // Then add/update with real-time chats
+    realtimeChats.forEach(chat => {
+      const existing = chatMap.get(chat.remoteJid);
+      if (existing) {
+        // Update existing chat with newer data
+        chatMap.set(chat.remoteJid, { ...existing, ...chat });
+      } else {
+        // Add new chat from real-time updates
+        chatMap.set(chat.remoteJid, chat);
+      }
+    });
+    
+    return Array.from(chatMap.values());
+  }, [chats, realtimeChats]);
 
   const { instanceId, remoteJid } = useParams<{
     instanceId: string;
@@ -38,6 +75,75 @@ function Chat() {
   }>();
 
   const navigate = useNavigate();
+
+  // Add websocket functionality for real-time updates
+  useEffect(() => {
+    if (!instance?.name) return;
+
+    const serverUrl = "https://integracaov2.icommarketing.com.br";
+    const socket = connectSocket(serverUrl);
+
+    // Function to update chats from websocket events
+    const updateChatsFromWebsocket = (_eventType: string, data: any) => {
+      if (!instance) return;
+
+      if (data.instance !== instance.name) {
+        return;
+      }
+
+      const messageRemoteJid = data?.data?.key?.remoteJid;
+      if (!messageRemoteJid) {
+        return;
+      }
+
+      setRealtimeChats((prevChats) => {
+        const existingChatIndex = prevChats.findIndex(
+          (chat) => chat.remoteJid === messageRemoteJid
+        );
+
+        // Create or update chat object
+        const chatObject: ChatType = {
+          id: messageRemoteJid,
+          remoteJid: messageRemoteJid,
+          pushName: data?.data?.pushName || formatJid(messageRemoteJid),
+          profilePicUrl: data?.data?.key?.profilePictureUrl || "",
+          // Add other required fields
+          ...data?.data
+        };
+
+        if (existingChatIndex !== -1) {
+          // Update existing chat
+          const updatedChats = [...prevChats];
+          updatedChats[existingChatIndex] = {
+            ...updatedChats[existingChatIndex],
+            ...chatObject
+          };
+          return updatedChats;
+        } else {
+          // Add new chat
+          return [...prevChats, chatObject];
+        }
+      });
+    };
+
+    // Set up event listeners
+    socket.on("messages.upsert", (data: any) => {
+      updateChatsFromWebsocket("messages.upsert", data);
+    });
+
+    socket.on("send.message", (data: any) => {
+      updateChatsFromWebsocket("send.message", data);
+    });
+
+    socket.connect();
+
+    // Cleanup function
+    return () => {
+      socket.off("messages.upsert");
+      socket.off("send.message");
+      disconnectSocket(socket);
+    };
+  }, [instance?.name]);
 
   const scrollToBottom = useCallback(() => {
     if (lastMessageRef.current) {
@@ -71,10 +177,11 @@ function Chat() {
   };
 
   return (
-    <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
+    <div className="h-[calc(100vh-160px)] overflow-hidden">
+      <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"} className="h-full">
       <ResizablePanel defaultSize={20}>
-        <div className="hidden flex-col gap-2 bg-background text-foreground md:flex">
-          <div className="sticky top-0 p-2">
+        <div className="hidden h-full flex-col bg-background text-foreground md:flex">
+          <div className="flex-shrink-0 p-2">
             <Button
               variant="ghost"
               className="w-full justify-start gap-2 px-2 text-left"
@@ -88,13 +195,13 @@ function Chat() {
               <PlusIcon className="h-4 w-4" />
             </Button>
           </div>
-          <Tabs defaultValue="contacts">
-            <TabsList className="tabs-chat">
+          <Tabs defaultValue="contacts" className="flex flex-col flex-1 min-h-0">
+            <TabsList className="tabs-chat flex-shrink-0">
               <TabsTrigger value="contacts">Contatos</TabsTrigger>
               <TabsTrigger value="groups">Grupos</TabsTrigger>
             </TabsList>
-            <TabsContent value="contacts">
-              <div className="flex-1 overflow-auto">
+            <TabsContent value="contacts" className="flex-1 overflow-hidden">
+              <div className="h-full overflow-auto">
                 <div className="grid gap-1 p-2 text-foreground">
                   <div className="px-2 text-xs font-medium text-muted-foreground">
                     Contatos
@@ -111,18 +218,19 @@ function Chat() {
                           }`}
                         >
                           <span className="chat-avatar mr-2">
-                            <img
-                              src={
-                                chat.profilePicUrl ||
-                                "https://via.placeholder.com/150"
-                              }
-                              alt="Avatar"
-                              className="h-8 w-8 rounded-full"
-                            />
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage
+                                src={chat.profilePicUrl}
+                                alt={chat.pushName || chat.remoteJid.split("@")[0]}
+                              />
+                              <AvatarFallback className="bg-slate-700 text-slate-300 border border-slate-600">
+                                <User className="h-5 w-5" />
+                              </AvatarFallback>
+                            </Avatar>
                           </span>
                           <div className="min-w-0 flex-1">
                             <span className="chat-title block font-medium">
-                              {chat.pushName}
+                              {chat.pushName || chat.remoteJid.split("@")[0]}
                             </span>
                             <span className="chat-description block text-xs text-gray-500">
                               {chat.remoteJid.split("@")[0]}
@@ -134,10 +242,10 @@ function Chat() {
                 </div>
               </div>
             </TabsContent>
-            <TabsContent value="groups">
-              <div className="flex-1 overflow-auto">
+            <TabsContent value="groups" className="flex-1 overflow-hidden">
+              <div className="h-full overflow-auto">
                 <div className="grid gap-1 p-2 text-foreground">
-                  {chats?.map(
+                  {allChats?.map(
                     (chat: ChatType) =>
                       chat.remoteJid.includes("@g.us") && (
                         <Link
@@ -149,18 +257,19 @@ function Chat() {
                           }`}
                         >
                           <span className="chat-avatar mr-2">
-                            <img
-                              src={
-                                chat.profilePicUrl ||
-                                "https://via.placeholder.com/150"
-                              }
-                              alt="Avatar"
-                              className="h-8 w-8 rounded-full"
-                            />
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage
+                                src={chat.profilePicUrl}
+                                alt={chat.pushName || chat.remoteJid.split("@")[0]}
+                              />
+                              <AvatarFallback className="bg-slate-700 text-slate-300 border border-slate-600">
+                                <User className="h-5 w-5" />
+                              </AvatarFallback>
+                            </Avatar>
                           </span>
                           <div className="min-w-0 flex-1">
                             <span className="chat-title block font-medium">
-                              {chat.pushName}
+                              {chat.pushName || chat.remoteJid.split("@")[0]}
                             </span>
                             <span className="chat-description block text-xs text-gray-500">
                               {chat.remoteJid}
@@ -187,7 +296,8 @@ function Chat() {
           />
         )}
       </ResizablePanel>
-    </ResizablePanelGroup>
+      </ResizablePanelGroup>
+    </div>
   );
 }
 

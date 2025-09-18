@@ -1,9 +1,4 @@
-import {
-  ReplyIcon,
-  CopyIcon,
-  PhoneIcon,
-  SquareArrowOutUpRight,
-} from "lucide-react";
+import { ReplyIcon, CopyIcon, PhoneIcon, SquareArrowOutUpRight } from "lucide-react";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
@@ -24,17 +19,8 @@ interface InteractiveButtonProps {
   };
 }
 
-export function InteractiveButton({
-  button,
-  buttonParams,
-}: InteractiveButtonProps) {
-  const {
-    display_text: displayText,
-    copy_code: copyCode,
-    url,
-    number,
-    id,
-  } = buttonParams;
+export function InteractiveButton({ button, buttonParams }: InteractiveButtonProps) {
+  const { display_text: displayText, copy_code: copyCode, url, number, id } = buttonParams;
 
   const handleClick = () => {
     switch (button.name) {
@@ -62,8 +48,7 @@ export function InteractiveButton({
       <Button
         variant="ghost"
         className="gap-2 break-words rounded-none p-3 text-center text-sm font-medium text-[#008069] transition-colors hover:bg-[#b2ece0] dark:text-[#00a884] dark:hover:bg-[#082720]"
-        onClick={handleClick}
-      >
+        onClick={handleClick}>
         {button.name === "quick_reply" ? (
           <ReplyIcon className="h-4 w-4" />
         ) : button.name === "cta_copy" ? (

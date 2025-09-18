@@ -1,18 +1,7 @@
-import {
-  Smile,
-  Car,
-  Apple,
-  Flag,
-  ClubIcon as Football,
-  Lightbulb,
-} from "lucide-react";
+import { Smile, Car, Apple, Flag, ClubIcon as Football, Lightbulb } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { useEmbedColors } from "@/contexts/EmbedColorsContext";
@@ -59,28 +48,20 @@ interface WhatsAppEmojiBoxProps {
   handleEmojiClick: (emoji: string) => void;
 }
 
-export default function WhatsAppEmojiBox({
-  handleEmojiClick,
-}: WhatsAppEmojiBoxProps) {
+export default function WhatsAppEmojiBox({ handleEmojiClick }: WhatsAppEmojiBoxProps) {
   // eslint-disable-next-line no-unused-vars, @typescript-eslint/no-unused-vars
 
   const { inputIconsMainColor } = useEmbedColors();
 
   const filteredEmojis = (category: string) => {
-    const categoryEmojis =
-      emojiCategories.find((c) => c.name === category)?.emojis || [];
+    const categoryEmojis = emojiCategories.find((c) => c.name === category)?.emojis || [];
     return categoryEmojis;
   };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="rounded-full p-2"
-        >
+        <Button type="button" variant="ghost" size="icon" className="rounded-full p-2">
           <Smile className="h-6 w-6" style={{ color: inputIconsMainColor }} />
           <span className="sr-only">Emojis</span>
         </Button>
@@ -98,12 +79,7 @@ export default function WhatsAppEmojiBox({
             <TabsContent key={category.name} value={category.name}>
               <div className="grid grid-cols-8 gap-2">
                 {filteredEmojis(category.name).map((emoji, index) => (
-                  <Button
-                    key={index}
-                    variant="ghost"
-                    className="h-12 p-2 text-2xl"
-                    onClick={() => handleEmojiClick(emoji)}
-                  >
+                  <Button key={index} variant="ghost" className="h-12 p-2 text-2xl" onClick={() => handleEmojiClick(emoji)}>
                     {emoji}
                   </Button>
                 ))}

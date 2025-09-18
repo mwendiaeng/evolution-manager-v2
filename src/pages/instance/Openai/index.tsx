@@ -4,11 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -71,16 +67,9 @@ function Openai() {
               <>
                 {bots && bots.length > 0 && Array.isArray(bots) ? (
                   bots.map((bot) => (
-                    <Button
-                      className="flex h-auto flex-col items-start justify-start"
-                      key={bot.id}
-                      onClick={() => handleBotClick(`${bot.id}`)}
-                      variant={botId === bot.id ? "secondary" : "outline"}
-                    >
+                    <Button className="flex h-auto flex-col items-start justify-start" key={bot.id} onClick={() => handleBotClick(`${bot.id}`)} variant={botId === bot.id ? "secondary" : "outline"}>
                       <h4 className="text-base">{bot.description || bot.id}</h4>
-                      <p className="text-sm font-normal text-muted-foreground">
-                        {bot.botType}
-                      </p>
+                      <p className="text-sm font-normal text-muted-foreground">{bot.botType}</p>
                     </Button>
                   ))
                 ) : (

@@ -8,11 +8,7 @@ interface CreateFlowiseParams {
   token: string;
   data: Flowise;
 }
-const createFlowise = async ({
-  instanceName,
-  token,
-  data,
-}: CreateFlowiseParams) => {
+const createFlowise = async ({ instanceName, token, data }: CreateFlowiseParams) => {
   const response = await api.post(`/flowise/create/${instanceName}`, data, {
     headers: { apikey: token },
   });
@@ -24,15 +20,8 @@ interface UpdateFlowiseParams {
   flowiseId: string;
   data: Flowise;
 }
-const updateFlowise = async ({
-  instanceName,
-  flowiseId,
-  data,
-}: UpdateFlowiseParams) => {
-  const response = await api.put(
-    `/flowise/update/${flowiseId}/${instanceName}`,
-    data,
-  );
+const updateFlowise = async ({ instanceName, flowiseId, data }: UpdateFlowiseParams) => {
+  const response = await api.put(`/flowise/update/${flowiseId}/${instanceName}`, data);
   return response.data;
 };
 
@@ -40,13 +29,8 @@ interface DeleteFlowiseParams {
   instanceName: string;
   flowiseId: string;
 }
-const deleteFlowise = async ({
-  instanceName,
-  flowiseId,
-}: DeleteFlowiseParams) => {
-  const response = await api.delete(
-    `/flowise/delete/${flowiseId}/${instanceName}`,
-  );
+const deleteFlowise = async ({ instanceName, flowiseId }: DeleteFlowiseParams) => {
+  const response = await api.delete(`/flowise/delete/${flowiseId}/${instanceName}`);
   return response.data;
 };
 
@@ -56,17 +40,8 @@ interface ChangeStatusFlowiseParams {
   remoteJid: string;
   status: string;
 }
-const changeStatusFlowise = async ({
-  instanceName,
-  token,
-  remoteJid,
-  status,
-}: ChangeStatusFlowiseParams) => {
-  const response = await api.post(
-    `/flowise/changeStatus/${instanceName}`,
-    { remoteJid, status },
-    { headers: { apikey: token } },
-  );
+const changeStatusFlowise = async ({ instanceName, token, remoteJid, status }: ChangeStatusFlowiseParams) => {
+  const response = await api.post(`/flowise/changeStatus/${instanceName}`, { remoteJid, status }, { headers: { apikey: token } });
   return response.data;
 };
 
@@ -75,11 +50,7 @@ interface SetDefaultSettingsFlowiseParams {
   token: string;
   data: FlowiseSettings;
 }
-const setDefaultSettingsFlowise = async ({
-  instanceName,
-  token,
-  data,
-}: SetDefaultSettingsFlowiseParams) => {
+const setDefaultSettingsFlowise = async ({ instanceName, token, data }: SetDefaultSettingsFlowiseParams) => {
   const response = await api.post(`/flowise/settings/${instanceName}`, data, {
     headers: { apikey: token },
   });
@@ -87,10 +58,9 @@ const setDefaultSettingsFlowise = async ({
 };
 
 export function useManageFlowise() {
-  const setDefaultSettingsFlowiseMutation = useManageMutation(
-    setDefaultSettingsFlowise,
-    { invalidateKeys: [["flowise", "fetchDefaultSettings"]] },
-  );
+  const setDefaultSettingsFlowiseMutation = useManageMutation(setDefaultSettingsFlowise, {
+    invalidateKeys: [["flowise", "fetchDefaultSettings"]],
+  });
   const changeStatusFlowiseMutation = useManageMutation(changeStatusFlowise, {
     invalidateKeys: [
       ["flowise", "getFlowise"],

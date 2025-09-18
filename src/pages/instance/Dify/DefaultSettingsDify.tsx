@@ -8,20 +8,8 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormInput,
-  FormSelect,
-  FormSwitch,
-  FormTags,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormInput, FormSelect, FormSwitch, FormTags } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -58,11 +46,10 @@ function DefaultSettingsDify() {
     token: instance?.token,
     enabled: open,
   });
-  const { data: settings, refetch: refetchDefaultSettings } =
-    useFetchDefaultSettings({
-      instanceName: instance?.name,
-      token: instance?.token,
-    });
+  const { data: settings, refetch: refetchDefaultSettings } = useFetchDefaultSettings({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -87,22 +74,16 @@ function DefaultSettingsDify() {
       form.reset({
         expire: settings?.expire ? settings.expire.toString() : "0",
         keywordFinish: settings.keywordFinish,
-        delayMessage: settings.delayMessage
-          ? settings.delayMessage.toString()
-          : "0",
+        delayMessage: settings.delayMessage ? settings.delayMessage.toString() : "0",
         unknownMessage: settings.unknownMessage,
         listeningFromMe: settings.listeningFromMe,
         stopBotFromMe: settings.stopBotFromMe,
         keepOpen: settings.keepOpen,
-        debounceTime: settings.debounceTime
-          ? settings.debounceTime.toString()
-          : "0",
+        debounceTime: settings.debounceTime ? settings.debounceTime.toString() : "0",
         ignoreJids: settings.ignoreJids,
         difyIdFallback: settings.difyIdFallback,
         splitMessages: settings.splitMessages,
-        timePerChar: settings.timePerChar
-          ? settings.timePerChar.toString()
-          : "0",
+        timePerChar: settings.timePerChar ? settings.timePerChar.toString() : "0",
       });
     }
   }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -154,18 +135,12 @@ function DefaultSettingsDify() {
           <span className="hidden sm:inline">{t("dify.defaultSettings")}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
-        onCloseAutoFocus={onReset}
-      >
+      <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]" onCloseAutoFocus={onReset}>
         <DialogHeader>
           <DialogTitle>{t("dify.defaultSettings")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="w-full space-y-6"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="w-full space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
             <div>
               <div className="space-y-4">
                 <FormSelect
@@ -183,64 +158,29 @@ function DefaultSettingsDify() {
                 <FormInput name="expire" label={t("dify.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="keywordFinish"
-                  label={t("dify.form.keywordFinish.label")}
-                >
+                <FormInput name="keywordFinish" label={t("dify.form.keywordFinish.label")}>
                   <Input />
                 </FormInput>
-                <FormInput
-                  name="delayMessage"
-                  label={t("dify.form.delayMessage.label")}
-                >
+                <FormInput name="delayMessage" label={t("dify.form.delayMessage.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="unknownMessage"
-                  label={t("dify.form.unknownMessage.label")}
-                >
+                <FormInput name="unknownMessage" label={t("dify.form.unknownMessage.label")}>
                   <Input />
                 </FormInput>
-                <FormSwitch
-                  name="listeningFromMe"
-                  label={t("dify.form.listeningFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="stopBotFromMe"
-                  label={t("dify.form.stopBotFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="keepOpen"
-                  label={t("dify.form.keepOpen.label")}
-                  reverse
-                />
-                <FormInput
-                  name="debounceTime"
-                  label={t("dify.form.debounceTime.label")}
-                >
+                <FormSwitch name="listeningFromMe" label={t("dify.form.listeningFromMe.label")} reverse />
+                <FormSwitch name="stopBotFromMe" label={t("dify.form.stopBotFromMe.label")} reverse />
+                <FormSwitch name="keepOpen" label={t("dify.form.keepOpen.label")} reverse />
+                <FormInput name="debounceTime" label={t("dify.form.debounceTime.label")}>
                   <Input type="number" />
                 </FormInput>
 
-                <FormSwitch
-                  name="splitMessages"
-                  label={t("dify.form.splitMessages.label")}
-                  reverse
-                />
+                <FormSwitch name="splitMessages" label={t("dify.form.splitMessages.label")} reverse />
 
-                <FormInput
-                  name="timePerChar"
-                  label={t("dify.form.timePerChar.label")}
-                >
+                <FormInput name="timePerChar" label={t("dify.form.timePerChar.label")}>
                   <Input type="number" />
                 </FormInput>
 
-                <FormTags
-                  name="ignoreJids"
-                  label={t("dify.form.ignoreJids.label")}
-                  placeholder={t("dify.form.ignoreJids.placeholder")}
-                />
+                <FormTags name="ignoreJids" label={t("dify.form.ignoreJids.label")} placeholder={t("dify.form.ignoreJids.placeholder")} />
               </div>
             </div>
             <DialogFooter>

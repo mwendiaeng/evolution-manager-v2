@@ -13,11 +13,7 @@ import { useEmbedColors } from "@/contexts/EmbedColorsContext";
 import { useEmbedInstance } from "@/contexts/EmbedInstanceContext";
 import { ReplyMessageContext } from "@/contexts/ReplyingMessage/ReplyingMessageContext";
 
-import {
-  useSendMessage,
-  useSendMedia,
-  useSendAudio,
-} from "@/lib/queries/chat/sendMessage";
+import { useSendMessage, useSendMedia, useSendAudio } from "@/lib/queries/chat/sendMessage";
 
 import { Contact, Instance } from "@/types/evolution.types";
 
@@ -38,30 +34,14 @@ interface AudioControlsProps {
   disabled?: boolean;
 }
 
-const AudioControls: React.FC<AudioControlsProps> = ({
-  isSendingMessage,
-  isRecording,
-  audioBlob,
-  elapsedTime,
-  startRecording,
-  stopRecording,
-  clearRecording,
-  sendAudioMessage,
-  disabled,
-}) => {
+const AudioControls: React.FC<AudioControlsProps> = ({ isSendingMessage, isRecording, audioBlob, elapsedTime, startRecording, stopRecording, clearRecording, sendAudioMessage, disabled }) => {
   const { inputIconsMainColor } = useEmbedColors();
 
   return (
     <div className="flex items-center gap-2">
       {isRecording && (
         <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            className="rounded-full p-2"
-            onClick={stopRecording}
-          >
+          <Button type="button" size="icon" variant="ghost" className="rounded-full p-2" onClick={stopRecording}>
             <SquareIcon className="h-6 w-6 text-[#b03f3f]" />
           </Button>
           <span>{elapsedTime}s</span>
@@ -70,38 +50,18 @@ const AudioControls: React.FC<AudioControlsProps> = ({
 
       {audioBlob && (
         <div className="flex items-center gap-2">
-          <Button
-            type="button"
-            size="icon"
-            variant="ghost"
-            className="rounded-full p-2"
-            disabled={isSendingMessage}
-            onClick={clearRecording}
-          >
+          <Button type="button" size="icon" variant="ghost" className="rounded-full p-2" disabled={isSendingMessage} onClick={clearRecording}>
             <TrashIcon className="h-6 w-6 text-[#b03f3f]" />
           </Button>
           <audio controls src={URL.createObjectURL(audioBlob)} />
         </div>
       )}
 
-      <Button
-        type="button"
-        size="icon"
-        variant="ghost"
-        className="rounded-full p-2"
-        disabled={isSendingMessage || isRecording || disabled}
-        onClick={audioBlob ? sendAudioMessage : startRecording}
-      >
+      <Button type="button" size="icon" variant="ghost" className="rounded-full p-2" disabled={isSendingMessage || isRecording || disabled} onClick={audioBlob ? sendAudioMessage : startRecording}>
         {isSendingMessage ? (
-          <LoadingSpinner
-            className="h-6 w-6"
-            style={{ color: inputIconsMainColor }}
-          />
+          <LoadingSpinner className="h-6 w-6" style={{ color: inputIconsMainColor }} />
         ) : audioBlob ? (
-          <ArrowRightIcon
-            className="h-6 w-6"
-            style={{ color: inputIconsMainColor }}
-          />
+          <ArrowRightIcon className="h-6 w-6" style={{ color: inputIconsMainColor }} />
         ) : (
           <MicIcon className="h-6 w-6" style={{ color: inputIconsMainColor }} />
         )}
@@ -116,32 +76,11 @@ interface SendMessageButtonProps {
   disabled?: boolean;
 }
 
-const SendMessageButton: React.FC<SendMessageButtonProps> = ({
-  isSendingMessage,
-  sendMessage,
-  disabled,
-}) => {
+const SendMessageButton: React.FC<SendMessageButtonProps> = ({ isSendingMessage, sendMessage, disabled }) => {
   const { inputIconsMainColor } = useEmbedColors();
   return (
-    <Button
-      type="button"
-      size="icon"
-      variant="ghost"
-      className="rounded-full p-2"
-      onClick={sendMessage}
-      disabled={isSendingMessage || disabled}
-    >
-      {isSendingMessage ? (
-        <LoadingSpinner
-          className="h-6 w-6"
-          style={{ color: inputIconsMainColor }}
-        />
-      ) : (
-        <ArrowRightIcon
-          className="h-6 w-6"
-          style={{ color: inputIconsMainColor }}
-        />
-      )}
+    <Button type="button" size="icon" variant="ghost" className="rounded-full p-2" onClick={sendMessage} disabled={isSendingMessage || disabled}>
+      {isSendingMessage ? <LoadingSpinner className="h-6 w-6" style={{ color: inputIconsMainColor }} /> : <ArrowRightIcon className="h-6 w-6" style={{ color: inputIconsMainColor }} />}
     </Button>
   );
 };
@@ -159,8 +98,7 @@ const InputMessage = ({ chat }: InputMessageProps) => {
   const { sendMedia } = useSendMedia(); // Hook para enviar mídias
   const { sendAudio } = useSendAudio(); // Hook para enviar áudios
 
-  const { replyingMessage, setReplyingMessage } =
-    useContext(ReplyMessageContext); // Contexto da mensagem respondida
+  const { replyingMessage, setReplyingMessage } = useContext(ReplyMessageContext); // Contexto da mensagem respondida
 
   // Referência para o textarea
   const textareaRef = useRef<HTMLTextAreaElement | null>(null);
@@ -199,14 +137,9 @@ const InputMessage = ({ chat }: InputMessageProps) => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       const scrollHeight = textareaRef.current.scrollHeight;
-      const lineHeight = parseInt(
-        getComputedStyle(textareaRef.current).lineHeight,
-      );
+      const lineHeight = parseInt(getComputedStyle(textareaRef.current).lineHeight);
       const maxHeight = lineHeight * 10;
-      textareaRef.current.style.height = `${Math.min(
-        scrollHeight,
-        maxHeight,
-      )}px`;
+      textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
     }
   };
 
@@ -215,14 +148,9 @@ const InputMessage = ({ chat }: InputMessageProps) => {
     if (textareaRef.current) {
       textareaRef.current.style.height = "auto";
       const scrollHeight = textareaRef.current.scrollHeight;
-      const lineHeight = parseInt(
-        getComputedStyle(textareaRef.current).lineHeight,
-      );
+      const lineHeight = parseInt(getComputedStyle(textareaRef.current).lineHeight);
       const maxHeight = lineHeight * 10;
-      textareaRef.current.style.height = `${Math.min(
-        scrollHeight,
-        maxHeight,
-      )}px`;
+      textareaRef.current.style.height = `${Math.min(scrollHeight, maxHeight)}px`;
     }
   };
 
@@ -253,14 +181,7 @@ const InputMessage = ({ chat }: InputMessageProps) => {
 
       // Verifica formatos aceitos pela Meta
       let mimeType = "";
-      const metaFormats = [
-        "audio/aac",
-        "audio/mp4",
-        "audio/mpeg",
-        "audio/amr",
-        "audio/ogg",
-        "audio/opus",
-      ];
+      const metaFormats = ["audio/aac", "audio/mp4", "audio/mpeg", "audio/amr", "audio/ogg", "audio/opus"];
 
       for (const format of metaFormats) {
         if (MediaRecorder.isTypeSupported(format)) {
@@ -290,14 +211,10 @@ const InputMessage = ({ chat }: InputMessageProps) => {
 
       mediaRecorder.onstop = () => {
         const audioBlob = new Blob(audioChunks, { type: mimeType });
-        const audioFile = new File(
-          [audioBlob],
-          `audio.${mimeType.split("/")[1]}`,
-          {
-            type: mimeType,
-            lastModified: Date.now(),
-          },
-        );
+        const audioFile = new File([audioBlob], `audio.${mimeType.split("/")[1]}`, {
+          type: mimeType,
+          lastModified: Date.now(),
+        });
         setAudioBlob(audioFile);
       };
 
@@ -332,11 +249,7 @@ const InputMessage = ({ chat }: InputMessageProps) => {
 
   const handleError = (error: unknown) => {
     console.error("Error to send message", error);
-    toast.error(
-      isAxiosError(error)
-        ? `${t("chat.toast.error")}: ${error?.response?.data?.response?.message}`
-        : t("chat.toast.sendError"),
-    );
+    toast.error(isAxiosError(error) ? `${t("chat.toast.error")}: ${error?.response?.data?.response?.message}` : t("chat.toast.sendError"));
   };
 
   const handleSettled = () => {
@@ -383,7 +296,7 @@ const InputMessage = ({ chat }: InputMessageProps) => {
         reader.onload = () => {
           const base64 = reader.result as string;
           // Strip the data URI prefix (data:image/xyz;base64,)
-          const base64Data = base64.split(',')[1];
+          const base64Data = base64.split(",")[1];
           resolve(base64Data);
         };
         reader.onerror = reject;
@@ -395,10 +308,7 @@ const InputMessage = ({ chat }: InputMessageProps) => {
         data: {
           number: remoteJid,
           mediaMessage: {
-            mediatype:
-              selectedMedia.type.split("/")[0] === "application"
-                ? "document"
-                : (selectedMedia.type.split("/")[0] as "audio" | "video" | "image" | "document"),
+            mediatype: selectedMedia.type.split("/")[0] === "application" ? "document" : (selectedMedia.type.split("/")[0] as "audio" | "video" | "image" | "document"),
             mimetype: selectedMedia.type,
             caption: message,
             media: base64Data, // Send as base64 string instead of File
@@ -438,7 +348,7 @@ const InputMessage = ({ chat }: InputMessageProps) => {
         reader.onload = () => {
           const base64 = reader.result as string;
           // Strip the data URI prefix (data:audio/xyz;base64,)
-          const base64Data = base64.split(',')[1];
+          const base64Data = base64.split(",")[1];
           resolve(base64Data);
         };
         reader.onerror = reject;
@@ -451,7 +361,7 @@ const InputMessage = ({ chat }: InputMessageProps) => {
           number: remoteJid,
           audioMessage: {
             // Instead of sending the raw blob, send the base64 string
-            audio: base64Data
+            audio: base64Data,
           },
         },
       };
@@ -494,12 +404,7 @@ const InputMessage = ({ chat }: InputMessageProps) => {
       );
     }
 
-    return (
-      <SendMessageButton
-        isSendingMessage={isSendingMessage}
-        sendMessage={sendMessage}
-      />
-    );
+    return <SendMessageButton isSendingMessage={isSendingMessage} sendMessage={sendMessage} />;
   };
 
   const renderInputArea = () => {
@@ -510,10 +415,7 @@ const InputMessage = ({ chat }: InputMessageProps) => {
     return (
       <>
         <WhatsAppEmojiBox handleEmojiClick={handleEmojiClick} />
-        <MediaOptions
-          instance={embeddedInstance as Instance}
-          setSelectedMedia={setSelectedMedia}
-        />
+        <MediaOptions instance={embeddedInstance as Instance} setSelectedMedia={setSelectedMedia} />
         <Textarea
           placeholder={t("chat.message.placeholder")}
           name="message"
@@ -542,31 +444,21 @@ const InputMessage = ({ chat }: InputMessageProps) => {
   if (!embeddedInstance) {
     return (
       <div className="flex h-full items-center justify-center">
-        <p className="text-muted-foreground">
-          {t("chat.noInstance") || "Nenhuma instância selecionada"}
-        </p>
+        <p className="text-muted-foreground">{t("chat.noInstance") || "Nenhuma instância selecionada"}</p>
       </div>
     );
   }
 
   return (
     <div className="input-container">
-      {selectedMedia && (
-        <SelectedMedia
-          selectedMedia={selectedMedia}
-          setSelectedMedia={setSelectedMedia}
-        />
-      )}
+      {selectedMedia && <SelectedMedia selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia} />}
       {replyingMessage && <ReplyingMessage chat={chat} />}
       <div
-        className={`flex items-end ${
-          (isRecording || audioBlob) && "justify-end"
-        } rounded-3xl px-4 py-1`}
+        className={`flex items-end ${(isRecording || audioBlob) && "justify-end"} rounded-3xl px-4 py-1`}
         style={{
           backgroundColor: inputBackgroundColor,
           color: inputTextForegroundColor,
-        }}
-      >
+        }}>
         {renderInputArea()}
       </div>
     </div>

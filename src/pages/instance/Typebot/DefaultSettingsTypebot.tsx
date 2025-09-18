@@ -8,20 +8,8 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormInput,
-  FormSelect,
-  FormSwitch,
-  FormTags,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormInput, FormSelect, FormSwitch, FormTags } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -51,12 +39,11 @@ function DefaultSettingsTypebot() {
   const [open, setOpen] = useState(false);
 
   const { setDefaultSettingsTypebot } = useManageTypebot();
-  const { data: settings, refetch: refetchSettings } =
-    useFindDefaultSettingsTypebot({
-      instanceName: instance?.name,
-      token: instance?.token,
-      enabled: open,
-    });
+  const { data: settings, refetch: refetchSettings } = useFindDefaultSettingsTypebot({
+    instanceName: instance?.name,
+    token: instance?.token,
+    enabled: open,
+  });
   const { data: typebots, refetch: refetchTypebots } = useFindTypebot({
     instanceName: instance?.name,
     token: instance?.token,
@@ -133,23 +120,15 @@ function DefaultSettingsTypebot() {
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <Cog size={16} className="mr-1" />
-          <span className="hidden sm:inline">
-            {t("typebot.button.defaultSettings")}
-          </span>
+          <span className="hidden sm:inline">{t("typebot.button.defaultSettings")}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
-        onCloseAutoFocus={onReset}
-      >
+      <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]" onCloseAutoFocus={onReset}>
         <DialogHeader>
           <DialogTitle>{t("typebot.modal.defaultSettings.title")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="w-full space-y-6"
-            onSubmit={form.handleSubmit(handleSubmit)}
-          >
+          <form className="w-full space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
             <div>
               <div className="space-y-4">
                 <FormSelect
@@ -167,51 +146,23 @@ function DefaultSettingsTypebot() {
                 <FormInput name="expire" label={t("typebot.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="keywordFinish"
-                  label={t("typebot.form.keywordFinish.label")}
-                >
+                <FormInput name="keywordFinish" label={t("typebot.form.keywordFinish.label")}>
                   <Input />
                 </FormInput>
-                <FormInput
-                  name="delayMessage"
-                  label={t("typebot.form.delayMessage.label")}
-                >
+                <FormInput name="delayMessage" label={t("typebot.form.delayMessage.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="unknownMessage"
-                  label={t("typebot.form.unknownMessage.label")}
-                >
+                <FormInput name="unknownMessage" label={t("typebot.form.unknownMessage.label")}>
                   <Input />
                 </FormInput>
-                <FormSwitch
-                  name="listeningFromMe"
-                  label={t("typebot.form.listeningFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="stopBotFromMe"
-                  label={t("typebot.form.stopBotFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="keepOpen"
-                  label={t("typebot.form.keepOpen.label")}
-                  reverse
-                />
-                <FormInput
-                  name="debounceTime"
-                  label={t("typebot.form.debounceTime.label")}
-                >
+                <FormSwitch name="listeningFromMe" label={t("typebot.form.listeningFromMe.label")} reverse />
+                <FormSwitch name="stopBotFromMe" label={t("typebot.form.stopBotFromMe.label")} reverse />
+                <FormSwitch name="keepOpen" label={t("typebot.form.keepOpen.label")} reverse />
+                <FormInput name="debounceTime" label={t("typebot.form.debounceTime.label")}>
                   <Input type="number" />
                 </FormInput>
 
-                <FormTags
-                  name="ignoreJids"
-                  label={t("typebot.form.ignoreJids.label")}
-                  placeholder={t("typebot.form.ignoreJids.placeholder")}
-                />
+                <FormTags name="ignoreJids" label={t("typebot.form.ignoreJids.label")} placeholder={t("typebot.form.ignoreJids.placeholder")} />
               </div>
             </div>
             <DialogFooter>

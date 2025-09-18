@@ -1,23 +1,10 @@
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu";
-import {
-  ArrowRightIcon,
-  ChevronDownIcon,
-  SparkleIcon,
-  User,
-  ZapIcon,
-} from "lucide-react";
+import { DropdownMenu, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { ArrowRightIcon, ChevronDownIcon, SparkleIcon, User, ZapIcon } from "lucide-react";
 import { RefObject, useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
@@ -62,9 +49,7 @@ const formatDateSeparator = (date: Date): string => {
   }
 
   // Check if it's within the last week
-  const daysDiff = Math.floor(
-    (today.getTime() - messageDate.getTime()) / (1000 * 60 * 60 * 24),
-  );
+  const daysDiff = Math.floor((today.getTime() - messageDate.getTime()) / (1000 * 60 * 60 * 24));
   if (daysDiff < 7) {
     return messageDate.toLocaleDateString("pt-BR", { weekday: "long" });
   }
@@ -94,10 +79,7 @@ const getMessageTimestamp = (message: Message): Date => {
         (message.messageTimestamp as any).value,
       ];
 
-      const timestamp =
-        possibleTimestamps.find(
-          (val) => typeof val === "number" && !isNaN(val),
-        ) || Date.now() / 1000;
+      const timestamp = possibleTimestamps.find((val) => typeof val === "number" && !isNaN(val)) || Date.now() / 1000;
 
       return new Date(timestamp * 1000);
     }
@@ -113,10 +95,7 @@ const getMessageTimestamp = (message: Message): Date => {
       }
     }
     // If it's an ISO date string format
-    else if (
-      typeof message.messageTimestamp === "string" &&
-      message.messageTimestamp.includes("T")
-    ) {
+    else if (typeof message.messageTimestamp === "string" && message.messageTimestamp.includes("T")) {
       return new Date(message.messageTimestamp);
     }
 
@@ -138,7 +117,7 @@ const DateSeparator = ({ date }: { date: string }) => (
 // Helper function to extract text content from message
 const getMessageText = (messageObj: any): string => {
   if (!messageObj) return "";
-  
+
   // Try to parse if it's a string
   if (typeof messageObj === "string") {
     try {
@@ -148,19 +127,19 @@ const getMessageText = (messageObj: any): string => {
       return messageObj;
     }
   }
-  
+
   // If it's already an object, extract conversation or text
   if (typeof messageObj === "object") {
     return messageObj.conversation || messageObj.text || "";
   }
-  
+
   return String(messageObj);
 };
 
 // Component to render different message types based on messageType
 const MessageContent = ({ message }: { message: Message }) => {
   const messageType = message.messageType as string;
-  
+
   switch (messageType) {
     case "conversation":
       if (message.message.contactMessage) {
@@ -171,12 +150,8 @@ const MessageContent = ({ message }: { message: Message }) => {
               <div className="text-xl">👤</div>
               <span className="font-medium">Contact</span>
             </div>
-            {contactMsg.displayName && (
-              <p className="text-sm font-medium">{contactMsg.displayName}</p>
-            )}
-            {contactMsg.vcard && (
-              <p className="text-xs text-muted-foreground">Contact card</p>
-            )}
+            {contactMsg.displayName && <p className="text-sm font-medium">{contactMsg.displayName}</p>}
+            {contactMsg.vcard && <p className="text-xs text-muted-foreground">Contact card</p>}
           </div>
         );
       }
@@ -189,19 +164,14 @@ const MessageContent = ({ message }: { message: Message }) => {
               <div className="text-xl">📍</div>
               <span className="font-medium">Location</span>
             </div>
-            {locationMsg.name && (
-              <p className="text-sm font-medium">{locationMsg.name}</p>
-            )}
-            {locationMsg.address && (
-              <p className="text-xs text-muted-foreground">{locationMsg.address}</p>
-            )}
+            {locationMsg.name && <p className="text-sm font-medium">{locationMsg.name}</p>}
+            {locationMsg.address && <p className="text-xs text-muted-foreground">{locationMsg.address}</p>}
             {locationMsg.degreesLatitude && locationMsg.degreesLongitude && (
-              <a 
+              <a
                 href={`https://maps.google.com/?q=${locationMsg.degreesLatitude},${locationMsg.degreesLongitude}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-primary hover:underline text-sm mt-1 inline-block"
-              >
+                className="text-primary hover:underline text-sm mt-1 inline-block">
                 View on Maps
               </a>
             )}
@@ -212,22 +182,14 @@ const MessageContent = ({ message }: { message: Message }) => {
       return <span>{getMessageText(message.message)}</span>;
 
     case "extendedTextMessage":
-      return (
-        <span>
-          {message.message.conversation ?? message.message.extendedTextMessage?.text}
-        </span>
-      );
+      return <span>{message.message.conversation ?? message.message.extendedTextMessage?.text}</span>;
 
     case "imageMessage":
       // Use base64 data or mediaUrl for images
-      const imageBase64 = message.message.base64 ? 
-        (message.message.base64.startsWith('data:') ? 
-          message.message.base64 : 
-          `data:image/jpeg;base64,${message.message.base64}`) : 
-        null;
-      
+      const imageBase64 = message.message.base64 ? (message.message.base64.startsWith("data:") ? message.message.base64 : `data:image/jpeg;base64,${message.message.base64}`) : null;
+
       const imageSrc = imageBase64 || message.message.mediaUrl;
-      
+
       return (
         <div className="flex flex-col gap-2">
           {imageSrc ? (
@@ -248,26 +210,20 @@ const MessageContent = ({ message }: { message: Message }) => {
               <p className="text-center text-xs text-muted-foreground mt-1">Missing base64 data and mediaUrl</p>
             </div>
           )}
-          {message.message.imageMessage?.caption && (
-            <p className="text-sm">{message.message.imageMessage.caption}</p>
-          )}
+          {message.message.imageMessage?.caption && <p className="text-sm">{message.message.imageMessage.caption}</p>}
         </div>
       );
 
     case "videoMessage":
       // Use base64 data or mediaUrl for videos
-      const videoBase64 = message.message.base64 ? 
-        (message.message.base64.startsWith('data:') ? 
-          message.message.base64 : 
-          `data:video/mp4;base64,${message.message.base64}`) : 
-        null;
-      
+      const videoBase64 = message.message.base64 ? (message.message.base64.startsWith("data:") ? message.message.base64 : `data:video/mp4;base64,${message.message.base64}`) : null;
+
       const videoSrc = videoBase64 || message.message.mediaUrl;
-      
+
       return (
         <div className="flex flex-col gap-2">
           {videoSrc ? (
-            <video 
+            <video
               src={videoSrc}
               controls
               className="rounded-lg max-w-full h-auto"
@@ -282,22 +238,16 @@ const MessageContent = ({ message }: { message: Message }) => {
               <p className="text-center text-xs text-muted-foreground mt-1">Missing base64 data and mediaUrl</p>
             </div>
           )}
-          {message.message.videoMessage?.caption && (
-            <p className="text-sm">{message.message.videoMessage.caption}</p>
-          )}
+          {message.message.videoMessage?.caption && <p className="text-sm">{message.message.videoMessage.caption}</p>}
         </div>
       );
 
     case "audioMessage":
       // Use base64 data or mediaUrl for audio
-      const audioBase64 = message.message.base64 ? 
-        (message.message.base64.startsWith('data:') ? 
-          message.message.base64 : 
-          `data:audio/mpeg;base64,${message.message.base64}`) : 
-        null;
-      
+      const audioBase64 = message.message.base64 ? (message.message.base64.startsWith("data:") ? message.message.base64 : `data:audio/mpeg;base64,${message.message.base64}`) : null;
+
       const audioSrc = audioBase64 || message.message.mediaUrl;
-      
+
       return audioSrc ? (
         <audio controls className="w-full max-w-xs">
           <source src={audioSrc} type="audio/mpeg" />
@@ -315,26 +265,14 @@ const MessageContent = ({ message }: { message: Message }) => {
         <div className="flex items-center gap-2 p-3 bg-muted rounded-lg max-w-xs">
           <div className="text-2xl">📄</div>
           <div className="flex-1 min-w-0">
-            <p className="font-medium truncate">
-              {message.message.documentMessage?.fileName || "Document"}
-            </p>
-            {message.message.documentMessage?.fileLength && (
-              <p className="text-xs text-muted-foreground">
-                {(message.message.documentMessage.fileLength / 1024 / 1024).toFixed(2)} MB
-              </p>
-            )}
+            <p className="font-medium truncate">{message.message.documentMessage?.fileName || "Document"}</p>
+            {message.message.documentMessage?.fileLength && <p className="text-xs text-muted-foreground">{(message.message.documentMessage.fileLength / 1024 / 1024).toFixed(2)} MB</p>}
           </div>
         </div>
       );
 
     case "stickerMessage":
-      return (
-        <img
-          src={message.message.mediaUrl}
-          alt="Sticker"
-          className="max-w-32 max-h-32 object-contain"
-        />
-      );
+      return <img src={message.message.mediaUrl} alt="Sticker" className="max-w-32 max-h-32 object-contain" />;
 
     default:
       // Fallback for unknown message types
@@ -342,22 +280,14 @@ const MessageContent = ({ message }: { message: Message }) => {
         <div className="text-xs text-muted-foreground bg-muted p-2 rounded max-w-xs">
           <details>
             <summary>Unknown message type: {messageType}</summary>
-            <pre className="mt-2 whitespace-pre-wrap break-all text-xs">
-              {JSON.stringify(message.message, null, 2)}
-            </pre>
+            <pre className="mt-2 whitespace-pre-wrap break-all text-xs">{JSON.stringify(message.message, null, 2)}</pre>
           </details>
         </div>
       );
   }
 };
 
-function Messages({
-  textareaRef,
-  handleTextareaChange,
-  textareaHeight,
-  lastMessageRef,
-  scrollToBottom,
-}: MessagesProps) {
+function Messages({ textareaRef, handleTextareaChange, textareaHeight, lastMessageRef, scrollToBottom }: MessagesProps) {
   const { instance } = useInstance();
   const [messageText, setMessageText] = useState("");
   const [isSending, setIsSending] = useState(false);
@@ -367,11 +297,11 @@ function Messages({
   const { sendMedia: sendMediaMutation } = useSendMedia();
 
   const { remoteJid } = useParams<{ remoteJid: string }>();
-  
+
   // Handle sending text messages
   const sendTextMessage = async () => {
     if (!messageText.trim() || !remoteJid || !instance?.name || !instance?.token || isSending) return;
-    
+
     try {
       setIsSending(true);
       await sendTextMutation({
@@ -382,7 +312,7 @@ function Messages({
           text: messageText.trim(),
         },
       });
-      
+
       // Clear the input after sending
       setMessageText("");
       if (textareaRef.current) {
@@ -402,7 +332,7 @@ function Messages({
 
     try {
       setIsSending(true);
-      
+
       // Convert media to base64
       const base64Data = await new Promise<string>((resolve, reject) => {
         const reader = new FileReader();
@@ -410,7 +340,7 @@ function Messages({
         reader.onload = () => {
           const base64 = reader.result as string;
           // Strip the data URI prefix (data:image/xyz;base64,)
-          const base64Data = base64.split(',')[1];
+          const base64Data = base64.split(",")[1];
           resolve(base64Data);
         };
         reader.onerror = reject;
@@ -422,10 +352,7 @@ function Messages({
         data: {
           number: remoteJid,
           mediaMessage: {
-            mediatype:
-              selectedMedia.type.split("/")[0] === "application"
-                ? "document"
-                : (selectedMedia.type.split("/")[0] as "audio" | "video" | "image" | "document"),
+            mediatype: selectedMedia.type.split("/")[0] === "application" ? "document" : (selectedMedia.type.split("/")[0] as "audio" | "video" | "image" | "document"),
             mimetype: selectedMedia.type,
             caption: messageText.trim(),
             media: base64Data,
@@ -483,18 +410,18 @@ function Messages({
   // Combine React Query messages with real-time updates
   const allMessages = useMemo(() => {
     if (!messages) return realtimeMessages;
-    
+
     // Merge messages from React Query with real-time updates
     const messageMap = new Map();
-    
+
     // First add all messages from React Query
-    messages.forEach(message => messageMap.set(message.key.id, message));
-    
+    messages.forEach((message) => messageMap.set(message.key.id, message));
+
     // Then add/update with real-time messages
-    realtimeMessages.forEach(message => {
+    realtimeMessages.forEach((message) => {
       messageMap.set(message.key.id, message);
     });
-    
+
     return Array.from(messageMap.values());
   }, [messages, realtimeMessages]);
 
@@ -512,18 +439,16 @@ function Messages({
       if (data.instance !== instance.name) {
         return;
       }
-      
+
       if (data?.data?.key?.remoteJid !== remoteJid) {
         return;
       }
 
       const message = data.data;
-      
+
       setRealtimeMessages((prevMessages) => {
         // Check if message already exists
-        const existingIndex = prevMessages.findIndex(
-          (msg) => msg.key.id === message.key.id
-        );
+        const existingIndex = prevMessages.findIndex((msg) => msg.key.id === message.key.id);
 
         if (existingIndex !== -1) {
           // Update existing message
@@ -542,7 +467,7 @@ function Messages({
       if (!instance) return;
       if (data.instance !== instance.name) return;
 
-      console.log('Received message status update:', data);
+      console.log("Received message status update:", data);
       // TODO: Implement proper message status updates when Message type supports it
     };
 
@@ -663,54 +588,38 @@ function Messages({
       <div className="sticky top-0 bg-background border-b border-border p-3">
         <div className="flex items-center gap-3">
           <Avatar className="h-10 w-10">
-            <AvatarImage
-              src={chat?.profilePicUrl}
-              alt={chat?.pushName || chat?.remoteJid?.split("@")[0]}
-            />
+            <AvatarImage src={chat?.profilePicUrl} alt={chat?.pushName || chat?.remoteJid?.split("@")[0]} />
             <AvatarFallback className="bg-slate-700 text-slate-300 border border-slate-600">
               <User className="h-5 w-5" />
             </AvatarFallback>
           </Avatar>
           <div className="flex-1 min-w-0">
-            <div className="font-medium text-sm truncate">
-              {chat?.pushName || chat?.remoteJid?.split("@")[0]}
-            </div>
-            <div className="text-xs text-muted-foreground truncate">
-              {chat?.remoteJid?.split("@")[0]}
-            </div>
+            <div className="font-medium text-sm truncate">{chat?.pushName || chat?.remoteJid?.split("@")[0]}</div>
+            <div className="text-xs text-muted-foreground truncate">{chat?.remoteJid?.split("@")[0]}</div>
           </div>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="h-8 w-8 p-0"
-              >
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0">
                 <ChevronDownIcon className="h-4 w-4" />
               </Button>
             </DropdownMenuTrigger>
-          <DropdownMenuContent align="start" className="max-w-[300px]">
-            <DropdownMenuItem className="items-start gap-2">
-              <SparkleIcon className="mr-2 h-4 w-4 shrink-0 translate-y-1" />
-              <div>
-                <div className="font-medium">GPT-4</div>
-                <div className="text-muted-foreground/80">
-                  With DALL-E, browsing and analysis. Limit 40 messages / 3
-                  hours
+            <DropdownMenuContent align="start" className="max-w-[300px]">
+              <DropdownMenuItem className="items-start gap-2">
+                <SparkleIcon className="mr-2 h-4 w-4 shrink-0 translate-y-1" />
+                <div>
+                  <div className="font-medium">GPT-4</div>
+                  <div className="text-muted-foreground/80">With DALL-E, browsing and analysis. Limit 40 messages / 3 hours</div>
                 </div>
-              </div>
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem className="items-start gap-2">
-              <ZapIcon className="mr-2 h-4 w-4 shrink-0 translate-y-1" />
-              <div>
-                <div className="font-medium">GPT-3</div>
-                <div className="text-muted-foreground/80">
-                  Great for everyday tasks
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem className="items-start gap-2">
+                <ZapIcon className="mr-2 h-4 w-4 shrink-0 translate-y-1" />
+                <div>
+                  <div className="font-medium">GPT-3</div>
+                  <div className="text-muted-foreground/80">Great for everyday tasks</div>
                 </div>
-              </div>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
           </DropdownMenu>
         </div>
       </div>
@@ -732,19 +641,9 @@ function Messages({
         <div ref={lastMessageRef as never} />
       </div>
       <div className="sticky bottom-0 mx-auto flex w-full max-w-2xl flex-col gap-1.5 bg-background px-2 py-2">
-        {selectedMedia && (
-          <SelectedMedia
-            selectedMedia={selectedMedia}
-            setSelectedMedia={setSelectedMedia}
-          />
-        )}
+        {selectedMedia && <SelectedMedia selectedMedia={selectedMedia} setSelectedMedia={setSelectedMedia} />}
         <div className="flex items-center rounded-3xl border border-border bg-background px-2 py-1">
-          {instance && (
-            <MediaOptions
-              instance={instance}
-              setSelectedMedia={setSelectedMedia}
-            />
-          )}
+          {instance && <MediaOptions instance={instance} setSelectedMedia={setSelectedMedia} />}
           <Textarea
             placeholder="Enviar mensagem..."
             name="message"
@@ -758,13 +657,7 @@ function Messages({
             style={{ height: textareaHeight }}
             className="min-h-0 w-full resize-none border-none p-3 focus-visible:outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 focus-visible:ring-offset-transparent"
           />
-          <Button
-            type="button"
-            size="icon"
-            onClick={sendMessage}
-            disabled={(!messageText.trim() && !selectedMedia) || isSending}
-            className="rounded-full p-2 disabled:opacity-50"
-          >
+          <Button type="button" size="icon" onClick={sendMessage} disabled={(!messageText.trim() && !selectedMedia) || isSending} className="rounded-full p-2 disabled:opacity-50">
             <ArrowRightIcon className="h-6 w-6" />
             <span className="sr-only">Enviar</span>
           </Button>

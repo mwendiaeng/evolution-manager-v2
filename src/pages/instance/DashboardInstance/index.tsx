@@ -10,20 +10,8 @@ import { useTheme } from "@/components/theme-provider";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTrigger } from "@/components/ui/dialog";
 import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -141,9 +129,7 @@ function DashboardInstance() {
         <Card>
           <CardHeader>
             <div className="flex flex-wrap items-center justify-between gap-4">
-              <h2 className="break-all text-lg font-semibold">
-                {instance.name}
-              </h2>
+              <h2 className="break-all text-lg font-semibold">{instance.name}</h2>
               <InstanceStatus status={instance.connectionStatus} />
             </div>
           </CardHeader>
@@ -159,54 +145,27 @@ function DashboardInstance() {
                 </Avatar>
                 <div className="space-y-1">
                   <strong>{instance.profileName}</strong>
-                  <p className="break-all text-sm text-muted-foreground">
-                    {instance.ownerJid}
-                  </p>
+                  <p className="break-all text-sm text-muted-foreground">{instance.ownerJid}</p>
                 </div>
               </div>
             )}
             {instance.connectionStatus !== "open" && (
-              <Alert
-                variant="warning"
-                className="flex flex-wrap items-center justify-between gap-3"
-              >
-                <AlertTitle className="text-lg font-bold tracking-wide">
-                  {t("instance.dashboard.alert")}
-                </AlertTitle>
+              <Alert variant="warning" className="flex flex-wrap items-center justify-between gap-3">
+                <AlertTitle className="text-lg font-bold tracking-wide">{t("instance.dashboard.alert")}</AlertTitle>
 
                 <Dialog>
-                  <DialogTrigger
-                    onClick={() => handleConnect(instance.name, false)}
-                    asChild
-                  >
-                    <Button variant="warning">
-                      {t("instance.dashboard.button.qrcode.label")}
-                    </Button>
+                  <DialogTrigger onClick={() => handleConnect(instance.name, false)} asChild>
+                    <Button variant="warning">{t("instance.dashboard.button.qrcode.label")}</Button>
                   </DialogTrigger>
                   <DialogContent onCloseAutoFocus={closeQRCodePopup}>
-                    <DialogHeader>
-                      {t("instance.dashboard.button.qrcode.title")}
-                    </DialogHeader>
-                    <div className="flex items-center justify-center">
-                      {qrCode && (
-                        <QRCode
-                          value={qrCode}
-                          size={256}
-                          bgColor="transparent"
-                          fgColor={qrCodeColor}
-                          className="rounded-sm"
-                        />
-                      )}
-                    </div>
+                    <DialogHeader>{t("instance.dashboard.button.qrcode.title")}</DialogHeader>
+                    <div className="flex items-center justify-center">{qrCode && <QRCode value={qrCode} size={256} bgColor="transparent" fgColor={qrCodeColor} className="rounded-sm" />}</div>
                   </DialogContent>
                 </Dialog>
 
                 {instance.number && (
                   <Dialog>
-                    <DialogTrigger
-                      className="connect-code-button"
-                      onClick={() => handleConnect(instance.name, true)}
-                    >
+                    <DialogTrigger className="connect-code-button" onClick={() => handleConnect(instance.name, true)}>
                       {t("instance.dashboard.button.pairingCode.label")}
                     </DialogTrigger>
                     <DialogContent onCloseAutoFocus={closeQRCodePopup}>
@@ -215,15 +174,10 @@ function DashboardInstance() {
                           {pairingCode ? (
                             <div className="py-3">
                               <p className="text-center">
-                                <strong>
-                                  {t(
-                                    "instance.dashboard.button.pairingCode.title",
-                                  )}
-                                </strong>
+                                <strong>{t("instance.dashboard.button.pairingCode.title")}</strong>
                               </p>
                               <p className="pairing-code text-center">
-                                {pairingCode.substring(0, 4)}-
-                                {pairingCode.substring(4, 8)}
+                                {pairingCode.substring(0, 4)}-{pairingCode.substring(4, 8)}
                               </p>
                             </div>
                           ) : (
@@ -238,26 +192,13 @@ function DashboardInstance() {
             )}
           </CardContent>
           <CardFooter className="flex flex-wrap items-center justify-end gap-3">
-            <Button
-              variant="outline"
-              className="refresh-button"
-              size="icon"
-              onClick={handleReload}
-            >
+            <Button variant="outline" className="refresh-button" size="icon" onClick={handleReload}>
               <RefreshCw size="20" />
             </Button>
-            <Button
-              className="action-button"
-              variant="secondary"
-              onClick={() => handleRestart(instance.name)}
-            >
+            <Button className="action-button" variant="secondary" onClick={() => handleRestart(instance.name)}>
               {t("instance.dashboard.button.restart").toUpperCase()}
             </Button>
-            <Button
-              variant="destructive"
-              onClick={() => handleLogout(instance.name)}
-              disabled={instance.connectionStatus === "close"}
-            >
+            <Button variant="destructive" onClick={() => handleLogout(instance.name)} disabled={instance.connectionStatus === "close"}>
               {t("instance.dashboard.button.disconnect").toUpperCase()}
             </Button>
           </CardFooter>

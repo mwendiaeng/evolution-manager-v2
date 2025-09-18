@@ -10,11 +10,7 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "openai",
-  "getOpenai",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["openai", "getOpenai", JSON.stringify(params)];
 
 export const getOpenai = async ({ instanceName, token, openaiId }: IParams) => {
   const response = await api.get(`/openai/fetch/${openaiId}/${instanceName}`, {
@@ -26,9 +22,7 @@ export const getOpenai = async ({ instanceName, token, openaiId }: IParams) => {
   return response.data;
 };
 
-export const useGetOpenai = (
-  props: UseQueryParams<GetOpenaiResponse> & Partial<IParams>,
-) => {
+export const useGetOpenai = (props: UseQueryParams<GetOpenaiResponse> & Partial<IParams>) => {
   const { instanceName, token, openaiId, ...rest } = props;
   return useQuery<GetOpenaiResponse>({
     ...rest,

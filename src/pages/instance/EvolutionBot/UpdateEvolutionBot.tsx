@@ -20,10 +20,7 @@ type UpdateEvolutionBotProps = {
   resetTable: () => void;
 };
 
-function UpdateEvolutionBot({
-  evolutionBotId,
-  resetTable,
-}: UpdateEvolutionBotProps) {
+function UpdateEvolutionBot({ evolutionBotId, resetTable }: UpdateEvolutionBotProps) {
   const { t } = useTranslation();
   const { instance } = useInstance();
   const navigate = useNavigate();
@@ -106,9 +103,7 @@ function UpdateEvolutionBot({
         });
         toast.success(t("evolutionBot.toast.success.update"));
         resetTable();
-        navigate(
-          `/manager/instance/${instance.id}/evolutionBot/${evolutionBotId}`,
-        );
+        navigate(`/manager/instance/${instance.id}/evolutionBot/${evolutionBotId}`);
       } else {
         console.error("Token not found");
       }

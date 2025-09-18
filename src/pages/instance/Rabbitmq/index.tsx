@@ -8,14 +8,7 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormSwitch,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormSwitch } from "@/components/ui/form";
 import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -125,33 +118,17 @@ function Rabbitmq() {
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <div>
             <h3 className="mb-1 text-lg font-medium">{t("rabbitmq.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
-              <FormSwitch
-                name="enabled"
-                label={t("rabbitmq.form.enabled.label")}
-                className="w-full justify-between"
-                helper={t("rabbitmq.form.enabled.description")}
-              />
+              <FormSwitch name="enabled" label={t("rabbitmq.form.enabled.label")} className="w-full justify-between" helper={t("rabbitmq.form.enabled.description")} />
               <div className="mb-4 flex justify-between">
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={handleSelectAll}
-                >
+                <Button variant="outline" type="button" onClick={handleSelectAll}>
                   {t("button.markAll")}
                 </Button>
-                <Button
-                  variant="outline"
-                  type="button"
-                  onClick={handleDeselectAll}
-                >
+                <Button variant="outline" type="button" onClick={handleDeselectAll}>
                   {t("button.unMarkAll")}
                 </Button>
               </div>
@@ -160,37 +137,21 @@ function Rabbitmq() {
                 name="events"
                 render={({ field }) => (
                   <FormItem className="flex flex-col">
-                    <FormLabel className="my-2 text-lg">
-                      {t("rabbitmq.form.events.label")}
-                    </FormLabel>
+                    <FormLabel className="my-2 text-lg">{t("rabbitmq.form.events.label")}</FormLabel>
                     <FormControl>
                       <div className="flex flex-col gap-2 space-y-1 divide-y">
                         {events
                           .sort((a, b) => a.localeCompare(b))
                           .map((event) => (
-                            <div
-                              key={event}
-                              className="flex items-center justify-between gap-3 pt-3"
-                            >
-                              <FormLabel
-                                className={cn(
-                                  "break-all",
-                                  field.value.includes(event)
-                                    ? "text-foreground"
-                                    : "text-muted-foreground",
-                                )}
-                              >
-                                {event}
-                              </FormLabel>
+                            <div key={event} className="flex items-center justify-between gap-3 pt-3">
+                              <FormLabel className={cn("break-all", field.value.includes(event) ? "text-foreground" : "text-muted-foreground")}>{event}</FormLabel>
                               <Switch
                                 checked={field.value.includes(event)}
                                 onCheckedChange={(checked) => {
                                   if (checked) {
                                     field.onChange([...field.value, event]);
                                   } else {
-                                    field.onChange(
-                                      field.value.filter((e) => e !== event),
-                                    );
+                                    field.onChange(field.value.filter((e) => e !== event));
                                   }
                                 }}
                               />
@@ -204,9 +165,7 @@ function Rabbitmq() {
             </div>
             <div className="mx-4 flex justify-end pt-6">
               <Button type="submit" disabled={loading}>
-                {loading
-                  ? t("rabbitmq.button.saving")
-                  : t("rabbitmq.button.save")}
+                {loading ? t("rabbitmq.button.saving") : t("rabbitmq.button.save")}
               </Button>
             </div>
           </div>

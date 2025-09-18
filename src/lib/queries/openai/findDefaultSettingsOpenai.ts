@@ -9,16 +9,9 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "openai",
-  "fetchDefaultSettings",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["openai", "fetchDefaultSettings", JSON.stringify(params)];
 
-export const findDefaultSettingsOpenai = async ({
-  instanceName,
-  token,
-}: IParams) => {
+export const findDefaultSettingsOpenai = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/openai/fetchSettings/${instanceName}`, {
     headers: { apiKey: token },
   });
@@ -28,15 +21,12 @@ export const findDefaultSettingsOpenai = async ({
   return response.data;
 };
 
-export const useFindDefaultSettingsOpenai = (
-  props: UseQueryParams<FindDefaultSettingsOpenaiResponse> & Partial<IParams>,
-) => {
+export const useFindDefaultSettingsOpenai = (props: UseQueryParams<FindDefaultSettingsOpenaiResponse> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FindDefaultSettingsOpenaiResponse>({
     ...rest,
     queryKey: queryKey({ instanceName }),
-    queryFn: () =>
-      findDefaultSettingsOpenai({ instanceName: instanceName!, token }),
+    queryFn: () => findDefaultSettingsOpenai({ instanceName: instanceName!, token }),
     enabled: !!instanceName && (props.enabled ?? true),
   });
 };

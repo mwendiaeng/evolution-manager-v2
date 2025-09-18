@@ -5,13 +5,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
@@ -78,20 +72,14 @@ function NewEvolutionBot({ resetTable }: { resetTable: () => void }) {
       <DialogTrigger asChild>
         <Button size="sm">
           <PlusIcon size={16} className="mr-1" />
-          <span className="hidden sm:inline">
-            {t("evolutionBot.button.create")}
-          </span>
+          <span className="hidden sm:inline">{t("evolutionBot.button.create")}</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]">
         <DialogHeader>
           <DialogTitle>{t("evolutionBot.form.title")}</DialogTitle>
         </DialogHeader>
-        <EvolutionBotForm
-          onSubmit={onSubmit}
-          isModal={true}
-          isLoading={updating}
-        />
+        <EvolutionBotForm onSubmit={onSubmit} isModal={true} isLoading={updating} />
       </DialogContent>
     </Dialog>
   );

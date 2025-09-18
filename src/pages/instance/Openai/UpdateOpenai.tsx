@@ -41,15 +41,9 @@ function UpdateOpenai({ openaiId, resetTable }: UpdateOpenaiProps) {
       assistantId: openai?.assistantId || "",
       functionUrl: openai?.functionUrl || "",
       model: openai?.model || "",
-      systemMessages: Array.isArray(openai?.systemMessages)
-        ? openai?.systemMessages.join(", ")
-        : openai?.systemMessages || "",
-      assistantMessages: Array.isArray(openai?.assistantMessages)
-        ? openai?.assistantMessages.join(", ")
-        : openai?.assistantMessages || "",
-      userMessages: Array.isArray(openai?.userMessages)
-        ? openai?.userMessages.join(", ")
-        : openai?.userMessages || "",
+      systemMessages: Array.isArray(openai?.systemMessages) ? openai?.systemMessages.join(", ") : openai?.systemMessages || "",
+      assistantMessages: Array.isArray(openai?.assistantMessages) ? openai?.assistantMessages.join(", ") : openai?.assistantMessages || "",
+      userMessages: Array.isArray(openai?.userMessages) ? openai?.userMessages.join(", ") : openai?.userMessages || "",
       maxTokens: openai?.maxTokens || 0,
       triggerType: openai?.triggerType || "",
       triggerOperator: openai?.triggerOperator || "",

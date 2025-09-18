@@ -1,8 +1,4 @@
-import {
-  Dify,
-  DifySettings,
-  IntegrationSession,
-} from "@/types/evolution.types";
+import { Dify, DifySettings, IntegrationSession } from "@/types/evolution.types";
 
 export type FetchDifyRsponse = Dify[];
 

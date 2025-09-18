@@ -12,13 +12,7 @@ const ReplyMessageContext = createContext({} as ReplyMessageContextData);
 const ReplyMessageProvider = ({ children }: { children: React.ReactNode }) => {
   const [replyingMessage, setReplyingMessage] = useState<Message | null>(null);
 
-  return (
-    <ReplyMessageContext.Provider
-      value={{ replyingMessage, setReplyingMessage }}
-    >
-      {children}
-    </ReplyMessageContext.Provider>
-  );
+  return <ReplyMessageContext.Provider value={{ replyingMessage, setReplyingMessage }}>{children}</ReplyMessageContext.Provider>;
 };
 
 export { ReplyMessageContext, ReplyMessageProvider };

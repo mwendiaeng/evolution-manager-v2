@@ -10,27 +10,14 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "openai",
-  "fetchSessions",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["openai", "fetchSessions", JSON.stringify(params)];
 
-export const fetchSessionsOpenai = async ({
-  instanceName,
-  openaiId,
-  token,
-}: IParams) => {
-  const response = await api.get(
-    `/openai/fetchSessions/${openaiId}/${instanceName}`,
-    { headers: { apiKey: token } },
-  );
+export const fetchSessionsOpenai = async ({ instanceName, openaiId, token }: IParams) => {
+  const response = await api.get(`/openai/fetchSessions/${openaiId}/${instanceName}`, { headers: { apiKey: token } });
   return response.data;
 };
 
-export const useFetchSessionsOpenai = (
-  props: UseQueryParams<FetchSessionsOpenaiResponse> & Partial<IParams>,
-) => {
+export const useFetchSessionsOpenai = (props: UseQueryParams<FetchSessionsOpenaiResponse> & Partial<IParams>) => {
   const { instanceName, token, openaiId, ...rest } = props;
   return useQuery<FetchSessionsOpenaiResponse>({
     ...rest,

@@ -50,13 +50,7 @@ function Footer() {
       </div>
       <div className="flex gap-2">
         {links.map((link) => (
-          <Button
-            variant="link"
-            asChild
-            key={link.url}
-            size="sm"
-            className="text-xs"
-          >
+          <Button variant="link" asChild key={link.url} size="sm" className="text-xs">
             <a href={link.url} target="_blank" rel="noopener noreferrer">
               {link.name}
             </a>

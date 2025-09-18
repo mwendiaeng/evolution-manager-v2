@@ -8,14 +8,7 @@ import { v4 as uuidv4 } from "uuid";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { FormInput, FormSelect } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -113,18 +106,11 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
           <DialogTitle>{t("instance.modal.title")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="grid gap-4 py-4"
-          >
+          <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4 py-4">
             <FormInput required name="name" label={t("instance.form.name")}>
               <Input />
             </FormInput>
-            <FormSelect
-              name="integration"
-              label={t("instance.form.integration.label")}
-              options={options}
-            />
+            <FormSelect name="integration" label={t("instance.form.integration.label")} options={options} />
             <FormInput required name="token" label={t("instance.form.token")}>
               <Input />
             </FormInput>
@@ -132,11 +118,7 @@ function NewInstance({ resetTable }: { resetTable: () => void }) {
               <Input type="tel" />
             </FormInput>
             {integrationSelected === "WHATSAPP-BUSINESS" && (
-              <FormInput
-                required
-                name="businessId"
-                label={t("instance.form.businessId")}
-              >
+              <FormInput required name="businessId" label={t("instance.form.businessId")}>
                 <Input />
               </FormInput>
             )}

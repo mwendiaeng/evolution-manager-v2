@@ -10,11 +10,7 @@ interface IParams {
 }
 
 const createWebsocket = async ({ instanceName, token, data }: IParams) => {
-  const response = await api.post(
-    `/websocket/set/${instanceName}`,
-    { websocket: data },
-    { headers: { apikey: token } },
-  );
+  const response = await api.post(`/websocket/set/${instanceName}`, { websocket: data }, { headers: { apikey: token } });
   return response.data;
 };
 

@@ -5,9 +5,7 @@ const t = i18next.t;
 
 export const messageSchema = z.object({
   title: z.string().min(1, t("chat.buttons.form.validation.titleRequired")),
-  description: z
-    .string()
-    .min(1, t("chat.buttons.form.validation.descriptionRequired")),
+  description: z.string().min(1, t("chat.buttons.form.validation.descriptionRequired")),
   footer: z.string().optional(),
   buttons: z
     .array(
@@ -15,9 +13,7 @@ export const messageSchema = z.object({
         type: z.enum(["reply", "copy", "url", "call"], {
           required_error: t("chat.buttons.form.validation.buttonTypeRequired"),
         }),
-        displayText: z
-          .string()
-          .min(1, t("chat.buttons.form.validation.buttonTextRequired")),
+        displayText: z.string().min(1, t("chat.buttons.form.validation.buttonTextRequired")),
         id: z.string().optional(),
         copyCode: z.string().optional(),
         url: z.string().optional(),

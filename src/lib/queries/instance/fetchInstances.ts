@@ -11,9 +11,7 @@ export const fetchInstances = async () => {
   return response.data;
 };
 
-export const useFetchInstances = (
-  props?: UseQueryParams<FetchInstancesResponse>,
-) => {
+export const useFetchInstances = (props?: UseQueryParams<FetchInstancesResponse>) => {
   return useQuery<FetchInstancesResponse>({
     ...props,
     queryKey,

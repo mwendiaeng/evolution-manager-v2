@@ -9,11 +9,7 @@ interface IParams {
   token: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "proxy",
-  "fetchProxy",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["proxy", "fetchProxy", JSON.stringify(params)];
 
 export const fetchProxy = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/proxy/find/${instanceName}`, {
@@ -22,9 +18,7 @@ export const fetchProxy = async ({ instanceName, token }: IParams) => {
   return response.data;
 };
 
-export const useFetchProxy = (
-  props: UseQueryParams<FetchProxyResponse> & Partial<IParams>,
-) => {
+export const useFetchProxy = (props: UseQueryParams<FetchProxyResponse> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FetchProxyResponse>({
     ...rest,

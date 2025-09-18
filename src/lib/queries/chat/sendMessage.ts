@@ -40,20 +40,16 @@ const sendMedia = async ({ instanceName, token, data }: SendMediaParams) => {
       mimetype: data.mediaMessage.mimetype,
       caption: data.mediaMessage.caption,
       media: data.mediaMessage.media, // Base64 string
-      fileName: data.mediaMessage.fileName
+      fileName: data.mediaMessage.fileName,
     };
 
-    const response = await api.post(
-      `/message/sendMedia/${instanceName}`,
-      jsonData,
-      {
-        headers: {
-          apikey: token,
-          "content-type": "application/json",
-        },
+    const response = await api.post(`/message/sendMedia/${instanceName}`, jsonData, {
+      headers: {
+        apikey: token,
+        "content-type": "application/json",
       },
-    );
-    
+    });
+
     return response.data;
   } catch (error) {
     console.error("Erro ao enviar mídia:", error);
@@ -67,22 +63,18 @@ const sendAudio = async ({ instanceName, token, data }: SendAudioParams) => {
     const jsonData = {
       number: data.number,
       audioMessage: {
-        audio: data.audioMessage.audio // Base64 string
+        audio: data.audioMessage.audio, // Base64 string
       },
-      options: data.options
+      options: data.options,
     };
 
-    const response = await api.post(
-      `/message/sendWhatsAppAudio/${instanceName}`,
-      jsonData,
-      {
-        headers: {
-          apikey: token,
-          "content-type": "application/json",
-        },
+    const response = await api.post(`/message/sendWhatsAppAudio/${instanceName}`, jsonData, {
+      headers: {
+        apikey: token,
+        "content-type": "application/json",
       },
-    );
-    
+    });
+
     return response.data;
   } catch (error) {
     console.error("Erro ao enviar áudio:", error);

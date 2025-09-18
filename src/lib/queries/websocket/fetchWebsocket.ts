@@ -9,11 +9,7 @@ interface IParams {
   token: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "websocket",
-  "fetchWebsocket",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["websocket", "fetchWebsocket", JSON.stringify(params)];
 
 export const fetchWebsocket = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/websocket/find/${instanceName}`, {
@@ -22,15 +18,12 @@ export const fetchWebsocket = async ({ instanceName, token }: IParams) => {
   return response.data;
 };
 
-export const useFetchWebsocket = (
-  props: UseQueryParams<FetchWebsocketResponse> & Partial<IParams>,
-) => {
+export const useFetchWebsocket = (props: UseQueryParams<FetchWebsocketResponse> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FetchWebsocketResponse>({
     ...rest,
     queryKey: queryKey({ instanceName, token }),
-    queryFn: () =>
-      fetchWebsocket({ instanceName: instanceName!, token: token! }),
+    queryFn: () => fetchWebsocket({ instanceName: instanceName!, token: token! }),
     enabled: !!instanceName,
   });
 };

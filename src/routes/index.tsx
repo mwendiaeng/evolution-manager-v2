@@ -11,6 +11,7 @@ import { Chat } from "@/pages/instance/Chat";
 import { Chatwoot } from "@/pages/instance/Chatwoot";
 import { DashboardInstance } from "@/pages/instance/DashboardInstance";
 import { Dify } from "@/pages/instance/Dify";
+import { EmbedChat } from "@/pages/instance/EmbedChat";
 import { Evoai } from "@/pages/instance/Evoai";
 import { EvolutionBot } from "@/pages/instance/EvolutionBot";
 import { Flowise } from "@/pages/instance/Flowise";
@@ -23,7 +24,6 @@ import { Sqs } from "@/pages/instance/Sqs";
 import { Typebot } from "@/pages/instance/Typebot";
 import { Webhook } from "@/pages/instance/Webhook";
 import { Websocket } from "@/pages/instance/Websocket";
-import { EmbedChat } from "@/pages/instance/EmbedChat";
 import Login from "@/pages/Login";
 
 const router = createBrowserRouter([
@@ -285,14 +285,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
-          {
-          path: "/manager/embed-chat",
-          element: <EmbedChat />,
-        },
-        {
-          path: "/manager/embed-chat/:remoteJid",
-          element: <EmbedChat />,
-        },
+  {
+    path: "/manager/embed-chat",
+    element: <EmbedChat />,
+  },
+  {
+    path: "/manager/embed-chat/:remoteJid",
+    element: <EmbedChat />,
+  },
 ]);
 
 export default router;

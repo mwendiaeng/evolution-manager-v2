@@ -10,11 +10,7 @@ interface IParams {
 }
 
 const createSqs = async ({ instanceName, token, data }: IParams) => {
-  const response = await api.post(
-    `/sqs/set/${instanceName}`,
-    { sqs: data },
-    { headers: { apikey: token } },
-  );
+  const response = await api.post(`/sqs/set/${instanceName}`, { sqs: data }, { headers: { apikey: token } });
   return response.data;
 };
 

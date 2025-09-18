@@ -41,11 +41,7 @@ interface UpdateSettingsParams {
   token: string;
   data: Settings;
 }
-const updateSettings = async ({
-  instanceName,
-  token,
-  data,
-}: UpdateSettingsParams) => {
+const updateSettings = async ({ instanceName, token, data }: UpdateSettingsParams) => {
   const response = await api.post(`/settings/set/${instanceName}`, data, {
     headers: {
       apikey: token,

@@ -12,19 +12,11 @@ const MarkdownWrapper = ({ children }: any) => {
 
   const linkRegex = /(https?:\/\/[^\s<]+)/g;
 
-  processedChildren = processedChildren.replace(
-    linkRegex,
-    `<a className="link-chat" href="$1" target="_blank">$1</a>`,
-  );
+  processedChildren = processedChildren.replace(linkRegex, `<a className="link-chat" href="$1" target="_blank">$1</a>`);
 
   processedChildren = `<p>${processedChildren}</p>`;
 
-  return (
-    <div
-      dangerouslySetInnerHTML={{ __html: processedChildren }}
-      className="formatted-message"
-    />
-  );
+  return <div dangerouslySetInnerHTML={{ __html: processedChildren }} className="formatted-message" />;
 };
 
 export { MarkdownWrapper };

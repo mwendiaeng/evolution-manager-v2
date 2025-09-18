@@ -95,25 +95,14 @@ function Proxy() {
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <div>
             <h3 className="mb-1 text-lg font-medium">{t("proxy.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:p-4">
-              <FormSwitch
-                name="enabled"
-                label={t("proxy.form.enabled.label")}
-                className="w-full justify-between"
-                helper={t("proxy.form.enabled.description")}
-              />
+              <FormSwitch name="enabled" label={t("proxy.form.enabled.label")} className="w-full justify-between" helper={t("proxy.form.enabled.description")} />
               <div className="grid gap-4 sm:grid-cols-[10rem_1fr_10rem] md:gap-8">
-                <FormInput
-                  name="protocol"
-                  label={t("proxy.form.protocol.label")}
-                >
+                <FormInput name="protocol" label={t("proxy.form.protocol.label")}>
                   <Input />
                 </FormInput>
                 <FormInput name="host" label={t("proxy.form.host.label")}>
@@ -124,16 +113,10 @@ function Proxy() {
                 </FormInput>
               </div>
               <div className="grid gap-4 sm:grid-cols-2 md:gap-8">
-                <FormInput
-                  name="username"
-                  label={t("proxy.form.username.label")}
-                >
+                <FormInput name="username" label={t("proxy.form.username.label")}>
                   <Input />
                 </FormInput>
-                <FormInput
-                  name="password"
-                  label={t("proxy.form.password.label")}
-                >
+                <FormInput name="password" label={t("proxy.form.password.label")}>
                   <Input type="password" />
                 </FormInput>
               </div>

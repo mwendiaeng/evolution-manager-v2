@@ -11,11 +11,7 @@ import { useSearchParams, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 // Importações de contextos
@@ -46,12 +42,9 @@ import { InputMessage } from "./InputMessage";
 import { Messages } from "../Chat/messages";
 import { NewChat } from "./NewChat";
 
-
-
 function EmbedChatMessage() {
   const [searchParams] = useSearchParams();
-  const { backgroundColor, textForegroundColor, primaryColor } =
-    useEmbedColors();
+  const { backgroundColor, textForegroundColor, primaryColor } = useEmbedColors();
 
   const isNotMobile = useMediaQuery("(min-width: 768px)");
   const { t } = useTranslation();
@@ -71,7 +64,7 @@ function EmbedChatMessage() {
 
   const { instance: activeInstance } = useEmbedInstance();
 
-    const handleChatClick = (chat: ChatType) => {
+  const handleChatClick = (chat: ChatType) => {
     const newSearchParams = new URLSearchParams(searchParams);
     // Keep token and instanceName in query params
     navigate(`/manager/embed-chat/${encodeURIComponent(chat.remoteJid || chat.id)}?${newSearchParams.toString()}`);
@@ -143,29 +136,18 @@ function EmbedChatMessage() {
         const messageRemoteJid = data?.data?.key?.remoteJid;
 
         // Find existing chat by any matching identifier
-        const existingChatIndex = prevChats.findIndex(
-          (chat) =>
-            (chat.remoteJid && chat.remoteJid === messageRemoteJid) ||
-            (chat.id && chat.id === messageRemoteJid),
-        );
+        const existingChatIndex = prevChats.findIndex((chat) => (chat.remoteJid && chat.remoteJid === messageRemoteJid) || (chat.id && chat.id === messageRemoteJid));
 
-        const existingChat =
-          existingChatIndex !== -1 ? prevChats[existingChatIndex] : null;
+        const existingChat = existingChatIndex !== -1 ? prevChats[existingChatIndex] : null;
 
-        // Create chat object with Chat properties  
+        // Create chat object with Chat properties
         const chatObject: ChatType = {
           id: messageRemoteJid,
           remoteJid: messageRemoteJid,
           // Prefer existing contact info over pushname from message
-          pushName:
-            existingChat?.pushName ||
-            data?.data?.pushName ||
-            formatRemoteJid(messageRemoteJid),
+          pushName: existingChat?.pushName || data?.data?.pushName || formatRemoteJid(messageRemoteJid),
           // Keep existing profile picture if available
-          profilePicUrl:
-            existingChat?.profilePicUrl ||
-            data?.data?.key?.profilePictureUrl ||
-            "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg",
+          profilePicUrl: existingChat?.profilePicUrl || data?.data?.key?.profilePictureUrl || "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg",
           updatedAt: new Date().toISOString(),
           // Preserve existing labels
           labels: existingChat?.labels || [],
@@ -195,7 +177,7 @@ function EmbedChatMessage() {
 
     function updateMessageStatus(_data: any) {
       // Message status updates are now handled by the main chat Messages component
-      // which uses React Query and websockets internally  
+      // which uses React Query and websockets internally
     }
 
     socket.on("messages.upsert", (data: any) => {
@@ -251,10 +233,7 @@ function EmbedChatMessage() {
     <div className="relative h-full" style={containerStyle}>
       <ResizablePanelGroup direction={isNotMobile ? "horizontal" : "vertical"}>
         <ResizablePanel defaultSize={30} minSize={20} maxSize={60}>
-          <div
-            className="hidden flex-col gap-2 text-foreground md:flex"
-            style={containerStyle}
-          >
+          <div className="hidden flex-col gap-2 text-foreground md:flex" style={containerStyle}>
             <div className="sticky top-0 p-2">
               <Button
                 variant="ghost"
@@ -263,14 +242,11 @@ function EmbedChatMessage() {
                 style={{
                   backgroundColor: primaryColor,
                   color: textForegroundColor,
-                }}
-              >
+                }}>
                 <div className="flex h-7 w-7 items-center justify-center rounded-full">
                   <MessageCircle className="h-4 w-4" />
                 </div>
-                <div className="grow overflow-hidden text-ellipsis whitespace-nowrap text-sm">
-                  {t("chat.title")}
-                </div>
+                <div className="grow overflow-hidden text-ellipsis whitespace-nowrap text-sm">{t("chat.title")}</div>
                 <PlusIcon className="h-4 w-4" />
               </Button>
             </div>
@@ -284,8 +260,7 @@ function EmbedChatMessage() {
                       "--primary": primaryColor || "#e2e8f0",
                       "--primary-foreground": textForegroundColor || "#000000",
                     } as React.CSSProperties
-                  }
-                >
+                  }>
                   {t("chat.contacts")}
                 </TabsTrigger>
                 <TabsTrigger
@@ -296,23 +271,16 @@ function EmbedChatMessage() {
                       "--primary": primaryColor || "#e2e8f0",
                       "--primary-foreground": textForegroundColor || "#000000",
                     } as React.CSSProperties
-                  }
-                >
+                  }>
                   {t("chat.groups")}
                 </TabsTrigger>
               </TabsList>
               <TabsContent value="contacts">
                 <div className="contacts-container">
                   <div className="grid gap-1 p-2 text-foreground">
-                    <div className="px-2 text-xs font-medium text-muted-foreground">
-                      {t("chat.contacts")}
-                    </div>
+                    <div className="px-2 text-xs font-medium text-muted-foreground">{t("chat.contacts")}</div>
                     {chats
-                      ?.sort(
-                        (a: any, b: any) =>
-                          new Date(b.lastMessage.messageTimestamp).getTime() -
-                          new Date(a.lastMessage.messageTimestamp).getTime(),
-                      )
+                      ?.sort((a: any, b: any) => new Date(b.lastMessage.messageTimestamp).getTime() - new Date(a.lastMessage.messageTimestamp).getTime())
                       .map(
                         (chat: ChatType) =>
                           chat?.id &&
@@ -322,46 +290,29 @@ function EmbedChatMessage() {
                               onClick={() => handleChatClick(chat)}
                               className={`chat-item flex cursor-pointer items-center overflow-hidden rounded-md p-2 text-sm transition-colors`}
                               style={{
-                                backgroundColor:
-                                  remoteJid === chat.id ? primaryColor : "",
-                              }}
-                            >
+                                backgroundColor: remoteJid === chat.id ? primaryColor : "",
+                              }}>
                               <span className="chat-avatar mr-2">
                                 <img
-                                  src={
-                                    chat.profilePicUrl ||
-                                    "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
-                                  }
+                                  src={chat.profilePicUrl || "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"}
                                   alt="Avatar"
                                   className="h-12 w-12 rounded-full"
                                 />
                               </span>
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center justify-between">
-                                  <span
-                                    className="chat-title font-medium"
-                                    style={{ color: textForegroundColor }}
-                                  >
+                                  <span className="chat-title font-medium" style={{ color: textForegroundColor }}>
                                     {chat.pushName || formatRemoteJid(chat.id)}
                                   </span>
-                                  <span
-                                    className="text-xs"
-                                    style={{ color: textForegroundColor }}
-                                  >
+                                  <span className="text-xs" style={{ color: textForegroundColor }}>
                                     {/* TODO: Add timestamp when Chat type includes lastMessage */}
                                   </span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <span
-                                    className="text-xs font-bold"
-                                    style={{ color: textForegroundColor }}
-                                  >
+                                  <span className="text-xs font-bold" style={{ color: textForegroundColor }}>
                                     {t("chat.recent")}:{" "}
                                   </span>
-                                  <span
-                                    className="block truncate text-xs"
-                                    style={{ color: textForegroundColor }}
-                                  >
+                                  <span className="block truncate text-xs" style={{ color: textForegroundColor }}>
                                     {/* TODO: Add last message preview when available */}
                                   </span>
                                 </div>
@@ -375,15 +326,9 @@ function EmbedChatMessage() {
               <TabsContent value="groups">
                 <div className="contacts-container">
                   <div className="grid gap-1 p-2 text-foreground">
-                    <div className="px-2 text-xs font-medium text-muted-foreground">
-                      {t("chat.groups")}
-                    </div>
+                    <div className="px-2 text-xs font-medium text-muted-foreground">{t("chat.groups")}</div>
                     {chats
-                      ?.sort(
-                        (a: any, b: any) =>
-                          new Date(b.lastMessage.messageTimestamp).getTime() -
-                          new Date(a.lastMessage.messageTimestamp).getTime(),
-                      )
+                      ?.sort((a: any, b: any) => new Date(b.lastMessage.messageTimestamp).getTime() - new Date(a.lastMessage.messageTimestamp).getTime())
                       .map(
                         (chat: ChatType) =>
                           chat?.id &&
@@ -393,36 +338,23 @@ function EmbedChatMessage() {
                               onClick={() => handleChatClick(chat)}
                               className={`chat-item flex cursor-pointer items-center overflow-hidden rounded-md p-2 text-sm transition-colors`}
                               style={{
-                                backgroundColor:
-                                  remoteJid === chat.id ? primaryColor : "",
-                              }}
-                            >
+                                backgroundColor: remoteJid === chat.id ? primaryColor : "",
+                              }}>
                               <span className="chat-avatar mr-2">
                                 <img
-                                  src={
-                                    chat.profilePicUrl ||
-                                    "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
-                                  }
+                                  src={chat.profilePicUrl || "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"}
                                   alt="Avatar"
                                   className="h-12 w-12 rounded-full"
                                 />
                               </span>
                               <div className="min-w-0 flex-1">
                                 <div className="flex items-center justify-between">
-                                  <span className="chat-title font-medium">
-                                    {chat.pushName}
-                                  </span>
-                                  <span className="text-xs text-gray-500 dark:text-gray-400">
-                                    {/* TODO: Add timestamp when available */}
-                                  </span>
+                                  <span className="chat-title font-medium">{chat.pushName}</span>
+                                  <span className="text-xs text-gray-500 dark:text-gray-400">{/* TODO: Add timestamp when available */}</span>
                                 </div>
                                 <div className="flex items-center gap-1">
-                                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400">
-                                    {t("chat.recent")}{" "}
-                                  </span>
-                                  <span className="block truncate text-xs text-gray-500">
-                                    {/* TODO: Add last message preview when available */}
-                                  </span>
+                                  <span className="text-xs font-bold text-gray-500 dark:text-gray-400">{t("chat.recent")} </span>
+                                  <span className="block truncate text-xs text-gray-500">{/* TODO: Add last message preview when available */}</span>
                                 </div>
                               </div>
                             </div>
@@ -438,24 +370,16 @@ function EmbedChatMessage() {
         <ResizablePanel style={containerStyle}>
           {remoteJid && (
             <ReplyMessageProvider>
-              <div
-                className="flex h-full flex-col justify-between"
-                style={containerStyle}
-              >
+              <div className="flex h-full flex-col justify-between" style={containerStyle}>
                 <div className="flex items-center gap-3 p-3">
                   <div className="flex flex-1 items-center gap-3">
                     <img
-                      src={
-                        selectedChat?.profilePicUrl ||
-                        "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"
-                      }
+                      src={selectedChat?.profilePicUrl || "https://as2.ftcdn.net/jpg/05/89/93/27/1000_F_589932782_vQAEAZhHnq1QCGu5ikwrYaQD0Mmurm0N.jpg"}
                       alt="Avatar"
                       className="h-10 w-10 rounded-full"
                     />
                     <div className="flex flex-col">
-                      <span className="font-medium">
-                        {selectedChat?.pushName || formatRemoteJid(remoteJid)}
-                      </span>
+                      <span className="font-medium">{selectedChat?.pushName || formatRemoteJid(remoteJid)}</span>
                     </div>
                   </div>
                 </div>
@@ -476,10 +400,7 @@ function EmbedChatMessage() {
               </div>
             </ReplyMessageProvider>
           )}
-          <NewChat
-            isOpen={isNewChatDialogOpen}
-            setIsOpen={setIsNewChatDialogOpen}
-          />
+          <NewChat isOpen={isNewChatDialogOpen} setIsOpen={setIsNewChatDialogOpen} />
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

@@ -4,13 +4,7 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-} from "@/components/ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useEmbedColors } from "@/contexts/EmbedColorsContext";
@@ -49,21 +43,13 @@ function NewChatForm({ onSuccess }: NewChatFormProps) {
             <FormItem>
               <FormLabel>{t("chat.newChat.contact")}</FormLabel>
               <FormControl>
-                <Input
-                  type="text"
-                  placeholder={t("chat.newChat.placeholder")}
-                  {...field}
-                />
+                <Input type="text" placeholder={t("chat.newChat.placeholder")} {...field} />
               </FormControl>
             </FormItem>
           )}
         />
         <div className="flex justify-end">
-          <Button
-            type="submit"
-            className="mt-4"
-            style={{ backgroundColor: primaryColor }}
-          >
+          <Button type="submit" className="mt-4" style={{ backgroundColor: primaryColor }}>
             {t("chat.newChat.submit")}
           </Button>
         </div>

@@ -95,7 +95,7 @@ export type SendText = {
 export type SendMedia = {
   number: string;
   mediaMessage: {
-    mediatype: 'image' | 'video' | 'audio' | 'document';
+    mediatype: "image" | "video" | "audio" | "document";
     mimetype: string;
     caption?: string;
     media: string; // Base64 string

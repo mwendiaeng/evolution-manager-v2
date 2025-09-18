@@ -4,15 +4,7 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { FormInput, FormSelect, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -50,16 +42,7 @@ type TypebotFormProps = {
   setOpenDeletionDialog?: (value: boolean) => void;
 };
 
-function TypebotForm({
-  initialData,
-  onSubmit,
-  handleDelete,
-  typebotId,
-  isModal = false,
-  isLoading = false,
-  openDeletionDialog = false,
-  setOpenDeletionDialog = () => {},
-}: TypebotFormProps) {
+function TypebotForm({ initialData, onSubmit, handleDelete, typebotId, isModal = false, isLoading = false, openDeletionDialog = false, setOpenDeletionDialog = () => {} }: TypebotFormProps) {
   const { t } = useTranslation();
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -88,23 +71,13 @@ function TypebotForm({
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <div className="space-y-4">
-          <FormSwitch
-            name="enabled"
-            label={t("typebot.form.enabled.label")}
-            reverse
-          />
-          <FormInput
-            name="description"
-            label={t("typebot.form.description.label")}
-            required
-          >
+          <FormSwitch name="enabled" label={t("typebot.form.enabled.label")} reverse />
+          <FormInput name="description" label={t("typebot.form.description.label")} required>
             <Input />
           </FormInput>
 
           <div className="flex flex-col">
-            <h3 className="my-4 text-lg font-medium">
-              {t("typebot.form.typebotSettings.label")}
-            </h3>
+            <h3 className="my-4 text-lg font-medium">{t("typebot.form.typebotSettings.label")}</h3>
             <Separator />
           </div>
           <FormInput name="url" label={t("typebot.form.url.label")} required>
@@ -115,9 +88,7 @@ function TypebotForm({
           </FormInput>
 
           <div className="flex flex-col">
-            <h3 className="my-4 text-lg font-medium">
-              {t("typebot.form.triggerSettings.label")}
-            </h3>
+            <h3 className="my-4 text-lg font-medium">{t("typebot.form.triggerSettings.label")}</h3>
             <Separator />
           </div>
           <FormSelect
@@ -171,68 +142,36 @@ function TypebotForm({
                   },
                 ]}
               />
-              <FormInput
-                name="triggerValue"
-                label={t("typebot.form.triggerValue.label")}
-              >
+              <FormInput name="triggerValue" label={t("typebot.form.triggerValue.label")}>
                 <Input />
               </FormInput>
             </>
           )}
           {triggerType === "advanced" && (
-            <FormInput
-              name="triggerValue"
-              label={t("typebot.form.triggerConditions.label")}
-            >
+            <FormInput name="triggerValue" label={t("typebot.form.triggerConditions.label")}>
               <Input />
             </FormInput>
           )}
           <div className="flex flex-col">
-            <h3 className="my-4 text-lg font-medium">
-              {t("typebot.form.generalSettings.label")}
-            </h3>
+            <h3 className="my-4 text-lg font-medium">{t("typebot.form.generalSettings.label")}</h3>
             <Separator />
           </div>
           <FormInput name="expire" label={t("typebot.form.expire.label")}>
             <Input type="number" />
           </FormInput>
-          <FormInput
-            name="keywordFinish"
-            label={t("typebot.form.keywordFinish.label")}
-          >
+          <FormInput name="keywordFinish" label={t("typebot.form.keywordFinish.label")}>
             <Input />
           </FormInput>
-          <FormInput
-            name="delayMessage"
-            label={t("typebot.form.delayMessage.label")}
-          >
+          <FormInput name="delayMessage" label={t("typebot.form.delayMessage.label")}>
             <Input type="number" />
           </FormInput>
-          <FormInput
-            name="unknownMessage"
-            label={t("typebot.form.unknownMessage.label")}
-          >
+          <FormInput name="unknownMessage" label={t("typebot.form.unknownMessage.label")}>
             <Input />
           </FormInput>
-          <FormSwitch
-            name="listeningFromMe"
-            label={t("typebot.form.listeningFromMe.label")}
-            reverse
-          />
-          <FormSwitch
-            name="stopBotFromMe"
-            label={t("typebot.form.stopBotFromMe.label")}
-            reverse
-          />
-          <FormSwitch
-            name="keepOpen"
-            label={t("typebot.form.keepOpen.label")}
-            reverse
-          />
-          <FormInput
-            name="debounceTime"
-            label={t("typebot.form.debounceTime.label")}
-          >
+          <FormSwitch name="listeningFromMe" label={t("typebot.form.listeningFromMe.label")} reverse />
+          <FormSwitch name="stopBotFromMe" label={t("typebot.form.stopBotFromMe.label")} reverse />
+          <FormSwitch name="keepOpen" label={t("typebot.form.keepOpen.label")} reverse />
+          <FormInput name="debounceTime" label={t("typebot.form.debounceTime.label")}>
             <Input type="number" />
           </FormInput>
         </div>
@@ -240,9 +179,7 @@ function TypebotForm({
         {isModal && (
           <DialogFooter>
             <Button disabled={isLoading} type="submit">
-              {isLoading
-                ? t("typebot.button.saving")
-                : t("typebot.button.save")}
+              {isLoading ? t("typebot.button.saving") : t("typebot.button.save")}
             </Button>
           </DialogFooter>
         )}
@@ -251,10 +188,7 @@ function TypebotForm({
           <div>
             <SessionsTypebot typebotId={typebotId} />
             <div className="mt-5 flex items-center gap-3">
-              <Dialog
-                open={openDeletionDialog}
-                onOpenChange={setOpenDeletionDialog}
-              >
+              <Dialog open={openDeletionDialog} onOpenChange={setOpenDeletionDialog}>
                 <DialogTrigger asChild>
                   <Button variant="destructive" size="sm">
                     {t("dify.button.delete")}
@@ -263,15 +197,9 @@ function TypebotForm({
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>{t("modal.delete.title")}</DialogTitle>
-                    <DialogDescription>
-                      {t("modal.delete.messageSingle")}
-                    </DialogDescription>
+                    <DialogDescription>{t("modal.delete.messageSingle")}</DialogDescription>
                     <DialogFooter>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setOpenDeletionDialog(false)}
-                      >
+                      <Button size="sm" variant="outline" onClick={() => setOpenDeletionDialog(false)}>
                         {t("button.cancel")}
                       </Button>
                       <Button variant="destructive" onClick={handleDelete}>
@@ -282,9 +210,7 @@ function TypebotForm({
                 </DialogContent>
               </Dialog>
               <Button disabled={isLoading} type="submit">
-                {isLoading
-                  ? t("typebot.button.saving")
-                  : t("typebot.button.update")}
+                {isLoading ? t("typebot.button.saving") : t("typebot.button.update")}
               </Button>
             </div>
           </div>

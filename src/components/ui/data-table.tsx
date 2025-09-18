@@ -1,33 +1,13 @@
 "use client";
 
-import {
-  ColumnDef,
-  TableOptions,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getGroupedRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table";
+import { ColumnDef, TableOptions, flexRender, getCoreRowModel, getFilteredRowModel, getGroupedRowModel, getSortedRowModel, useReactTable } from "@tanstack/react-table";
 import { ReactNode } from "react";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
 import { cn } from "@/lib/utils";
 
-interface DataTableProps<TData, TValue>
-  extends Omit<
-    TableOptions<TData>,
-    "data" | "columns" | "getCoreRowModel" | "getFilteredRowModel"
-  > {
+interface DataTableProps<TData, TValue> extends Omit<TableOptions<TData>, "data" | "columns" | "getCoreRowModel" | "getFilteredRowModel"> {
   isLoading?: boolean;
   enableHeaders?: boolean;
   loadingMessage?: ReactNode;
@@ -38,17 +18,7 @@ interface DataTableProps<TData, TValue>
   highlightedRows?: string[];
 }
 
-export function DataTable<TData, TValue>({
-  columns,
-  data,
-  isLoading,
-  loadingMessage,
-  noResultsMessage,
-  enableHeaders = true,
-  className,
-  highlightedRows,
-  ...options
-}: DataTableProps<TData, TValue>) {
+export function DataTable<TData, TValue>({ columns, data, isLoading, loadingMessage, noResultsMessage, enableHeaders = true, className, highlightedRows, ...options }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     ...options,
     data,
@@ -67,16 +37,7 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableHead>
-                  );
+                  return <TableHead key={header.id}>{header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}</TableHead>;
                 })}
               </TableRow>
             ))}
@@ -85,10 +46,7 @@ export function DataTable<TData, TValue>({
         <TableBody>
           {isLoading ? (
             <TableRow>
-              <TableCell
-                colSpan={columns.length}
-                className="h-24 text-center text-muted-foreground"
-              >
+              <TableCell colSpan={columns.length} className="h-24 text-center text-muted-foreground">
                 {loadingMessage ?? "Carregando..."}
               </TableCell>
             </TableRow>
@@ -96,32 +54,15 @@ export function DataTable<TData, TValue>({
             <>
               {table.getRowModel().rows?.length ? (
                 table.getRowModel().rows.map((row) => (
-                  <TableRow
-                    key={row.id}
-                    data-state={
-                      row.getIsSelected()
-                        ? "selected"
-                        : highlightedRows?.includes(row.id)
-                          ? "highlighted"
-                          : ""
-                    }
-                  >
+                  <TableRow key={row.id} data-state={row.getIsSelected() ? "selected" : highlightedRows?.includes(row.id) ? "highlighted" : ""}>
                     {row.getVisibleCells().map((cell) => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext(),
-                        )}
-                      </TableCell>
+                      <TableCell key={cell.id}>{flexRender(cell.column.columnDef.cell, cell.getContext())}</TableCell>
                     ))}
                   </TableRow>
                 ))
               ) : (
                 <TableRow>
-                  <TableCell
-                    colSpan={columns.length}
-                    className="h-24 text-center"
-                  >
+                  <TableCell colSpan={columns.length} className="h-24 text-center">
                     {noResultsMessage ?? "Nenhum resultado encontrado!"}
                   </TableCell>
                 </TableRow>

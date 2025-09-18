@@ -9,11 +9,7 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "flowise",
-  "findFlowise",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["flowise", "findFlowise", JSON.stringify(params)];
 
 export const findFlowise = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/flowise/find/${instanceName}`, {
@@ -22,9 +18,7 @@ export const findFlowise = async ({ instanceName, token }: IParams) => {
   return response.data;
 };
 
-export const useFindFlowise = (
-  props: UseQueryParams<FindFlowiseResponse> & Partial<IParams>,
-) => {
+export const useFindFlowise = (props: UseQueryParams<FindFlowiseResponse> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FindFlowiseResponse>({
     ...rest,

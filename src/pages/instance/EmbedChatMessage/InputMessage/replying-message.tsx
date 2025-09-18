@@ -1,14 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  XIcon,
-  ImageIcon,
-  VideoIcon,
-  MicIcon,
-  FileIcon,
-  StickerIcon,
-  UserIcon,
-  MapPinIcon,
-} from "lucide-react";
+import { XIcon, ImageIcon, VideoIcon, MicIcon, FileIcon, StickerIcon, UserIcon, MapPinIcon } from "lucide-react";
 import { useContext } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -35,34 +26,20 @@ const maxLength = 200;
 const ReplyingImageMessage = ({ imageMessage }: { imageMessage: any }) => (
   <div className="flex flex-col gap-2">
     <div className="flex items-center gap-2">
-      <img
-        src={imageMessage?.mediaUrl}
-        alt="Quoted message"
-        width={100}
-        height={100}
-      />
+      <img src={imageMessage?.mediaUrl} alt="Quoted message" width={100} height={100} />
       <ImageIcon className="mr-2 h-4 w-4 text-muted-foreground" />
     </div>
-    <span className="inline-block max-w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-muted-foreground">
-      {imageMessage.caption}
-    </span>
+    <span className="inline-block max-w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-muted-foreground">{imageMessage.caption}</span>
   </div>
 );
 
 const ReplyingVideoMessage = ({ videoMessage }: { videoMessage: any }) => (
   <div className="flex flex-col gap-2">
     <div className="flex items-center gap-2">
-      <img
-        src={videoMessage?.mediaUrl}
-        alt="Quoted message"
-        width={100}
-        height={100}
-      />
+      <img src={videoMessage?.mediaUrl} alt="Quoted message" width={100} height={100} />
       <VideoIcon className="mr-2 h-4 w-4 text-muted-foreground" />
     </div>
-    <span className="inline-block max-w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-muted-foreground">
-      {videoMessage.caption}
-    </span>
+    <span className="inline-block max-w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-muted-foreground">{videoMessage.caption}</span>
   </div>
 );
 
@@ -70,104 +47,63 @@ const ReplyingAudioMessage = ({ audioMessage }: { audioMessage: any }) => (
   <div className="flex flex-col gap-2">
     <div className="flex items-center gap-2">
       <MicIcon className="h-6 w-6 text-muted-foreground" />
-      <span className="text-sm text-muted-foreground">
-        {calculateTime(audioMessage.seconds)}
-      </span>
+      <span className="text-sm text-muted-foreground">{calculateTime(audioMessage.seconds)}</span>
     </div>
-    <span className="inline-block max-w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-muted-foreground">
-      {audioMessage.fileName}
-    </span>
+    <span className="inline-block max-w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-muted-foreground">{audioMessage.fileName}</span>
   </div>
 );
 
-const ReplyingStickerMessage = ({
-  stickerMessage,
-}: {
-  stickerMessage: any;
-}) => (
+const ReplyingStickerMessage = ({ stickerMessage }: { stickerMessage: any }) => (
   <div className="flex items-center gap-2">
     <img src={stickerMessage.mediaUrl} alt="Sticker" width={100} height={100} />
     <StickerIcon className="h-6 w-6 text-muted-foreground" />
   </div>
 );
 
-const ReplyingDocumentMessage = ({
-  documentMessage,
-}: {
-  documentMessage: any;
-}) => (
+const ReplyingDocumentMessage = ({ documentMessage }: { documentMessage: any }) => (
   <div className="flex flex-col gap-2">
     <div className="flex items-center gap-2">
       <FileIcon className="h-6 w-6 text-muted-foreground" />
-      <span className="text-sm text-muted-foreground">
-        {documentMessage.fileName}
-      </span>
+      <span className="text-sm text-muted-foreground">{documentMessage.fileName}</span>
     </div>
   </div>
 );
 
-const ReplyingDocumentWithCaptionMessage = ({
-  documentMessage,
-}: {
-  documentMessage: any;
-}) => (
+const ReplyingDocumentWithCaptionMessage = ({ documentMessage }: { documentMessage: any }) => (
   <div className="flex flex-col gap-2">
     <div className="flex items-center gap-2">
       <FileIcon className="h-6 w-6 text-muted-foreground" />
-      <span className="text-sm text-muted-foreground">
-        {documentMessage.fileName}
-      </span>
+      <span className="text-sm text-muted-foreground">{documentMessage.fileName}</span>
     </div>
-    <span className="inline-block max-w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-muted-foreground">
-      {documentMessage.caption}
-    </span>
+    <span className="inline-block max-w-40 overflow-hidden overflow-ellipsis whitespace-nowrap text-sm text-muted-foreground">{documentMessage.caption}</span>
   </div>
 );
 
-const ReplyingContactMessage = ({
-  contactMessage,
-}: {
-  contactMessage: any;
-}) => (
+const ReplyingContactMessage = ({ contactMessage }: { contactMessage: any }) => (
   <div className="flex flex-col gap-2">
     <div className="flex items-center gap-2">
       <UserIcon className="h-6 w-6 text-muted-foreground" />
-      <span className="text-sm text-muted-foreground">
-        {contactMessage.displayName}
-      </span>
+      <span className="text-sm text-muted-foreground">{contactMessage.displayName}</span>
     </div>
   </div>
 );
 
-const ReplyingLocationMessage = ({
-  locationMessage,
-}: {
-  locationMessage: any;
-}) => (
+const ReplyingLocationMessage = ({ locationMessage }: { locationMessage: any }) => (
   <div className="flex flex-col gap-2">
     <div className="flex items-center gap-2">
       <MapPinIcon className="h-6 w-6 text-muted-foreground" />
-      <span className="text-sm text-muted-foreground">
-        {locationMessage.name}
-      </span>
+      <span className="text-sm text-muted-foreground">{locationMessage.name}</span>
     </div>
-    <span className="inline-block max-w-40 text-sm text-muted-foreground">
-      {locationMessage.address}
-    </span>
+    <span className="inline-block max-w-40 text-sm text-muted-foreground">{locationMessage.address}</span>
   </div>
 );
 
 const ReplyingTextMessage = ({ conversation }: { conversation: string }) => (
-  <span className="overflow-hidden text-ellipsis whitespace-nowrap text-sm text-muted-foreground">
-    {conversation.length > maxLength
-      ? `${conversation.substring(0, maxLength)}...`
-      : conversation}
-  </span>
+  <span className="overflow-hidden text-ellipsis whitespace-nowrap text-sm text-muted-foreground">{conversation.length > maxLength ? `${conversation.substring(0, maxLength)}...` : conversation}</span>
 );
 
 const ReplyingMessage = ({ chat }: { chat?: Contact }) => {
-  const { replyingMessage, setReplyingMessage } =
-    useContext(ReplyMessageContext);
+  const { replyingMessage, setReplyingMessage } = useContext(ReplyMessageContext);
 
   const handleRemoveQuotedMessage = () => {
     setReplyingMessage(null);
@@ -192,9 +128,9 @@ const ReplyingMessage = ({ chat }: { chat?: Contact }) => {
 
     if (
       false && // Group messages not supported
-      'Group Member'
+      "Group Member"
     ) {
-      return 'Group Member';
+      return "Group Member";
     }
 
     return chat?.pushName;
@@ -220,15 +156,9 @@ const ReplyingMessage = ({ chat }: { chat?: Contact }) => {
         />
       );
     } else if (replyingMessage?.messageType === "audioMessage") {
-      return (
-        <ReplyingAudioMessage
-          audioMessage={replyingMessage?.message.audioMessage}
-        />
-      );
+      return <ReplyingAudioMessage audioMessage={replyingMessage?.message.audioMessage} />;
     } else if (replyingMessage?.messageType === "stickerMessage") {
-      return (
-        <ReplyingStickerMessage stickerMessage={replyingMessage?.message} />
-      );
+      return <ReplyingStickerMessage stickerMessage={replyingMessage?.message} />;
     } else if (replyingMessage?.messageType === "documentMessage") {
       return (
         <ReplyingDocumentMessage
@@ -242,37 +172,18 @@ const ReplyingMessage = ({ chat }: { chat?: Contact }) => {
       return (
         <ReplyingDocumentWithCaptionMessage
           documentMessage={{
-            name: replyingMessage?.message.documentWithCaptionMessage.message
-              .documentMessage.name,
-            caption:
-              replyingMessage?.message.documentWithCaptionMessage.message
-                .documentMessage.caption,
+            name: replyingMessage?.message.documentWithCaptionMessage.message.documentMessage.name,
+            caption: replyingMessage?.message.documentWithCaptionMessage.message.documentMessage.caption,
             mediaUrl: replyingMessage?.message.mediaUrl,
           }}
         />
       );
     } else if (replyingMessage?.messageType === "contactMessage") {
-      return (
-        <ReplyingContactMessage
-          contactMessage={replyingMessage?.message.contactMessage}
-        />
-      );
+      return <ReplyingContactMessage contactMessage={replyingMessage?.message.contactMessage} />;
     } else if (replyingMessage?.messageType === "locationMessage") {
-      return (
-        <ReplyingLocationMessage
-          locationMessage={replyingMessage?.message.locationMessage}
-        />
-      );
-    } else if (
-      replyingMessage?.messageType === "conversation" ||
-      replyingMessage?.messageType === "interactiveMessage" ||
-      replyingMessage?.messageType === "extendedTextMessage"
-    ) {
-      return (
-        <ReplyingTextMessage
-          conversation={getConversationText(replyingMessage?.message)}
-        />
-      );
+      return <ReplyingLocationMessage locationMessage={replyingMessage?.message.locationMessage} />;
+    } else if (replyingMessage?.messageType === "conversation" || replyingMessage?.messageType === "interactiveMessage" || replyingMessage?.messageType === "extendedTextMessage") {
+      return <ReplyingTextMessage conversation={getConversationText(replyingMessage?.message)} />;
     }
   };
 
@@ -283,26 +194,11 @@ const ReplyingMessage = ({ chat }: { chat?: Contact }) => {
       className={`relative flex items-center overflow-hidden rounded-lg dark:text-white`}
       style={{
         backgroundColor: inputBackgroundColor,
-      }}
-    >
-      <div
-        className={`absolute h-full w-1 rounded-l-lg ${
-          replyingMessage?.key.fromMe
-            ? "bg-blue-700 dark:bg-blue-300"
-            : "bg-blue-100"
-        }`}
-      />
+      }}>
+      <div className={`absolute h-full w-1 rounded-l-lg ${replyingMessage?.key.fromMe ? "bg-blue-700 dark:bg-blue-300" : "bg-blue-100"}`} />
 
       <div className="flex min-w-0 flex-1 flex-col gap-2 p-2 pl-4">
-        <span
-          className={`text-sm font-bold ${
-            replyingMessage?.key.fromMe
-              ? "text-blue-700 dark:text-blue-300"
-              : "text-blue-600"
-          }`}
-        >
-          {getSenderName()}
-        </span>
+        <span className={`text-sm font-bold ${replyingMessage?.key.fromMe ? "text-blue-700 dark:text-blue-300" : "text-blue-600"}`}>{getSenderName()}</span>
         {renderReplyingMessage()}
       </div>
       <Button
@@ -313,8 +209,7 @@ const ReplyingMessage = ({ chat }: { chat?: Contact }) => {
         style={{
           backgroundColor: inputBackgroundColor,
           color: inputIconsMainColor,
-        }}
-      >
+        }}>
         <XIcon className="h-6 w-6" />
       </Button>
     </div>

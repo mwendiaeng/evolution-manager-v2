@@ -1,8 +1,4 @@
-import {
-  Typebot,
-  TypebotSettings,
-  IntegrationSession,
-} from "@/types/evolution.types";
+import { Typebot, TypebotSettings, IntegrationSession } from "@/types/evolution.types";
 
 export type FindTypebotResponse = Typebot[];
 

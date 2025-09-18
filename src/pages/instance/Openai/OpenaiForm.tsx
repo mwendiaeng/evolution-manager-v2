@@ -6,15 +6,7 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { FormInput, FormSelect, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -69,17 +61,7 @@ type OpenaiFormProps = {
   open?: boolean;
 };
 
-function OpenaiForm({
-  initialData,
-  onSubmit,
-  handleDelete,
-  openaiId,
-  isModal = false,
-  isLoading = false,
-  openDeletionDialog = false,
-  setOpenDeletionDialog = () => {},
-  open,
-}: OpenaiFormProps) {
+function OpenaiForm({ initialData, onSubmit, handleDelete, openaiId, isModal = false, isLoading = false, openDeletionDialog = false, setOpenDeletionDialog = () => {}, open }: OpenaiFormProps) {
   const { t } = useTranslation();
   const { instance } = useInstance();
   const [shouldFetchModels, setShouldFetchModels] = useState(false);
@@ -149,16 +131,8 @@ function OpenaiForm({
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <div className="space-y-4">
-          <FormSwitch
-            name="enabled"
-            label={t("openai.form.enabled.label")}
-            reverse
-          />
-          <FormInput
-            name="description"
-            label={t("openai.form.description.label")}
-            required
-          >
+          <FormSwitch name="enabled" label={t("openai.form.enabled.label")} reverse />
+          <FormInput name="description" label={t("openai.form.description.label")} required>
             <Input />
           </FormInput>
           <div className="space-y-2">
@@ -172,24 +146,17 @@ function OpenaiForm({
                     creds
                       ?.filter((cred) => !!cred.id)
                       .map((cred) => ({
-                        label: cred.name
-                          ? cred.name
-                          : cred.apiKey.substring(0, 15) + "...",
+                        label: cred.name ? cred.name : cred.apiKey.substring(0, 15) + "...",
                         value: cred.id!,
                       })) ?? []
                   }
                 />
               </div>
-              <CredentialsOpenai
-                onCredentialsUpdate={handleCredentialsUpdate}
-                showText={false}
-              />
+              <CredentialsOpenai onCredentialsUpdate={handleCredentialsUpdate} showText={false} />
             </div>
           </div>
           <div className="flex flex-col">
-            <h3 className="my-4 text-lg font-medium">
-              {t("openai.form.openaiSettings.label")}
-            </h3>
+            <h3 className="my-4 text-lg font-medium">{t("openai.form.openaiSettings.label")}</h3>
             <Separator />
           </div>
           <FormSelect
@@ -209,18 +176,10 @@ function OpenaiForm({
           />
           {botType === "assistant" && (
             <>
-              <FormInput
-                name="assistantId"
-                label={t("openai.form.assistantId.label")}
-                required
-              >
+              <FormInput name="assistantId" label={t("openai.form.assistantId.label")} required>
                 <Input />
               </FormInput>
-              <FormInput
-                name="functionUrl"
-                label={t("openai.form.functionUrl.label")}
-                required
-              >
+              <FormInput name="functionUrl" label={t("openai.form.functionUrl.label")} required>
                 <Input />
               </FormInput>
             </>
@@ -243,14 +202,7 @@ function OpenaiForm({
                       }
                     />
                   </div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    disabled={!selectedCredId || isLoadingModels}
-                    onClick={handleFetchModels}
-                    className="mb-2"
-                  >
+                  <Button type="button" variant="outline" size="sm" disabled={!selectedCredId || isLoadingModels} onClick={handleFetchModels} className="mb-2">
                     {isLoadingModels ? (
                       <>
                         <RefreshCw className="mr-2 h-4 w-4 animate-spin" />
@@ -265,38 +217,24 @@ function OpenaiForm({
                   </Button>
                 </div>
               </div>
-              <FormInput
-                name="systemMessages"
-                label={t("openai.form.systemMessages.label")}
-              >
+              <FormInput name="systemMessages" label={t("openai.form.systemMessages.label")}>
                 <Textarea />
               </FormInput>
-              <FormInput
-                name="assistantMessages"
-                label={t("openai.form.assistantMessages.label")}
-              >
+              <FormInput name="assistantMessages" label={t("openai.form.assistantMessages.label")}>
                 <Textarea />
               </FormInput>
-              <FormInput
-                name="userMessages"
-                label={t("openai.form.userMessages.label")}
-              >
+              <FormInput name="userMessages" label={t("openai.form.userMessages.label")}>
                 <Textarea />
               </FormInput>
 
-              <FormInput
-                name="maxTokens"
-                label={t("openai.form.maxTokens.label")}
-              >
+              <FormInput name="maxTokens" label={t("openai.form.maxTokens.label")}>
                 <Input type="number" />
               </FormInput>
             </>
           )}
 
           <div className="flex flex-col">
-            <h3 className="my-4 text-lg font-medium">
-              {t("openai.form.triggerSettings.label")}
-            </h3>
+            <h3 className="my-4 text-lg font-medium">{t("openai.form.triggerSettings.label")}</h3>
             <Separator />
           </div>
           <FormSelect
@@ -345,29 +283,19 @@ function OpenaiForm({
                   },
                 ]}
               />
-              <FormInput
-                name="triggerValue"
-                label={t("openai.form.triggerValue.label")}
-                required
-              >
+              <FormInput name="triggerValue" label={t("openai.form.triggerValue.label")} required>
                 <Input />
               </FormInput>
             </>
           )}
           {triggerType === "advanced" && (
-            <FormInput
-              name="triggerValue"
-              label={t("openai.form.triggerConditions.label")}
-              required
-            >
+            <FormInput name="triggerValue" label={t("openai.form.triggerConditions.label")} required>
               <Input />
             </FormInput>
           )}
 
           <div className="flex flex-col">
-            <h3 className="my-4 text-lg font-medium">
-              {t("openai.form.generalSettings.label")}
-            </h3>
+            <h3 className="my-4 text-lg font-medium">{t("openai.form.generalSettings.label")}</h3>
             <Separator />
           </div>
 
@@ -375,60 +303,29 @@ function OpenaiForm({
             <Input type="number" />
           </FormInput>
 
-          <FormInput
-            name="keywordFinish"
-            label={t("openai.form.keywordFinish.label")}
-          >
+          <FormInput name="keywordFinish" label={t("openai.form.keywordFinish.label")}>
             <Input />
           </FormInput>
 
-          <FormInput
-            name="delayMessage"
-            label={t("openai.form.delayMessage.label")}
-          >
+          <FormInput name="delayMessage" label={t("openai.form.delayMessage.label")}>
             <Input type="number" />
           </FormInput>
 
-          <FormInput
-            name="unknownMessage"
-            label={t("openai.form.unknownMessage.label")}
-          >
+          <FormInput name="unknownMessage" label={t("openai.form.unknownMessage.label")}>
             <Input />
           </FormInput>
 
-          <FormSwitch
-            name="listeningFromMe"
-            label={t("openai.form.listeningFromMe.label")}
-            reverse
-          />
-          <FormSwitch
-            name="stopBotFromMe"
-            label={t("openai.form.stopBotFromMe.label")}
-            reverse
-          />
-          <FormSwitch
-            name="keepOpen"
-            label={t("openai.form.keepOpen.label")}
-            reverse
-          />
-          <FormInput
-            name="debounceTime"
-            label={t("openai.form.debounceTime.label")}
-          >
+          <FormSwitch name="listeningFromMe" label={t("openai.form.listeningFromMe.label")} reverse />
+          <FormSwitch name="stopBotFromMe" label={t("openai.form.stopBotFromMe.label")} reverse />
+          <FormSwitch name="keepOpen" label={t("openai.form.keepOpen.label")} reverse />
+          <FormInput name="debounceTime" label={t("openai.form.debounceTime.label")}>
             <Input type="number" />
           </FormInput>
 
-          <FormSwitch
-            name="splitMessages"
-            label={t("openai.form.splitMessages.label")}
-            reverse
-          />
+          <FormSwitch name="splitMessages" label={t("openai.form.splitMessages.label")} reverse />
 
           {form.watch("splitMessages") && (
-            <FormInput
-              name="timePerChar"
-              label={t("openai.form.timePerChar.label")}
-            >
+            <FormInput name="timePerChar" label={t("openai.form.timePerChar.label")}>
               <Input type="number" />
             </FormInput>
           )}
@@ -446,10 +343,7 @@ function OpenaiForm({
           <div>
             <SessionsOpenai openaiId={openaiId} />
             <div className="mt-5 flex items-center gap-3">
-              <Dialog
-                open={openDeletionDialog}
-                onOpenChange={setOpenDeletionDialog}
-              >
+              <Dialog open={openDeletionDialog} onOpenChange={setOpenDeletionDialog}>
                 <DialogTrigger asChild>
                   <Button variant="destructive" size="sm">
                     {t("dify.button.delete")}
@@ -458,15 +352,9 @@ function OpenaiForm({
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>{t("modal.delete.title")}</DialogTitle>
-                    <DialogDescription>
-                      {t("modal.delete.messageSingle")}
-                    </DialogDescription>
+                    <DialogDescription>{t("modal.delete.messageSingle")}</DialogDescription>
                     <DialogFooter>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setOpenDeletionDialog(false)}
-                      >
+                      <Button size="sm" variant="outline" onClick={() => setOpenDeletionDialog(false)}>
                         {t("button.cancel")}
                       </Button>
                       <Button variant="destructive" onClick={handleDelete}>
@@ -477,9 +365,7 @@ function OpenaiForm({
                 </DialogContent>
               </Dialog>
               <Button disabled={isLoading} type="submit">
-                {isLoading
-                  ? t("openai.button.saving")
-                  : t("openai.button.update")}
+                {isLoading ? t("openai.button.saving") : t("openai.button.update")}
               </Button>
             </div>
           </div>

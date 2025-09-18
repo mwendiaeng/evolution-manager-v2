@@ -9,10 +9,7 @@ type SelectedMediaProps = {
   setSelectedMedia: React.Dispatch<React.SetStateAction<File | null>>;
 };
 
-const SelectedMedia = ({
-  selectedMedia,
-  setSelectedMedia,
-}: SelectedMediaProps) => {
+const SelectedMedia = ({ selectedMedia, setSelectedMedia }: SelectedMediaProps) => {
   const { t } = useTranslation();
 
   const handleRemoveMedia = () => {
@@ -37,11 +34,7 @@ const SelectedMedia = ({
     if (selectedMedia.type.includes("video")) {
       return (
         <div className="flex items-center justify-center">
-          <video
-            className="w-80 rounded-lg object-cover"
-            src={URL.createObjectURL(selectedMedia)}
-            controls
-          />
+          <video className="w-80 rounded-lg object-cover" src={URL.createObjectURL(selectedMedia)} controls />
         </div>
       );
     }
@@ -68,29 +61,16 @@ const SelectedMedia = ({
   };
 
   return (
-    <div
-      className={`relative flex items-center rounded-lg bg-[#e0f0f0] dark:bg-[#1d2724] dark:text-white`}
-    >
-      <div
-        className={`absolute h-full w-1 rounded-l-lg bg-blue-700 dark:bg-blue-300`}
-      />
+    <div className={`relative flex items-center rounded-lg bg-[#e0f0f0] dark:bg-[#1d2724] dark:text-white`}>
+      <div className={`absolute h-full w-1 rounded-l-lg bg-blue-700 dark:bg-blue-300`} />
       <div className="flex w-full flex-col items-center justify-center gap-6 p-4 pl-4">
         {selectedMedia && renderMediaType(selectedMedia)}
         <div className="flex flex-col items-center justify-center gap-2">
-          <span className="text-sm font-medium">
-            {selectedMedia?.name || t("chat.media.selectedMedia.selectedFile")}
-          </span>
-          <span className="text-xs text-gray-500">
-            {calculateSize(selectedMedia?.size || 0)}
-          </span>
+          <span className="text-sm font-medium">{selectedMedia?.name || t("chat.media.selectedMedia.selectedFile")}</span>
+          <span className="text-xs text-gray-500">{calculateSize(selectedMedia?.size || 0)}</span>
         </div>
       </div>
-      <Button
-        size="icon"
-        variant="ghost"
-        className="ml-auto h-10 w-10 rounded-full"
-        onClick={handleRemoveMedia}
-      >
+      <Button size="icon" variant="ghost" className="ml-auto h-10 w-10 rounded-full" onClick={handleRemoveMedia}>
         <XIcon className="h-6 w-6" />
       </Button>
     </div>

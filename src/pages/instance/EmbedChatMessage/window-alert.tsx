@@ -49,9 +49,7 @@ export function WindowAlert({ windowExpires, windowActive }: WindowAlertProps) {
     return (
       <Alert className="bg-yellow-50 dark:bg-yellow-950">
         <Clock className="h-4 w-4" />
-        <AlertDescription>
-          {t("chat.window.expiresIn", { time: timeLeft })}
-        </AlertDescription>
+        <AlertDescription>{t("chat.window.expiresIn", { time: timeLeft })}</AlertDescription>
       </Alert>
     );
   }

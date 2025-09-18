@@ -9,11 +9,7 @@ interface IParams {
   token?: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "evoai",
-  "fetchEvoai",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["evoai", "fetchEvoai", JSON.stringify(params)];
 
 export const fetchEvoai = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/evoai/find/${instanceName}`, {
@@ -22,9 +18,7 @@ export const fetchEvoai = async ({ instanceName, token }: IParams) => {
   return response.data;
 };
 
-export const useFetchEvoai = (
-  props: UseQueryParams<FetchEvoaiRsponse> & Partial<IParams>,
-) => {
+export const useFetchEvoai = (props: UseQueryParams<FetchEvoaiRsponse> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FetchEvoaiRsponse>({
     ...rest,

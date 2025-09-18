@@ -18,11 +18,7 @@ const EmbedInstanceContext = createContext<EmbedInstanceContextType>({
   error: null,
 });
 
-export function EmbedInstanceProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function EmbedInstanceProvider({ children }: { children: React.ReactNode }) {
   const [searchParams] = useSearchParams();
   const [instance, setInstance] = useState<Instance | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,14 +40,11 @@ export function EmbedInstanceProvider({
         localStorage.setItem(TOKEN_ID.API_URL, apiUrl);
         localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, token);
 
-        const { data } = await axios.get(
-          `${apiUrl}/instance/fetchInstances?instanceName=${instanceName}`,
-          {
-            headers: {
-              apikey: token,
-            },
+        const { data } = await axios.get(`${apiUrl}/instance/fetchInstances?instanceName=${instanceName}`, {
+          headers: {
+            apikey: token,
           },
-        );
+        });
 
         console.log("API Response:", data);
 
@@ -71,11 +64,7 @@ export function EmbedInstanceProvider({
     validateAndFetchInstance();
   }, [searchParams]);
 
-  return (
-    <EmbedInstanceContext.Provider value={{ instance, isLoading, error }}>
-      {children}
-    </EmbedInstanceContext.Provider>
-  );
+  return <EmbedInstanceContext.Provider value={{ instance, isLoading, error }}>{children}</EmbedInstanceContext.Provider>;
 }
 
 export const useEmbedInstance = () => useContext(EmbedInstanceContext);

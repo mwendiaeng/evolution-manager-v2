@@ -8,20 +8,8 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormInput,
-  FormSelect,
-  FormSwitch,
-  FormTags,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormInput, FormSelect, FormSwitch, FormTags } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -56,11 +44,10 @@ function DefaultSettingsOpenai() {
 
   const { setDefaultSettingsOpenai } = useManageOpenai();
   const [open, setOpen] = useState(false);
-  const { data: settings, refetch: refetchSettings } =
-    useFindDefaultSettingsOpenai({
-      instanceName: instance?.name,
-      enabled: open,
-    });
+  const { data: settings, refetch: refetchSettings } = useFindDefaultSettingsOpenai({
+    instanceName: instance?.name,
+    enabled: open,
+  });
   const { data: bots, refetch: refetchBots } = useFindOpenai({
     instanceName: instance?.name,
     enabled: open,
@@ -158,23 +145,15 @@ function DefaultSettingsOpenai() {
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <Cog size={16} className="mr-1" />
-          <span className="hidden md:inline">
-            {t("openai.defaultSettings")}
-          </span>
+          <span className="hidden md:inline">{t("openai.defaultSettings")}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
-        onCloseAutoFocus={onReset}
-      >
+      <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]" onCloseAutoFocus={onReset}>
         <DialogHeader>
           <DialogTitle>{t("openai.defaultSettings")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="w-full space-y-6"
-            onSubmit={form.handleSubmit(handleSubmit)}
-          >
+          <form className="w-full space-y-6" onSubmit={form.handleSubmit(handleSubmit)}>
             <div>
               <div className="space-y-4">
                 <FormSelect
@@ -184,9 +163,7 @@ function DefaultSettingsOpenai() {
                     creds
                       ?.filter((cred) => !!cred.id)
                       .map((cred) => ({
-                        label: cred.name
-                          ? cred.name
-                          : cred.apiKey.substring(0, 15) + "...",
+                        label: cred.name ? cred.name : cred.apiKey.substring(0, 15) + "...",
                         value: cred.id!,
                       })) || []
                   }
@@ -206,72 +183,33 @@ function DefaultSettingsOpenai() {
                 <FormInput name="expire" label={t("openai.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="keywordFinish"
-                  label={t("openai.form.keywordFinish.label")}
-                >
+                <FormInput name="keywordFinish" label={t("openai.form.keywordFinish.label")}>
                   <Input />
                 </FormInput>
-                <FormInput
-                  name="delayMessage"
-                  label={t("openai.form.delayMessage.label")}
-                >
+                <FormInput name="delayMessage" label={t("openai.form.delayMessage.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="unknownMessage"
-                  label={t("openai.form.unknownMessage.label")}
-                >
+                <FormInput name="unknownMessage" label={t("openai.form.unknownMessage.label")}>
                   <Input />
                 </FormInput>
-                <FormSwitch
-                  name="listeningFromMe"
-                  label={t("openai.form.listeningFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="stopBotFromMe"
-                  label={t("openai.form.stopBotFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="keepOpen"
-                  label={t("openai.form.keepOpen.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="speechToText"
-                  label={t("openai.form.speechToText.label")}
-                  reverse
-                />
+                <FormSwitch name="listeningFromMe" label={t("openai.form.listeningFromMe.label")} reverse />
+                <FormSwitch name="stopBotFromMe" label={t("openai.form.stopBotFromMe.label")} reverse />
+                <FormSwitch name="keepOpen" label={t("openai.form.keepOpen.label")} reverse />
+                <FormSwitch name="speechToText" label={t("openai.form.speechToText.label")} reverse />
 
-                <FormInput
-                  name="debounceTime"
-                  label={t("openai.form.debounceTime.label")}
-                >
+                <FormInput name="debounceTime" label={t("openai.form.debounceTime.label")}>
                   <Input type="number" />
                 </FormInput>
 
-                <FormSwitch
-                  name="splitMessages"
-                  label={t("openai.form.splitMessages.label")}
-                  reverse
-                />
+                <FormSwitch name="splitMessages" label={t("openai.form.splitMessages.label")} reverse />
 
                 {form.watch("splitMessages") && (
-                  <FormInput
-                    name="timePerChar"
-                    label={t("openai.form.timePerChar.label")}
-                  >
+                  <FormInput name="timePerChar" label={t("openai.form.timePerChar.label")}>
                     <Input type="number" />
                   </FormInput>
                 )}
 
-                <FormTags
-                  name="ignoreJids"
-                  label={t("openai.form.ignoreJids.label")}
-                  placeholder={t("openai.form.ignoreJids.placeholder")}
-                />
+                <FormTags name="ignoreJids" label={t("openai.form.ignoreJids.label")} placeholder={t("openai.form.ignoreJids.placeholder")} />
               </div>
             </div>
             <DialogFooter>

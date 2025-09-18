@@ -25,13 +25,7 @@ interface MessageContentProps {
   fromMe: boolean;
 }
 
-export function MessageContent({
-  message,
-  quotedMessage,
-  chat,
-  fromMe,
-  onQuoteClick,
-}: MessageContentProps & { onQuoteClick?: (messageId: string) => void }) {
+export function MessageContent({ message, quotedMessage, chat, fromMe, onQuoteClick }: MessageContentProps & { onQuoteClick?: (messageId: string) => void }) {
   // Check if message is complete with required properties
   // const isValidMessage = message && message.key && (message.id || message.key.id);
 
@@ -49,13 +43,7 @@ export function MessageContent({
     // Group messages not supported yet
     return null;
 
-    return (
-      <span
-        className="text-xs font-bold text-blue-600"
-      >
-        {'Group Member'}
-      </span>
-    );
+    return <span className="text-xs font-bold text-blue-600">{"Group Member"}</span>;
   };
 
   /** TODO: Alterar o Z-INDEX do tooltip */
@@ -73,9 +61,7 @@ export function MessageContent({
         };
 
         // Tenta extrair o nome do remetente
-        const senderName = reaction.sender.includes("@g.us")
-          ? 'You' || reaction.sender.split("@")[0]
-          : reaction.sender.split("@")[0];
+        const senderName = reaction.sender.includes("@g.us") ? "You" || reaction.sender.split("@")[0] : reaction.sender.split("@")[0];
 
         // Adiciona o remetente à lista de senders deste emoji
         acc[reaction.emoji].senders.push(senderName);
@@ -88,11 +74,7 @@ export function MessageContent({
     const limitedReactions = Object.values(groupedReactions).slice(0, 3);
 
     return (
-      <div
-        className={`absolute -bottom-4 ${
-          fromMe ? "right-0" : "left-0"
-        } flex rounded-full bg-gray-100 px-1 dark:bg-gray-900`}
-      >
+      <div className={`absolute -bottom-4 ${fromMe ? "right-0" : "left-0"} flex rounded-full bg-gray-100 px-1 dark:bg-gray-900`}>
         {/* Renderiza cada emoji */}
         {limitedReactions.map((reaction) => (
           <div key={reaction.emoji} className="flex items-center">
@@ -100,11 +82,7 @@ export function MessageContent({
           </div>
         ))}
         {/* Mostra o contador se houver mais de uma reação */}
-        {message.reactions.length > 1 && (
-          <span className="ml-1 flex items-center pr-2 text-xs text-muted-foreground">
-            {message.reactions.length}
-          </span>
-        )}
+        {message.reactions.length > 1 && <span className="ml-1 flex items-center pr-2 text-xs text-muted-foreground">{message.reactions.length}</span>}
       </div>
     );
   };
@@ -113,7 +91,7 @@ export function MessageContent({
   const renderTimestamp = () => {
     let formattedTime;
     let messageDate;
-    
+
     try {
       // Try to format timestamp based on its type and format
       if (!message.messageTimestamp) {
@@ -131,9 +109,7 @@ export function MessageContent({
         ];
 
         // Find the first valid timestamp in the object
-        const timestamp = possibleTimestamps.find(
-          (val) => typeof val === "number" && !isNaN(val),
-        );
+        const timestamp = possibleTimestamps.find((val) => typeof val === "number" && !isNaN(val));
 
         if (timestamp) {
           // Use the extracted timestamp value
@@ -156,9 +132,9 @@ export function MessageContent({
           // Likely milliseconds format (13 digits), convert to seconds
           messageDate = new Date(timestampNum);
           formattedTime = new Date(timestampNum).toLocaleTimeString("pt-BR", {
-          hour: "2-digit",
-          minute: "2-digit",
-        });
+            hour: "2-digit",
+            minute: "2-digit",
+          });
         } else {
           // Likely seconds format (10 digits)
           messageDate = new Date(timestampNum * 1000);
@@ -169,10 +145,7 @@ export function MessageContent({
         }
       }
       // If it's an ISO date string format
-      else if (
-        typeof message.messageTimestamp === "string" &&
-        message.messageTimestamp.includes("T")
-      ) {
+      else if (typeof message.messageTimestamp === "string" && message.messageTimestamp.includes("T")) {
         messageDate = new Date(message.messageTimestamp);
         formattedTime = new Date(message.messageTimestamp as string).toLocaleTimeString("pt-BR", {
           hour: "2-digit",
@@ -200,13 +173,11 @@ export function MessageContent({
         }
         // Check if it's within the last week
         else {
-          const daysDiff = Math.floor(
-            (today.getTime() - messageDate.getTime()) / (1000 * 60 * 60 * 24),
-          );
-                     if (daysDiff < 7) {
-             const weekday = messageDate.toLocaleDateString("pt-BR", { weekday: "long" });
-             const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
-             formattedTime = `${capitalizedWeekday} ${formattedTime}`;
+          const daysDiff = Math.floor((today.getTime() - messageDate.getTime()) / (1000 * 60 * 60 * 24));
+          if (daysDiff < 7) {
+            const weekday = messageDate.toLocaleDateString("pt-BR", { weekday: "long" });
+            const capitalizedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+            formattedTime = `${capitalizedWeekday} ${formattedTime}`;
           } else {
             // For older dates, show the full date
             const fullDate = messageDate.toLocaleDateString("pt-BR", {
@@ -228,14 +199,7 @@ export function MessageContent({
   return (
     <MessageBubble.Content fromMe={fromMe}>
       {renderReactions()}
-      {quotedMessage && (
-        <QuotedMessage
-          message={message}
-          quotedMessage={quotedMessage}
-          chat={chat}
-          onQuoteClick={() => onQuoteClick?.(quotedMessage.key.id)}
-        />
-      )}
+      {quotedMessage && <QuotedMessage message={message} quotedMessage={quotedMessage} chat={chat} onQuoteClick={() => onQuoteClick?.(quotedMessage.key.id)} />}
 
       {renderParticipantName()}
 

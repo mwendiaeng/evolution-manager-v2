@@ -8,20 +8,14 @@ interface IParams {
   url: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "auth",
-  "verifyServer",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["auth", "verifyServer", JSON.stringify(params)];
 
 export const verifyServer = async ({ url }: IParams) => {
   const response = await axios.get(`${url}/`);
   return response.data;
 };
 
-export const useVerifyServer = (
-  props: UseQueryParams<any> & Partial<IParams>,
-) => {
+export const useVerifyServer = (props: UseQueryParams<any> & Partial<IParams>) => {
   const { url, ...rest } = props;
   return useQuery<any>({
     ...rest,

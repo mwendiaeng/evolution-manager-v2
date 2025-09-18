@@ -8,20 +8,8 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormInput,
-  FormSelect,
-  FormSwitch,
-  FormTags,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormInput, FormSelect, FormSwitch, FormTags } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -52,11 +40,10 @@ function DefaultSettingsEvolutionBot() {
   const { instance } = useInstance();
 
   const [open, setOpen] = useState(false);
-  const { data: settings, refetch: refetchSettings } =
-    useFindDefaultSettingsEvolutionBot({
-      instanceName: instance?.name,
-      enabled: open,
-    });
+  const { data: settings, refetch: refetchSettings } = useFindDefaultSettingsEvolutionBot({
+    instanceName: instance?.name,
+    enabled: open,
+  });
 
   const { data: bots, refetch: refetchBots } = useFindEvolutionBot({
     instanceName: instance?.name,
@@ -87,22 +74,16 @@ function DefaultSettingsEvolutionBot() {
       form.reset({
         expire: settings?.expire ? settings.expire.toString() : "0",
         keywordFinish: settings.keywordFinish,
-        delayMessage: settings.delayMessage
-          ? settings.delayMessage.toString()
-          : "0",
+        delayMessage: settings.delayMessage ? settings.delayMessage.toString() : "0",
         unknownMessage: settings.unknownMessage,
         listeningFromMe: settings.listeningFromMe,
         stopBotFromMe: settings.stopBotFromMe,
         keepOpen: settings.keepOpen,
-        debounceTime: settings.debounceTime
-          ? settings.debounceTime.toString()
-          : "0",
+        debounceTime: settings.debounceTime ? settings.debounceTime.toString() : "0",
         ignoreJids: settings.ignoreJids,
         botIdFallback: settings.botIdFallback,
         splitMessages: settings.splitMessages,
-        timePerChar: settings.timePerChar
-          ? settings.timePerChar.toString()
-          : "0",
+        timePerChar: settings.timePerChar ? settings.timePerChar.toString() : "0",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -152,23 +133,15 @@ function DefaultSettingsEvolutionBot() {
       <DialogTrigger asChild>
         <Button variant="secondary" size="sm">
           <Cog size={16} className="mr-1" />
-          <span className="hidden sm:inline">
-            {t("evolutionBot.defaultSettings")}
-          </span>
+          <span className="hidden sm:inline">{t("evolutionBot.defaultSettings")}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
-        onCloseAutoFocus={onReset}
-      >
+      <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]" onCloseAutoFocus={onReset}>
         <DialogHeader>
           <DialogTitle>{t("evolutionBot.defaultSettings")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="w-full space-y-6"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="w-full space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
             <div>
               <div className="space-y-4">
                 <FormSelect
@@ -183,72 +156,34 @@ function DefaultSettingsEvolutionBot() {
                       })) ?? []
                   }
                 />
-                <FormInput
-                  name="expire"
-                  label={t("evolutionBot.form.expire.label")}
-                >
+                <FormInput name="expire" label={t("evolutionBot.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="keywordFinish"
-                  label={t("evolutionBot.form.keywordFinish.label")}
-                >
+                <FormInput name="keywordFinish" label={t("evolutionBot.form.keywordFinish.label")}>
                   <Input />
                 </FormInput>
-                <FormInput
-                  name="delayMessage"
-                  label={t("evolutionBot.form.delayMessage.label")}
-                >
+                <FormInput name="delayMessage" label={t("evolutionBot.form.delayMessage.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="unknownMessage"
-                  label={t("evolutionBot.form.unknownMessage.label")}
-                >
+                <FormInput name="unknownMessage" label={t("evolutionBot.form.unknownMessage.label")}>
                   <Input />
                 </FormInput>
-                <FormSwitch
-                  name="listeningFromMe"
-                  label={t("evolutionBot.form.listeningFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="stopBotFromMe"
-                  label={t("evolutionBot.form.stopBotFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="keepOpen"
-                  label={t("evolutionBot.form.keepOpen.label")}
-                  reverse
-                />
-                <FormInput
-                  name="debounceTime"
-                  label={t("evolutionBot.form.debounceTime.label")}
-                >
+                <FormSwitch name="listeningFromMe" label={t("evolutionBot.form.listeningFromMe.label")} reverse />
+                <FormSwitch name="stopBotFromMe" label={t("evolutionBot.form.stopBotFromMe.label")} reverse />
+                <FormSwitch name="keepOpen" label={t("evolutionBot.form.keepOpen.label")} reverse />
+                <FormInput name="debounceTime" label={t("evolutionBot.form.debounceTime.label")}>
                   <Input type="number" />
                 </FormInput>
 
-                <FormSwitch
-                  name="splitMessages"
-                  label={t("evolutionBot.form.splitMessages.label")}
-                  reverse
-                />
+                <FormSwitch name="splitMessages" label={t("evolutionBot.form.splitMessages.label")} reverse />
 
                 {form.watch("splitMessages") && (
-                  <FormInput
-                    name="timePerChar"
-                    label={t("evolutionBot.form.timePerChar.label")}
-                  >
+                  <FormInput name="timePerChar" label={t("evolutionBot.form.timePerChar.label")}>
                     <Input type="number" />
                   </FormInput>
                 )}
 
-                <FormTags
-                  name="ignoreJids"
-                  label={t("evolutionBot.form.ignoreJids.label")}
-                  placeholder={t("evolutionBot.form.ignoreJids.placeholder")}
-                />
+                <FormTags name="ignoreJids" label={t("evolutionBot.form.ignoreJids.label")} placeholder={t("evolutionBot.form.ignoreJids.placeholder")} />
               </div>
             </div>
             <DialogFooter>

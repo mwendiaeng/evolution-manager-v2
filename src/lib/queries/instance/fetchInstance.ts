@@ -8,11 +8,7 @@ interface IParams {
   instanceId: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "instance",
-  "fetchInstance",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["instance", "fetchInstance", JSON.stringify(params)];
 
 export const fetchInstance = async ({ instanceId }: IParams) => {
   const response = await apiGlobal.get(`/instance/fetchInstances`, {
@@ -24,9 +20,7 @@ export const fetchInstance = async ({ instanceId }: IParams) => {
   return response.data;
 };
 
-export const useFetchInstance = (
-  props: UseQueryParams<FetchInstanceResponse> & Partial<IParams>,
-) => {
+export const useFetchInstance = (props: UseQueryParams<FetchInstanceResponse> & Partial<IParams>) => {
   const { instanceId, ...rest } = props;
   return useQuery<FetchInstanceResponse>({
     ...rest,

@@ -10,32 +10,19 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "evolutionBot",
-  "getEvolutionBot",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["evolutionBot", "getEvolutionBot", JSON.stringify(params)];
 
-export const getEvolutionBot = async ({
-  instanceName,
-  token,
-  evolutionBotId,
-}: IParams) => {
-  const response = await api.get(
-    `/evolutionBot/fetch/${evolutionBotId}/${instanceName}`,
-    {
-      headers: { apiKey: token },
-    },
-  );
+export const getEvolutionBot = async ({ instanceName, token, evolutionBotId }: IParams) => {
+  const response = await api.get(`/evolutionBot/fetch/${evolutionBotId}/${instanceName}`, {
+    headers: { apiKey: token },
+  });
   if (Array.isArray(response.data)) {
     return response.data[0];
   }
   return response.data;
 };
 
-export const useGetEvolutionBot = (
-  props: UseQueryParams<GetEvolutionBotResponse> & Partial<IParams>,
-) => {
+export const useGetEvolutionBot = (props: UseQueryParams<GetEvolutionBotResponse> & Partial<IParams>) => {
   const { instanceName, token, evolutionBotId, ...rest } = props;
   return useQuery<GetEvolutionBotResponse>({
     ...rest,

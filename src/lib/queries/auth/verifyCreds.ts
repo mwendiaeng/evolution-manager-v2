@@ -9,11 +9,7 @@ interface VerifyCredsParams {
 
 export const verifyCreds = async ({ url, token }: VerifyCredsParams) => {
   try {
-    const { data } = await axios.post(
-      `${url}/verify-creds`,
-      {},
-      { headers: { apikey: token } },
-    );
+    const { data } = await axios.post(`${url}/verify-creds`, {}, { headers: { apikey: token } });
 
     saveToken({
       facebookAppId: data.facebookAppId,

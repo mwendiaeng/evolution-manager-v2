@@ -6,14 +6,7 @@ import { z } from "zod";
 
 import { Footer } from "@/components/footer";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form, FormInput } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
@@ -22,9 +15,7 @@ import { verifyServer } from "@/lib/queries/auth/verifyServer";
 import { logout, saveToken } from "@/lib/queries/token";
 
 const loginSchema = z.object({
-  serverUrl: z
-    .string({ required_error: "serverUrl is required" })
-    .url("URL inválida"),
+  serverUrl: z.string({ required_error: "serverUrl is required" }).url("URL inválida"),
   apiKey: z.string({ required_error: "ApiKey is required" }),
 });
 type LoginSchema = z.infer<typeof loginSchema>;
@@ -78,36 +69,22 @@ function Login() {
   return (
     <div className="flex min-h-screen flex-col">
       <div className="flex items-center justify-center pt-2">
-        <img
-          className="h-10"
-          src="/assets/images/evolution-logo.png"
-          alt="logo"
-        />
+        <img className="h-10" src="/assets/images/evolution-logo.png" alt="logo" />
       </div>
       <div className="flex flex-1 items-center justify-center p-8">
         <Card className="b-none w-[350px] shadow-none">
           <CardHeader>
             <CardTitle className="text-center">{t("login.title")}</CardTitle>
-            <CardDescription className="text-center">
-              {t("login.description")}
-            </CardDescription>
+            <CardDescription className="text-center">{t("login.description")}</CardDescription>
           </CardHeader>
           <Form {...loginForm}>
             <form onSubmit={loginForm.handleSubmit(handleLogin)}>
               <CardContent>
                 <div className="grid w-full items-center gap-4">
-                  <FormInput
-                    required
-                    name="serverUrl"
-                    label={t("login.form.serverUrl")}
-                  >
+                  <FormInput required name="serverUrl" label={t("login.form.serverUrl")}>
                     <Input />
                   </FormInput>
-                  <FormInput
-                    required
-                    name="apiKey"
-                    label={t("login.form.apiKey")}
-                  >
+                  <FormInput required name="apiKey" label={t("login.form.apiKey")}>
                     <Input type="password" />
                   </FormInput>
                 </div>

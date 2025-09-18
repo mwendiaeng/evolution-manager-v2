@@ -40,11 +40,7 @@ interface SetDefaultSettingsN8nParams {
   token: string;
   data: N8nSettings;
 }
-const setDefaultSettingsN8n = async ({
-  instanceName,
-  token,
-  data,
-}: SetDefaultSettingsN8nParams) => {
+const setDefaultSettingsN8n = async ({ instanceName, token, data }: SetDefaultSettingsN8nParams) => {
   const response = await api.post(`/n8n/settings/${instanceName}`, data, {
     headers: { apikey: token },
   });
@@ -57,25 +53,15 @@ interface ChangeStatusN8nParams {
   remoteJid: string;
   status: string;
 }
-const changeStatusN8n = async ({
-  instanceName,
-  token,
-  remoteJid,
-  status,
-}: ChangeStatusN8nParams) => {
-  const response = await api.post(
-    `/n8n/changeStatus/${instanceName}`,
-    { remoteJid, status },
-    { headers: { apikey: token } },
-  );
+const changeStatusN8n = async ({ instanceName, token, remoteJid, status }: ChangeStatusN8nParams) => {
+  const response = await api.post(`/n8n/changeStatus/${instanceName}`, { remoteJid, status }, { headers: { apikey: token } });
   return response.data;
 };
 
 export function useManageN8n() {
-  const setDefaultSettingsN8nMutation = useManageMutation(
-    setDefaultSettingsN8n,
-    { invalidateKeys: [["n8n", "fetchDefaultSettings"]] },
-  );
+  const setDefaultSettingsN8nMutation = useManageMutation(setDefaultSettingsN8n, {
+    invalidateKeys: [["n8n", "fetchDefaultSettings"]],
+  });
   const changeStatusN8nMutation = useManageMutation(changeStatusN8n, {
     invalidateKeys: [
       ["n8n", "getN8n"],

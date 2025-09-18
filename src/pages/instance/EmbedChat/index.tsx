@@ -6,10 +6,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 // Contexts
 import { EmbedColorsProvider } from "@/contexts/EmbedColorsContext";
-import {
-  EmbedInstanceProvider,
-  useEmbedInstance,
-} from "@/contexts/EmbedInstanceContext";
+import { EmbedInstanceProvider, useEmbedInstance } from "@/contexts/EmbedInstanceContext";
 import { InstanceProvider } from "@/contexts/InstanceContext";
 // import { WebPhoneProvider } from "@/contexts/Webphone";
 

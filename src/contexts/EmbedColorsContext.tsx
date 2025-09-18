@@ -33,11 +33,7 @@ const EmbedColorsContext = createContext<EmbedColorsContextType>({
   inputIconsMainColor: "",
 });
 
-export function EmbedColorsProvider({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export function EmbedColorsProvider({ children }: { children: React.ReactNode }) {
   const [searchParams] = useSearchParams();
   const { theme } = useTheme();
   const backgroundColor = searchParams.get("backgroundColor");
@@ -48,9 +44,7 @@ export function EmbedColorsProvider({
   const fromOtherBubbleColor = searchParams.get("fromOtherBubbleColor");
   const fromOtherForegroundColor = searchParams.get("fromOtherForegroundColor");
   const fromMeQuotedBubbleColor = searchParams.get("fromMeQuotedBubbleColor");
-  const fromOtherQuotedBubbleColor = searchParams.get(
-    "fromOtherQuotedBubbleColor",
-  );
+  const fromOtherQuotedBubbleColor = searchParams.get("fromOtherQuotedBubbleColor");
   const inputBackgroundColor = searchParams.get("inputBackgroundColor");
   const inputTextForegroundColor = searchParams.get("inputTextForegroundColor");
   const inputIconsMainColor = searchParams.get("inputIconsMainColor");
@@ -142,28 +136,18 @@ export function EmbedColorsProvider({
     <EmbedColorsContext.Provider
       value={{
         backgroundColor: backgroundColor || getDefaultBackgroundColor(),
-        textForegroundColor:
-          textForegroundColor || getDefaultTextForegroundColor(),
+        textForegroundColor: textForegroundColor || getDefaultTextForegroundColor(),
         primaryColor: primaryColor || getDefaultPrimaryColor(),
         fromMeBubbleColor: fromMeBubbleColor || getDefaultFromMeBubbleColor(),
-        fromMeForegroundColor:
-          fromMeForegroundColor || getDefaultFromMeForegroundColor(),
-        fromOtherBubbleColor:
-          fromOtherBubbleColor || getDefaultFromOtherBubbleColor(),
-        fromOtherForegroundColor:
-          fromOtherForegroundColor || getDefaultFromOtherForegroundColor(),
-        fromMeQuotedBubbleColor:
-          fromMeQuotedBubbleColor || getDefaultFromMeQuotedBubbleColor(),
-        fromOtherQuotedBubbleColor:
-          fromOtherQuotedBubbleColor || getDefaultFromOtherQuotedBubbleColor(),
-        inputBackgroundColor:
-          inputBackgroundColor || getDefaultInputBackgroundColor(),
-        inputTextForegroundColor:
-          inputTextForegroundColor || getDefaultInputTextForegroundColor(),
-        inputIconsMainColor:
-          inputIconsMainColor || getDefaultInputIconsMainColor(),
-      }}
-    >
+        fromMeForegroundColor: fromMeForegroundColor || getDefaultFromMeForegroundColor(),
+        fromOtherBubbleColor: fromOtherBubbleColor || getDefaultFromOtherBubbleColor(),
+        fromOtherForegroundColor: fromOtherForegroundColor || getDefaultFromOtherForegroundColor(),
+        fromMeQuotedBubbleColor: fromMeQuotedBubbleColor || getDefaultFromMeQuotedBubbleColor(),
+        fromOtherQuotedBubbleColor: fromOtherQuotedBubbleColor || getDefaultFromOtherQuotedBubbleColor(),
+        inputBackgroundColor: inputBackgroundColor || getDefaultInputBackgroundColor(),
+        inputTextForegroundColor: inputTextForegroundColor || getDefaultInputTextForegroundColor(),
+        inputIconsMainColor: inputIconsMainColor || getDefaultInputIconsMainColor(),
+      }}>
       {children}
     </EmbedColorsContext.Provider>
   );

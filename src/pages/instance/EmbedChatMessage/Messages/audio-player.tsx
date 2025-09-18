@@ -117,40 +117,18 @@ const AudioPlayer = ({ audioUrl, fromMe, profilePicUrl }: AudioPlayerProps) => {
     <div className="mb-2 flex w-[300px] items-center gap-2 rounded-lg bg-black/5 px-4 py-3 dark:bg-white/5">
       {!fromMe && profilePicUrl && (
         <div className="flex-shrink-0">
-          <img
-            src={profilePicUrl}
-            alt="Profile"
-            className="h-8 w-8 rounded-full object-cover"
-          />
+          <img src={profilePicUrl} alt="Profile" className="h-8 w-8 rounded-full object-cover" />
         </div>
       )}
 
       <div className="flex-shrink-0">
-        <Button
-          variant="ghost"
-          size="icon"
-          className="h-8 w-8 rounded-full p-1.5 hover:bg-black/10 dark:hover:bg-white/10"
-          onClick={togglePlay}
-          disabled={!!error}
-        >
-          {isPlaying ? (
-            <Pause className="h-4 w-4" />
-          ) : (
-            <Play className="h-4 w-4" />
-          )}
+        <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full p-1.5 hover:bg-black/10 dark:hover:bg-white/10" onClick={togglePlay} disabled={!!error}>
+          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
         </Button>
       </div>
 
       <div className="flex flex-grow flex-col gap-1">
-        <input
-          type="range"
-          className="w-full"
-          value={progress}
-          max={100}
-          step={1}
-          onChange={(e) => handleSliderChange([Number(e.target.value)])}
-          disabled={!!error}
-        />
+        <input type="range" className="w-full" value={progress} max={100} step={1} onChange={(e) => handleSliderChange([Number(e.target.value)])} disabled={!!error} />
       </div>
 
       <div className="flex-shrink-0 text-xs text-muted-foreground">

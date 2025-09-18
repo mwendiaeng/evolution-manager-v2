@@ -159,55 +159,30 @@ function Chatwoot() {
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <div>
             <h3 className="mb-1 text-lg font-medium">{t("chatwoot.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y [&>*]:px-4 [&>*]:py-2">
-              <FormSwitch
-                name="enabled"
-                label={t("chatwoot.form.enabled.label")}
-                className="w-full justify-between"
-                helper={t("chatwoot.form.enabled.description")}
-              />
+              <FormSwitch name="enabled" label={t("chatwoot.form.enabled.label")} className="w-full justify-between" helper={t("chatwoot.form.enabled.description")} />
               <FormInput name="url" label={t("chatwoot.form.url.label")}>
                 <Input />
               </FormInput>
-              <FormInput
-                name="accountId"
-                label={t("chatwoot.form.accountId.label")}
-              >
+              <FormInput name="accountId" label={t("chatwoot.form.accountId.label")}>
                 <Input />
               </FormInput>
               <FormInput name="token" label={t("chatwoot.form.token.label")}>
                 <Input type="password" />
               </FormInput>
 
-              <FormSwitch
-                name="signMsg"
-                label={t("chatwoot.form.signMsg.label")}
-                className="w-full justify-between"
-                helper={t("chatwoot.form.signMsg.description")}
-              />
-              <FormInput
-                name="signDelimiter"
-                label={t("chatwoot.form.signDelimiter.label")}
-              >
+              <FormSwitch name="signMsg" label={t("chatwoot.form.signMsg.label")} className="w-full justify-between" helper={t("chatwoot.form.signMsg.description")} />
+              <FormInput name="signDelimiter" label={t("chatwoot.form.signDelimiter.label")}>
                 <Input />
               </FormInput>
-              <FormInput
-                name="nameInbox"
-                label={t("chatwoot.form.nameInbox.label")}
-              >
+              <FormInput name="nameInbox" label={t("chatwoot.form.nameInbox.label")}>
                 <Input />
               </FormInput>
-              <FormInput
-                name="organization"
-                label={t("chatwoot.form.organization.label")}
-              >
+              <FormInput name="organization" label={t("chatwoot.form.organization.label")}>
                 <Input />
               </FormInput>
               <FormInput name="logo" label={t("chatwoot.form.logo.label")}>
@@ -219,41 +194,14 @@ function Chatwoot() {
                 className="w-full justify-between"
                 helper={t("chatwoot.form.conversationPending.description")}
               />
-              <FormSwitch
-                name="reopenConversation"
-                label={t("chatwoot.form.reopenConversation.label")}
-                className="w-full justify-between"
-                helper={t("chatwoot.form.reopenConversation.description")}
-              />
-              <FormSwitch
-                name="importContacts"
-                label={t("chatwoot.form.importContacts.label")}
-                className="w-full justify-between"
-                helper={t("chatwoot.form.importContacts.description")}
-              />
-              <FormSwitch
-                name="importMessages"
-                label={t("chatwoot.form.importMessages.label")}
-                className="w-full justify-between"
-                helper={t("chatwoot.form.importMessages.description")}
-              />
-              <FormInput
-                name="daysLimitImportMessages"
-                label={t("chatwoot.form.daysLimitImportMessages.label")}
-              >
+              <FormSwitch name="reopenConversation" label={t("chatwoot.form.reopenConversation.label")} className="w-full justify-between" helper={t("chatwoot.form.reopenConversation.description")} />
+              <FormSwitch name="importContacts" label={t("chatwoot.form.importContacts.label")} className="w-full justify-between" helper={t("chatwoot.form.importContacts.description")} />
+              <FormSwitch name="importMessages" label={t("chatwoot.form.importMessages.label")} className="w-full justify-between" helper={t("chatwoot.form.importMessages.description")} />
+              <FormInput name="daysLimitImportMessages" label={t("chatwoot.form.daysLimitImportMessages.label")}>
                 <Input type="number" />
               </FormInput>
-              <FormTags
-                name="ignoreJids"
-                label={t("chatwoot.form.ignoreJids.label")}
-                placeholder={t("chatwoot.form.ignoreJids.placeholder")}
-              />
-              <FormSwitch
-                name="autoCreate"
-                label={t("chatwoot.form.autoCreate.label")}
-                className="w-full justify-between"
-                helper={t("chatwoot.form.autoCreate.description")}
-              />
+              <FormTags name="ignoreJids" label={t("chatwoot.form.ignoreJids.label")} placeholder={t("chatwoot.form.ignoreJids.placeholder")} />
+              <FormSwitch name="autoCreate" label={t("chatwoot.form.autoCreate.label")} className="w-full justify-between" helper={t("chatwoot.form.autoCreate.description")} />
             </div>
           </div>
           <div className="mx-4 flex justify-end">

@@ -5,13 +5,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
@@ -91,12 +85,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
         <DialogHeader>
           <DialogTitle>{t("openai.form.title")}</DialogTitle>
         </DialogHeader>
-        <OpenaiForm
-          onSubmit={onSubmit}
-          isModal={true}
-          isLoading={updating}
-          open={open}
-        />
+        <OpenaiForm onSubmit={onSubmit} isModal={true} isLoading={updating} open={open} />
       </DialogContent>
     </Dialog>
   );

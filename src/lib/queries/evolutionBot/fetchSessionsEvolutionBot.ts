@@ -10,27 +10,16 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "evolutionBot",
-  "fetchSessions",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["evolutionBot", "fetchSessions", JSON.stringify(params)];
 
-export const fetchEvolutionBotSessions = async ({
-  instanceName,
-  evolutionBotId,
-  token,
-}: IParams) => {
-  const response = await api.get(
-    `/evolutionBot/fetchSessions/${evolutionBotId}/${instanceName}`,
-    { headers: { apiKey: token } },
-  );
+export const fetchEvolutionBotSessions = async ({ instanceName, evolutionBotId, token }: IParams) => {
+  const response = await api.get(`/evolutionBot/fetchSessions/${evolutionBotId}/${instanceName}`, {
+    headers: { apiKey: token },
+  });
   return response.data;
 };
 
-export const useFetchSessionsEvolutionBot = (
-  props: UseQueryParams<FetchSessionsEvolutionBotResponse> & Partial<IParams>,
-) => {
+export const useFetchSessionsEvolutionBot = (props: UseQueryParams<FetchSessionsEvolutionBotResponse> & Partial<IParams>) => {
   const { instanceName, token, evolutionBotId, ...rest } = props;
   return useQuery<FetchSessionsEvolutionBotResponse>({
     ...rest,

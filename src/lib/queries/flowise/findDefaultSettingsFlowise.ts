@@ -9,16 +9,9 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "flowise",
-  "fetchDefaultSettings",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["flowise", "fetchDefaultSettings", JSON.stringify(params)];
 
-export const findDefaultSettingsFlowise = async ({
-  instanceName,
-  token,
-}: IParams) => {
+export const findDefaultSettingsFlowise = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/flowise/fetchSettings/${instanceName}`, {
     headers: { apiKey: token },
   });
@@ -28,15 +21,12 @@ export const findDefaultSettingsFlowise = async ({
   return response.data;
 };
 
-export const useFindDefaultSettingsFlowise = (
-  props: UseQueryParams<FindDefaultSettingsFlowiseResponse> & Partial<IParams>,
-) => {
+export const useFindDefaultSettingsFlowise = (props: UseQueryParams<FindDefaultSettingsFlowiseResponse> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FindDefaultSettingsFlowiseResponse>({
     ...rest,
     queryKey: queryKey({ instanceName }),
-    queryFn: () =>
-      findDefaultSettingsFlowise({ instanceName: instanceName!, token }),
+    queryFn: () => findDefaultSettingsFlowise({ instanceName: instanceName!, token }),
     enabled: !!instanceName && (props.enabled ?? true),
   });
 };

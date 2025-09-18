@@ -8,11 +8,7 @@ interface IParams {
   instanceName: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "chats",
-  "findChats",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["chats", "findChats", JSON.stringify(params)];
 
 export const findChats = async ({ instanceName }: IParams) => {
   const response = await api.post(`/chat/findChats/${instanceName}`, {
@@ -21,9 +17,7 @@ export const findChats = async ({ instanceName }: IParams) => {
   return response.data;
 };
 
-export const useFindChats = (
-  props: UseQueryParams<FindChatsResponse> & Partial<IParams>,
-) => {
+export const useFindChats = (props: UseQueryParams<FindChatsResponse> & Partial<IParams>) => {
   const { instanceName, ...rest } = props;
   return useQuery<FindChatsResponse>({
     ...rest,

@@ -9,11 +9,7 @@ interface IParams {
   token: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "chatwoot",
-  "fetchChatwoot",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["chatwoot", "fetchChatwoot", JSON.stringify(params)];
 
 export const fetchChatwoot = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/chatwoot/find/${instanceName}`, {
@@ -22,15 +18,12 @@ export const fetchChatwoot = async ({ instanceName, token }: IParams) => {
   return response.data;
 };
 
-export const useFetchChatwoot = (
-  props: UseQueryParams<FetchChatwoot> & Partial<IParams>,
-) => {
+export const useFetchChatwoot = (props: UseQueryParams<FetchChatwoot> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FetchChatwoot>({
     ...rest,
     queryKey: queryKey({ instanceName, token }),
-    queryFn: () =>
-      fetchChatwoot({ instanceName: instanceName!, token: token! }),
+    queryFn: () => fetchChatwoot({ instanceName: instanceName!, token: token! }),
     enabled: !!instanceName,
   });
 };

@@ -22,10 +22,7 @@ interface UpdateDifyParams {
   data: Dify;
 }
 const updateDify = async ({ instanceName, difyId, data }: UpdateDifyParams) => {
-  const response = await api.put(
-    `/dify/update/${difyId}/${instanceName}`,
-    data,
-  );
+  const response = await api.put(`/dify/update/${difyId}/${instanceName}`, data);
   return response.data;
 };
 
@@ -43,11 +40,7 @@ interface SetDefaultSettingsDifyParams {
   token: string;
   data: DifySettings;
 }
-const setDefaultSettingsDify = async ({
-  instanceName,
-  token,
-  data,
-}: SetDefaultSettingsDifyParams) => {
+const setDefaultSettingsDify = async ({ instanceName, token, data }: SetDefaultSettingsDifyParams) => {
   const response = await api.post(`/dify/settings/${instanceName}`, data, {
     headers: { apikey: token },
   });
@@ -60,25 +53,15 @@ interface ChangeStatusDifyParams {
   remoteJid: string;
   status: string;
 }
-const changeStatusDify = async ({
-  instanceName,
-  token,
-  remoteJid,
-  status,
-}: ChangeStatusDifyParams) => {
-  const response = await api.post(
-    `/dify/changeStatus/${instanceName}`,
-    { remoteJid, status },
-    { headers: { apikey: token } },
-  );
+const changeStatusDify = async ({ instanceName, token, remoteJid, status }: ChangeStatusDifyParams) => {
+  const response = await api.post(`/dify/changeStatus/${instanceName}`, { remoteJid, status }, { headers: { apikey: token } });
   return response.data;
 };
 
 export function useManageDify() {
-  const setDefaultSettingsDifyMutation = useManageMutation(
-    setDefaultSettingsDify,
-    { invalidateKeys: [["dify", "fetchDefaultSettings"]] },
-  );
+  const setDefaultSettingsDifyMutation = useManageMutation(setDefaultSettingsDify, {
+    invalidateKeys: [["dify", "fetchDefaultSettings"]],
+  });
   const changeStatusDifyMutation = useManageMutation(changeStatusDify, {
     invalidateKeys: [
       ["dify", "getDify"],

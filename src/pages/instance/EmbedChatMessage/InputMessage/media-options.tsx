@@ -4,12 +4,7 @@ import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 import { useEmbedColors } from "@/contexts/EmbedColorsContext";
 
@@ -106,38 +101,18 @@ const MediaOptions = ({ setSelectedMedia }: MediaOptionsProps) => {
     <>
       <DropdownMenu open={openDropdown} onOpenChange={setOpenDropdown}>
         <DropdownMenuTrigger asChild>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="rounded-full p-2"
-          >
-            <PlusIcon
-              className="h-6 w-6"
-              style={{ color: inputIconsMainColor }}
-            />
+          <Button type="button" variant="ghost" size="icon" className="rounded-full p-2">
+            <PlusIcon className="h-6 w-6" style={{ color: inputIconsMainColor }} />
             <span className="sr-only">{t("chat.media.attach")}</span>
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <input
-            ref={documentInputRef}
-            type="file"
-            accept={allowedDocumentTypes.join(", ")}
-            onChange={handleMediaChange}
-            className="hidden"
-          />
+          <input ref={documentInputRef} type="file" accept={allowedDocumentTypes.join(", ")} onChange={handleMediaChange} className="hidden" />
           <DropdownMenuItem onClick={triggerDocumentInput}>
             <FilePlus className="mr-2 h-4 w-4" />
             {t("chat.media.document")}
           </DropdownMenuItem>
-          <input
-            ref={MediaInputRef}
-            type="file"
-            accept="image/*, video/*"
-            onChange={handleMediaChange}
-            className="hidden"
-          />
+          <input ref={MediaInputRef} type="file" accept="image/*, video/*" onChange={handleMediaChange} className="hidden" />
           <DropdownMenuItem onClick={triggerMediaInput}>
             <ImagesIcon className="mr-2 h-4 w-4" />
             {t("chat.media.photosAndVideos")}

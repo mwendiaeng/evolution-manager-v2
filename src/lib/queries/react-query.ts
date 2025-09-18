@@ -12,14 +12,11 @@ export const queryClient = new QueryClient({
           if (displayedNetworkFailureError === false) {
             displayedNetworkFailureError = true;
 
-            toast.error(
-              "The application is taking longer than expected to load, please try again in a few minutes.",
-              {
-                onClose: () => {
-                  displayedNetworkFailureError = false;
-                },
+            toast.error("The application is taking longer than expected to load, please try again in a few minutes.", {
+              onClose: () => {
+                displayedNetworkFailureError = false;
               },
-            );
+            });
           }
 
           return false;

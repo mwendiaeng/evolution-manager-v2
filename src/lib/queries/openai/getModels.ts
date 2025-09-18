@@ -10,17 +10,9 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "openai",
-  "getModels",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["openai", "getModels", JSON.stringify(params)];
 
-export const getModels = async ({
-  instanceName,
-  openaiCredsId,
-  token,
-}: IParams) => {
+export const getModels = async ({ instanceName, openaiCredsId, token }: IParams) => {
   const params = openaiCredsId ? { openaiCredsId } : {};
 
   const response = await api.get(`/openai/getModels/${instanceName}`, {
@@ -30,9 +22,7 @@ export const getModels = async ({
   return response.data;
 };
 
-export const useGetModels = (
-  props: UseQueryParams<GetModelsResponse> & Partial<IParams>,
-) => {
+export const useGetModels = (props: UseQueryParams<GetModelsResponse> & Partial<IParams>) => {
   const { instanceName, openaiCredsId, token, ...rest } = props;
   return useQuery<GetModelsResponse>({
     staleTime: 1000 * 60 * 60 * 6, // 6 hours

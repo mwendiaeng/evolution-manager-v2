@@ -9,31 +9,21 @@ interface IParams {
   token: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "evoai",
-  "fetchDefaultSettings",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["evoai", "fetchDefaultSettings", JSON.stringify(params)];
 
-export const fetchDefaultSettings = async ({
-  instanceName,
-  token,
-}: IParams) => {
+export const fetchDefaultSettings = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/evoai/fetchSettings/${instanceName}`, {
     headers: { apikey: token },
   });
   return response.data;
 };
 
-export const useFetchDefaultSettings = (
-  props: UseQueryParams<FetchEvoaiSettingsResponse> & Partial<IParams>,
-) => {
+export const useFetchDefaultSettings = (props: UseQueryParams<FetchEvoaiSettingsResponse> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FetchEvoaiSettingsResponse>({
     ...rest,
     queryKey: queryKey({ instanceName, token }),
-    queryFn: () =>
-      fetchDefaultSettings({ instanceName: instanceName!, token: token! }),
+    queryFn: () => fetchDefaultSettings({ instanceName: instanceName!, token: token! }),
     enabled: !!instanceName,
   });
 };

@@ -1,8 +1,4 @@
-import {
-  EvolutionBot,
-  EvolutionBotSettings,
-  IntegrationSession,
-} from "@/types/evolution.types";
+import { EvolutionBot, EvolutionBotSettings, IntegrationSession } from "@/types/evolution.types";
 
 export type FindEvolutionBotResponse = EvolutionBot[];
 

@@ -8,20 +8,8 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormInput,
-  FormSelect,
-  FormSwitch,
-  FormTags,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormInput, FormSelect, FormSwitch, FormTags } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -58,11 +46,10 @@ function DefaultSettingsEvoai() {
     token: instance?.token,
     enabled: open,
   });
-  const { data: settings, refetch: refetchDefaultSettings } =
-    useFetchDefaultSettings({
-      instanceName: instance?.name,
-      token: instance?.token,
-    });
+  const { data: settings, refetch: refetchDefaultSettings } = useFetchDefaultSettings({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -87,22 +74,16 @@ function DefaultSettingsEvoai() {
       form.reset({
         expire: settings?.expire ? settings.expire.toString() : "0",
         keywordFinish: settings.keywordFinish,
-        delayMessage: settings.delayMessage
-          ? settings.delayMessage.toString()
-          : "0",
+        delayMessage: settings.delayMessage ? settings.delayMessage.toString() : "0",
         unknownMessage: settings.unknownMessage,
         listeningFromMe: settings.listeningFromMe,
         stopBotFromMe: settings.stopBotFromMe,
         keepOpen: settings.keepOpen,
-        debounceTime: settings.debounceTime
-          ? settings.debounceTime.toString()
-          : "0",
+        debounceTime: settings.debounceTime ? settings.debounceTime.toString() : "0",
         ignoreJids: settings.ignoreJids,
         evoaiIdFallback: settings.evoaiIdFallback,
         splitMessages: settings.splitMessages,
-        timePerChar: settings.timePerChar
-          ? settings.timePerChar.toString()
-          : "0",
+        timePerChar: settings.timePerChar ? settings.timePerChar.toString() : "0",
       });
     }
   }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -154,18 +135,12 @@ function DefaultSettingsEvoai() {
           <span className="hidden sm:inline">{t("evoai.defaultSettings")}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
-        onCloseAutoFocus={onReset}
-      >
+      <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]" onCloseAutoFocus={onReset}>
         <DialogHeader>
           <DialogTitle>{t("evoai.defaultSettings")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="w-full space-y-6"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="w-full space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
             <div>
               <div className="space-y-4">
                 <FormSelect
@@ -183,64 +158,29 @@ function DefaultSettingsEvoai() {
                 <FormInput name="expire" label={t("evoai.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="keywordFinish"
-                  label={t("evoai.form.keywordFinish.label")}
-                >
+                <FormInput name="keywordFinish" label={t("evoai.form.keywordFinish.label")}>
                   <Input />
                 </FormInput>
-                <FormInput
-                  name="delayMessage"
-                  label={t("evoai.form.delayMessage.label")}
-                >
+                <FormInput name="delayMessage" label={t("evoai.form.delayMessage.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="unknownMessage"
-                  label={t("evoai.form.unknownMessage.label")}
-                >
+                <FormInput name="unknownMessage" label={t("evoai.form.unknownMessage.label")}>
                   <Input />
                 </FormInput>
-                <FormSwitch
-                  name="listeningFromMe"
-                  label={t("evoai.form.listeningFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="stopBotFromMe"
-                  label={t("evoai.form.stopBotFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="keepOpen"
-                  label={t("evoai.form.keepOpen.label")}
-                  reverse
-                />
-                <FormInput
-                  name="debounceTime"
-                  label={t("evoai.form.debounceTime.label")}
-                >
+                <FormSwitch name="listeningFromMe" label={t("evoai.form.listeningFromMe.label")} reverse />
+                <FormSwitch name="stopBotFromMe" label={t("evoai.form.stopBotFromMe.label")} reverse />
+                <FormSwitch name="keepOpen" label={t("evoai.form.keepOpen.label")} reverse />
+                <FormInput name="debounceTime" label={t("evoai.form.debounceTime.label")}>
                   <Input type="number" />
                 </FormInput>
 
-                <FormSwitch
-                  name="splitMessages"
-                  label={t("evoai.form.splitMessages.label")}
-                  reverse
-                />
+                <FormSwitch name="splitMessages" label={t("evoai.form.splitMessages.label")} reverse />
 
-                <FormInput
-                  name="timePerChar"
-                  label={t("evoai.form.timePerChar.label")}
-                >
+                <FormInput name="timePerChar" label={t("evoai.form.timePerChar.label")}>
                   <Input type="number" />
                 </FormInput>
 
-                <FormTags
-                  name="ignoreJids"
-                  label={t("evoai.form.ignoreJids.label")}
-                  placeholder={t("evoai.form.ignoreJids.placeholder")}
-                />
+                <FormTags name="ignoreJids" label={t("evoai.form.ignoreJids.label")} placeholder={t("evoai.form.ignoreJids.placeholder")} />
               </div>
             </div>
             <DialogFooter>

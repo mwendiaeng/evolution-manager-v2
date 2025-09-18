@@ -9,16 +9,9 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "typebot",
-  "fetchDefaultSettings",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["typebot", "fetchDefaultSettings", JSON.stringify(params)];
 
-export const findDefaultSettingsTypebot = async ({
-  instanceName,
-  token,
-}: IParams) => {
+export const findDefaultSettingsTypebot = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/typebot/fetchSettings/${instanceName}`, {
     headers: { apiKey: token },
   });
@@ -28,15 +21,12 @@ export const findDefaultSettingsTypebot = async ({
   return response.data;
 };
 
-export const useFindDefaultSettingsTypebot = (
-  props: UseQueryParams<FindDefaultSettingsTypebot> & Partial<IParams>,
-) => {
+export const useFindDefaultSettingsTypebot = (props: UseQueryParams<FindDefaultSettingsTypebot> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FindDefaultSettingsTypebot>({
     ...rest,
     queryKey: queryKey({ instanceName }),
-    queryFn: () =>
-      findDefaultSettingsTypebot({ instanceName: instanceName!, token }),
+    queryFn: () => findDefaultSettingsTypebot({ instanceName: instanceName!, token }),
     enabled: !!instanceName && (props.enabled ?? true),
   });
 };

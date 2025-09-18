@@ -10,27 +10,14 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "typebot",
-  "fetchSessions",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["typebot", "fetchSessions", JSON.stringify(params)];
 
-export const fetchTypebotSessions = async ({
-  instanceName,
-  typebotId,
-  token,
-}: IParams) => {
-  const response = await api.get(
-    `/typebot/fetchSessions/${typebotId}/${instanceName}`,
-    { headers: { apiKey: token } },
-  );
+export const fetchTypebotSessions = async ({ instanceName, typebotId, token }: IParams) => {
+  const response = await api.get(`/typebot/fetchSessions/${typebotId}/${instanceName}`, { headers: { apiKey: token } });
   return response.data;
 };
 
-export const useFetchSessionsTypebot = (
-  props: UseQueryParams<FetchSessionsTypebotResponse> & Partial<IParams>,
-) => {
+export const useFetchSessionsTypebot = (props: UseQueryParams<FetchSessionsTypebotResponse> & Partial<IParams>) => {
   const { instanceName, token, typebotId, ...rest } = props;
   return useQuery<FetchSessionsTypebotResponse>({
     ...rest,

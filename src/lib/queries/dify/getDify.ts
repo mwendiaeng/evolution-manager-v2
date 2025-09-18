@@ -9,20 +9,14 @@ interface IParams {
   instanceName: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "dify",
-  "getDify",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["dify", "getDify", JSON.stringify(params)];
 
 export const getDify = async ({ difyId, instanceName }: IParams) => {
   const response = await api.get(`/dify/fetch/${difyId}/${instanceName}`);
   return response.data;
 };
 
-export const useGetDify = (
-  props: UseQueryParams<GetDifyResponse> & Partial<IParams>,
-) => {
+export const useGetDify = (props: UseQueryParams<GetDifyResponse> & Partial<IParams>) => {
   const { difyId, instanceName, ...rest } = props;
   return useQuery<GetDifyResponse>({
     ...rest,

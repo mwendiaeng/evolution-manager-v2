@@ -133,46 +133,29 @@ function Settings() {
   return (
     <>
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-full space-y-6"
-        >
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
           <div>
             <h3 className="mb-1 text-lg font-medium">{t("settings.title")}</h3>
             <Separator className="my-4" />
             <div className="mx-4 space-y-2 divide-y">
               <div className="flex flex-col p-4">
-                <FormSwitch
-                  name="rejectCall"
-                  label={t("settings.form.rejectCall.label")}
-                  className="w-full justify-between"
-                  helper={t("settings.form.rejectCall.description")}
-                />
+                <FormSwitch name="rejectCall" label={t("settings.form.rejectCall.label")} className="w-full justify-between" helper={t("settings.form.rejectCall.description")} />
                 {isRejectCall && (
                   <div className="mr-16 mt-2">
                     <FormInput name="msgCall">
-                      <Textarea
-                        placeholder={t("settings.form.msgCall.description")}
-                      />
+                      <Textarea placeholder={t("settings.form.msgCall.description")} />
                     </FormInput>
                   </div>
                 )}
               </div>
               {fields.map((field) => (
                 <div className="flex p-4" key={field.name}>
-                  <FormSwitch
-                    name={field.name}
-                    label={field.label}
-                    className="w-full justify-between"
-                    helper={field.description}
-                  />
+                  <FormSwitch name={field.name} label={field.label} className="w-full justify-between" helper={field.description} />
                 </div>
               ))}
               <div className="flex justify-end pt-6">
                 <Button type="submit" disabled={updating}>
-                  {updating
-                    ? t("settings.button.saving")
-                    : t("settings.button.save")}
+                  {updating ? t("settings.button.saving") : t("settings.button.save")}
                 </Button>
               </div>
             </div>

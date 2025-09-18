@@ -9,11 +9,7 @@ interface CreateEvoaiParams {
   data: Evoai;
 }
 
-const createEvoai = async ({
-  instanceName,
-  token,
-  data,
-}: CreateEvoaiParams) => {
+const createEvoai = async ({ instanceName, token, data }: CreateEvoaiParams) => {
   const response = await api.post(`/evoai/create/${instanceName}`, data, {
     headers: { apikey: token },
   });
@@ -25,15 +21,8 @@ interface UpdateEvoaiParams {
   evoaiId: string;
   data: Evoai;
 }
-const updateEvoai = async ({
-  instanceName,
-  evoaiId,
-  data,
-}: UpdateEvoaiParams) => {
-  const response = await api.put(
-    `/evoai/update/${evoaiId}/${instanceName}`,
-    data,
-  );
+const updateEvoai = async ({ instanceName, evoaiId, data }: UpdateEvoaiParams) => {
+  const response = await api.put(`/evoai/update/${evoaiId}/${instanceName}`, data);
   return response.data;
 };
 
@@ -51,11 +40,7 @@ interface SetDefaultSettingsEvoaiParams {
   token: string;
   data: EvoaiSettings;
 }
-const setDefaultSettingsEvoai = async ({
-  instanceName,
-  token,
-  data,
-}: SetDefaultSettingsEvoaiParams) => {
+const setDefaultSettingsEvoai = async ({ instanceName, token, data }: SetDefaultSettingsEvoaiParams) => {
   const response = await api.post(`/evoai/settings/${instanceName}`, data, {
     headers: { apikey: token },
   });
@@ -68,25 +53,15 @@ interface ChangeStatusEvoaiParams {
   remoteJid: string;
   status: string;
 }
-const changeStatusEvoai = async ({
-  instanceName,
-  token,
-  remoteJid,
-  status,
-}: ChangeStatusEvoaiParams) => {
-  const response = await api.post(
-    `/evoai/changeStatus/${instanceName}`,
-    { remoteJid, status },
-    { headers: { apikey: token } },
-  );
+const changeStatusEvoai = async ({ instanceName, token, remoteJid, status }: ChangeStatusEvoaiParams) => {
+  const response = await api.post(`/evoai/changeStatus/${instanceName}`, { remoteJid, status }, { headers: { apikey: token } });
   return response.data;
 };
 
 export function useManageEvoai() {
-  const setDefaultSettingsEvoaiMutation = useManageMutation(
-    setDefaultSettingsEvoai,
-    { invalidateKeys: [["evoai", "fetchDefaultSettings"]] },
-  );
+  const setDefaultSettingsEvoaiMutation = useManageMutation(setDefaultSettingsEvoai, {
+    invalidateKeys: [["evoai", "fetchDefaultSettings"]],
+  });
   const changeStatusEvoaiMutation = useManageMutation(changeStatusEvoai, {
     invalidateKeys: [
       ["evoai", "getEvoai"],

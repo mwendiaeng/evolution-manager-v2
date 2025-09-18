@@ -9,11 +9,7 @@ interface CreateTypebotParams {
   data: Typebot;
 }
 
-const createTypebot = async ({
-  instanceName,
-  token,
-  data,
-}: CreateTypebotParams) => {
+const createTypebot = async ({ instanceName, token, data }: CreateTypebotParams) => {
   const response = await api.post(`/typebot/create/${instanceName}`, data, {
     headers: { apikey: token },
   });
@@ -24,17 +20,8 @@ interface UpdateTypebotParams extends CreateTypebotParams {
   typebotId: string;
 }
 
-const updateTypebot = async ({
-  instanceName,
-  token,
-  typebotId,
-  data,
-}: UpdateTypebotParams) => {
-  const response = await api.put(
-    `/typebot/update/${typebotId}/${instanceName}`,
-    data,
-    { headers: { apikey: token } },
-  );
+const updateTypebot = async ({ instanceName, token, typebotId, data }: UpdateTypebotParams) => {
+  const response = await api.put(`/typebot/update/${typebotId}/${instanceName}`, data, { headers: { apikey: token } });
   return response.data;
 };
 
@@ -42,13 +29,8 @@ interface DeleteTypebotParams {
   instanceName: string;
   typebotId: string;
 }
-const deleteTypebot = async ({
-  instanceName,
-  typebotId,
-}: DeleteTypebotParams) => {
-  const response = await api.delete(
-    `/typebot/delete/${typebotId}/${instanceName}`,
-  );
+const deleteTypebot = async ({ instanceName, typebotId }: DeleteTypebotParams) => {
+  const response = await api.delete(`/typebot/delete/${typebotId}/${instanceName}`);
   return response.data;
 };
 
@@ -57,11 +39,7 @@ interface SetDefaultSettingsTypebotParams {
   token: string;
   data: TypebotSettings;
 }
-const setDefaultSettingsTypebot = async ({
-  instanceName,
-  token,
-  data,
-}: SetDefaultSettingsTypebotParams) => {
+const setDefaultSettingsTypebot = async ({ instanceName, token, data }: SetDefaultSettingsTypebotParams) => {
   const response = await api.post(`/typebot/settings/${instanceName}`, data, {
     headers: { apikey: token },
   });
@@ -74,12 +52,7 @@ interface ChangeStatusTypebotParams {
   remoteJid: string;
   status: string;
 }
-const changeStatusTypebot = async ({
-  instanceName,
-  token,
-  remoteJid,
-  status,
-}: ChangeStatusTypebotParams) => {
+const changeStatusTypebot = async ({ instanceName, token, remoteJid, status }: ChangeStatusTypebotParams) => {
   const response = await api.post(
     `/typebot/changeStatus/${instanceName}`,
     {
@@ -92,10 +65,9 @@ const changeStatusTypebot = async ({
 };
 
 export function useManageTypebot() {
-  const setDefaultSettingsTypebotMutation = useManageMutation(
-    setDefaultSettingsTypebot,
-    { invalidateKeys: [["typebot", "fetchDefaultSettings"]] },
-  );
+  const setDefaultSettingsTypebotMutation = useManageMutation(setDefaultSettingsTypebot, {
+    invalidateKeys: [["typebot", "fetchDefaultSettings"]],
+  });
   const changeStatusTypebotMutation = useManageMutation(changeStatusTypebot, {
     invalidateKeys: [
       ["typebot", "getTypebot"],

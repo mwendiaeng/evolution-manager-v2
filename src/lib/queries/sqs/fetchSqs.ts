@@ -9,11 +9,7 @@ interface IParams {
   token: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "sqs",
-  "fetchSqs",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["sqs", "fetchSqs", JSON.stringify(params)];
 
 export const fetchSqs = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/sqs/find/${instanceName}`, {
@@ -22,9 +18,7 @@ export const fetchSqs = async ({ instanceName, token }: IParams) => {
   return response.data;
 };
 
-export const useFetchSqs = (
-  props: UseQueryParams<FetchSqsResponse> & Partial<IParams>,
-) => {
+export const useFetchSqs = (props: UseQueryParams<FetchSqsResponse> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FetchSqsResponse>({
     ...rest,

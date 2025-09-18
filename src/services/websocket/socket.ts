@@ -1,4 +1,4 @@
-import { io, Socket } from 'socket.io-client';
+import { io, Socket } from "socket.io-client";
 
 // Store active sockets
 const activeSockets = new Map<string, Socket>();
@@ -19,7 +19,7 @@ export const connectSocket = (serverUrl: string): WebSocketConnection => {
 
   // Create new socket connection
   const socket = io(serverUrl, {
-    transports: ['websocket', 'polling'],
+    transports: ["websocket", "polling"],
     autoConnect: false,
     reconnection: true,
     reconnectionAttempts: 5,
@@ -31,23 +31,23 @@ export const connectSocket = (serverUrl: string): WebSocketConnection => {
   activeSockets.set(serverUrl, socket);
 
   // Set up connection event handlers
-  socket.on('connect', () => {
+  socket.on("connect", () => {
     console.log(`✅ WebSocket connected to ${serverUrl}`);
   });
 
-  socket.on('disconnect', (reason) => {
+  socket.on("disconnect", (reason) => {
     console.log(`❌ WebSocket disconnected from ${serverUrl}:`, reason);
   });
 
-  socket.on('connect_error', (error) => {
+  socket.on("connect_error", (error) => {
     console.error(`🚫 WebSocket connection error to ${serverUrl}:`, error);
   });
 
-  socket.on('reconnect', (attemptNumber) => {
+  socket.on("reconnect", (attemptNumber) => {
     console.log(`🔄 WebSocket reconnected to ${serverUrl} after ${attemptNumber} attempts`);
   });
 
-  socket.on('reconnect_error', (error) => {
+  socket.on("reconnect_error", (error) => {
     console.error(`🔄❌ WebSocket reconnection error to ${serverUrl}:`, error);
   });
 
@@ -88,7 +88,7 @@ const createSocketWrapper = (socket: Socket): WebSocketConnection => {
 
 // Cleanup function to disconnect all sockets
 export const disconnectAllSockets = (): void => {
-  console.log('🧹 Disconnecting all websockets...');
+  console.log("🧹 Disconnecting all websockets...");
   for (const [url, socket] of activeSockets.entries()) {
     console.log(`🔌 Disconnecting socket for ${url}`);
     socket.disconnect();

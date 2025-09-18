@@ -4,15 +4,7 @@ import { useTranslation } from "react-i18next";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { FormInput, FormSelect, FormSwitch } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
@@ -92,30 +84,16 @@ function EvolutionBotForm({
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-full space-y-6">
         <div className="space-y-4">
-          <FormSwitch
-            name="enabled"
-            label={t("evolutionBot.form.enabled.label")}
-            reverse
-          />
-          <FormInput
-            name="description"
-            label={t("evolutionBot.form.description.label")}
-            required
-          >
+          <FormSwitch name="enabled" label={t("evolutionBot.form.enabled.label")} reverse />
+          <FormInput name="description" label={t("evolutionBot.form.description.label")} required>
             <Input />
           </FormInput>
 
           <div className="flex flex-col">
-            <h3 className="my-4 text-lg font-medium">
-              {t("evolutionBot.form.evolutionBotSettings.label")}
-            </h3>
+            <h3 className="my-4 text-lg font-medium">{t("evolutionBot.form.evolutionBotSettings.label")}</h3>
             <Separator />
           </div>
-          <FormInput
-            name="apiUrl"
-            label={t("evolutionBot.form.apiUrl.label")}
-            required
-          >
+          <FormInput name="apiUrl" label={t("evolutionBot.form.apiUrl.label")} required>
             <Input />
           </FormInput>
           <FormInput name="apiKey" label={t("evolutionBot.form.apiKey.label")}>
@@ -123,9 +101,7 @@ function EvolutionBotForm({
           </FormInput>
 
           <div className="flex flex-col">
-            <h3 className="my-4 text-lg font-medium">
-              {t("evolutionBot.form.triggerSettings.label")}
-            </h3>
+            <h3 className="my-4 text-lg font-medium">{t("evolutionBot.form.triggerSettings.label")}</h3>
             <Separator />
           </div>
           <FormSelect
@@ -179,82 +155,43 @@ function EvolutionBotForm({
                   },
                 ]}
               />
-              <FormInput
-                name="triggerValue"
-                label={t("evolutionBot.form.triggerValue.label")}
-              >
+              <FormInput name="triggerValue" label={t("evolutionBot.form.triggerValue.label")}>
                 <Input />
               </FormInput>
             </>
           )}
           {triggerType === "advanced" && (
-            <FormInput
-              name="triggerValue"
-              label={t("evolutionBot.form.triggerConditions.label")}
-            >
+            <FormInput name="triggerValue" label={t("evolutionBot.form.triggerConditions.label")}>
               <Input />
             </FormInput>
           )}
           <div className="flex flex-col">
-            <h3 className="my-4 text-lg font-medium">
-              {t("evolutionBot.form.generalSettings.label")}
-            </h3>
+            <h3 className="my-4 text-lg font-medium">{t("evolutionBot.form.generalSettings.label")}</h3>
             <Separator />
           </div>
           <FormInput name="expire" label={t("evolutionBot.form.expire.label")}>
             <Input type="number" />
           </FormInput>
-          <FormInput
-            name="keywordFinish"
-            label={t("evolutionBot.form.keywordFinish.label")}
-          >
+          <FormInput name="keywordFinish" label={t("evolutionBot.form.keywordFinish.label")}>
             <Input />
           </FormInput>
-          <FormInput
-            name="delayMessage"
-            label={t("evolutionBot.form.delayMessage.label")}
-          >
+          <FormInput name="delayMessage" label={t("evolutionBot.form.delayMessage.label")}>
             <Input type="number" />
           </FormInput>
-          <FormInput
-            name="unknownMessage"
-            label={t("evolutionBot.form.unknownMessage.label")}
-          >
+          <FormInput name="unknownMessage" label={t("evolutionBot.form.unknownMessage.label")}>
             <Input />
           </FormInput>
-          <FormSwitch
-            name="listeningFromMe"
-            label={t("evolutionBot.form.listeningFromMe.label")}
-            reverse
-          />
-          <FormSwitch
-            name="stopBotFromMe"
-            label={t("evolutionBot.form.stopBotFromMe.label")}
-            reverse
-          />
-          <FormSwitch
-            name="keepOpen"
-            label={t("evolutionBot.form.keepOpen.label")}
-            reverse
-          />
-          <FormInput
-            name="debounceTime"
-            label={t("evolutionBot.form.debounceTime.label")}
-          >
+          <FormSwitch name="listeningFromMe" label={t("evolutionBot.form.listeningFromMe.label")} reverse />
+          <FormSwitch name="stopBotFromMe" label={t("evolutionBot.form.stopBotFromMe.label")} reverse />
+          <FormSwitch name="keepOpen" label={t("evolutionBot.form.keepOpen.label")} reverse />
+          <FormInput name="debounceTime" label={t("evolutionBot.form.debounceTime.label")}>
             <Input type="number" />
           </FormInput>
 
-          <FormSwitch
-            name="splitMessages"
-            label={t("evolutionBot.form.splitMessages.label")}
-            reverse
-          />
+          <FormSwitch name="splitMessages" label={t("evolutionBot.form.splitMessages.label")} reverse />
 
           {form.watch("splitMessages") && (
-            <FormInput
-              name="timePerChar"
-              label={t("evolutionBot.form.timePerChar.label")}
-            >
+            <FormInput name="timePerChar" label={t("evolutionBot.form.timePerChar.label")}>
               <Input type="number" />
             </FormInput>
           )}
@@ -263,9 +200,7 @@ function EvolutionBotForm({
         {isModal && (
           <DialogFooter>
             <Button disabled={isLoading} type="submit">
-              {isLoading
-                ? t("evolutionBot.button.saving")
-                : t("evolutionBot.button.save")}
+              {isLoading ? t("evolutionBot.button.saving") : t("evolutionBot.button.save")}
             </Button>
           </DialogFooter>
         )}
@@ -274,10 +209,7 @@ function EvolutionBotForm({
           <div>
             <SessionsEvolutionBot evolutionBotId={evolutionBotId} />
             <div className="mt-5 flex items-center gap-3">
-              <Dialog
-                open={openDeletionDialog}
-                onOpenChange={setOpenDeletionDialog}
-              >
+              <Dialog open={openDeletionDialog} onOpenChange={setOpenDeletionDialog}>
                 <DialogTrigger asChild>
                   <Button variant="destructive" size="sm">
                     {t("dify.button.delete")}
@@ -286,15 +218,9 @@ function EvolutionBotForm({
                 <DialogContent>
                   <DialogHeader>
                     <DialogTitle>{t("modal.delete.title")}</DialogTitle>
-                    <DialogDescription>
-                      {t("modal.delete.messageSingle")}
-                    </DialogDescription>
+                    <DialogDescription>{t("modal.delete.messageSingle")}</DialogDescription>
                     <DialogFooter>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setOpenDeletionDialog(false)}
-                      >
+                      <Button size="sm" variant="outline" onClick={() => setOpenDeletionDialog(false)}>
                         {t("button.cancel")}
                       </Button>
                       <Button variant="destructive" onClick={handleDelete}>
@@ -305,9 +231,7 @@ function EvolutionBotForm({
                 </DialogContent>
               </Dialog>
               <Button disabled={isLoading} type="submit">
-                {isLoading
-                  ? t("evolutionBot.button.saving")
-                  : t("evolutionBot.button.update")}
+                {isLoading ? t("evolutionBot.button.saving") : t("evolutionBot.button.update")}
               </Button>
             </div>
           </div>

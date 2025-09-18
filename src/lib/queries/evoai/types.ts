@@ -1,8 +1,4 @@
-import {
-  IntegrationSession,
-  Evoai,
-  EvoaiSettings,
-} from "@/types/evolution.types";
+import { IntegrationSession, Evoai, EvoaiSettings } from "@/types/evolution.types";
 
 export type FetchEvoaiRsponse = Evoai[];
 

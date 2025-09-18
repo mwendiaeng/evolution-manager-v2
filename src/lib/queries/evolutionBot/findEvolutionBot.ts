@@ -9,11 +9,7 @@ interface IParams {
   token?: string | null;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "evolutionBot",
-  "findEvolutionBot",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["evolutionBot", "findEvolutionBot", JSON.stringify(params)];
 
 export const findEvolutionBot = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/evolutionBot/find/${instanceName}`, {
@@ -22,9 +18,7 @@ export const findEvolutionBot = async ({ instanceName, token }: IParams) => {
   return response.data;
 };
 
-export const useFindEvolutionBot = (
-  props: UseQueryParams<FindEvolutionBotResponse> & Partial<IParams>,
-) => {
+export const useFindEvolutionBot = (props: UseQueryParams<FindEvolutionBotResponse> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FindEvolutionBotResponse>({
     ...rest,

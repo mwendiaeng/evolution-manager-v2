@@ -9,20 +9,14 @@ interface IParams {
   instanceName: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "evoai",
-  "getEvoai",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["evoai", "getEvoai", JSON.stringify(params)];
 
 export const getEvoai = async ({ evoaiId, instanceName }: IParams) => {
   const response = await api.get(`/evoai/fetch/${evoaiId}/${instanceName}`);
   return response.data;
 };
 
-export const useGetEvoai = (
-  props: UseQueryParams<GetEvoaiResponse> & Partial<IParams>,
-) => {
+export const useGetEvoai = (props: UseQueryParams<GetEvoaiResponse> & Partial<IParams>) => {
   const { evoaiId, instanceName, ...rest } = props;
   return useQuery<GetEvoaiResponse>({
     ...rest,

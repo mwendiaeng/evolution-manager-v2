@@ -8,20 +8,8 @@ import { toast } from "react-toastify";
 import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  FormInput,
-  FormSelect,
-  FormSwitch,
-  FormTags,
-} from "@/components/ui/form";
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { FormInput, FormSelect, FormSwitch, FormTags } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
@@ -58,11 +46,10 @@ function DefaultSettingsN8n() {
     token: instance?.token,
     enabled: open,
   });
-  const { data: settings, refetch: refetchDefaultSettings } =
-    useFetchDefaultSettings({
-      instanceName: instance?.name,
-      token: instance?.token,
-    });
+  const { data: settings, refetch: refetchDefaultSettings } = useFetchDefaultSettings({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -87,22 +74,16 @@ function DefaultSettingsN8n() {
       form.reset({
         expire: settings?.expire ? settings.expire.toString() : "0",
         keywordFinish: settings.keywordFinish,
-        delayMessage: settings.delayMessage
-          ? settings.delayMessage.toString()
-          : "0",
+        delayMessage: settings.delayMessage ? settings.delayMessage.toString() : "0",
         unknownMessage: settings.unknownMessage,
         listeningFromMe: settings.listeningFromMe,
         stopBotFromMe: settings.stopBotFromMe,
         keepOpen: settings.keepOpen,
-        debounceTime: settings.debounceTime
-          ? settings.debounceTime.toString()
-          : "0",
+        debounceTime: settings.debounceTime ? settings.debounceTime.toString() : "0",
         ignoreJids: settings.ignoreJids,
         n8nIdFallback: settings.n8nIdFallback,
         splitMessages: settings.splitMessages,
-        timePerChar: settings.timePerChar
-          ? settings.timePerChar.toString()
-          : "0",
+        timePerChar: settings.timePerChar ? settings.timePerChar.toString() : "0",
       });
     }
   }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
@@ -154,18 +135,12 @@ function DefaultSettingsN8n() {
           <span className="hidden sm:inline">{t("n8n.defaultSettings")}</span>
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
-        onCloseAutoFocus={onReset}
-      >
+      <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]" onCloseAutoFocus={onReset}>
         <DialogHeader>
           <DialogTitle>{t("n8n.defaultSettings")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            className="w-full space-y-6"
-            onSubmit={form.handleSubmit(onSubmit)}
-          >
+          <form className="w-full space-y-6" onSubmit={form.handleSubmit(onSubmit)}>
             <div>
               <div className="space-y-4">
                 <FormSelect
@@ -183,64 +158,29 @@ function DefaultSettingsN8n() {
                 <FormInput name="expire" label={t("n8n.form.expire.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="keywordFinish"
-                  label={t("n8n.form.keywordFinish.label")}
-                >
+                <FormInput name="keywordFinish" label={t("n8n.form.keywordFinish.label")}>
                   <Input />
                 </FormInput>
-                <FormInput
-                  name="delayMessage"
-                  label={t("n8n.form.delayMessage.label")}
-                >
+                <FormInput name="delayMessage" label={t("n8n.form.delayMessage.label")}>
                   <Input type="number" />
                 </FormInput>
-                <FormInput
-                  name="unknownMessage"
-                  label={t("n8n.form.unknownMessage.label")}
-                >
+                <FormInput name="unknownMessage" label={t("n8n.form.unknownMessage.label")}>
                   <Input />
                 </FormInput>
-                <FormSwitch
-                  name="listeningFromMe"
-                  label={t("n8n.form.listeningFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="stopBotFromMe"
-                  label={t("n8n.form.stopBotFromMe.label")}
-                  reverse
-                />
-                <FormSwitch
-                  name="keepOpen"
-                  label={t("n8n.form.keepOpen.label")}
-                  reverse
-                />
-                <FormInput
-                  name="debounceTime"
-                  label={t("n8n.form.debounceTime.label")}
-                >
+                <FormSwitch name="listeningFromMe" label={t("n8n.form.listeningFromMe.label")} reverse />
+                <FormSwitch name="stopBotFromMe" label={t("n8n.form.stopBotFromMe.label")} reverse />
+                <FormSwitch name="keepOpen" label={t("n8n.form.keepOpen.label")} reverse />
+                <FormInput name="debounceTime" label={t("n8n.form.debounceTime.label")}>
                   <Input type="number" />
                 </FormInput>
 
-                <FormSwitch
-                  name="splitMessages"
-                  label={t("n8n.form.splitMessages.label")}
-                  reverse
-                />
+                <FormSwitch name="splitMessages" label={t("n8n.form.splitMessages.label")} reverse />
 
-                <FormInput
-                  name="timePerChar"
-                  label={t("n8n.form.timePerChar.label")}
-                >
+                <FormInput name="timePerChar" label={t("n8n.form.timePerChar.label")}>
                   <Input type="number" />
                 </FormInput>
 
-                <FormTags
-                  name="ignoreJids"
-                  label={t("n8n.form.ignoreJids.label")}
-                  placeholder={t("n8n.form.ignoreJids.placeholder")}
-                />
+                <FormTags name="ignoreJids" label={t("n8n.form.ignoreJids.label")} placeholder={t("n8n.form.ignoreJids.placeholder")} />
               </div>
             </div>
             <DialogFooter>

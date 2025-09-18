@@ -9,20 +9,14 @@ interface IParams {
   instanceName: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "n8n",
-  "getN8n",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["n8n", "getN8n", JSON.stringify(params)];
 
 export const getN8n = async ({ n8nId, instanceName }: IParams) => {
   const response = await api.get(`/n8n/fetch/${n8nId}/${instanceName}`);
   return response.data;
 };
 
-export const useGetN8n = (
-  props: UseQueryParams<GetN8nResponse> & Partial<IParams>,
-) => {
+export const useGetN8n = (props: UseQueryParams<GetN8nResponse> & Partial<IParams>) => {
   const { n8nId, instanceName, ...rest } = props;
   return useQuery<GetN8nResponse>({
     ...rest,

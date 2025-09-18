@@ -9,11 +9,7 @@ interface IParams {
   token?: string;
 }
 
-const queryKey = (params: Partial<IParams>) => [
-  "dify",
-  "fetchDify",
-  JSON.stringify(params),
-];
+const queryKey = (params: Partial<IParams>) => ["dify", "fetchDify", JSON.stringify(params)];
 
 export const fetchDify = async ({ instanceName, token }: IParams) => {
   const response = await api.get(`/dify/find/${instanceName}`, {
@@ -22,9 +18,7 @@ export const fetchDify = async ({ instanceName, token }: IParams) => {
   return response.data;
 };
 
-export const useFetchDify = (
-  props: UseQueryParams<FetchDifyRsponse> & Partial<IParams>,
-) => {
+export const useFetchDify = (props: UseQueryParams<FetchDifyRsponse> & Partial<IParams>) => {
   const { instanceName, token, ...rest } = props;
   return useQuery<FetchDifyRsponse>({
     ...rest,

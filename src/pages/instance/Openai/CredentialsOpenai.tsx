@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { zodResolver } from "@hookform/resolvers/zod";
 import { ColumnDef, SortingState } from "@tanstack/react-table";
-import { ArrowUpDown, Lock, MoreHorizontal } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowUpDown, Lock, Plus, MoreHorizontal } from "lucide-react";
+import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
@@ -32,45 +32,35 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  createOpenaiCreds,
-  deleteOpenaiCreds,
-  findOpenaiCreds,
-} from "@/services/openai.service";
+import { useFindOpenaiCreds } from "@/lib/queries/openai/findOpenaiCreds";
+import { useManageOpenai } from "@/lib/queries/openai/manageOpenai";
 
-import { Instance, OpenaiCreds } from "@/types/evolution.types";
+import { OpenaiCreds } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   name: z.string(),
   apiKey: z.string(),
 });
 
-const fetchData = async (instance: Instance | null, setCreds: any) => {
-  try {
-    const storedToken = localStorage.getItem("token");
+interface CredentialsOpenaiProps {
+  onCredentialsUpdate?: () => void;
+  showText?: boolean;
+}
 
-    if (storedToken && instance && instance.name) {
-      const getCreds: OpenaiCreds[] = await findOpenaiCreds(
-        instance.name,
-        storedToken,
-      );
-
-      setCreds(getCreds);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
-
-function CredentialsOpenai() {
+function CredentialsOpenai({
+  onCredentialsUpdate,
+  showText = true,
+}: CredentialsOpenaiProps) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { createOpenaiCreds, deleteOpenaiCreds } = useManageOpenai();
   const [open, setOpen] = useState(false);
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [creds, setCreds] = useState<OpenaiCreds[] | []>([]);
+  const { data: creds } = useFindOpenaiCreds({
+    instanceName: instance?.name,
+    enabled: open,
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -79,10 +69,6 @@ function CredentialsOpenai() {
       apiKey: "",
     },
   });
-
-  useEffect(() => {
-    if (open) fetchData(instance, setCreds);
-  }, [instance, open]);
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
@@ -95,9 +81,16 @@ function CredentialsOpenai() {
         apiKey: data.apiKey,
       };
 
-      await createOpenaiCreds(instance.name, instance.token, credsData);
+      await createOpenaiCreds({
+        instanceName: instance.name,
+        token: instance.token,
+        data: credsData,
+      });
       toast.success(t("openai.toast.success.credentialsCreate"));
-      onReset();
+      form.reset();
+      if (onCredentialsUpdate) {
+        onCredentialsUpdate();
+      }
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error("Error:", error);
@@ -105,16 +98,20 @@ function CredentialsOpenai() {
     }
   };
 
-  function onReset() {
-    form.reset();
-    fetchData(instance, setCreds);
-  }
-
   const handleDelete = async (id: string) => {
+    if (!instance?.name) {
+      toast.error("Instance not found.");
+      return;
+    }
     try {
-      await deleteOpenaiCreds(id, instance?.name as string);
+      await deleteOpenaiCreds({
+        openaiCredsId: id,
+        instanceName: instance?.name,
+      });
       toast.success(t("openai.toast.success.credentialsDelete"));
-      fetchData(instance, setCreds);
+      if (onCredentialsUpdate) {
+        onCredentialsUpdate();
+      }
     } catch (error: any) {
       console.error("Error:", error);
       toast.error(`Error: ${error?.response?.data?.response?.message}`);
@@ -182,51 +179,64 @@ function CredentialsOpenai() {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant="secondary" size="sm">
-          <Lock size={16} className="mr-1" />
-          <span className="hidden md:inline">
-            {t("openai.credentials.title")}
-          </span>
+        <Button variant="secondary" size="sm" type="button">
+          {showText ? (
+            <>
+              <Lock size={16} className="mr-1" />
+              <span className="hidden md:inline">
+                {t("openai.credentials.title")}
+              </span>
+            </>
+          ) : (
+            <Plus size={16} />
+          )}
         </Button>
       </DialogTrigger>
-      <DialogContent
-        className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]"
-        onCloseAutoFocus={onReset}
-      >
+      <DialogContent className="overflow-y-auto sm:max-h-[600px] sm:max-w-[740px]">
         <DialogHeader>
           <DialogTitle>{t("openai.credentials.title")}</DialogTitle>
         </DialogHeader>
         <FormProvider {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="w-full space-y-6"
+          <div
+            onClick={(e) => e.stopPropagation()}
+            onSubmit={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
           >
-            <div>
-              <div className="grid gap-3 md:grid-cols-2">
-                <FormInput
-                  name="name"
-                  label={t("openai.credentials.table.name")}
-                >
-                  <Input />
-                </FormInput>
-                <FormInput
-                  name="apiKey"
-                  label={t("openai.credentials.table.apiKey")}
-                >
-                  <Input type="password" />
-                </FormInput>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                form.handleSubmit(onSubmit)(e);
+              }}
+              className="w-full space-y-6"
+            >
+              <div>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <FormInput
+                    name="name"
+                    label={t("openai.credentials.table.name")}
+                  >
+                    <Input />
+                  </FormInput>
+                  <FormInput
+                    name="apiKey"
+                    label={t("openai.credentials.table.apiKey")}
+                  >
+                    <Input type="password" />
+                  </FormInput>
+                </div>
               </div>
-            </div>
-            <DialogFooter>
-              <Button type="submit">{t("openai.button.save")}</Button>
-            </DialogFooter>
-          </form>
+              <DialogFooter>
+                <Button type="submit">{t("openai.button.save")}</Button>
+              </DialogFooter>
+            </form>
+          </div>
         </FormProvider>
         <Separator />
         <div>
           <DataTable
             columns={columns}
-            data={creds}
+            data={creds ?? []}
             onSortingChange={setSorting}
             state={{ sorting }}
             noResultsMessage={t("openai.credentials.table.none")}

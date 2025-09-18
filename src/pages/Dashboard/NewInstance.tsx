@@ -19,7 +19,7 @@ import {
 import { FormInput, FormSelect } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { createInstance } from "@/services/instances.service";
+import { useManageInstance } from "@/lib/queries/instance/manageInstance";
 
 import { NewInstance as NewInstanceType } from "@/types/evolution.types";
 
@@ -38,6 +38,7 @@ const FormSchema = z.object({
 
 function NewInstance({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
+  const { createInstance } = useManageInstance();
   const [open, setOpen] = useState(false);
   const options = [
     {

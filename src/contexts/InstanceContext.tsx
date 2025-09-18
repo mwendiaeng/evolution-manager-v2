@@ -8,12 +8,13 @@ import React, {
 } from "react";
 import { useParams } from "react-router-dom";
 
-import { fetchInstance } from "@/services/instances.service";
+import { useFetchInstance } from "@/lib/queries/instance/fetchInstance";
 
 import { Instance } from "@/types/evolution.types";
 
 interface InstanceContextProps {
   instance: Instance | null;
+  reloadInstance: () => Promise<void>;
 }
 
 export const InstanceContext = createContext<InstanceContextProps | null>(null);
@@ -35,7 +36,9 @@ export const InstanceProvider: React.FC<InstanceProviderProps> = ({
 }): React.ReactNode => {
   const queryParams = useParams<{ instanceId: string }>();
   const [instanceId, setInstanceId] = useState<string | null>(null);
-  const [instance, setInstance] = useState<Instance | null>(null);
+  const { data: instance, refetch: reloadInstance } = useFetchInstance({
+    instanceId,
+  });
 
   useEffect(() => {
     if (queryParams.instanceId) {
@@ -45,27 +48,15 @@ export const InstanceProvider: React.FC<InstanceProviderProps> = ({
     }
   }, [queryParams]);
 
-  useEffect(() => {
-    const abortController = new AbortController();
-    const fetchData = async (instanceId: string) => {
-      try {
-        const data = await fetchInstance(instanceId, abortController.signal);
-        setInstance(data[0] || null);
-      } catch (error) {
-        console.error("Erro ao buscar dados:", error);
-      }
-    };
-
-    if (instanceId) {
-      fetchData(instanceId);
-    }
-    return () => {
-      abortController.abort();
-    };
-  }, [instanceId]);
-
   return (
-    <InstanceContext.Provider value={{ instance }}>
+    <InstanceContext.Provider
+      value={{
+        instance: instance ?? null,
+        reloadInstance: async () => {
+          await reloadInstance();
+        },
+      }}
+    >
       {children}
     </InstanceContext.Provider>
   );

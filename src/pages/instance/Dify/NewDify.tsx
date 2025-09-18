@@ -15,7 +15,7 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createDify } from "@/services/dify.service";
+import { useManageDify } from "@/lib/queries/dify/manageDify";
 
 import { Dify } from "@/types/evolution.types";
 
@@ -27,6 +27,7 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
 
   const [updating, setUpdating] = useState(false);
   const [open, setOpen] = useState(false);
+  const { createDify } = useManageDify();
 
   const onSubmit = async (data: FormSchemaType) => {
     try {
@@ -52,9 +53,15 @@ function NewDify({ resetTable }: { resetTable: () => void }) {
         stopBotFromMe: data.stopBotFromMe || false,
         keepOpen: data.keepOpen || false,
         debounceTime: data.debounceTime || 0,
+        splitMessages: data.splitMessages || false,
+        timePerChar: data.timePerChar || 0,
       };
 
-      await createDify(instance.name, instance.token, difyData);
+      await createDify({
+        instanceName: instance.name,
+        token: instance.token,
+        data: difyData,
+      });
       toast.success(t("dify.toast.success.create"));
       setOpen(false);
       resetTable();

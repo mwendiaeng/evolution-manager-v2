@@ -43,8 +43,28 @@
       "french": "French"
     }
   },
+  "chat": {
+    "media": {
+      "attach": "Attach file",
+      "document": "Document",
+      "photosAndVideos": "Photos and Videos",
+      "errors": {
+        "audioSize": "Audio file size must be less than 16 MB",
+        "imageSize": "Image file size must be less than 5 MB",
+        "videoSize": "Video file size must be less than 16 MB",
+        "documentSize": "Document file size must be less than 100 MB",
+        "unsupportedType": "Unsupported file type"
+      },
+      "selectedMedia": {
+        "imageAlt": "Selected image",
+        "file": "File",
+        "selectedFile": "Selected file"
+      }
+    }
+  },
   "sidebar": {
     "dashboard": "Dashboard",
+    "chat": "Chat",
     "configurations": "Configurations",
     "settings": "Settings",
     "proxy": "Proxy",
@@ -58,6 +78,8 @@
     "typebot": "Typebot",
     "openai": "OpenAI",
     "dify": "Dify",
+    "n8n": "n8n",
+    "evoai": "EvoAI",
     "evolutionBot": "Evolution Bot",
     "flowise": "Flowise",
     "documentation": "Documentation",
@@ -481,6 +503,13 @@
       "debounceTime": {
         "label": "Debounce Time"
       },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
+      },
       "ignoreJids": {
         "label": "Ignore Jids",
         "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
@@ -587,7 +616,7 @@
         "label": "System Messages",
         "description": "Send system messages to OpenAI"
       },
-      "assystantMessages": {
+      "assistantMessages": {
         "label": "Assistant Messages",
         "description": "Send assistant messages to OpenAI"
       },
@@ -659,6 +688,13 @@
       "debounceTime": {
         "label": "Debounce Time"
       },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
+      },
       "ignoreJids": {
         "label": "Ignore Jids",
         "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
@@ -670,7 +706,9 @@
       "saving": "Saving...",
       "update": "Update",
       "defaultSettings": "Default Settings",
-      "delete": "Delete"
+      "delete": "Delete",
+      "loadModels": "Load Models",
+      "loading": "Loading..."
     },
     "modal": {
       "defaultSettings": {
@@ -800,6 +838,13 @@
       "debounceTime": {
         "label": "Debounce Time"
       },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
+      },
       "ignoreJids": {
         "label": "Ignore Jids",
         "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
@@ -807,6 +852,294 @@
     },
     "button": {
       "create": "Dify",
+      "save": "Save",
+      "saving": "Saving...",
+      "update": "Update",
+      "defaultSettings": "Default Settings",
+      "delete": "Delete"
+    },
+    "modal": {
+      "defaultSettings": {
+        "title": "Default Settings"
+      }
+    }
+  },
+  "n8n": {
+    "title": "n8n",
+    "sessions": {
+      "label": "Sessions",
+      "search": "Search for remoteJid...",
+      "table": {
+        "remoteJid": "RemoteJid",
+        "pushName": "Push Name",
+        "sessionId": "Session ID",
+        "status": "Status",
+        "actions": {
+          "title": "Actions",
+          "open": "Open",
+          "pause": "Pause",
+          "close": "Close",
+          "delete": "Delete"
+        },
+        "none": "Nothing to show"
+      }
+    },
+    "defaultSettings": "Default Settings",
+    "toast": {
+      "defaultSettings": {
+        "success": "Default settings applied successfully",
+        "error": "An error occurred while applying the default settings"
+      },
+      "success": {
+        "update": "n8n updated successfully",
+        "create": "n8n created successfully",
+        "delete": "n8n deleted successfully",
+        "status": "n8n status updated successfully"
+      },
+      "error": "An error occurred while creating the n8n chatbot"
+    },
+    "table": {
+      "none": "Nothing to show"
+    },
+    "form": {
+      "title": "New n8n chatbot",
+      "examples": {
+        "keywordFinish": "#FINISH",
+        "unknownMessage": "I'm sorry, I didn't understand. Can you try again?"
+      },
+      "enabled": {
+        "label": "Enabled"
+      },
+      "description": {
+        "label": "Description"
+      },
+      "n8nSettings": {
+        "label": "n8n Settings"
+      },
+      "webhookUrl": {
+        "label": "Webhook URL"
+      },
+      "basicAuth": {
+        "label": "Basic Auth (Optional)"
+      },
+      "basicAuthUser": {
+        "label": "Basic Auth User"
+      },
+      "basicAuthPass": {
+        "label": "Basic Auth Password"
+      },
+      "triggerSettings": {
+        "label": "Trigger Settings"
+      },
+      "triggerType": {
+        "label": "Trigger Type",
+        "keyword": "Keyword",
+        "all": "All",
+        "advanced": "Advanced",
+        "none": "None"
+      },
+      "triggerOperator": {
+        "label": "Trigger Operator",
+        "contains": "Contains",
+        "equals": "Equals",
+        "startsWith": "Starts With",
+        "endsWith": "Ends With",
+        "regex": "Regex"
+      },
+      "triggerValue": {
+        "label": "Trigger"
+      },
+      "triggerConditions": {
+        "label": "Conditions"
+      },
+      "n8nIdFallback": {
+        "label": "n8n Fallback"
+      },
+      "generalSettings": {
+        "label": "General Settings"
+      },
+      "expire": {
+        "label": "Expire in minutes"
+      },
+      "keywordFinish": {
+        "label": "Keyword Finish"
+      },
+      "delayMessage": {
+        "label": "Default Delay Message"
+      },
+      "unknownMessage": {
+        "label": "Unknown Message"
+      },
+      "listeningFromMe": {
+        "label": "Listening from me",
+        "description": "Listen to messages sent by me on the bot"
+      },
+      "stopBotFromMe": {
+        "label": "Stop bot from me",
+        "description": "Pause the bot when I send a message"
+      },
+      "keepOpen": {
+        "label": "Keep open",
+        "description": "Keep the bot open after the conversation ends"
+      },
+      "debounceTime": {
+        "label": "Debounce Time"
+      },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
+      },
+      "ignoreJids": {
+        "label": "Ignore Jids",
+        "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
+      }
+    },
+    "button": {
+      "create": "n8n",
+      "save": "Save",
+      "saving": "Saving...",
+      "update": "Update",
+      "defaultSettings": "Default Settings",
+      "delete": "Delete"
+    },
+    "modal": {
+      "defaultSettings": {
+        "title": "Default Settings"
+      }
+    }
+  },
+  "evoai": {
+    "title": "EvoAI",
+    "sessions": {
+      "label": "Sessions",
+      "search": "Search for remoteJid...",
+      "table": {
+        "remoteJid": "RemoteJid",
+        "pushName": "Push Name",
+        "sessionId": "Session ID",
+        "status": "Status",
+        "actions": {
+          "title": "Actions",
+          "open": "Open",
+          "pause": "Pause",
+          "close": "Close",
+          "delete": "Delete"
+        },
+        "none": "Nothing to show"
+      }
+    },
+    "defaultSettings": "Default Settings",
+    "toast": {
+      "defaultSettings": {
+        "success": "Default settings applied successfully",
+        "error": "An error occurred while applying the default settings"
+      },
+      "success": {
+        "update": "EvoAI updated successfully",
+        "create": "EvoAI created successfully",
+        "delete": "EvoAI deleted successfully",
+        "status": "EvoAI status updated successfully"
+      },
+      "error": "An error occurred while creating the EvoAI chatbot"
+    },
+    "table": {
+      "none": "Nothing to show"
+    },
+    "form": {
+      "title": "New EvoAI chatbot",
+      "examples": {
+        "keywordFinish": "#FINISH",
+        "unknownMessage": "I'm sorry, I didn't understand. Can you try again?"
+      },
+      "enabled": {
+        "label": "Enabled"
+      },
+      "description": {
+        "label": "Description"
+      },
+      "evoaiSettings": {
+        "label": "EvoAI Settings"
+      },
+      "agentUrl": {
+        "label": "Agent URL"
+      },
+      "apiKey": {
+        "label": "API Key (Optional)"
+      },
+      "triggerSettings": {
+        "label": "Trigger Settings"
+      },
+      "triggerType": {
+        "label": "Trigger Type",
+        "keyword": "Keyword",
+        "all": "All",
+        "advanced": "Advanced",
+        "none": "None"
+      },
+      "triggerOperator": {
+        "label": "Trigger Operator",
+        "contains": "Contains",
+        "equals": "Equals",
+        "startsWith": "Starts With",
+        "endsWith": "Ends With",
+        "regex": "Regex"
+      },
+      "triggerValue": {
+        "label": "Trigger"
+      },
+      "triggerConditions": {
+        "label": "Conditions"
+      },
+      "evoaiIdFallback": {
+        "label": "EvoAI Fallback"
+      },
+      "generalSettings": {
+        "label": "General Settings"
+      },
+      "expire": {
+        "label": "Expire in minutes"
+      },
+      "keywordFinish": {
+        "label": "Keyword Finish"
+      },
+      "delayMessage": {
+        "label": "Default Delay Message"
+      },
+      "unknownMessage": {
+        "label": "Unknown Message"
+      },
+      "listeningFromMe": {
+        "label": "Listening from me",
+        "description": "Listen to messages sent by me on the bot"
+      },
+      "stopBotFromMe": {
+        "label": "Stop bot from me",
+        "description": "Pause the bot when I send a message"
+      },
+      "keepOpen": {
+        "label": "Keep open",
+        "description": "Keep the bot open after the conversation ends"
+      },
+      "debounceTime": {
+        "label": "Debounce Time"
+      },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
+      },
+      "ignoreJids": {
+        "label": "Ignore Jids",
+        "placeholder": "Add JIDs ex: 1234567890@s.whatsapp.net and press enter"
+      }
+    },
+    "button": {
+      "create": "EvoAI",
       "save": "Save",
       "saving": "Saving...",
       "update": "Update",
@@ -933,6 +1266,13 @@
       },
       "debounceTime": {
         "label": "Debounce Time"
+      },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
       },
       "ignoreJids": {
         "label": "Ignore Jids",
@@ -1067,6 +1407,13 @@
       },
       "debounceTime": {
         "label": "Debounce Time"
+      },
+      "splitMessages": {
+        "label": "Split Messages",
+        "description": "Split messages into multiple messages"
+      },
+      "timePerChar": {
+        "label": "Time per character"
       },
       "ignoreJids": {
         "label": "Ignore Jids",

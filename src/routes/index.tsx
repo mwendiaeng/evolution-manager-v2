@@ -11,8 +11,10 @@ import { Chat } from "@/pages/instance/Chat";
 import { Chatwoot } from "@/pages/instance/Chatwoot";
 import { DashboardInstance } from "@/pages/instance/DashboardInstance";
 import { Dify } from "@/pages/instance/Dify";
+import { Evoai } from "@/pages/instance/Evoai";
 import { EvolutionBot } from "@/pages/instance/EvolutionBot";
 import { Flowise } from "@/pages/instance/Flowise";
+import { N8n } from "@/pages/instance/N8n";
 import { Openai } from "@/pages/instance/Openai";
 import { Proxy } from "@/pages/instance/Proxy";
 import { Rabbitmq } from "@/pages/instance/Rabbitmq";
@@ -21,6 +23,7 @@ import { Sqs } from "@/pages/instance/Sqs";
 import { Typebot } from "@/pages/instance/Typebot";
 import { Webhook } from "@/pages/instance/Webhook";
 import { Websocket } from "@/pages/instance/Websocket";
+import { EmbedChat } from "@/pages/instance/EmbedChat";
 import Login from "@/pages/Login";
 
 const router = createBrowserRouter([
@@ -193,6 +196,46 @@ const router = createBrowserRouter([
     ),
   },
   {
+    path: "/manager/instance/:instanceId/n8n",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <N8n />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/n8n/:n8nId",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <N8n />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/evoai",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Evoai />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
+    path: "/manager/instance/:instanceId/evoai/:evoaiId",
+    element: (
+      <ProtectedRoute>
+        <InstanceLayout>
+          <Evoai />
+        </InstanceLayout>
+      </ProtectedRoute>
+    ),
+  },
+  {
     path: "/manager/instance/:instanceId/evolutionBot",
     element: (
       <ProtectedRoute>
@@ -242,6 +285,14 @@ const router = createBrowserRouter([
       </ProtectedRoute>
     ),
   },
+          {
+          path: "/manager/embed-chat",
+          element: <EmbedChat />,
+        },
+        {
+          path: "/manager/embed-chat/:remoteJid",
+          element: <EmbedChat />,
+        },
 ]);
 
 export default router;

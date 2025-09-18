@@ -58,6 +58,8 @@
     "typebot": "Typebot",
     "openai": "OpenAI",
     "dify": "Dify",
+    "evoai": "EvoAI",
+    "n8n": "n8n",
     "evolutionBot": "Bot Evolution",
     "flowise": "Flowise",
     "documentation": "Documentación",
@@ -481,6 +483,13 @@
       "debounceTime": {
         "label": "Tiempo de Debounce"
       },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes largos en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por Carácter"
+      },
       "ignoreJids": {
         "label": "Ignorar JIDs",
         "placeholder": "Agregar JIDs ej: 1234567890@s.whatsapp.net y presiona enter"
@@ -587,7 +596,7 @@
         "label": "Mensajes del Sistema",
         "description": "Enviar mensajes del sistema a OpenAI"
       },
-      "assystantMessages": {
+      "assistantMessages": {
         "label": "Mensajes del Asistente",
         "description": "Enviar mensajes del asistente a OpenAI"
       },
@@ -659,6 +668,13 @@
       "debounceTime": {
         "label": "Tiempo de Debounce"
       },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes largos en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por Carácter"
+      },
       "ignoreJids": {
         "label": "Ignorar JIDs",
         "placeholder": "Agregar JIDs ej: 1234567890@s.whatsapp.net y presiona enter"
@@ -670,7 +686,9 @@
       "saving": "Guardando...",
       "update": "Actualizar",
       "defaultSettings": "Configuraciones Predeterminadas",
-      "delete": "Eliminar"
+      "delete": "Eliminar",
+      "loadModels": "Cargar Modelos",
+      "loading": "Cargando..."
     },
     "modal": {
       "defaultSettings": {
@@ -800,6 +818,13 @@
       "debounceTime": {
         "label": "Tiempo de Debounce"
       },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes largos en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por Carácter"
+      },
       "ignoreJids": {
         "label": "Ignorar JIDs",
         "placeholder": "Agregar JIDs ej: 1234567890@s.whatsapp.net y presiona enter"
@@ -807,6 +832,294 @@
     },
     "button": {
       "create": "Dify",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "update": "Actualizar",
+      "defaultSettings": "Configuraciones Predeterminadas",
+      "delete": "Eliminar"
+    },
+    "modal": {
+      "defaultSettings": {
+        "title": "Configuraciones Predeterminadas"
+      }
+    }
+  },
+  "n8n": {
+    "title": "n8n",
+    "sessions": {
+      "label": "Sesiones",
+      "search": "Buscar por remoteJid...",
+      "table": {
+        "remoteJid": "RemoteJid",
+        "pushName": "Push Name",
+        "sessionId": "Session ID",
+        "status": "Estado",
+        "actions": {
+          "title": "Acciones",
+          "open": "Abrir",
+          "pause": "Pausar",
+          "close": "Cerrar",
+          "delete": "Eliminar"
+        },
+        "none": "Nada que mostrar"
+      }
+    },
+    "defaultSettings": "Configuraciones Predeterminadas",
+    "toast": {
+      "defaultSettings": {
+        "success": "Configuraciones predeterminadas aplicadas con éxito",
+        "error": "Ocurrió un error al aplicar las configuraciones predeterminadas"
+      },
+      "success": {
+        "update": "n8n actualizado con éxito",
+        "create": "n8n creado con éxito",
+        "delete": "n8n eliminado con éxito",
+        "status": "Estado de n8n actualizado con éxito"
+      },
+      "error": "Ocurrió un error al crear el chatbot n8n"
+    },
+    "table": {
+      "none": "Nada que mostrar"
+    },
+    "form": {
+      "title": "Nuevo chatbot n8n",
+      "examples": {
+        "keywordFinish": "#FINISH",
+        "unknownMessage": "Lo siento, no entendí. ¿Puedes intentar de nuevo?"
+      },
+      "enabled": {
+        "label": "Activo"
+      },
+      "description": {
+        "label": "Descripción"
+      },
+      "n8nSettings": {
+        "label": "Configuraciones de n8n"
+      },
+      "webhookUrl": {
+        "label": "URL del Webhook"
+      },
+      "basicAuth": {
+        "label": "Basic Auth (Opcional)"
+      },
+      "basicAuthUser": {
+        "label": "Basic Auth User"
+      },
+      "basicAuthPass": {
+        "label": "Basic Auth Password"
+      },
+      "triggerSettings": {
+        "label": "Configuraciones de Disparador"
+      },
+      "triggerType": {
+        "label": "Tipo de Disparador",
+        "keyword": "Palabra clave",
+        "all": "Todos",
+        "advanced": "Avanzado",
+        "none": "Ninguno"
+      },
+      "triggerOperator": {
+        "label": "Operador de Disparador",
+        "contains": "Contiene",
+        "equals": "Igual",
+        "startsWith": "Comienza Con",
+        "endsWith": "Termina Con",
+        "regex": "Regex"
+      },
+      "triggerValue": {
+        "label": "Disparador"
+      },
+      "triggerConditions": {
+        "label": "Condiciones"
+      },
+      "n8nIdFallback": {
+        "label": "Fallback de n8n"
+      },
+      "generalSettings": {
+        "label": "Configuraciones Generales"
+      },
+      "expire": {
+        "label": "Expirar en minutos"
+      },
+      "keywordFinish": {
+        "label": "Palabra clave de Finalización"
+      },
+      "delayMessage": {
+        "label": "Mensaje de Retraso Predeterminado"
+      },
+      "unknownMessage": {
+        "label": "Mensaje Desconocido"
+      },
+      "listeningFromMe": {
+        "label": "Escuchando de mí",
+        "description": "Escuchar los mensajes enviados por mí en el bot"
+      },
+      "stopBotFromMe": {
+        "label": "Detener bot por mí",
+        "description": "Pausar el bot cuando yo envíe un mensaje"
+      },
+      "keepOpen": {
+        "label": "Mantener abierto",
+        "description": "Mantener el bot abierto después de que termine la conversación"
+      },
+      "debounceTime": {
+        "label": "Tiempo de Debounce"
+      },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por carácter"
+      },
+      "ignoreJids": {
+        "label": "Ignorar JIDs",
+        "placeholder": "Agregar JIDs ej: 1234567890@s.whatsapp.net y presiona enter"
+      }
+    },
+    "button": {
+      "create": "n8n",
+      "save": "Guardar",
+      "saving": "Guardando...",
+      "update": "Actualizar",
+      "defaultSettings": "Configuraciones Predeterminadas",
+      "delete": "Eliminar"
+    },
+    "modal": {
+      "defaultSettings": {
+        "title": "Configuraciones Predeterminadas"
+      }
+    }
+  },
+  "evoai": {
+    "title": "EvoAI",
+    "sessions": {
+      "label": "Sesiones",
+      "search": "Buscar por remoteJid...",
+      "table": {
+        "remoteJid": "RemoteJid",
+        "pushName": "Push Name",
+        "sessionId": "Session ID",
+        "status": "Estado",
+        "actions": {
+          "title": "Acciones",
+          "open": "Abrir",
+          "pause": "Pausar",
+          "close": "Cerrar",
+          "delete": "Eliminar"
+        },
+        "none": "Nada que mostrar"
+      }
+    },
+    "defaultSettings": "Configuraciones Predeterminadas",
+    "toast": {
+      "defaultSettings": {
+        "success": "Configuraciones predeterminadas aplicadas con éxito",
+        "error": "Ocurrió un error al aplicar las configuraciones predeterminadas"
+      },
+      "success": {
+        "update": "EvoAI actualizado con éxito",
+        "create": "EvoAI creado con éxito",
+        "delete": "EvoAI eliminado con éxito",
+        "status": "Estado de EvoAI actualizado con éxito"
+      },
+      "error": "Ocurrió un error al crear el chatbot EvoAI"
+    },
+    "table": {
+      "none": "Nada que mostrar"
+    },
+    "form": {
+      "title": "Nuevo chatbot EvoAI",
+      "examples": {
+        "keywordFinish": "#FINISH",
+        "unknownMessage": "Lo siento, no entendí. ¿Puedes intentar de nuevo?"
+      },
+      "enabled": {
+        "label": "Activo"
+      },
+      "description": {
+        "label": "Descripción"
+      },
+      "evoaiSettings": {
+        "label": "Configuraciones de EvoAI"
+      },
+      "agentUrl": {
+        "label": "URL del Agente"
+      },
+      "apiKey": {
+        "label": "API Key (Opcional)"
+      },
+      "triggerSettings": {
+        "label": "Configuraciones de Disparador"
+      },
+      "triggerType": {
+        "label": "Tipo de Disparador",
+        "keyword": "Palabra clave",
+        "all": "Todos",
+        "advanced": "Avanzado",
+        "none": "Ninguno"
+      },
+      "triggerOperator": {
+        "label": "Operador de Disparador",
+        "contains": "Contiene",
+        "equals": "Igual",
+        "startsWith": "Comienza Con",
+        "endsWith": "Termina Con",
+        "regex": "Regex"
+      },
+      "triggerValue": {
+        "label": "Disparador"
+      },
+      "triggerConditions": {
+        "label": "Condiciones"
+      },
+      "evoaiIdFallback": {
+        "label": "Fallback de EvoAI"
+      },
+      "generalSettings": {
+        "label": "Configuraciones Generales"
+      },
+      "expire": {
+        "label": "Expirar en minutos"
+      },
+      "keywordFinish": {
+        "label": "Palabra clave de Finalización"
+      },
+      "delayMessage": {
+        "label": "Mensaje de Retraso Predeterminado"
+      },
+      "unknownMessage": {
+        "label": "Mensaje Desconocido"
+      },
+      "listeningFromMe": {
+        "label": "Escuchando de mí",
+        "description": "Escuchar los mensajes enviados por mí en el bot"
+      },
+      "stopBotFromMe": {
+        "label": "Detener bot por mí",
+        "description": "Pausar el bot cuando yo envíe un mensaje"
+      },
+      "keepOpen": {
+        "label": "Mantener abierto",
+        "description": "Mantener el bot abierto después de que termine la conversación"
+      },
+      "debounceTime": {
+        "label": "Tiempo de Debounce"
+      },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por carácter"
+      },
+      "ignoreJids": {
+        "label": "Ignorar JIDs",
+        "placeholder": "Agregar JIDs ej: 1234567890@s.whatsapp.net y presiona enter"
+      }
+    },
+    "button": {
+      "create": "EvoAI",
       "save": "Guardar",
       "saving": "Guardando...",
       "update": "Actualizar",
@@ -933,6 +1246,13 @@
       },
       "debounceTime": {
         "label": "Tiempo de Debounce"
+      },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes largos en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por Carácter"
       },
       "ignoreJids": {
         "label": "Ignorar JIDs",
@@ -1067,6 +1387,13 @@
       },
       "debounceTime": {
         "label": "Tiempo de Debounce"
+      },
+      "splitMessages": {
+        "label": "Dividir Mensajes",
+        "description": "Dividir mensajes largos en múltiples mensajes"
+      },
+      "timePerChar": {
+        "label": "Tiempo por Carácter"
       },
       "ignoreJids": {
         "label": "Ignorar JIDs",

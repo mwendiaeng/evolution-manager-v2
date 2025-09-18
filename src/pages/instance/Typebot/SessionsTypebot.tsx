@@ -9,7 +9,7 @@ import {
   RotateCcw,
   StopCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "react-toastify";
 
@@ -34,64 +34,40 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  changeStatusTypebot,
-  fetchSessionsTypebot,
-} from "@/services/typebot.service";
+import { useFetchSessionsTypebot } from "@/lib/queries/typebot/fetchSessionsTypebot";
+import { useManageTypebot } from "@/lib/queries/typebot/manageTypebot";
 
-import { Instance, IntegrationSession } from "@/types/evolution.types";
-
-const fetchData = async (
-  instance: Instance | null,
-  setSessions: any,
-  typebotId?: string,
-) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const getSessions: IntegrationSession[] = await fetchSessionsTypebot(
-        instance.name,
-        storedToken,
-        typebotId,
-      );
-
-      setSessions(getSessions);
-    } else {
-      console.error("Token ou nome da instância não encontrados.");
-    }
-  } catch (error) {
-    console.error("Erro ao carregar sessões:", error);
-  }
-};
+import { IntegrationSession } from "@/types/evolution.types";
 
 function SessionsTypebot({ typebotId }: { typebotId?: string }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [sessions, setSessions] = useState<IntegrationSession[] | []>([]);
   const [open, setOpen] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
 
-  useEffect(() => {
-    if (open) fetchData(instance, setSessions, typebotId);
-  }, [instance, typebotId, open]);
+  const { changeStatusTypebot } = useManageTypebot();
+  const { data: sessions, refetch: refetchSessions } = useFetchSessionsTypebot({
+    instanceName: instance?.name,
+    token: instance?.token,
+    typebotId,
+  });
 
   function onReset() {
-    fetchData(instance, setSessions, typebotId);
+    refetchSessions();
   }
 
   const changeStatus = async (remoteJid: string, status: string) => {
     try {
       if (!instance) return;
 
-      await changeStatusTypebot(
-        instance.name,
-        instance.token,
+      await changeStatusTypebot({
+        instanceName: instance.name,
+        token: instance.token,
         remoteJid,
         status,
-      );
+      });
 
       toast.success(t("typebot.toast.success.status"));
       onReset();
@@ -222,7 +198,7 @@ function SessionsTypebot({ typebotId }: { typebotId?: string }) {
           </div>
           <DataTable
             columns={columns}
-            data={sessions}
+            data={sessions ?? []}
             onSortingChange={setSorting}
             state={{ sorting, globalFilter }}
             onGlobalFilterChange={setGlobalFilter}

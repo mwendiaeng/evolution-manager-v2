@@ -82,6 +82,42 @@ export type Message = {
   source: string;
 };
 
+export type SendText = {
+  number: string;
+  text: string;
+  options?: {
+    delay?: number;
+    presence?: string;
+    linkPreview?: boolean;
+  };
+};
+
+export type SendMedia = {
+  number: string;
+  mediaMessage: {
+    mediatype: 'image' | 'video' | 'audio' | 'document';
+    mimetype: string;
+    caption?: string;
+    media: string; // Base64 string
+    fileName?: string;
+  };
+  options?: {
+    delay?: number;
+    presence?: string;
+  };
+};
+
+export type SendAudio = {
+  number: string;
+  audioMessage: {
+    audio: string; // Base64 string
+  };
+  options?: {
+    delay?: number;
+    presence?: string;
+  };
+};
+
 export type IntegrationSession = {
   id?: string;
   remoteJid: string;
@@ -125,6 +161,8 @@ export type Openai = {
   keepOpen: boolean;
   debounceTime: number;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type OpenaiSettings = {
@@ -140,6 +178,8 @@ export type OpenaiSettings = {
   speechToText: boolean;
   openaiIdFallback?: string;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type Dify = {
@@ -161,6 +201,8 @@ export type Dify = {
   keepOpen: boolean;
   debounceTime: number;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type DifySettings = {
@@ -174,6 +216,83 @@ export type DifySettings = {
   debounceTime: number;
   difyIdFallback?: string;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
+};
+
+export type N8n = {
+  id?: string;
+  enabled: boolean;
+  description: string;
+  webhookUrl: string;
+  basicAuthUser: string;
+  basicAuthPass: string;
+  triggerType: string;
+  triggerOperator: string;
+  triggerValue: string;
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
+};
+
+export type N8nSettings = {
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  n8nIdFallback?: string;
+  ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
+};
+
+export type Evoai = {
+  id?: string;
+  enabled: boolean;
+  description: string;
+  agentUrl: string;
+  apiKey: string;
+  triggerType: string;
+  triggerOperator: string;
+  triggerValue: string;
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
+};
+
+export type EvoaiSettings = {
+  expire: number;
+  keywordFinish: string;
+  delayMessage: number;
+  unknownMessage: string;
+  listeningFromMe: boolean;
+  stopBotFromMe: boolean;
+  keepOpen: boolean;
+  debounceTime: number;
+  evoaiIdFallback?: string;
+  ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type Typebot = {
@@ -193,6 +312,8 @@ export type Typebot = {
   stopBotFromMe: boolean;
   keepOpen: boolean;
   debounceTime: number;
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type TypebotSettings = {
@@ -206,6 +327,8 @@ export type TypebotSettings = {
   debounceTime: number;
   typebotIdFallback?: string;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type Webhook = {
@@ -291,6 +414,8 @@ export type EvolutionBot = {
   keepOpen: boolean;
   debounceTime: number;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type EvolutionBotSettings = {
@@ -304,6 +429,8 @@ export type EvolutionBotSettings = {
   debounceTime: number;
   botIdFallback?: string;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type Flowise = {
@@ -324,6 +451,8 @@ export type Flowise = {
   keepOpen: boolean;
   debounceTime: number;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };
 
 export type FlowiseSettings = {
@@ -337,4 +466,6 @@ export type FlowiseSettings = {
   debounceTime: number;
   flowiseIdFallback?: string;
   ignoreJids?: string[];
+  splitMessages?: boolean;
+  timePerChar?: number;
 };

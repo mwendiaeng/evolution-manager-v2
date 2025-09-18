@@ -1,13 +1,13 @@
 import { DoorOpen } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { logout } from "@/services/auth.service";
-import { fetchInstance } from "@/services/instances.service";
+import { useFetchInstance } from "@/lib/queries/instance/fetchInstance";
+import { logout } from "@/lib/queries/token";
 
-import { Instance } from "@/types/evolution.types";
-
+import { LanguageToggle } from "./language-toggle";
 import { ModeToggle } from "./mode-toggle";
+import { useTheme } from "./theme-provider";
 import { Avatar, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import {
@@ -17,11 +17,11 @@ import {
   DialogFooter,
   DialogHeader,
 } from "./ui/dialog";
-import { LanguageToggle } from "./language-toggle";
 
 function Header({ instanceId }: { instanceId?: string }) {
   const [logoutConfirmation, setLogoutConfirmation] = useState(false);
   const navigate = useNavigate();
+  const { theme } = useTheme();
 
   const handleClose = () => {
     logout();
@@ -32,22 +32,7 @@ function Header({ instanceId }: { instanceId?: string }) {
     navigate("/manager/");
   };
 
-  const [instance, setInstance] = useState<Instance | null>(null);
-
-  useEffect(() => {
-    if (instanceId) {
-      const fetchData = async (instanceId: string) => {
-        try {
-          const data = await fetchInstance(instanceId);
-          setInstance(data[0] || null);
-        } catch (error) {
-          console.error("Erro ao buscar dados:", error);
-        }
-      };
-
-      fetchData(instanceId);
-    }
-  }, [instanceId]);
+  const { data: instance } = useFetchInstance({ instanceId });
 
   return (
     <header className="flex items-center justify-between px-4 py-2">
@@ -57,11 +42,14 @@ function Header({ instanceId }: { instanceId?: string }) {
         className="flex h-8 items-center gap-4"
       >
         <img
-          src="/assets/images/evolution-logo.png"
+          src={
+            theme === "dark"
+              ? "https://evolution-api.com/files/evo/evolution-logo-white.svg"
+              : "https://evolution-api.com/files/evo/evolution-logo.svg"
+          }
           alt="Logo"
           className="h-full"
         />
-        <span>Evolution Manager</span>
       </Link>
       <div className="flex items-center gap-4">
         {instanceId && (

@@ -26,17 +26,11 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  findDefaultSettingsEvolutionBot,
-  findEvolutionBot,
-  setDefaultSettingsEvolutionBot,
-} from "@/services/evolutionBot.service";
+import { useFindDefaultSettingsEvolutionBot } from "@/lib/queries/evolutionBot/findDefaultSettingsEvolutionBot";
+import { useFindEvolutionBot } from "@/lib/queries/evolutionBot/findEvolutionBot";
+import { useManageEvolutionBot } from "@/lib/queries/evolutionBot/manageEvolutionBot";
 
-import {
-  EvolutionBot,
-  EvolutionBotSettings,
-  Instance,
-} from "@/types/evolution.types";
+import { EvolutionBotSettings } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   expire: z.string(),
@@ -49,43 +43,26 @@ const FormSchema = z.object({
   debounceTime: z.string(),
   ignoreJids: z.array(z.string()).default([]),
   botIdFallback: z.union([z.null(), z.string()]).optional(),
+  splitMessages: z.boolean(),
+  timePerChar: z.string(),
 });
-
-const fetchData = async (
-  instance: Instance | null,
-  setSettings: any,
-  setBots: any,
-) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const getSettings: EvolutionBotSettings[] =
-        await findDefaultSettingsEvolutionBot(instance.name, storedToken);
-
-      setSettings(getSettings);
-
-      const getBots: EvolutionBot[] = await findEvolutionBot(
-        instance.name,
-        storedToken,
-      );
-
-      setBots(getBots);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
 
 function DefaultSettingsEvolutionBot() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<EvolutionBotSettings>();
-  const [bots, setBots] = useState<EvolutionBot[]>([]);
+  const { data: settings, refetch: refetchSettings } =
+    useFindDefaultSettingsEvolutionBot({
+      instanceName: instance?.name,
+      enabled: open,
+    });
+
+  const { data: bots, refetch: refetchBots } = useFindEvolutionBot({
+    instanceName: instance?.name,
+    enabled: open,
+  });
+  const { setDefaultSettingsEvolutionBot } = useManageEvolutionBot();
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -100,12 +77,10 @@ function DefaultSettingsEvolutionBot() {
       debounceTime: "0",
       ignoreJids: [],
       botIdFallback: undefined,
+      splitMessages: false,
+      timePerChar: "0",
     },
   });
-
-  useEffect(() => {
-    if (open) fetchData(instance, setSettings, setBots);
-  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -124,6 +99,10 @@ function DefaultSettingsEvolutionBot() {
           : "0",
         ignoreJids: settings.ignoreJids,
         botIdFallback: settings.botIdFallback,
+        splitMessages: settings.splitMessages,
+        timePerChar: settings.timePerChar
+          ? settings.timePerChar.toString()
+          : "0",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -146,13 +125,15 @@ function DefaultSettingsEvolutionBot() {
         debounceTime: parseInt(data.debounceTime),
         botIdFallback: data.botIdFallback || undefined,
         ignoreJids: data.ignoreJids,
+        splitMessages: data.splitMessages,
+        timePerChar: parseInt(data.timePerChar),
       };
 
-      await setDefaultSettingsEvolutionBot(
-        instance.name,
-        instance.token,
-        settingsData,
-      );
+      await setDefaultSettingsEvolutionBot({
+        instanceName: instance.name,
+        token: instance.token,
+        data: settingsData,
+      });
       toast.success(t("evolutionBot.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -162,7 +143,8 @@ function DefaultSettingsEvolutionBot() {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setBots);
+    refetchSettings();
+    refetchBots();
   }
 
   return (
@@ -246,6 +228,21 @@ function DefaultSettingsEvolutionBot() {
                 >
                   <Input type="number" />
                 </FormInput>
+
+                <FormSwitch
+                  name="splitMessages"
+                  label={t("evolutionBot.form.splitMessages.label")}
+                  reverse
+                />
+
+                {form.watch("splitMessages") && (
+                  <FormInput
+                    name="timePerChar"
+                    label={t("evolutionBot.form.timePerChar.label")}
+                  >
+                    <Input type="number" />
+                  </FormInput>
+                )}
 
                 <FormTags
                   name="ignoreJids"

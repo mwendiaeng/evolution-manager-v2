@@ -20,9 +20,9 @@ import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { useFetchSqs } from "@/lib/queries/sqs/fetchSqs";
+import { useManageSqs } from "@/lib/queries/sqs/manageSqs";
 import { cn } from "@/lib/utils";
-
-import { createSqs, fetchSqs } from "@/services/sqs.service";
 
 import { Sqs as SqsType } from "@/types/evolution.types";
 
@@ -38,6 +38,12 @@ function Sqs() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
+  const { createSqs } = useManageSqs();
+  const { data: sqs } = useFetchSqs({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -47,21 +53,13 @@ function Sqs() {
   });
 
   useEffect(() => {
-    const loadSqsData = async () => {
-      if (!instance) return;
-      setLoading(true);
-      try {
-        const data = await fetchSqs(instance.name, instance.token);
-        form.reset(data);
-      } catch (error) {
-        console.error("Error", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadSqsData();
-  }, [instance, form]);
+    if (sqs) {
+      form.reset({
+        enabled: sqs.enabled,
+        events: sqs.events,
+      });
+    }
+  }, [sqs]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;
@@ -72,7 +70,11 @@ function Sqs() {
         events: data.events,
       };
 
-      await createSqs(instance.name, instance.token, sqsData);
+      await createSqs({
+        instanceName: instance.name,
+        token: instance.token,
+        data: sqsData,
+      });
       toast.success(t("sqs.toast.success"));
     } catch (error: any) {
       console.error(t("sqs.toast.error"), error);

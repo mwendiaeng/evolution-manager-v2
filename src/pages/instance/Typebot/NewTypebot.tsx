@@ -15,7 +15,7 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createTypebot } from "@/services/typebot.service";
+import { useManageTypebot } from "@/lib/queries/typebot/manageTypebot";
 
 import { Typebot } from "@/types/evolution.types";
 
@@ -25,6 +25,7 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { createTypebot } = useManageTypebot();
   const [updating, setUpdating] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -53,7 +54,11 @@ function NewTypebot({ resetTable }: { resetTable: () => void }) {
         debounceTime: data.debounceTime || 0,
       };
 
-      await createTypebot(instance.name, instance.token, typebotData);
+      await createTypebot({
+        instanceName: instance.name,
+        token: instance.token,
+        data: typebotData,
+      });
       toast.success(t("typebot.toast.success.create"));
       setOpen(false);
       resetTable();

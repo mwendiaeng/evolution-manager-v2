@@ -26,13 +26,11 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  findDefaultSettingsTypebot,
-  findTypebot,
-  setDefaultSettingsTypebot,
-} from "@/services/typebot.service";
+import { useFindDefaultSettingsTypebot } from "@/lib/queries/typebot/findDefaultSettingsTypebot";
+import { useFindTypebot } from "@/lib/queries/typebot/findTypebot";
+import { useManageTypebot } from "@/lib/queries/typebot/manageTypebot";
 
-import { Instance, Typebot, TypebotSettings } from "@/types/evolution.types";
+import { TypebotSettings } from "@/types/evolution.types";
 
 const formSchema = z.object({
   expire: z.coerce.number(),
@@ -43,48 +41,27 @@ const formSchema = z.object({
   stopBotFromMe: z.boolean(),
   keepOpen: z.boolean(),
   debounceTime: z.coerce.number(),
-  ignoreJids: z.array(z.string()).default([]),
-  typebotIdFallback: z.union([z.null(), z.string()]).optional(),
 });
 type FormSchema = z.infer<typeof formSchema>;
-
-const fetchData = async (
-  instance: Instance | null,
-  setSettings: any,
-  setTypebots: any,
-) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const getSettings: TypebotSettings[] = await findDefaultSettingsTypebot(
-        instance.name,
-        storedToken,
-      );
-
-      setSettings(getSettings);
-
-      const getTypebots: Typebot[] = await findTypebot(
-        instance.name,
-        storedToken,
-      );
-
-      setTypebots(getTypebots);
-    } else {
-      console.error("token not found.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
 
 function DefaultSettingsTypebot() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
-  const [settings, setSettings] = useState<TypebotSettings>();
-  const [typebots, setTypebots] = useState<Typebot[]>([]);
   const [open, setOpen] = useState(false);
+
+  const { setDefaultSettingsTypebot } = useManageTypebot();
+  const { data: settings, refetch: refetchSettings } =
+    useFindDefaultSettingsTypebot({
+      instanceName: instance?.name,
+      token: instance?.token,
+      enabled: open,
+    });
+  const { data: typebots, refetch: refetchTypebots } = useFindTypebot({
+    instanceName: instance?.name,
+    token: instance?.token,
+    enabled: open,
+  });
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -97,14 +74,8 @@ function DefaultSettingsTypebot() {
       stopBotFromMe: false,
       keepOpen: false,
       debounceTime: 0,
-      ignoreJids: [],
-      typebotIdFallback: undefined,
     },
   });
-
-  useEffect(() => {
-    if (open) fetchData(instance, setSettings, setTypebots);
-  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -117,8 +88,6 @@ function DefaultSettingsTypebot() {
         stopBotFromMe: settings.stopBotFromMe,
         keepOpen: settings.keepOpen,
         debounceTime: settings.debounceTime ?? 0,
-        ignoreJids: settings.ignoreJids,
-        typebotIdFallback: settings.typebotIdFallback,
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -139,15 +108,13 @@ function DefaultSettingsTypebot() {
         stopBotFromMe: data.stopBotFromMe,
         keepOpen: data.keepOpen,
         debounceTime: data.debounceTime,
-        typebotIdFallback: data.typebotIdFallback || undefined,
-        ignoreJids: data.ignoreJids,
       };
 
-      await setDefaultSettingsTypebot(
-        instance.name,
-        instance.token,
-        settingsData,
-      );
+      await setDefaultSettingsTypebot({
+        instanceName: instance.name,
+        token: instance.token,
+        data: settingsData,
+      });
       toast.success(t("typebot.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -157,7 +124,8 @@ function DefaultSettingsTypebot() {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setTypebots);
+    refetchSettings();
+    refetchTypebots();
   }
 
   return (

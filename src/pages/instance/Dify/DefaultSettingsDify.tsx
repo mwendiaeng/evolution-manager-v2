@@ -26,13 +26,11 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  findDefaultSettingsDify,
-  findDify,
-  setDefaultSettingsDify,
-} from "@/services/dify.service";
+import { useFetchDify } from "@/lib/queries/dify/fetchDify";
+import { useManageDify } from "@/lib/queries/dify/manageDify";
+import { useFetchDefaultSettings } from "@/lib/queries/dify/settingsFind";
 
-import { Dify, DifySettings, Instance } from "@/types/evolution.types";
+import { DifySettings } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   expire: z.string(),
@@ -45,42 +43,26 @@ const FormSchema = z.object({
   debounceTime: z.string(),
   ignoreJids: z.array(z.string()).default([]),
   difyIdFallback: z.union([z.null(), z.string()]).optional(),
+  splitMessages: z.boolean(),
+  timePerChar: z.string(),
 });
-
-const fetchData = async (
-  instance: Instance | null,
-  setSettings: any,
-  setBots: any,
-) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const getSettings: DifySettings[] = await findDefaultSettingsDify(
-        instance.name,
-        storedToken,
-      );
-
-      setSettings(getSettings);
-
-      const getBots: Dify[] = await findDify(instance.name, storedToken);
-
-      setBots(getBots);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
 
 function DefaultSettingsDify() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { setDefaultSettingsDify } = useManageDify();
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<DifySettings>();
-  const [bots, setBots] = useState<Dify[]>([]);
+  const { data: bots, refetch: refetchDify } = useFetchDify({
+    instanceName: instance?.name,
+    token: instance?.token,
+    enabled: open,
+  });
+  const { data: settings, refetch: refetchDefaultSettings } =
+    useFetchDefaultSettings({
+      instanceName: instance?.name,
+      token: instance?.token,
+    });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -95,12 +77,10 @@ function DefaultSettingsDify() {
       debounceTime: "0",
       ignoreJids: [],
       difyIdFallback: undefined,
+      splitMessages: false,
+      timePerChar: "0",
     },
   });
-
-  useEffect(() => {
-    if (open) fetchData(instance, setSettings, setBots);
-  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -119,10 +99,13 @@ function DefaultSettingsDify() {
           : "0",
         ignoreJids: settings.ignoreJids,
         difyIdFallback: settings.difyIdFallback,
+        splitMessages: settings.splitMessages,
+        timePerChar: settings.timePerChar
+          ? settings.timePerChar.toString()
+          : "0",
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [settings]);
+  }, [settings]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     try {
@@ -141,9 +124,15 @@ function DefaultSettingsDify() {
         debounceTime: parseInt(data.debounceTime),
         difyIdFallback: data.difyIdFallback || undefined,
         ignoreJids: data.ignoreJids,
+        splitMessages: data.splitMessages,
+        timePerChar: parseInt(data.timePerChar),
       };
 
-      await setDefaultSettingsDify(instance.name, instance.token, settingsData);
+      await setDefaultSettingsDify({
+        instanceName: instance.name,
+        token: instance.token,
+        data: settingsData,
+      });
       toast.success(t("dify.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -153,7 +142,8 @@ function DefaultSettingsDify() {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setBots);
+    refetchDefaultSettings();
+    refetchDify();
   }
 
   return (
@@ -229,6 +219,19 @@ function DefaultSettingsDify() {
                 <FormInput
                   name="debounceTime"
                   label={t("dify.form.debounceTime.label")}
+                >
+                  <Input type="number" />
+                </FormInput>
+
+                <FormSwitch
+                  name="splitMessages"
+                  label={t("dify.form.splitMessages.label")}
+                  reverse
+                />
+
+                <FormInput
+                  name="timePerChar"
+                  label={t("dify.form.timePerChar.label")}
                 >
                   <Input type="number" />
                 </FormInput>

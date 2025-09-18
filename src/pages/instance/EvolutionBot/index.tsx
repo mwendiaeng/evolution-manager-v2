@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate, useParams } from "react-router-dom";
 
@@ -14,12 +13,7 @@ import { Separator } from "@/components/ui/separator";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { findEvolutionBot } from "@/services/evolutionBot.service";
-
-import {
-  EvolutionBot as EvolutionBotType,
-  Instance,
-} from "@/types/evolution.types";
+import { useFindEvolutionBot } from "@/lib/queries/evolutionBot/findEvolutionBot";
 
 import { useMediaQuery } from "@/utils/useMediaQuery";
 
@@ -28,31 +22,6 @@ import { NewEvolutionBot } from "./NewEvolutionBot";
 import { SessionsEvolutionBot } from "./SessionsEvolutionBot";
 import { UpdateEvolutionBot } from "./UpdateEvolutionBot";
 
-const fetchData = async (
-  instance: Instance | null,
-  setBots: any,
-  setLoading: any,
-) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const data: EvolutionBotType[] = await findEvolutionBot(
-        instance.name,
-        storedToken,
-      );
-
-      setBots(data);
-    } else {
-      console.error("Token not found");
-    }
-    setLoading(false);
-  } catch (error) {
-    console.error("Error:", error);
-    setLoading(false);
-  }
-};
-
 function EvolutionBot() {
   const { t } = useTranslation();
   const isMD = useMediaQuery("(min-width: 768px)");
@@ -60,15 +29,15 @@ function EvolutionBot() {
 
   const { evolutionBotId } = useParams<{ evolutionBotId: string }>();
 
-  const [loading, setLoading] = useState<boolean>(true);
-  const [bots, setBots] = useState<EvolutionBotType[]>([]);
+  const {
+    data: bots,
+    isLoading,
+    refetch,
+  } = useFindEvolutionBot({
+    instanceName: instance?.name,
+  });
 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (!instance) return;
-    fetchData(instance, setBots, setLoading);
-  }, [instance]);
 
   const handleBotClick = (botId: string) => {
     if (!instance) return;
@@ -77,7 +46,7 @@ function EvolutionBot() {
   };
 
   const resetTable = () => {
-    fetchData(instance, setBots, setLoading);
+    refetch();
   };
 
   return (
@@ -94,7 +63,7 @@ function EvolutionBot() {
       <ResizablePanelGroup direction={isMD ? "horizontal" : "vertical"}>
         <ResizablePanel defaultSize={35} className="pr-4">
           <div className="flex flex-col gap-3">
-            {loading ? (
+            {isLoading ? (
               <LoadingSpinner />
             ) : (
               <>
@@ -121,7 +90,7 @@ function EvolutionBot() {
         {evolutionBotId && (
           <>
             <ResizableHandle withHandle className="border border-border" />
-            <ResizablePanel className="">
+            <ResizablePanel>
               <UpdateEvolutionBot
                 evolutionBotId={evolutionBotId}
                 resetTable={resetTable}

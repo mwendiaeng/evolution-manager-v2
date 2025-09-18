@@ -24,7 +24,7 @@ export function InstanceToken({
       )}
     >
       <pre className="block truncate text-xs">
-        {visible ? token : token.replace(/\w/g, "*")}
+        {visible ? token : token?.replace(/\w/g, "*")}
       </pre>
       <Button
         variant="ghost"

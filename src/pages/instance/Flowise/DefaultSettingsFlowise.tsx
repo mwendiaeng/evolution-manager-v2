@@ -26,13 +26,11 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import {
-  findDefaultSettingsFlowise,
-  findFlowise,
-  setDefaultSettingsFlowise,
-} from "@/services/flowise.service";
+import { useFindDefaultSettingsFlowise } from "@/lib/queries/flowise/findDefaultSettingsFlowise";
+import { useFindFlowise } from "@/lib/queries/flowise/findFlowise";
+import { useManageFlowise } from "@/lib/queries/flowise/manageFlowise";
 
-import { Flowise, FlowiseSettings, Instance } from "@/types/evolution.types";
+import { FlowiseSettings } from "@/types/evolution.types";
 
 const FormSchema = z.object({
   expire: z.string(),
@@ -45,42 +43,25 @@ const FormSchema = z.object({
   debounceTime: z.string(),
   ignoreJids: z.array(z.string()).default([]),
   flowiseIdFallback: z.union([z.null(), z.string()]).optional(),
+  splitMessages: z.boolean(),
+  timePerChar: z.string(),
 });
-
-const fetchData = async (
-  instance: Instance | null,
-  setSettings: any,
-  setBots: any,
-) => {
-  try {
-    const storedToken = localStorage.getItem("token");
-
-    if (storedToken && instance && instance.name) {
-      const getSettings: FlowiseSettings[] = await findDefaultSettingsFlowise(
-        instance.name,
-        storedToken,
-      );
-
-      setSettings(getSettings);
-
-      const getBots: Flowise[] = await findFlowise(instance.name, storedToken);
-
-      setBots(getBots);
-    } else {
-      console.error("Token not found.");
-    }
-  } catch (error) {
-    console.error("Error:", error);
-  }
-};
 
 function DefaultSettingsFlowise() {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { setDefaultSettingsFlowise } = useManageFlowise();
   const [open, setOpen] = useState(false);
-  const [settings, setSettings] = useState<FlowiseSettings>();
-  const [bots, setBots] = useState<Flowise[]>([]);
+  const { data: settings, refetch: refetchSettings } =
+    useFindDefaultSettingsFlowise({
+      instanceName: instance?.name,
+      enabled: open,
+    });
+  const { data: bots, refetch: refetchBots } = useFindFlowise({
+    instanceName: instance?.name,
+    enabled: open,
+  });
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -95,12 +76,10 @@ function DefaultSettingsFlowise() {
       debounceTime: "0",
       ignoreJids: [],
       flowiseIdFallback: undefined,
+      splitMessages: false,
+      timePerChar: "0",
     },
   });
-
-  useEffect(() => {
-    if (open) fetchData(instance, setSettings, setBots);
-  }, [instance, open]);
 
   useEffect(() => {
     if (settings) {
@@ -119,6 +98,10 @@ function DefaultSettingsFlowise() {
           : "0",
         ignoreJids: settings.ignoreJids,
         flowiseIdFallback: settings.flowiseIdFallback,
+        splitMessages: settings.splitMessages,
+        timePerChar: settings.timePerChar
+          ? settings.timePerChar.toString()
+          : "0",
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -141,13 +124,15 @@ function DefaultSettingsFlowise() {
         debounceTime: parseInt(data.debounceTime),
         flowiseIdFallback: data.flowiseIdFallback || undefined,
         ignoreJids: data.ignoreJids,
+        splitMessages: data.splitMessages,
+        timePerChar: parseInt(data.timePerChar),
       };
 
-      await setDefaultSettingsFlowise(
-        instance.name,
-        instance.token,
-        settingsData,
-      );
+      await setDefaultSettingsFlowise({
+        instanceName: instance.name,
+        token: instance.token,
+        data: settingsData,
+      });
       toast.success(t("flowise.toast.defaultSettings.success"));
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
@@ -157,7 +142,8 @@ function DefaultSettingsFlowise() {
   };
 
   function onReset() {
-    fetchData(instance, setSettings, setBots);
+    refetchSettings();
+    refetchBots();
   }
 
   return (
@@ -238,6 +224,21 @@ function DefaultSettingsFlowise() {
                 >
                   <Input type="number" />
                 </FormInput>
+
+                <FormSwitch
+                  name="splitMessages"
+                  label={t("flowise.form.splitMessages.label")}
+                  reverse
+                />
+
+                {form.watch("splitMessages") && (
+                  <FormInput
+                    name="timePerChar"
+                    label={t("flowise.form.timePerChar.label")}
+                  >
+                    <Input type="number" />
+                  </FormInput>
+                )}
 
                 <FormTags
                   name="ignoreJids"

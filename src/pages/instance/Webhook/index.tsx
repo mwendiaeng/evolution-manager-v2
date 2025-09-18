@@ -22,9 +22,9 @@ import { Switch } from "@/components/ui/switch";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
+import { useFetchWebhook } from "@/lib/queries/webhook/fetchWebhook";
+import { useManageWebhook } from "@/lib/queries/webhook/manageWebhook";
 import { cn } from "@/lib/utils";
-
-import { createWebhook, fetchWebhook } from "@/services/webhook.service";
 
 import { Webhook as WebhookType } from "@/types/evolution.types";
 
@@ -43,6 +43,12 @@ function Webhook() {
   const { instance } = useInstance();
   const [loading, setLoading] = useState(false);
 
+  const { createWebhook } = useManageWebhook();
+  const { data: webhook } = useFetchWebhook({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
+
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
@@ -55,21 +61,16 @@ function Webhook() {
   });
 
   useEffect(() => {
-    const loadWebhookData = async () => {
-      if (!instance) return;
-      setLoading(true);
-      try {
-        const data = await fetchWebhook(instance.name, instance.token);
-        form.reset(data);
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadWebhookData();
-  }, [instance, form]);
+    if (webhook) {
+      form.reset({
+        enabled: webhook.enabled,
+        url: webhook.url,
+        events: webhook.events,
+        base64: webhook.webhookBase64,
+        byEvents: webhook.webhookByEvents,
+      });
+    }
+  }, [webhook]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSubmit = async (data: FormSchemaType) => {
     if (!instance) return;
@@ -83,7 +84,11 @@ function Webhook() {
         byEvents: data.byEvents,
       };
 
-      await createWebhook(instance.name, instance.token, webhookData);
+      await createWebhook({
+        instanceName: instance.name,
+        token: instance.token,
+        data: webhookData,
+      });
       toast.success(t("webhook.toast.success"));
     } catch (error: any) {
       console.error(t("webhook.toast.error"), error);

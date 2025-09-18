@@ -1,6 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { CircleUser, MessageCircle, RefreshCw, UsersRound } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import QRCode from "react-qr-code";
 
@@ -28,27 +28,36 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { logout, connect, restart } from "@/services/instances.service";
-
-const numberFormatter = new Intl.NumberFormat("pt-BR");
+import { useManageInstance } from "@/lib/queries/instance/manageInstance";
+import { getToken, TOKEN_ID } from "@/lib/queries/token";
 
 function DashboardInstance() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const numberFormatter = new Intl.NumberFormat(i18n.language);
   const [qrCode, setQRCode] = useState<string | null>(null);
   const [pairingCode, setPairingCode] = useState("");
-  const token = localStorage.getItem("token");
+  const token = getToken(TOKEN_ID.TOKEN);
   const { theme } = useTheme();
 
-  const { instance } = useInstance();
+  const { connect, logout, restart } = useManageInstance();
+  const { instance, reloadInstance } = useInstance();
 
-  const handleReload = () => {
-    window.location.reload();
+  useEffect(() => {
+    if (instance) {
+      localStorage.setItem(TOKEN_ID.INSTANCE_ID, instance.id);
+      localStorage.setItem(TOKEN_ID.INSTANCE_NAME, instance.name);
+      localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, instance.token);
+    }
+  }, [instance]);
+
+  const handleReload = async () => {
+    await reloadInstance();
   };
 
   const handleRestart = async (instanceName: string) => {
     try {
       await restart(instanceName);
-      window.location.reload();
+      await reloadInstance();
     } catch (error) {
       console.error("Error:", error);
     }
@@ -57,7 +66,7 @@ function DashboardInstance() {
   const handleLogout = async (instanceName: string) => {
     try {
       await logout(instanceName);
-      window.location.reload();
+      await reloadInstance();
     } catch (error) {
       console.error("Error:", error);
     }
@@ -73,11 +82,15 @@ function DashboardInstance() {
       }
 
       if (pairingCode) {
-        const data = await connect(instanceName, token, instance?.number);
+        const data = await connect({
+          instanceName,
+          token,
+          number: instance?.number,
+        });
 
         setPairingCode(data.pairingCode);
       } else {
-        const data = await connect(instanceName, token);
+        const data = await connect({ instanceName, token });
 
         setQRCode(data.code);
       }
@@ -86,10 +99,10 @@ function DashboardInstance() {
     }
   };
 
-  const closeQRCodePopup = () => {
+  const closeQRCodePopup = async () => {
     setQRCode(null);
     setPairingCode("");
-    window.location.reload();
+    await reloadInstance();
   };
 
   const stats = useMemo(() => {

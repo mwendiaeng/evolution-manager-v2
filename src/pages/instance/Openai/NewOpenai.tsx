@@ -15,7 +15,7 @@ import {
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createOpenai } from "@/services/openai.service";
+import { useManageOpenai } from "@/lib/queries/openai/manageOpenai";
 
 import { Openai } from "@/types/evolution.types";
 
@@ -25,6 +25,7 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
   const { t } = useTranslation();
   const { instance } = useInstance();
 
+  const { createOpenai } = useManageOpenai();
   const [updating, setUpdating] = useState(false);
   const [open, setOpen] = useState(false);
 
@@ -58,9 +59,15 @@ function NewOpenai({ resetTable }: { resetTable: () => void }) {
         stopBotFromMe: data.stopBotFromMe || false,
         keepOpen: data.keepOpen || false,
         debounceTime: data.debounceTime || 0,
+        splitMessages: data.splitMessages || false,
+        timePerChar: data.timePerChar || 0,
       };
 
-      await createOpenai(instance.name, instance.token, openaiData);
+      await createOpenai({
+        instanceName: instance.name,
+        token: instance.token,
+        data: openaiData,
+      });
       toast.success(t("openai.toast.success.create"));
       setOpen(false);
       resetTable();

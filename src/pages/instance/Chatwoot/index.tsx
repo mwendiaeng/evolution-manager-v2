@@ -3,6 +3,7 @@ import "./style.css";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Separator } from "@radix-ui/react-dropdown-menu";
+import { isAxiosError } from "axios";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useTranslation } from "react-i18next";
@@ -15,26 +16,32 @@ import { Input } from "@/components/ui/input";
 
 import { useInstance } from "@/contexts/InstanceContext";
 
-import { createChatwoot, fetchChatwoot } from "@/services/chatwoot.service";
+import { useFetchChatwoot } from "@/lib/queries/chatwoot/fetchChatwoot";
+import { useManageChatwoot } from "@/lib/queries/chatwoot/manageChatwoot";
 
 import { Chatwoot as ChatwootType } from "@/types/evolution.types";
+
+const stringOrUndefined = z
+  .string()
+  .optional()
+  .transform((value) => (value === "" ? undefined : value));
 
 const formSchema = z.object({
   enabled: z.boolean(),
   accountId: z.string(),
   token: z.string(),
   url: z.string(),
-  signMsg: z.boolean(),
-  signDelimiter: z.string(),
-  nameInbox: z.string(),
-  organization: z.string(),
-  logo: z.string(),
-  reopenConversation: z.boolean(),
-  conversationPending: z.boolean(),
-  mergeBrazilContacts: z.boolean(),
-  importContacts: z.boolean(),
-  importMessages: z.boolean(),
-  daysLimitImportMessages: z.coerce.number(),
+  signMsg: z.boolean().optional(),
+  signDelimiter: stringOrUndefined,
+  nameInbox: stringOrUndefined,
+  organization: stringOrUndefined,
+  logo: stringOrUndefined,
+  reopenConversation: z.boolean().optional(),
+  conversationPending: z.boolean().optional(),
+  mergeBrazilContacts: z.boolean().optional(),
+  importContacts: z.boolean().optional(),
+  importMessages: z.boolean().optional(),
+  daysLimitImportMessages: z.coerce.number().optional(),
   autoCreate: z.boolean(),
   ignoreJids: z.array(z.string()).default([]),
 });
@@ -44,6 +51,11 @@ function Chatwoot() {
   const { t } = useTranslation();
   const { instance } = useInstance();
   const [, setLoading] = useState(false);
+  const { createChatwoot } = useManageChatwoot();
+  const { data: chatwoot } = useFetchChatwoot({
+    instanceName: instance?.name,
+    token: instance?.token,
+  });
 
   const form = useForm<FormSchema>({
     resolver: zodResolver(formSchema),
@@ -69,64 +81,88 @@ function Chatwoot() {
   });
 
   useEffect(() => {
-    const loadChatwootData = async () => {
-      if (!instance) return;
-      setLoading(true);
-      try {
-        const data = await fetchChatwoot(instance.name, instance.token);
-        form.setValue("ignoreJids", data.ignoreJids || []);
-        form.reset(data);
-      } catch (error) {
-        console.error("Error:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadChatwootData();
-  }, [instance, form]);
-
-  const onSubmit = async () => {
-    if (!instance) return;
-
-    const data = form.getValues();
-
-    setLoading(true);
-    try {
+    if (chatwoot) {
+      form.setValue("ignoreJids", chatwoot.ignoreJids || []);
       const chatwootData: ChatwootType = {
-        enabled: data.enabled,
-        accountId: data.accountId,
-        token: data.token,
-        url: data.url,
-        signMsg: data.signMsg,
-        signDelimiter: data.signDelimiter,
-        nameInbox: data.nameInbox,
-        organization: data.organization,
-        logo: data.logo,
-        reopenConversation: data.reopenConversation,
-        conversationPending: data.conversationPending,
-        mergeBrazilContacts: data.mergeBrazilContacts,
-        importContacts: data.importContacts,
-        importMessages: data.importMessages,
-        daysLimitImportMessages: data.daysLimitImportMessages,
-        autoCreate: data.autoCreate,
-        ignoreJids: data.ignoreJids,
+        enabled: chatwoot.enabled,
+        accountId: chatwoot.accountId,
+        token: chatwoot.token,
+        url: chatwoot.url,
+        signMsg: chatwoot.signMsg || false,
+        signDelimiter: chatwoot.signDelimiter || "\\n",
+        nameInbox: chatwoot.nameInbox || "",
+        organization: chatwoot.organization || "",
+        logo: chatwoot.logo || "",
+        reopenConversation: chatwoot.reopenConversation || false,
+        conversationPending: chatwoot.conversationPending || false,
+        mergeBrazilContacts: chatwoot.mergeBrazilContacts || false,
+        importContacts: chatwoot.importContacts || false,
+        importMessages: chatwoot.importMessages || false,
+        daysLimitImportMessages: chatwoot.daysLimitImportMessages || 7,
+        autoCreate: chatwoot.autoCreate || false,
+        ignoreJids: chatwoot.ignoreJids,
       };
 
-      await createChatwoot(instance.name, instance.token, chatwootData);
-      toast.success(t("chatwoot.toast.success"));
-    } catch (error: any) {
-      console.error(t("chatwoot.toast.error"), error);
-      toast.error(`Error: ${error?.response?.data?.response?.message}`);
-    } finally {
-      setLoading(false);
+      form.reset(chatwootData);
     }
+  }, [chatwoot, form]);
+
+  const onSubmit = async (data: FormSchema) => {
+    if (!instance) return;
+
+    setLoading(true);
+    const chatwootData: ChatwootType = {
+      enabled: data.enabled,
+      accountId: data.accountId,
+      token: data.token,
+      url: data.url,
+      signMsg: data.signMsg || false,
+      signDelimiter: data.signDelimiter || "\\n",
+      nameInbox: data.nameInbox || "",
+      organization: data.organization || "",
+      logo: data.logo || "",
+      reopenConversation: data.reopenConversation || false,
+      conversationPending: data.conversationPending || false,
+      mergeBrazilContacts: data.mergeBrazilContacts || false,
+      importContacts: data.importContacts || false,
+      importMessages: data.importMessages || false,
+      daysLimitImportMessages: data.daysLimitImportMessages || 7,
+      autoCreate: data.autoCreate,
+      ignoreJids: data.ignoreJids,
+    };
+
+    await createChatwoot(
+      {
+        instanceName: instance.name,
+        token: instance.token,
+        data: chatwootData,
+      },
+      {
+        onSuccess: () => {
+          toast.success(t("chatwoot.toast.success"));
+        },
+        onError: (error) => {
+          console.error(t("chatwoot.toast.error"), error);
+          if (isAxiosError(error)) {
+            toast.error(`Error: ${error?.response?.data?.response?.message}`);
+          } else {
+            toast.error(t("chatwoot.toast.error"));
+          }
+        },
+        onSettled: () => {
+          setLoading(false);
+        },
+      },
+    );
   };
 
   return (
     <>
       <Form {...form}>
-        <form className="w-full space-y-6">
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-full space-y-6"
+        >
           <div>
             <h3 className="mb-1 text-lg font-medium">{t("chatwoot.title")}</h3>
             <Separator className="my-4" />
@@ -221,9 +257,7 @@ function Chatwoot() {
             </div>
           </div>
           <div className="mx-4 flex justify-end">
-            <Button type="submit" onClick={onSubmit}>
-              {t("chatwoot.button.save")}
-            </Button>
+            <Button type="submit">{t("chatwoot.button.save")}</Button>
           </div>
         </form>
       </Form>

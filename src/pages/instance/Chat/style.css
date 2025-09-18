@@ -23,12 +23,18 @@
     border-radius: 16px;
     padding: 12px;
     word-wrap: break-word;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .bubble-right .bubble {
     background-color: #0a0a0a;
-    text-align: right;
     max-width: 100%;
+}
+
+.bubble-right .bubble > span {
+    text-align: right;
+    display: block;
 }
 
 .bubble-left .bubble {

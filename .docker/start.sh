@@ -1,2 +1,6 @@
 #!/bin/sh
-/docker-entrypoint.sh nginx -g 'daemon off;'
+
+echo "Starting Evolution Manager v2..."
+
+# Start nginx
+nginx -g "daemon off;"

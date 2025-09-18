@@ -1,8 +1,15 @@
 FROM node:20-alpine as build-deps
 WORKDIR /usr/src/app
-COPY package*.json ./
-RUN echo "Iniciando install..." && npm install && echo "Install concluído."
 
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies without running prepare scripts
+RUN echo "Iniciando install..." && \
+    npm ci --ignore-scripts && \
+    echo "Install concluído."
+
+# Copy source code
 COPY src/ ./src/
 COPY tsconfig.json ./
 COPY tsconfig.app.json ./
@@ -14,7 +21,10 @@ COPY index.html ./
 COPY components.json ./
 COPY public/ ./public/
 
-RUN echo "Iniciando build..." && npm run build && echo "Build concluído."
+# Build the application
+RUN echo "Iniciando build..." && \
+    npm run build && \
+    echo "Build concluído."
 
 FROM nginx:alpine
 

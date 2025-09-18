@@ -28,7 +28,7 @@ jobs:
           ${{ runner.os }}-node-
 
     - name: Install packages
-      run: npm ci
+      run: npm ci --ignore-scripts
 
     - name: Check linting
       run: npm run lint:check

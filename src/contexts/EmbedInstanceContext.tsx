@@ -1,9 +1,10 @@
+import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { Instance } from "@/types/evolution.types";
 import { TOKEN_ID } from "@/lib/queries/token";
-import axios from "axios";
+
+import { Instance } from "@/types/evolution.types";
 
 interface EmbedInstanceContextType {
   instance: Instance | null;
@@ -39,7 +40,7 @@ export function EmbedInstanceProvider({
       }
 
       try {
-        const apiUrl = 'https://integracaov2.icommarketing.com.br';
+        const apiUrl = "https://integracaov2.icommarketing.com.br";
         localStorage.setItem(TOKEN_ID.API_URL, apiUrl);
         localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, token);
 

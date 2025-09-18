@@ -1,13 +1,55 @@
 {
   "name": "evolution-manager",
-  "private": true,
-  "version": "0.0.0",
+  "private": false,
+  "version": "2.0.0",
   "type": "module",
+  "description": "Modern web interface for Evolution API management",
+  "keywords": [
+    "whatsapp",
+    "api",
+    "chatbot",
+    "evolution-api",
+    "react",
+    "typescript",
+    "management",
+    "dashboard"
+  ],
+  "homepage": "https://github.com/EvolutionAPI/evolution-manager-v2#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EvolutionAPI/evolution-manager-v2.git"
+  },
+  "bugs": {
+    "url": "https://github.com/EvolutionAPI/evolution-manager-v2/issues"
+  },
+  "license": "Apache-2.0",
+  "author": {
+    "name": "Evolution API Team",
+    "email": "contato@evolution-api.com",
+    "url": "https://evolution-api.com"
+  },
+  "contributors": [
+    {
+      "name": "Evolution API Team",
+      "email": "contato@evolution-api.com"
+    }
+  ],
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=8.0.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
-    "lint": "eslint ./src/**/*.{ts,tsx} --ext .ts,.tsx --fix && tsc --noEmit",
-    "preview": "vite preview"
+    "lint": "eslint ./src/**/*.{ts,tsx} --ext .ts,.tsx --fix",
+    "lint:check": "eslint ./src/**/*.{ts,tsx} --ext .ts,.tsx",
+    "type-check": "tsc --noEmit",
+    "preview": "vite preview",
+    "test": "echo \"No tests specified\" && exit 0",
+    "commit": "git-cz",
+    "prepare": "husky install",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\""
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

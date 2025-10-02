@@ -2,7 +2,8 @@
   "dashboard": {
     "title": "Instances",
     "search": "Search",
-    "status": "Status"
+    "status": "Status",
+    "settings": "Settings"
   },
   "button": {
     "delete": "Delete",

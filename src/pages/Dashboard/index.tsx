@@ -19,6 +19,7 @@ import { useManageInstance } from "@/lib/queries/instance/manageInstance";
 import { Instance } from "@/types/evolution.types";
 
 import { NewInstance } from "./NewInstance";
+import { TooltipWrapper } from "@/components/ui/tooltip";
 
 function Dashboard() {
   const { t } = useTranslation();
@@ -119,10 +120,15 @@ function Dashboard() {
             <Card key={instance.id}>
               <CardHeader>
                 <Link to={`/manager/instance/${instance.id}/dashboard`} className="flex w-full flex-row items-center justify-between gap-4">
-                  <h3 className="text-wrap font-semibold">{instance.name}</h3>
-                  <Button variant="ghost" size="icon">
-                    <Cog className="card-icon" size="20" />
-                  </Button>
+                  <TooltipWrapper content={instance.name} side="top">
+                    <h3 className="text-wrap font-semibold truncate">{instance.name}</h3>
+                  </TooltipWrapper>
+
+                  <TooltipWrapper content={t("dashboard.settings")} side="top">
+                    <Button variant="ghost" size="icon">
+                      <Cog className="card-icon" size="20" />
+                    </Button>
+                  </TooltipWrapper>
                 </Link>
               </CardHeader>
               <CardContent className="flex-1 space-y-6">

@@ -2,7 +2,8 @@
   "dashboard": {
     "title": "Instancias",
     "search": "Buscar",
-    "status": "Estado"
+    "status": "Estado",
+    "settings": "Configuraciones"
   },
   "button": {
     "delete": "Eliminar",

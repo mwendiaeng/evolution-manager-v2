@@ -2,7 +2,7 @@ import * as Tooltip from "@radix-ui/react-tooltip";
 import { ReactNode } from "react";
 
 interface TooltipWrapperProps {
-  content: string; // o texto que vai aparecer no tooltip
+  content: ReactNode; // o texto que vai aparecer no tooltip
   children: ReactNode; // o trigger (qualquer elemento)
   side?: "top" | "right" | "bottom" | "left"; // posição opcional
 }

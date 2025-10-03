@@ -3,7 +3,8 @@
     "title": "Instances",
     "search": "Search",
     "status": "Status",
-    "settings": "Settings"
+    "settings": "Settings",
+    "instancesNotFound": "No instances found"
   },
   "button": {
     "delete": "Delete",

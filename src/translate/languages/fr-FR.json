@@ -3,7 +3,8 @@
     "title": "Instances",
     "search": "Rechercher",
     "status": "Statut",
-    "settings": "Paramètres"
+    "settings": "Paramètres",
+    "instancesNotFound": "Aucune instance trouvée"
   },
   "button": {
     "delete": "Supprimer",

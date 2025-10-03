@@ -3,7 +3,8 @@
     "title": "Instâncias",
     "search": "Pesquisar",
     "status": "Status",
-    "settings": "Configurações"
+    "settings": "Configurações",
+    "instancesNotFound": "Nenhuma instância encontrada"
   },
   "button": {
     "delete": "Excluir",

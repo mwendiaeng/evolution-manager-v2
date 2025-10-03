@@ -115,8 +115,8 @@ function Dashboard() {
       </div>
       <main className="grid gap-6 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {filteredInstances.length > 0 &&
-          Array.isArray(instances) &&
-          instances.map((instance: Instance) => (
+          Array.isArray(filteredInstances) ? (
+          filteredInstances.map((instance: Instance) => (
             <Card key={instance.id}>
               <CardHeader>
                 <Link to={`/manager/instance/${instance.id}/dashboard`} className="flex w-full flex-row items-center justify-between gap-4">
@@ -167,7 +167,9 @@ function Dashboard() {
                 </Button>
               </CardFooter>
             </Card>
-          ))}
+          ))) :(
+          <p>{t("dashboard.instancesNotFound")}</p>
+          )}
       </main>
 
       {!!deleteConfirmation && (

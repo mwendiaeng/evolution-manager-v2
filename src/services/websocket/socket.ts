@@ -10,7 +10,7 @@ export interface WebSocketConnection {
   disconnect: () => void;
 }
 
-export const connectSocket = (serverUrl: string): WebSocketConnection => {
+export const connectSocket = (serverUrl: string, apikey?: string): WebSocketConnection => {
   // Check if socket already exists for this URL
   if (activeSockets.has(serverUrl)) {
     const existingSocket = activeSockets.get(serverUrl)!;
@@ -25,6 +25,14 @@ export const connectSocket = (serverUrl: string): WebSocketConnection => {
     reconnectionAttempts: 5,
     reconnectionDelay: 1000,
     timeout: 20000,
+    auth: apikey ? { apikey } : undefined,
+    transportOptions: apikey
+      ? {
+          websocket: {
+            protocols: ["apikey", apikey],
+          },
+        }
+      : undefined,
   });
 
   // Store socket

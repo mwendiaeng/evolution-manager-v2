@@ -78,12 +78,13 @@ function Chat() {
     if (!instance?.name) return;
 
     const serverUrl = getToken(TOKEN_ID.API_URL);
+    const apiKey = getToken(TOKEN_ID.TOKEN);
     if (!serverUrl) {
-      console.error("API URL not found in localStorage");
+      console.error("API URL not found in session storage");
       return;
     }
 
-    const socket = connectSocket(serverUrl);
+    const socket = connectSocket(serverUrl, apiKey || undefined);
 
     // Function to update chats from websocket events
     const updateChatsFromWebsocket = (_eventType: string, data: any) => {

@@ -116,17 +116,11 @@ function EmbedChatMessage() {
     const serverUrl = getToken(TOKEN_ID.API_URL);
 
     if (!serverUrl) {
-      console.error("API URL not found in localStorage");
+      console.error("API URL not found in session storage");
       return;
     }
 
-    const currentToken = localStorage.getItem("accessToken");
-
-    if (tokenFromUrl) {
-      localStorage.setItem("accessToken", tokenFromUrl);
-    }
-
-    const socket = connectSocket(serverUrl);
+    const socket = connectSocket(serverUrl, tokenFromUrl || activeInstance.token);
 
     function updateChats(_: string, data: any) {
       if (!activeInstance) return;
@@ -204,11 +198,6 @@ function EmbedChatMessage() {
       socket.off("messages.update");
       disconnectSocket(socket);
 
-      if (tokenFromUrl) {
-        localStorage.setItem("accessToken", currentToken || "");
-      } else {
-        localStorage.removeItem("accessToken");
-      }
     };
   }, [activeInstance, remoteJid, tokenFromUrl]);
 

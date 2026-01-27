@@ -4,6 +4,7 @@ import { getToken, TOKEN_ID } from "./token";
 
 export const api = axios.create({
   timeout: 30000,
+  withCredentials: true,
 });
 
 api.interceptors.request.use(
@@ -29,6 +30,7 @@ api.interceptors.request.use(
 
 export const apiGlobal = axios.create({
   timeout: 30000,
+  withCredentials: true,
 });
 
 apiGlobal.interceptors.request.use(

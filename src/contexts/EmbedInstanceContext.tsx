@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import { TOKEN_ID } from "@/lib/queries/token";
+import { saveToken } from "@/lib/queries/token";
 
 import { Instance } from "@/types/evolution.types";
 
@@ -39,8 +39,7 @@ export function EmbedInstanceProvider({ children }: { children: React.ReactNode 
       try {
         // Format URL (remove trailing slash if present)
         const formattedUrl = apiUrl.endsWith("/") ? apiUrl.slice(0, -1) : apiUrl;
-        localStorage.setItem(TOKEN_ID.API_URL, formattedUrl);
-        localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, token);
+        saveToken({ url: formattedUrl, instanceToken: token });
 
         const { data } = await axios.get(`${formattedUrl}/instance/fetchInstances?instanceName=${instanceName}`, {
           headers: {

@@ -17,7 +17,7 @@ import { LoadingSpinner } from "@/components/ui/loading-spinner";
 import { useInstance } from "@/contexts/InstanceContext";
 
 import { useManageInstance } from "@/lib/queries/instance/manageInstance";
-import { getToken, TOKEN_ID } from "@/lib/queries/token";
+import { getToken, saveToken, TOKEN_ID } from "@/lib/queries/token";
 
 function DashboardInstance() {
   const { t, i18n } = useTranslation();
@@ -32,9 +32,11 @@ function DashboardInstance() {
 
   useEffect(() => {
     if (instance) {
-      localStorage.setItem(TOKEN_ID.INSTANCE_ID, instance.id);
-      localStorage.setItem(TOKEN_ID.INSTANCE_NAME, instance.name);
-      localStorage.setItem(TOKEN_ID.INSTANCE_TOKEN, instance.token);
+      saveToken({
+        instanceId: instance.id,
+        instanceName: instance.name,
+        instanceToken: instance.token,
+      });
     }
   }, [instance]);
 

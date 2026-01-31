@@ -28,7 +28,7 @@ function Login() {
   const loginForm = useForm<LoginSchema>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      serverUrl: window.location.protocol + "//" + window.location.host,
+      serverUrl: window.location.protocol + "//" + window.location.host + "/api",
       apiKey: "",
     },
   });
